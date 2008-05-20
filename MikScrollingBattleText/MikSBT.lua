@@ -13,10 +13,18 @@ _G[modName] = mod;
 -- Mod constants
 -------------------------------------------------------------------------------
 
-mod.VERSION_NUMBER	= 5.13;
-mod.VERSION_STRING	= "v5.13";
+mod.VERSION	= string.gsub(GetAddOnMetadata("MikScrollingBattleText", "Version"), "wowi:revision", 0);
+mod.VERSION_STRING	= "v" .. mod.VERSION;
 
 mod.COMMAND		= "/msbt";
+
+
+-------------------------------------------------------------------------------
+-- Localization.
+-------------------------------------------------------------------------------
+
+-- Holds localized strings.
+local translations = {};
 
 
 -------------------------------------------------------------------------------
@@ -84,6 +92,9 @@ end
 -------------------------------------------------------------------------------
 -- Mod utility interface.
 -------------------------------------------------------------------------------
+
+-- Protected Variables.
+mod.translations = translations;
 
 -- Protected Functions.
 mod.CopyTable	= CopyTable;

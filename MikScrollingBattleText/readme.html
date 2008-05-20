@@ -2,107 +2,86 @@
  <head>
   <title>Mik's Scrolling Battle Text Readme</title>
   <style type="text/css">
-   body { font-size : 10pt; font-family : verdana,arial,helvetica,sans-serif; }
-   hr   { color : #e0e0e0; }
+   body { font-size: 10pt; font-family: verdana, arial, helvetica, sans-serif; }
+   h1   { font-weight: bold; color: #004080; }
+   
+   a:link    { color: #000060; text-decoration: none; }
+   a:visited { color: #000060; text-decoration: none; }
+   a:hover   { text-decoration: underline; }
 
-   a:link    { color : #000060; text-decoration : none; }
-   a:visited { color : #000060; text-decoration : none; }
-   a:hover   { text-decoration : underline; }
+   div#HeaderBlock { background-color: #e0e0e0; border: 1px solid #000060; padding: 1ex; margin: 2em 0em 4em 0em; }
 
-   div#HeaderBlock {background-color : ivory; border : solid #000050 1px; padding : 1ex; margin-top : 2em; margin-bottom : 2em; }
-   div#NotificationBlock {font-size : 120%; font-weight : bold; color : red; margin-top : 1em; margin-bottom : 2em; }
+   div.TOCTitle      { font-weight: bold; font-size: 14pt; color: #004080; border-bottom: 1px solid #000060; }
+   div.TOC           { margin: 2ex 1ex 4em 2ex; }
+   div.TOCSection    { margin-bottom: 2ex; }
+   div.TOCSection ul { margin-top: 1ex; }
 
-   div.TOCTitle   { font-weight : bold; font-size : 12pt; }
-   div.TOC        { margin : 2ex 1ex 4em 2ex; }
-   div.TOCSection { margin : 1ex 1ex 2ex 2ex; }
+   div.SectionTitle    { margin-top: 6ex; font-weight: bold; font-size: 14pt; color: #004080; border-bottom: 1px solid #000060; }
+   div.SectionBody     { margin: 2ex 0ex 2ex 2ex; }
+   div.SectionBody ul  { margin-top: 1ex; }
 
-   div.SectionTitle { margin-top : 6ex; font-weight : bold; font-size : 14pt; }
-   div.SectionBody { margin-top : 2ex; margin-left : 2ex; margin-bottom : 2em; }
+   div.SectionBody a:link    { color: #002080; }
+   div.SectionBody a:visited { color: #002080; }
+   div.SectionBody a:hover   { text-decoration: underline; }
 
-   div.SectionBody a:link    { color : #002080; }
-   div.SectionBody a:visited { color : #002080; }
-   div.SectionBody a:hover   {  text-decoration : underline; }
+   div.SubsectionTitle { margin-top: 4ex; margin-bottom: 2ex; font-weight: bold; font-size: 110%; color: #004080; }
+   div.SubsectionBody  { margin: 2ex 0ex 2ex 2ex; }
 
-   td.ParameterName { font-size : 10pt; background-color : #e0e0e0; vertical-align : top; }
-   td.ParameterDesc { font-size : 10pt; background-color : #e0e0e0; text-align : left; }
+   td.ParameterName { font-size: 10pt; background-color: #e0e0e0; vertical-align: top; }
+   td.ParameterDesc { font-size: 10pt; background-color: #e0e0e0; text-align: left; }
+
+   li.FAQListItem { margin-bottom: 6ex; }
   </style>
  </head>
  <body>
-  <center><b>Mik's Scrolling Battle Text Readme</b></center>
+  <h1>Mik's Scrolling Battle Text</h1>
   <div id="HeaderBlock">
    Version: 5.13<br />
    Author: Mik<br />
-   Released: May 14, 2008<br />
+   Released: April 27, 2008<br />
    Official Site: <a href="http://mikord.wowinterface.com">http://mikord.wowinterface.com</a><br /><br />
    <a href="#Credits">See Credits</a>
   </div>
 
-  <a name="TOC"><div class="TOCTitle">Table of Contents:</div></a>
+  <div class="SectionTitle"><a name="TOC"></a>Table of Contents:</div>
   <div class="TOC">
-   <a href="#WhatsNew">What's new?</a><br />
-   <a href="#Install">Installation Instructions</a><br />
-   <a href="#Description">Description</a><br />
-   <a href="#Commands">Commands</a><br />
-   <a href="#TriggerSystem">Trigger System Documentation</a><br />
-   <div id="TOCSection">
-    <ul style="margin-top : 1ex;">
-     <li><a href="#MainEvents">Trigger Main Events</a></li>
-     <li><a href="#TriggerExceptions">Trigger Exceptions</a></li>
-    </ul>
-   </div>
-   
-   <a href="#SearchPatternReference">Search Pattern Reference</a><br />
-   <a href="#FAQ">Frequently Asked Questions</a><br />
-   <div id="TOCSection">
-    <ul style="margin-top : 1ex;">
-     <li><a href="#FAQ1">I don't like any of the fonts supplied with MSBT.  How do I use my own fonts?</a></li>
-     <li><a href="#FAQ2">How do I create a new trigger?</a></li>
-     <li><a href="#FAQ3">How do I add my own custom sounds?</a></li>
-     <li><a href="#FAQ4">Is it possible to prevent Mutilate from being merged?</a></li>
-     <li><a href="#FAQ5">How do I suppress Vampiric Embrace?</a></li>
-     <li><a href="#FAQ6">I want to see skill names even when there is an icon.  Is that possible?</a></li>	 
-     <li><a href="#FAQ7">Does MSBT support fonts and sounds from Shared Media?</a></li>
-     <li><a href="#FAQ8">Is there a way to show the damage above the target's heads like the default damage text?</a></li>
-     <li><a href="#FAQ9">Is MSBT efficient?</a></li>
-    </ul>
-   </div>
-   <a href="#VersionHistory">Version History</a><br />
-   <div id="TOCSection">
-    <ul style="margin-top : 1ex;">
-     <li><a href="#Verions5.12">5.12</a></li>
-     <li><a href="#Version5.11">5.11</a></li>
-     <li><a href="#Version5.1">5.1</a></li>
-     <li><a href="#Version5.03">5.03</a></li>
-     <li><a href="#Version5.02">5.02</a></li>	
-     <li><a href="#Version5.01">5.01</a></li>	
-     <li><a href="#Version5.0">5.0</a></li>	
-     <li><a href="#Version4.13">4.13</a></li>	
-     <li><a href="#Version4.12">4.12</a></li>
-     <li><a href="#Version4.11">4.11</a></li>
-     <li><a href="#Version4.1">4.1</a></li>
-     <li><a href="#Version4.03">4.03</a></li>
-     <li><a href="#Version4.02">4.02</a></li>
-     <li><a href="#Version4.01">4.01</a></li>
-     <li><a href="#Version4.0">4.0</a></li>
-     <li><a href="#Version3.11">3.11</a></li>
-     <li><a href="#Version3.1">3.1</a></li>
-     <li><a href="#Version3.01">3.01</a></li>
-     <li><a href="#Version3.0">3.0</a></li>
-     <li><a href="#Version2.11">2.11</a></li>
-     <li><a href="#Version2.1">2.1</a></li>
-     <li><a href="#Version2.0">2.0</a></li>
-     <li><a href="#Version1.03">1.03</a></li>
-     <li><a href="#Version1.02">1.02</a></li>
-     <li><a href="#Version1.01">1.01</a></li>
-     <li><a href="#Version1.0">1.0</a></li>
-    </ul>
-   </div>
-   <a href="#Credits">Credits</a><br />
-
+   <ul>
+    <li><a href="#WhatsNew">What's new?</a></li>
+    <li><a href="#Install">Installation Instructions</a></li>
+    <li><a href="#Description">Description</a></li>
+    <li><a href="#Commands">Commands</a></li>
+    <li>
+	 <a href="#TriggerGuide">Trigger Guide</a>
+     <div class="TOCSection">
+      <ul>
+       <li><a href="#MainEvents">Trigger Main Events</a></li>
+       <li><a href="#TriggerExceptions">Trigger Exceptions</a></li>
+      </ul>
+     </div>
+    </li>
+    <li><a href="#SearchPatternReference">Search Pattern Reference</a></li>
+    <li>
+	 <a href="#FAQ">Frequently Asked Questions</a></li>
+     <div class="TOCSection">
+      <ul>
+       <li><a href="#FAQFonts">I don't like any of the fonts supplied with MSBT.  How do I use my own fonts?</a></li>
+       <li><a href="#FAQNewTrigger">How do I create a new trigger?</a></li>
+       <li><a href="#FAQSounds">How do I add my own custom sounds?</a></li>
+       <li><a href="#FAQMutilate">Is it possible to prevent Mutilate from being merged?</a></li>
+       <li><a href="#FAQVE">How do I suppress Vampiric Embrace?</a></li>
+       <li><a href="#FAQExclusiveIcons">I want to see skill names even when there is an icon.  Is that possible?</a></li>	 
+       <li><a href="#FAQSharedMedia">Does MSBT support fonts and sounds from Shared Media?</a></li>
+       <li><a href="#FAQGameDamage">Is there a way to show the damage above the target's heads like the default damage text?</a></li>
+       <li><a href="#FAQEfficiency">Is MSBT efficient?</a></li>
+      </ul>
+     </div>
+    </li>
+    <li><a href="#VersionHistory">Version History</a></li>
+    <li><a href="#Credits">Credits</a></li>
+   </ul>
   </div>
 
-  <div class="SectionTitle"><a name="WhatsNew">What's New?</a></div>
-  <hr size="1" />
+  <div class="SectionTitle"><a name="WhatsNew"></a>What's New?</div>
   <a href="#TOC">Return to TOC</a><br /><br />
   <div class="SectionBody">
    <ul>
@@ -110,8 +89,7 @@
    </ul>
   </div>
 
-  <div class="SectionTitle"><a name="Install">Installation Instructions</a></div>
-  <hr size="1" />
+  <div class="SectionTitle"><a name="Install"></a>Installation Instructions</div>
   <a href="#TOC">Return to TOC</a><br /><br />
   <div class="SectionBody">
    Unzip the contents into the AddOns directory of your WoW game directory.<br /><br />
@@ -120,121 +98,123 @@
    the new version.</b>
   </div>
 
-  <div class="SectionTitle"><a name="Description">Description</a></div>
-  <hr size="1" />
+  <div class="SectionTitle"><a name="Description"></a>Description</div>
   <a href="#TOC">Return to TOC</a><br /><br />
   <div class="SectionBody">
    MSBT is designed to be an extremely lightweight, efficient, and highly configurable mod that makes it easier to see combat
    information by scrolling the information on the screen in separate, dynamically creatable scroll areas. It is a replacement
    for Blizzard's Floating Combat Text and Damage output.<br /><br />
 
-   <b>Features:</b>
-   <ul>
-    <li>Lightweight and efficient design.</li>
-    <li>Scroll incoming damage/heals, outgoing damage/heals, and notifications in separate configurable scroll areas on the playing field.</li>
-    <li>Add triggers that will allow you to show notifications based on a variety of conditions.</li>
-    <li>Assign a sound file to play for events/triggers.</li>
-    <li>Dynamically create new scroll areas and assign any event/trigger to them.</li>
-    <li>Customize the position, size, animation style, enabled state, font style, font size, font outline, and opacity for each of the scroll areas.</li>
-    <li>Customize each individual event's color, font style, font size, font outline, opacity, output message, enabled state, and scroll area.</li>
-    <li>Set "Master Font" settings that will be inherited by all of the scroll areas and the events in them unless they are overridden at the scroll area or event level.</li>
-    <li>Merge AoE data into one event with cumulative damage/healing done with number of normal and crits specified.</li>
-    <li>Show overhealing amounts against yourself or party/raid members.</li>
-    <li>Color damage amounts according to damage type.</li>
-    <li>Show partial effects (resists, absorbs, vulnerabilities, etc) colored according to type.</li>
-    <li>Filter output information with a full suite of spam controls.</li>
-    <li>Load on demand options.</li>
+   <div class="SubsectionTitle">Features:</div>
+   <div class="SubsectionBody">
+    <ul>
+     <li>Lightweight and efficient design.</li>
+     <li>Scroll incoming damage/heals, outgoing damage/heals, and notifications in separate configurable scroll areas on the playing field.</li>
+     <li>Add triggers that will allow you to show notifications based on a variety of conditions.</li>
+     <li>Assign a sound file to play for events/triggers.</li>
+     <li>Dynamically create new scroll areas and assign any event/trigger to them.</li>
+     <li>Customize the position, size, animation style, enabled state, font style, font size, font outline, and opacity for each of the scroll areas.</li>
+     <li>Customize each individual event's color, font style, font size, font outline, opacity, output message, enabled state, and scroll area.</li>
+     <li>Set "Master Font" settings that will be inherited by all of the scroll areas and the events in them unless they are overridden at the scroll area or event level.</li>
+     <li>Merge AoE data into one event with cumulative damage/healing done with number of normal and crits specified.</li>
+     <li>Show overhealing amounts against yourself or party/raid members.</li>
+     <li>Color damage amounts according to damage type.</li>
+     <li>Show partial effects (resists, absorbs, vulnerabilities, etc) colored according to type.</li>
+     <li>Filter output information with a full suite of spam controls.</li>
+     <li>Load on demand options.</li>
 
-    <li>For mod developers:
+     <li>For mod developers:
+      <ul>
+       <li>
+        Output your own scrolling messages with the MikSBT.DisplayMessage function instead of having
+        to create your own frame and animation code.  You can also use your own font by first registering
+        it with MSBT via the MikSBT.RegisterFont function.
+       </li>
+       <li>Create custom animation styles.</li>
+       <li>See the included API.html file for reference information.</li>
+      </ul>
+     </li>
+    </ul>
+   </div>
+
+   <div class="SubsectionTitle">Supported Events:</div>
+   <div class="SubsectionBody">
+    <ul>
+     <li>Incoming:</li>
      <ul>
-      <li>
-       Output your own scrolling messages with the MikSBT.DisplayMessage function instead of having
-       to create your own frame and animation code.  You can also use your own font by first registering
-       it with MSBT via the MikSBT.RegisterFont function.
-      </li>
-      <li>Create custom animation styles.</li>
-      <li>See the included API.html file for reference information.</li>
+      <li>Melee Damage, Misses, Dodges, Parries, Blocks, Absorbs, and Immunes</li>
+      <li>Skill Damage, Damage Over Time (DoTs), Misses, Dodges, Parries, Blocks, Absorbs, Immunes, Reflects, and Interrupts</li>
+      <li>Spell Resists</li>
+      <li>Pet Melee Damage, Misses, Dodges, Parries, Blocks, Absorbs, and Immunes</li>
+      <li>Pet Skill Damage, Damage Over Time (DoTs), Misses, Dodges, Parries, Blocks, Absorbs, and Immunes</li>
+      <li>Pet Spell Resists</li>
+      <li>Heals and Heals Over Time (HoTs)</li>
+      <li>Environmental Damage</li>
      </ul>
-    </li>
-   </ul>
 
-   <br />
-   <b>Supported Events:</b>
-   <ul>
-    <li>Incoming:</li>
-    <ul>
-     <li>Melee Damage, Misses, Dodges, Parries, Blocks, Absorbs, and Immunes</li>
-     <li>Skill Damage, Damage Over Time (DoTs), Misses, Dodges, Parries, Blocks, Absorbs, Immunes, Reflects, and Interrupts</li>
-     <li>Spell Resists</li>
-     <li>Pet Melee Damage, Misses, Dodges, Parries, Blocks, Absorbs, and Immunes</li>
-     <li>Pet Skill Damage, Damage Over Time (DoTs), Misses, Dodges, Parries, Blocks, Absorbs, and Immunes</li>
-     <li>Pet Spell Resists</li>
-     <li>Heals and Heals Over Time (HoTs)</li>
-     <li>Environmental Damage</li>
-    </ul>
-    <br />
-    <li>Outgoing:</li>
-    <ul>
-     <li>Melee Damage, Misses, Dodges, Parries, Blocks, Absorbs, Immunes, Evades</li>
-     <li>Skill Damage, Damage Over Time (DoTs), Misses, Dodges, Parries, Blocks, Absorbs, Immunes, Reflects, Interrupts, and Evades</li>
-     <li>Spell Resists and Buff Dispels</li>
-     <li>Heals and Heals Over Time (HoTs)</li>
-     <li>Pet Melee Damage, Misses, Dodges, Parries, Blocks, Absorbs, Immunes, and Evades</li>
-     <li>Pet Skill Damage, Damage Over Time (DoTs), Misses, Dodges, Parries, Blocks, Absorbs, Immunes, and Evades</li>
-     <li>Pet Spell Resists and Buff Dispels</li>
-    </ul>
+     <br />
+     <li>Outgoing:</li>
+     <ul>
+      <li>Melee Damage, Misses, Dodges, Parries, Blocks, Absorbs, Immunes, Evades</li>
+      <li>Skill Damage, Damage Over Time (DoTs), Misses, Dodges, Parries, Blocks, Absorbs, Immunes, Reflects, Interrupts, and Evades</li>
+      <li>Spell Resists and Buff Dispels</li>
+      <li>Heals and Heals Over Time (HoTs)</li>
+      <li>Pet Melee Damage, Misses, Dodges, Parries, Blocks, Absorbs, Immunes, and Evades</li>
+      <li>Pet Skill Damage, Damage Over Time (DoTs), Misses, Dodges, Parries, Blocks, Absorbs, Immunes, and Evades</li>
+      <li>Pet Spell Resists and Buff Dispels</li>
+     </ul>
 
-    <br />
-    <li>Notification:</li>
-    <ul>
-     <li>Buffs / Buff Fades</li>
-     <li>Debuffs / Debuff Fades</li>
-     <li>Item Buffs / Item Buff Fades</li>
-     <li>Enter/Leave Combat</li>
-     <li>Power Gains and Losses</li>
-     <li>Combo Point Gains</li>
-     <li>Combo Points Full</li>
-     <li>Honor Gains</li>
-     <li>Reputation Gains and Losses</li>
-     <li>Skill Gains</li>
-     <li>Experience Gains</li>
-     <li>Killing Blows (Player and NPC)</li>
-     <li>Extra Attacks</li>
-     <li>Soul Shard Creation</li>
-     <li>Enemy Buff Gains</li>
-     <li>Monster Emotes</li>
-     <li>Money Gains</li>
-     <li>Cooldown Completions</li>
-    </ul>
+     <br />
+     <li>Notification:</li>
+     <ul>
+      <li>Buffs / Buff Fades</li>
+      <li>Debuffs / Debuff Fades</li>
+      <li>Item Buffs / Item Buff Fades</li>
+      <li>Enter/Leave Combat</li>
+      <li>Power Gains and Losses</li>
+      <li>Combo Point Gains</li>
+      <li>Combo Points Full</li>
+      <li>Honor Gains</li>
+      <li>Reputation Gains and Losses</li>
+      <li>Skill Gains</li>
+      <li>Experience Gains</li>
+      <li>Killing Blows (Player and NPC)</li>
+      <li>Extra Attacks</li>
+      <li>Soul Shard Creation</li>
+      <li>Enemy Buff Gains</li>
+      <li>Monster Emotes</li>
+      <li>Money Gains</li>
+      <li>Cooldown Completions</li>
+     </ul>
 
-    <br />
-    <li>Default Triggers:</li>
-    <ul>
-     <li>Backlash</li>
-     <li>Blackout</li>
-     <li>Clearcasting</li>
-     <li>Counter Attack</li>
-     <li>Execute / Hammer of Wrath</li>
-     <li>Frostbite</li>
-     <li>Impact</li>
-     <li>Kill Command</li>
-     <li>Low Health</li>
-     <li>Low Mana</li>
-     <li>Low Pet Health</li>
-     <li>Mongoose Bite</li>
-     <li>Nightfall</li>
-     <li>Overpower</li>
-     <li>Rampage</li>
-     <li>Revenge</li>
-     <li>Riposte</li>
-     <li>Victory Rush</li>
-     <li>Viper Sting</li>
+     <br />
+     <li>Default Triggers:</li>
+     <ul>
+      <li>Backlash</li>
+      <li>Blackout</li>
+      <li>Clearcasting</li>
+      <li>Counter Attack</li>
+      <li>Execute / Hammer of Wrath</li>
+      <li>Frostbite</li>
+      <li>Impact</li>
+      <li>Kill Command</li>
+      <li>Low Health</li>
+      <li>Low Mana</li>
+      <li>Low Pet Health</li>
+      <li>Mongoose Bite</li>
+      <li>Nightfall</li>
+      <li>Overpower</li>
+      <li>Rampage</li>
+      <li>Revenge</li>
+      <li>Riposte</li>
+      <li>Victory Rush</li>
+      <li>Viper Sting</li>
+     </ul>
     </ul>
-   </ul>
+   </div>
   </div>
 
-  <div class="SectionTitle"><a name="Commands">Commands</a></div>
-  <hr size="1" />
+  <div class="SectionTitle"><a name="Commands"></a>Commands</div>
   <a href="#TOC">Return to TOC</a><br /><br />
   <div class="SectionBody">
    <table cellspacing="3">
@@ -265,8 +245,7 @@
    </table>
   </div>  
 
-  <div class="SectionTitle"><a name="TriggerSystem">Trigger System Documentation</a></div>
-  <hr size="1" />
+  <div class="SectionTitle"><a name="TriggerGuide"></a>Trigger Guide</div>
   <a href="#TOC">Return to TOC</a><br /><br />
   <div class="SectionBody">
    The trigger system is a powerful, flexible, and efficient system that allows you to specify custom events to be displayed based on
@@ -281,7 +260,7 @@
    <br /><br />
    Triggers will try to choose an appropriate icon based on the <a href="#MainEvents">main event</a> that fired it.
    <br /><br />
-   The <a href="#FAQ">Frequently Asked Questions</a> section has step-by-step instructions on the process of <a href="#FAQ2">creating a trigger</a>.
+   The <a href="#FAQ">Frequently Asked Questions</a> section has step-by-step instructions on the process of <a href="#FAQNewTrigger">creating a trigger</a>.
    <br /><br />
    The following is a description of the fields unique to the trigger system interface:
    <br /><br />
@@ -290,7 +269,7 @@
      <td class="ParameterName" nowrap="nowrap">Output Message:</td>
      <td class="ParameterDesc">
       This is the message that will be displayed when the trigger fires.  As detailed in the <a href="#MainEvents">main events</a> table,
-      some of the <a href="#MainEvents">main events</a> return captured information that can be accessed with substitution codes of %1 or %2.
+      some of the <a href="#MainEvents">main events</a> return captured information that can be accessed with a substitution code of %1.
       <br /><br />
       In addition, most <a href="#MainEvents">main events</a> allow %n to be substituted with the name of the source of the event and %r to be
       substituted with the name of the recipient of the event.
@@ -326,323 +305,319 @@
      </td>
     </tr>
    </table>
-   <br /><br /><br />
-   <a name="MainEvents"><span style="font-weight : bold; font-size : 110%">Trigger Main Events:</span></a>
-   <br /><br />
-   <table cellspacing="3">
-    <tr>
-     <td class="ParameterName" nowrap="nowrap">Health Threshold:</td>
-     <td class="ParameterDesc">
-      Fires when a health percentage falls below or rises above the chosen threshold depending on which direction is selected.
-      <br /><br />
-      Conditions:
-      <ul>
-       <li>Affected Unit - The trigger will only fire if the threshold has been crossed for this unit.</li>
-       <li>Hostile Only - The affected unit must be hostile.  <b>NOTE:</b> "You" can never be hostile, so don't check it in conjunction with yourself!</li>
-       <li>Direction - Specifies whether the trigger should fire when the health percentage falls below or rises above the threshold.</li>
-       <li>Threshold - The percentage that must be crossed for the trigger to fire.</li>
-      </ul>
-      Available Substitution Codes:
-      <ul>
-       <li>%1 - The actual amount of health.</li>
-       <li>%r - The name of the unit whose health changed.</li>
-      </ul>
-     </td>
-    </tr>
-    <tr>
-     <td class="ParameterName" nowrap="nowrap">Mana Threshold:</td>
-     <td class="ParameterDesc">
-      Fires when a mana percentage falls below or rises above the chosen threshold depending on which direction is selected.
-      <br /><br />
-      The conditions and available substitution codes are identical to a health threshold.  See above for further details.
-     </td>
-    </tr>
-    <tr>
-     <td class="ParameterName" nowrap="nowrap">Energy Threshold:</td>
-     <td class="ParameterDesc">
-      Fires when an energy percentage falls below or rises above the chosen threshold depending on which direction is selected.
-      <br /><br />
-      The conditions and available substitution codes are identical to a health threshold.  See above for further details.
-     </td>
-    </tr>
-    <tr>
-     <td class="ParameterName" nowrap="nowrap">Rage Threshold:</td>
-     <td class="ParameterDesc">
-      Fires when a rage percentage falls below or rises above the chosen threshold depending on which direction is selected.
-      <br /><br />
-      The conditions and available substitution codes are identical to a health threshold.  See above for further details.
-     </td>
-    </tr>
-    <tr>
-     <td class="ParameterName" nowrap="nowrap">Crit:</td>
-     <td class="ParameterDesc">
-      Fires when an incoming or outgoing critical hit is landed.
-      <br /><br />
-      Conditions:
-      <ul>
-       <li>Direction - Specifies whether the trigger should fire on an incoming (to you) or outgoing (from you) critical hit.</li>
-      </ul>
-      Available Substitution Codes:
-      <ul>
-       <li>%1 - The name of the skill the caused the crit. <b>NOTE:</b> This will be blank when the crit was from a skill such as a regular swing.</li>
-       <li>%n - The name of the unit who did the crit.</li>
-       <li>%r - The name of the unit who was crit.</li>
-      </ul>
-     </td>
-    </tr>
-    <tr>
-     <td class="ParameterName" nowrap="nowrap">Block:</td>
-     <td class="ParameterDesc">
-      Fires when an incoming or outgoing attack is blocked.
-      <br /><br />
-      The conditions and available substitution codes are identical to a Crit.  See above for further details.
-     </td>
-    </tr>
-    <tr>
-     <td class="ParameterName" nowrap="nowrap">Dodge:</td>
-     <td class="ParameterDesc">
-      Fires when an incoming or outgoing attack is dodged.
-      <br /><br />
-      The conditions and available substitution codes are identical to a Crit.  See above for further details.
-     </td>
-    </tr>
-    <tr>
-     <td class="ParameterName" nowrap="nowrap">Parry:</td>
-     <td class="ParameterDesc">
-      Fires when an incoming or outgoing attack is parried.
-      <br /><br />
-      The conditions and available substitution codes are identical to a Crit.  See above for further details.
-     </td>
-    </tr>
-    <tr>
-     <td class="ParameterName" nowrap="nowrap">Buff Application:</td>
-     <td class="ParameterDesc">
-      Fires when a buff is applied to a unit.
-      <br /><br />
-      Conditions:
-      <ul>
-       <li>Affected Unit - The trigger will only fire if the buff was applied to this unit.</li>
-       <li>Hostile Only - The affected unit must be hostile.  <b>NOTE:</b> "You" can never be hostile, so don't check it in conjunction with yourself!</li>
-       <li>Skill Name - The <b>case-sensitive</b> name of the buff that trigger will fire on.</li>
-       <li>Amount - The application number of the buff.  This is typically 1 for most buffs.</li>
-      </ul>
-      Available Substitution Codes:
-      <ul>
-       <li>%1 - The name of the buff.</li>
-       <li>%2 - The number of applications of the buff.</li>
-       <li>%r - The name of the unit who received the buff.</li>
-      </ul>
-     </td>
-    </tr>
-    <tr>
-     <td class="ParameterName" nowrap="nowrap">Buff Fade:</td>
-     <td class="ParameterDesc">
-      Fires when a buff fades from a unit.
-      <br /><br />
-      Conditions:
-      <ul>
-       <li>Affected Unit - The trigger will only fire if the buff faded from this unit.</li>
-       <li>Hostile Only - The affected unit must be hostile.  <b>NOTE:</b> "You" can never be hostile, so don't check it in conjunction with yourself!</li>
-       <li>Skill Name - The <b>case-sensitive</b> name of the buff that trigger will fire on.</li>
-      </ul>
-      Available Substitution Codes:
-      <ul>
-       <li>%1 - The name of the buff.</li>
-       <li>%r - The name of the unit who the buff faded from.</li>
-      </ul>
-     </td>
-    </tr>
-    <tr>
-     <td class="ParameterName" nowrap="nowrap">Debuff Application:</td>
-     <td class="ParameterDesc">
-      Fires when a debuff is applied to a unit.
-      <br /><br />
-      The conditions and available substitution codes are identical to a Buff Application.  See above for further details.
-     
-     </td>
-    </tr>
-    <tr>
-     <td class="ParameterName" nowrap="nowrap">Debuff Fade:</td>
-     <td class="ParameterDesc">
-      Fires when a debuff fades from a unit.
-      <br /><br />
-      The conditions and available substitution codes are identical to a Buff Fade.  See above for further details.
-     </td>
-    </tr>
-    <tr>
-     <td class="ParameterName" nowrap="nowrap">Cast Start:</td>
-     <td class="ParameterDesc">
-      Fires when a skill with a cast time has started.
-      <br /><br />
-      Conditions:
-      <ul>
-       <li>Affected Unit - The trigger will only fire if this unit started the cast.</li>
-       <li>Hostile Only - The affected unit must be hostile.  <b>NOTE:</b> "You" can never be hostile, so don't check it in conjunction with yourself!</li>
-       <li>Skill Name - The <b>case-sensitive</b> name of the skill for which the cast is starting.</li>
-      </ul>
-      Available Substitution Codes:
-      <ul>
-       <li>%1 - The name of the skill for which the cast is starting.</li>
-       <li>%n - The name of the unit that started the cast.</li>
-      </ul>
-     </td>
-    </tr>
-    <tr>
-     <td class="ParameterName" nowrap="nowrap">Killing Blow:</td>
-     <td class="ParameterDesc">
-      Fires when you perform a killing blow.
-      <br /><br />
-      There are no conditions for this event.
-      <br /><br />
-      Available Substitution Codes:
-      <ul>
-       <li>%n - Your name since you are the source of the killing blow.</li>
-       <li>%r - The name of the unit that was killed.</li>
-      </ul>
-     </td>
-    </tr>
-   </table>
-   <br /><br /><br />
-   <a name="TriggerExceptions"><span style="font-weight : bold; font-size : 110%">Trigger Exceptions:</span></a>
-   <br /><br />
-   <table cellpacing="3">
-    <tr>
-     <td class="ParameterName" nowrap="nowrap">Buff Active:</td>
-     <td class="ParameterDesc">
-      This exception will be true if the specified buff is currently active on you.
-      <br /><br />
-      Conditions:
-      <ul>
-       <li>Skill name - The <b>case-sensitive</b> name of the buff to check.</li>
-       <li>Reverse Logic - Makes this exception check if a buff is currently INACTIVE on you.</li>
-      </ul>
-     </td>
-    </tr>
-    <tr>
-     <td class="ParameterName" nowrap="nowrap">Insufficient Power:</td>
-     <td class="ParameterDesc">
-      This exception will be true if you currently have less rage or energy than the specified amount.
-      <br /><br />
-      Conditions:
-      <ul>
-       <li>Amount - The amount of rage or energy to check.</li>
-       <li>Reverse Logic - Makes this exception true if you currently have MORE rage or energy than the specified amount.</li>
-      </ul>
-     </td>
-    </tr>
-    <tr>
-     <td class="ParameterName" nowrap="nowrap">Insufficient Combo Points:</td>
-     <td class="ParameterDesc">
-      This exception will be true if you currently have less combo points than the specified amount.
-      <br /><br />
-      Conditions:
-      <ul>
-       <li>Amount - The amount of combo points to check.</li>
-       <li>Reverse Logic - Makes this exception true if you currently have MORE combo points than the specified amount.</li>
-      </ul>
-     </td>
-    </tr>
-    <tr>
-     <td class="ParameterName" nowrap="nowrap">Not In Arena:</td>
-     <td class="ParameterDesc">
-      This exception will be true if you currently not in the arena.
-      <br /><br />
-      Conditions:
-      <ul>
-       <li>Amount - The amount of rage or energy to check.</li>
-       <li>Reverse Logic - Makes this exception true if you ARE currently in the arena.</li>
-      </ul>
-     </td>
-    </tr>
-    <tr>
-     <td class="ParameterName" nowrap="nowrap">Not In PvP Zone:</td>
-     <td class="ParameterDesc">
-      This exception will be true if you currently not in a PvP Zone which includes all battlegrounds and the arena.
-      <br /><br />
-      Conditions:
-      <ul>
-       <li>Amount - The amount of rage or energy to check.</li>
-       <li>Reverse Logic - Makes this exception true if you ARE currently in a PvP Zone.</li>
-      </ul>
-     </td>
-    </tr>
-    <tr>
-     <td class="ParameterName" nowrap="nowrap">Trigger Recently Fired:</td>
-     <td class="ParameterDesc">
-      This exception will be true if the trigger has been fired within the last number of seconds specified.
-      <br /><br />
-      Conditions:
-      <ul>
-       <li>Amount - The number of seconds to test.</li>
-      </ul>
-     </td>
-    </tr>
-    <tr>
-     <td class="ParameterName" nowrap="nowrap">Skill Unavailable:</td>
-     <td class="ParameterDesc">
-      This exception will be true if the specified skill is not known or is on cooldown.  It does not cover other
-      facets such as necessary reagents, appropriate range, etc.
-      <br /><br />
-      Conditions:
-      <ul>
-       <li>Skill Name - The <b>case-sensitive</b> name of the skill to check.</li>
-       <li>Reverse Logic - Makes this exception true if the specified skill IS known or on cooldown.</li>
-      </ul>
-     </td>
-    </tr>
-    <tr>
-     <td class="ParameterName" nowrap="nowrap">Trivial Target:</td>
-     <td class="ParameterDesc">
-      This exception will be true if the current target is trivial.  A trivial unit is a unit that a grey to you and does
-      not yield experience.
-      <br /><br />
-      Conditions:
-      <ul>
-       <li>Reverse Logic - Makes this exception true if the current target is NOT trivial.</li>
-      </ul>
-     </td>
-    </tr>
-    <tr>
-     <td class="ParameterName" nowrap="nowrap">Warrior Stance:</td>
-     <td class="ParameterDesc">
-      This exception will be true if you are playing a warrior and the current stance is the specified stance.
-      <br /><br />
-      Conditions:
-      <ul>
-       <li>Warrior Stance - The stance to check.</li>
-       <li>Reverse Logic - Makes this exception true if the current stance is NOT the selected stance.</li>
-      </ul>
-     </td>
-    </tr>
-   </table>
+
+   <div class="SubsectionTitle"><a name="MainEvents"></a>Trigger Main Events:</div>
+   <div class="SubsectionBody">
+    <table cellspacing="3">
+     <tr>
+      <td class="ParameterName" nowrap="nowrap">Health Threshold:</td>
+      <td class="ParameterDesc">
+       Fires when a health percentage falls below or rises above the chosen threshold depending on which direction is selected.
+       <br /><br />
+       Conditions:
+       <ul>
+        <li>Affected Unit - The trigger will only fire if the threshold has been crossed for this unit.</li>
+        <li>Hostile Only - The affected unit must be hostile.  <b>NOTE:</b> "You" can never be hostile, so don't check it in conjunction with yourself!</li>
+        <li>Direction - Specifies whether the trigger should fire when the health percentage falls below or rises above the threshold.</li>
+        <li>Threshold - The percentage that must be crossed for the trigger to fire.</li>
+       </ul>
+       Available Substitution Codes:
+       <ul>
+        <li>%1 - The actual amount of health.</li>
+        <li>%r - The name of the unit whose health changed.</li>
+       </ul>
+      </td>
+     </tr>
+     <tr>
+      <td class="ParameterName" nowrap="nowrap">Mana Threshold:</td>
+      <td class="ParameterDesc">
+       Fires when a mana percentage falls below or rises above the chosen threshold depending on which direction is selected.
+       <br /><br />
+       The conditions and available substitution codes are identical to a health threshold.  See above for further details.
+      </td>
+     </tr>
+     <tr>
+      <td class="ParameterName" nowrap="nowrap">Energy Threshold:</td>
+      <td class="ParameterDesc">
+       Fires when an energy percentage falls below or rises above the chosen threshold depending on which direction is selected.
+       <br /><br />
+       The conditions and available substitution codes are identical to a health threshold.  See above for further details.
+      </td>
+     </tr>
+     <tr>
+      <td class="ParameterName" nowrap="nowrap">Rage Threshold:</td>
+      <td class="ParameterDesc">
+       Fires when a rage percentage falls below or rises above the chosen threshold depending on which direction is selected.
+       <br /><br />
+       The conditions and available substitution codes are identical to a health threshold.  See above for further details.
+      </td>
+     </tr>
+     <tr>
+      <td class="ParameterName" nowrap="nowrap">Crit:</td>
+      <td class="ParameterDesc">
+       Fires when an incoming or outgoing critical hit is landed.
+       <br /><br />
+       Conditions:
+       <ul>
+        <li>Direction - Specifies whether the trigger should fire on and incoming (to you) or outgoing (from you) critical hit.</li>
+       </ul>
+       Available Substitution Codes:
+       <ul>
+        <li>%1 - The name of the skill the caused the crit. <b>NOTE:</b>This will be blank when the crit was from a skill such as a regular swing.</li>
+        <li>%n - The name of the unit who did the crit.</li>
+        <li>%r - The name of the unit whose was crit.</li>
+       </ul>
+      </td>
+     </tr>
+     <tr>
+      <td class="ParameterName" nowrap="nowrap">Block:</td>
+      <td class="ParameterDesc">
+       Fires when an incoming or outgoing attack is blocked.
+       <br /><br />
+       The conditions and available substitution codes are identical to a Crit.  See above for further details.
+      </td>
+     </tr>
+     <tr>
+      <td class="ParameterName" nowrap="nowrap">Dodge:</td>
+      <td class="ParameterDesc">
+       Fires when an incoming or outgoing attack is dodged.
+       <br /><br />
+       The conditions and available substitution codes are identical to a Crit.  See above for further details.
+      </td>
+     </tr>
+     <tr>
+      <td class="ParameterName" nowrap="nowrap">Parry:</td>
+      <td class="ParameterDesc">
+       Fires when an incoming or outgoing attack is parried.
+       <br /><br />
+       The conditions and available substitution codes are identical to a Crit.  See above for further details.
+      </td>
+     </tr>
+     <tr>
+      <td class="ParameterName" nowrap="nowrap">Buff Application:</td>
+      <td class="ParameterDesc">
+       Fires when a buff is applied to a unit.
+       <br /><br />
+       Conditions:
+       <ul>
+        <li>Affected Unit - The trigger will only fire if the buff was applied to this unit.</li>
+        <li>Hostile Only - The affected unit must be hostile.  <b>NOTE:</b> "You" can never be hostile, so don't check it in conjunction with yourself!</li>
+        <li>Skill Name - The <b>case-sensitive</b> name of the buff that trigger will fire on.</li>
+        <li>Amount - The application number of the buff.  This is typically 1 for most buffs.</li>
+       </ul>
+       Available Substitution Codes:
+       <ul>
+        <li>%1 - The name of the buff.</li>
+        <li>%r - The name of the unit who received the buff.</li>
+       </ul>
+      </td>
+     </tr>
+     <tr>
+      <td class="ParameterName" nowrap="nowrap">Buff Fade:</td>
+      <td class="ParameterDesc">
+       Fires when a buff fades from a unit.
+       <br /><br />
+       Conditions:
+       <ul>
+        <li>Affected Unit - The trigger will only fire if the buff faded from this unit.</li>
+        <li>Hostile Only - The affected unit must be hostile.  <b>NOTE:</b> "You" can never be hostile, so don't check it in conjunction with yourself!</li>
+        <li>Skill Name - The <b>case-sensitive</b> name of the buff that trigger will fire on.</li>
+       </ul>
+       Available Substitution Codes:
+       <ul>
+        <li>%1 - The name of the buff.</li>
+        <li>%r - The name of the unit who the buff faded from.</li>
+       </ul>
+      </td>
+     </tr>
+     <tr>
+      <td class="ParameterName" nowrap="nowrap">Debuff Application:</td>
+      <td class="ParameterDesc">
+       Fires when a debuff is applied to a unit.
+       <br /><br />
+       The conditions and available substitution codes are identical to a Buff Application.  See above for further details.
+      
+      </td>
+     </tr>
+     <tr>
+      <td class="ParameterName" nowrap="nowrap">Debuff Fade:</td>
+      <td class="ParameterDesc">
+       Fires when a debuff fades from a unit.
+       <br /><br />
+       The conditions and available substitution codes are identical to a Buff Fade.  See above for further details.
+      </td>
+     </tr>
+     <tr>
+      <td class="ParameterName" nowrap="nowrap">Cast Start:</td>
+      <td class="ParameterDesc">
+       Fires when a skill with a cast time has started.
+       <br /><br />
+       Conditions:
+       <ul>
+        <li>Affected Unit - The trigger will only fire if this unit started the cast.</li>
+        <li>Hostile Only - The affected unit must be hostile.  <b>NOTE:</b> "You" can never be hostile, so don't check it in conjunction with yourself!</li>
+        <li>Skill Name - The <b>case-sensitive</b> name of the skill for which the cast is starting.</li>
+       </ul>
+       Available Substitution Codes:
+       <ul>
+        <li>%1 - The name of the skill for which the cast is starting.</li>
+        <li>%n - The name of the unit that started the cast.</li>
+       </ul>
+      </td>
+     </tr>
+     <tr>
+      <td class="ParameterName" nowrap="nowrap">Killing Blow:</td>
+      <td class="ParameterDesc">
+       Fires when you perform a killing blow.
+       <br /><br />
+       There are no conditions for this event.
+       <br /><br />
+       Available Substitution Codes:
+       <ul>
+        <li>%n - Your name since you are the source of the killing blow.</li>
+        <li>%r - The name of the unit that was killed.</li>
+       </ul>
+      </td>
+     </tr>
+    </table>
+   </div>
+
+
+   <div class="SubsectionTitle"><a name="TriggerExceptions"></a>Trigger Exceptions:</div>
+   <div class="SubsectionBody">
+    <table cellpacing="3">
+     <tr>
+      <td class="ParameterName" nowrap="nowrap">Buff Active:</td>
+      <td class="ParameterDesc">
+       This exception will be true if the specified buff is currently active on you.
+       <br /><br />
+       Conditions:
+       <ul>
+        <li>Skill name - The <b>case-sensitive</b> name of the buff to check.</li>
+        <li>Reverse Logic - Makes this exception check if a buff is currently INACTIVE on you.</li>
+       </ul>
+      </td>
+     </tr>
+     <tr>
+      <td class="ParameterName" nowrap="nowrap">Insufficient Power:</td>
+      <td class="ParameterDesc">
+       This exception will be true if you currently have less rage or energy than the specified amount.
+       <br /><br />
+       Conditions:
+       <ul>
+        <li>Amount - The amount of rage or energy to check.</li>
+        <li>Reverse Logic - Makes this exception true if you currently have MORE rage or energy than the specified amount.</li>
+       </ul>
+      </td>
+     </tr>
+     <tr>
+      <td class="ParameterName" nowrap="nowrap">Insufficient Combo Points:</td>
+      <td class="ParameterDesc">
+       This exception will be true if you currently have less combo points than the specified amount.
+       <br /><br />
+       Conditions:
+       <ul>
+        <li>Amount - The amount of combo points to check.</li>
+        <li>Reverse Logic - Makes this exception true if you currently have MORE combo points than the specified amount.</li>
+       </ul>
+      </td>
+     </tr>
+     <tr>
+      <td class="ParameterName" nowrap="nowrap">Not In Arena:</td>
+      <td class="ParameterDesc">
+       This exception will be true if you currently not in the arena.
+       <br /><br />
+       Conditions:
+       <ul>
+        <li>Amount - The amount of rage or energy to check.</li>
+        <li>Reverse Logic - Makes this exception true if you ARE currently in the arena.</li>
+       </ul>
+      </td>
+     </tr>
+     <tr>
+      <td class="ParameterName" nowrap="nowrap">Not In PvP Zone:</td>
+      <td class="ParameterDesc">
+       This exception will be true if you currently not in a PvP Zone which includes all battlegrounds and the arena.
+       <br /><br />
+       Conditions:
+       <ul>
+        <li>Amount - The amount of rage or energy to check.</li>
+        <li>Reverse Logic - Makes this exception true if you ARE currently in a PvP Zone.</li>
+       </ul>
+      </td>
+     </tr>
+     <tr>
+      <td class="ParameterName" nowrap="nowrap">Trigger Recently Fired:</td>
+      <td class="ParameterDesc">
+       This exception will be true if the trigger has been fired within the last number of seconds specified.
+       <br /><br />
+       Conditions:
+       <ul>
+        <li>Amount - The number of seconds to test.</li>
+       </ul>
+      </td>
+     </tr>
+     <tr>
+      <td class="ParameterName" nowrap="nowrap">Skill Unavailable:</td>
+      <td class="ParameterDesc">
+       This exception will be true if the specified skill is not known or is on cooldown.  It does not cover other
+       facets such as necessary reagents, appropriate range, etc.
+       <br /><br />
+       Conditions:
+       <ul>
+        <li>Skill Name - The <b>case-sensitive</b> name of the skill to check.</li>
+        <li>Reverse Logic - Makes this exception true if the specified skill IS known or on cooldown.</li>
+       </ul>
+      </td>
+     </tr>
+     <tr>
+      <td class="ParameterName" nowrap="nowrap">Trivial Target:</td>
+      <td class="ParameterDesc">
+       This exception will be true if the current target is trivial.  A trivial unit is a unit that a grey to you and does
+       not yield experience.
+       <br /><br />
+       Conditions:
+       <ul>
+        <li>Reverse Logic - Makes this exception true if the current target is NOT trivial.</li>
+       </ul>
+      </td>
+     </tr>
+     <tr>
+      <td class="ParameterName" nowrap="nowrap">Warrior Stance:</td>
+      <td class="ParameterDesc">
+       This exception will be true if you are playing a warrior and the current stance is the specified stance.
+       <br /><br />
+       Conditions:
+       <ul>
+        <li>Warrior Stance - The stance to check.</li>
+        <li>Reverse Logic - Makes this exception true if the current stance is NOT the selected stance.</li>
+       </ul>
+      </td>
+     </tr>
+    </table>
+   </div>
   </div>
 
-  <div class="SectionTitle"><a name="SearchPatternReference">Search Pattern Reference</a></div>
-  <hr size="1" />
+  <div class="SectionTitle"><a name="SearchPatternReference"></a>Search Pattern Reference</div>
   <a href="#TOC">Return to TOC</a><br /><br />
   <div class="SectionBody">
    Here is the official lua reference for patterns:
-   <blockquote>
-    <span style="font-weight : bold; font-size : 110%">Character Class:</span>
-    <br /><br />
-
+   <div class="SubsectionTitle">Character Class:</div>
+   <div class="SubsectionBody">
     A <i>character class</i> is used to represent a set of characters. The following combinations are allowed in describing a character class:
     <ul>
-
      <li>x: (where x is not one of the magic characters ^$()%.[]*+-?) represents the character x itself.</li>
      <li>.: (a dot) represents all characters.</li>
      <li>%a: represents all letters.</li>
      <li>%c: represents all control characters.</li>
      <li>%d: represents all digits.</li>
      <li>%l: represents all lowercase letters.</li>
-
      <li>%p: represents all punctuation characters.</li>
      <li>%s: represents all space characters.</li>
      <li>%u: represents all uppercase letters.</li>
      <li>%w: represents all alphanumeric characters.</li>
      <li>%x: represents all hexadecimal digits.</li>
      <li>%z: represents the character with representation 0.</li>
-
      <li>
       %x: (where x is any non-alphanumeric character) represents the character x. This is the standard way to escape the magic characters. Any punctuation character (even the non magic)
       can be preceded by a '%' when used to represent itself in a pattern.
@@ -656,16 +631,15 @@
      </li>
      <br />
      <li>[^set]: represents the complement of set, where set is interpreted as above.</li>
-
     </ul>
     For all classes represented by single letters (%a, %c, etc.), the corresponding uppercase letter represents the complement of the class. For instance, %S represents all non-space characters.
     <br /><br />
-    The definitions of letter, space, and other character groups depend on the current locale. In particular, the class [a-z] may not be equivalent to %l. 
-    <br /><br />
+    The definitions of letter, space, and other character groups depend on the current locale. In particular, the class [a-z] may not be equivalent to %l.
+   </div>
 
-    <span style="font-weight : bold; font-size : 110%">Pattern Item:</span>
-    <br /><br />
 
+   <div class="SubsectionTitle">Pattern Item:</div>
+   <div class="SubsectionBody">
     A pattern item may be:
     <ul> 
      <li>a single character class, which matches any single character in the class;</li>
@@ -681,34 +655,36 @@
       counting +1 for an x and -1 for a y, the ending y is the first y where the count reaches 0. For instance, the item %b() matches expressions with balanced parentheses.
      </li>
     </ul>
+   </div>
 
-    <span style="font-weight : bold; font-size : 110%">Pattern:</span>
-    <br /><br />
+
+   <div class="SubsectionTitle">Pattern:</div>
+   <div class="SubsectionBody">
     A <i>pattern</i> is a sequence of pattern items. A '^' at the beginning of a pattern anchors the match at the beginning of the subject string. A '$' at the end of a pattern anchors the match at the end of the subject string.
     At other positions, '^' and '$' have no special meaning and represent themselves.
-    <br /><br />
+   </div>
 
-    <span style="font-weight : bold; font-size : 110%">Captures:</span>
-    <br /><br />
+
+   <div class="SubsectionTitle">Captures:</div>
+   <div class="SubsectionBody">
     A pattern may contain sub-patterns enclosed in parentheses; they describe captures. When a match succeeds, the substrings of the subject string that match captures are stored (captured) for future use. Captures are numbered
     according to their left parentheses. For instance, in the pattern "(a*(.)%w(%s*))", the part of the string matching "a*(.)%w(%s*)" is stored as the first capture (and therefore has number 1); the character matching "." is
     captured with number 2, and the part matching "%s*" has number 3.
     <br /><br />
 
     As a special case, the empty capture () captures the current string position (a number). For instance, if we apply the pattern "()aa()" on the string "flaaap", there will be two captures: 3 and 5.
-   </blockquote>
+   </div>
   </div>
 
-  <div class="SectionTitle"><a name="FAQ">Frequently Asked Questions</a></div>
-  <hr size="1" />
+  <div class="SectionTitle"><a name="FAQ"></a>Frequently Asked Questions</div>
   <a href="#TOC">Return to TOC</a><br /><br />
   <div class="SectionBody">
    <ol>
-    <li>
-     <a name="FAQ1"><b>I don't like any of the fonts supplied with MSBT.  How do I use my own fonts?</b></a>
+    <li class="FAQListItem">
+     <a name="FAQFonts"></a><b>I don't like any of the fonts supplied with MSBT.  How do I use my own fonts?</b>
      <br /><br />
 
-     <span style="color : red;">WARNING: ALL FONT MODIFICATION WILL REQUIRE THAT YOU COMPLETELY QUIT THE GAME AND RESTART IT.
+     <span style="color: red;">WARNING: ALL FONT MODIFICATION WILL REQUIRE THAT YOU COMPLETELY QUIT THE GAME AND RESTART IT.
      RELOADING THE CONSOLE ALONE WILL NOT WORK.</span>
      <br /><br />
      
@@ -721,6 +697,7 @@
      <br /><br />
 
      There are a few ways to use custom fonts:
+     <br /><br />
      <ul>
       <li>
        The first, and easiest, method is to simply replace one of the font files in the
@@ -748,13 +725,11 @@
       </li>
      </ul>
     </li>
-    <br /><br /><br />
-
     
-    <li>
-     <a name="FAQ2"><b>How do I create a new trigger?</b></a>
+    <li class="FAQListItem">
+     <a name="FAQNewTrigger"></a><b>How do I create a new trigger?</b>
      <br /><br />
-     The first step is to <b>read</b> the <a href="#TriggerSystem">Trigger System Documentation</a> section above.
+     The first step is to <b>read</b> the <a href="#TriggerGuide">Trigger Guide</a> section above.
      Every event and exception is explained along with the conditions and available substitution codes.
      <br /><br />
      Once you've read that section, we can continue on to the process for creating triggers.
@@ -783,16 +758,15 @@
      </ol>
      <br /><br />
      The %r used in step a is a substitution code for the name of the unit that the debuff (polymorph in this case) faded from.
-     You already knew that though because you read the <a href="#TriggerSystem">Trigger System Documentation</a>!
+     You already knew that though because you read the <a href="#TriggerGuide">Trigger Guide</a>!
      <br /><br />
      The color, font settings, sticky state, sound, and output scroll area for the trigger can be set like any other event.
     </li>
-    <br /><br />
 
-    <li>
-     <a name="FAQ3"><b>How do I add my own custom sounds?</b></a>
+    <li class="FAQListItem">
+     <a name="FAQSounds"></a><b>How do I add my own custom sounds?</b>
      <br /><br />
-     <span style="color : red;">WARNING: NEW SOUND FILES WILL REQUIRE THAT YOU COMPLETELY QUIT THE GAME AND RESTART IT BEFORE
+     <span style="color: red;">WARNING: NEW SOUND FILES WILL REQUIRE THAT YOU COMPLETELY QUIT THE GAME AND RESTART IT BEFORE
      THEY WILL BE PLAYED.  RELOADING THE CONSOLE ALONE WILL NOT WORK.</span>
      <br /><br />
 
@@ -817,17 +791,15 @@
       </li>
      </ul>
     </li>
-    <br /><br />
 
-    <li>
-     <a name="FAQ4"><b>Is it possible to prevent Mutilate from being merged?</b></a>
+    <li class="FAQListItem">
+     <a name="FAQMutilate"></a><b>Is it possible to prevent Mutilate from being merged?</b>
      <br /><br />
      Yes. Add it to the merge exclusions list under the Spam Controls tab in the options interface.
     </li>
-    <br /><br />
 
-    <li>
-     <a name="FAQ5"><b>How do I suppress Vampiric Embrace?</b></a>
+    <li class="FAQListItem">
+     <a name="FAQVE"></a><b>How do I suppress Vampiric Embrace?</b>
      <br /><br />
      This can be accomplished a couple of different ways.
      <br /><br />
@@ -842,24 +814,21 @@
       </li>
      </ul>
     </li>
-    <br /><br />
 
-    <li>
-     <a name="FAQ6"><b>I want to see skill names even when there is an icon.  Is that possible?</b></a>
+    <li class="FAQListItem">
+     <a name="FAQExclusiveIcons"></a><b>I want to see skill names even when there is an icon.  Is that possible?</b>
      <br /><br />
      Yes.  Uncheck "Exclusive Skill Names" under the Skill Icons tab.
     </li>
-    <br /><br />
 
-    <li>
-     <a name="FAQ7"><b>Does MSBT support fonts and sounds from Shared Media?</b></a>
+    <li class="FAQListItem">
+     <a name="FAQSharedMedia"></a><b>Does MSBT support fonts and sounds from Shared Media?</b>
      <br /><br />
      Not directly, but you can download MSBTSharedMedia to add support for it.
     </li>
-    <br /><br />
 
-    <li>
-     <a name="FAQ8"><b>Is there a way to show the damage above the target's heads like the default damage text?</b></a>
+    <li class="FAQListItem">
+     <a name="FAQGameDamage"></a><b>Is there a way to show the damage above the target's heads like the default damage text?</b>
      <br /><br />
      The only way this is possible is using the built-in game damage.  The "Game Damage" option on the General tab will reenable
      it, but keep in mind you will lose all customization capabilities for outgoing damage if you choose to use the game's built-in damage.
@@ -872,10 +841,9 @@
      of AoE with cumulative amounts, throttling of DoT spam, damage thresholds, per skill suppressions for things you don't care about, icons
      annotating which skill caused the damage or healing, and more.
     </li>
-    <br /><br />
 
-    <li>
-     <a name="FAQ9"><b>Is MSBT efficient?</b></a>
+    <li class="FAQListItem">
+     <a name="FAQEfficiency"></a><b>Is MSBT efficient?</b>
      <br /><br />
      Absolutely.  MSBT 5.0 was completely re-designed from the ground up using Blizzard's new mod statistics
      API tools with the #1 priority of optimization for reduced memory usage and CPU efficiency.  As a result,
@@ -901,22 +869,21 @@
    </ol>
   </div>
 
-  <div class="SectionTitle"><a name="VersionHistory">Version History</a></div>
-  <hr size="1" />
+  <div class="SectionTitle"><a name="VersionHistory"></a>Version History</div>
   <a href="#TOC">Return to TOC</a><br /><br />
   <div class="SectionBody">
    <table cellspacing="3">
-    <tr>
-     <td class="ParameterName" nowrap="nowrap"><a name="Version5.12">5.12</a></td>
-     <td class="ParameterDesc">
-      <ul>
+   <tr>
+    <td class="ParameterName" nowrap="nowrap">5.12</td>
+    <td class="ParameterDesc">
+     <ul>
       <li>Fixed the error when looting money induced in patch 2.4.2.</li>
       <li>Fixed the erroneous "Low Mana" warnings when in druid forms.</li>
-      </ul>
-     </td>
-    </tr>
-    <tr>
-     <td class="ParameterName" nowrap="nowrap"><a name="Version5.11">5.11</a></td>
+     </ul>
+    </td>
+   </tr>
+   <tr>
+     <td class="ParameterName" nowrap="nowrap">5.11</td>
      <td class="ParameterDesc">
       <ul>
        <li>Redesigned the trigger system to work with the new combat log mechanics and improve flexibility:
@@ -953,7 +920,7 @@
      </td>
     </tr>
     <tr>
-     <td class="ParameterName" nowrap="nowrap"><a name="Version5.1">5.1</a></td>
+     <td class="ParameterName" nowrap="nowrap">5.1</td>
      <td class="ParameterDesc">
       <ul>
        <li>The optional icons module is no longer required.  This is a significant memory savings for those previously using the module.</li>
@@ -978,7 +945,7 @@
      </td>
     </tr>
     <tr>
-     <td class="ParameterName" nowrap="nowrap"><a name="Version5.03">5.03</a></td>
+     <td class="ParameterName" nowrap="nowrap">5.03</td>
      <td class="ParameterDesc">
       <ul>
        <li>
@@ -991,7 +958,7 @@
      </td>
     </tr>
     <tr>
-     <td class="ParameterName" nowrap="nowrap"><a name="Version5.02">5.02</a></td>
+     <td class="ParameterName" nowrap="nowrap">5.02</td>
      <td class="ParameterDesc">
       <ul>
        <li>Modified the sound system to allow custom registrations for easier sound selection.</li>
@@ -1007,7 +974,7 @@
      </td>
     </tr>
     <tr>
-     <td class="ParameterName" nowrap="nowrap"><a name="Version5.01">5.01</a></td>
+     <td class="ParameterName" nowrap="nowrap">5.01</td>
      <td class="ParameterDesc">
       <ul>
        <li>DoTs and HoTs may now have independent throttle times.</li>
@@ -1022,7 +989,7 @@
      </td>
     </tr>
     <tr>
-     <td class="ParameterName" nowrap="nowrap"><a name="Version5.0">5.0</a></td>
+     <td class="ParameterName" nowrap="nowrap">5.0</td>
      <td class="ParameterDesc">
       <ul>
        <li>
@@ -1086,7 +1053,7 @@
      </td>
     </tr>
     <tr>
-     <td class="ParameterName" nowrap="nowrap"><a name="Version4.13">4.13</a></td>
+     <td class="ParameterName" nowrap="nowrap">4.13</td>
      <td class="ParameterDesc">
       <ul>
        <li>Added temporary fix for PlaySoundFile() bug in Patch 2.2.2.</li>
@@ -1095,7 +1062,7 @@
      </td>
     </tr>
     <tr>
-     <td class="ParameterName" nowrap="nowrap"><a name="Version4.12">4.12</a></td>
+     <td class="ParameterName" nowrap="nowrap">4.12</td>
      <td class="ParameterDesc">
       <ul>
        <li>Added the option to disable/enable Blizzard's new built-in healing display above the target's head.</li>
@@ -1104,7 +1071,7 @@
      </td>
     </tr>
     <tr>
-     <td class="ParameterName" nowrap="nowrap"><a name="Version4.11">4.11</a></td>
+     <td class="ParameterName" nowrap="nowrap">4.11</td>
      <td class="ParameterDesc">
       <ul>
        <li>Fixed the issue where crits were being improperly displayed on some non-English clients.</li>
@@ -1114,7 +1081,7 @@
      </td>
     </tr>
     <tr>
-     <td class="ParameterName" nowrap="nowrap"><a name="Version4.1">4.1</a></td>
+     <td class="ParameterName" nowrap="nowrap">4.1</td>
      <td class="ParameterDesc">
       <ul>
        <li>Rewrote the trigger system to allow for multiple conditions while maintaining efficiency. In addition several commonly requested triggers were added.</li>
@@ -1127,7 +1094,7 @@
      </td>
     </tr>
     <tr>
-     <td class="ParameterName" nowrap="nowrap"><a name="Version4.03">4.03</a></td>
+     <td class="ParameterName" nowrap="nowrap">4.03</td>
      <td class="ParameterDesc">
       <ul>
        <li>Recharacterized some damage based spells into DoTs so they will now follow the throttling mechanics.</li>
@@ -1137,7 +1104,7 @@
      </td>
     </tr>
     <tr>
-     <td class="ParameterName" nowrap="nowrap"><a name="Version4.02">4.02</a></td>
+     <td class="ParameterName" nowrap="nowrap">4.02</td>
      <td class="ParameterDesc">
       <ul>
        <li>
@@ -1158,7 +1125,7 @@
      </td>
     </tr>
     <tr>
-     <td class="ParameterName" nowrap="nowrap"><a name="Version4.01">4.01</a></td>
+     <td class="ParameterName" nowrap="nowrap">4.01</td>
      <td class="ParameterDesc">
       <ul>
        <li>Fixed the problem induced by the 2.0 patch where wand damage was not showing up.</li>
@@ -1166,7 +1133,7 @@
      </td>
     </tr>
     <tr>
-     <td class="ParameterName" nowrap="nowrap"><a name="Version4.0">4.0</a></td>
+     <td class="ParameterName" nowrap="nowrap">4.0</td>
      <td class="ParameterDesc">
       <ul>
        <li>Complete code rewrite for even better performance and features.</li>
@@ -1249,7 +1216,7 @@
      </td>
     </tr>
     <tr>
-     <td class="ParameterName" nowrap="nowrap"><a name="Version3.11">3.11</a></td>
+     <td class="ParameterName" nowrap="nowrap">3.11</td>
      <td class="ParameterDesc">
       <ul>
        <li>
@@ -1261,7 +1228,7 @@
      </td>
     </tr>
     <tr>
-     <td class="ParameterName" nowrap="nowrap"><a name="Version3.1">3.1</a></td>
+     <td class="ParameterName" nowrap="nowrap">3.1</td>
      <td class="ParameterDesc">
       <ul>
        <li>Added support for power gains to yourself from other people.</li>
@@ -1279,7 +1246,7 @@
      </td>
     </tr>
     <tr>
-     <td class="ParameterName" nowrap="nowrap"><a name="Version3.01">3.01</a></td>
+     <td class="ParameterName" nowrap="nowrap">3.01</td>
      <td class="ParameterDesc">
       <ul>
        <li>Fixed the bug where you could only add one suppression and adding a new one was overwriting it.</li>
@@ -1287,7 +1254,7 @@
      </td>
     </tr>
     <tr>
-     <td class="ParameterName" nowrap="nowrap"><a name="Version3.0">3.0</a></td>
+     <td class="ParameterName" nowrap="nowrap">3.0</td>
      <td class="ParameterDesc">
       <ul>
        <li>Implemented a low overhead trigger system.  <a href="#TriggerSystem">See documentation above</a>.</li>
@@ -1320,7 +1287,7 @@
      </td>
     </tr>
     <tr>
-     <td class="ParameterName" nowrap="nowrap"><a name="Version2.11">2.11</a></td>
+     <td class="ParameterName" nowrap="nowrap">2.11</td>
      <td class="ParameterDesc">
       <ul>
        <li>Disabled Blizzard's new floating text in Patch 1.12 when MSBT is enabled.</li>
@@ -1329,7 +1296,7 @@
      </td>
     </tr>
     <tr>
-     <td class="ParameterName" nowrap="nowrap"><a name="Version2.1">2.1</a></td>
+     <td class="ParameterName" nowrap="nowrap">2.1</td>
      <td class="ParameterDesc">
       <ul>
        <li>Reduced memory usage a little by removing the underlying tables used to store crit information for events that can never be crits. (Down to around 477 KiB)</li>
@@ -1342,7 +1309,7 @@
      </td>
     </tr>
     <tr>
-     <td class="ParameterName" nowrap="nowrap"><a name="Version2.0">2.0</a></td>
+     <td class="ParameterName" nowrap="nowrap">2.0</td>
      <td class="ParameterDesc">
       <ul>
        <li>
@@ -1383,7 +1350,7 @@
      </td>
     </tr>
     <tr>
-     <td class="ParameterName" nowrap="nowrap"><a name="Version1.03">1.03</a></td>
+     <td class="ParameterName" nowrap="nowrap">1.03</td>
      <td class="ParameterDesc">
       <ul>
        <li>Fixed a bug where options set with a checkbox were not being properly saved on logout.</li>
@@ -1391,7 +1358,7 @@
      </td>
     </tr>
     <tr>
-     <td class="ParameterName" nowrap="nowrap"><a name="Version1.02">1.02</a></td>
+     <td class="ParameterName" nowrap="nowrap">1.02</td>
      <td class="ParameterDesc">
       <ul>
        <li>Fixed a bug where the global string parser wasn't appropriately accounting for the argument order of non-English clients.</li>
@@ -1399,7 +1366,7 @@
      </td>
     </tr>
     <tr>
-     <td class="ParameterName" nowrap="nowrap"><a name="Version1.01">1.01</a></td>
+     <td class="ParameterName" nowrap="nowrap">1.01</td>
      <td class="ParameterDesc">
       <ul>
        <li>Updated for Patch 1.11.</li>
@@ -1407,7 +1374,7 @@
      </td>
     </tr>
     <tr>
-     <td class="ParameterName" nowrap="nowrap"><a name="Version1.0">1.0</a></td>
+     <td class="ParameterName" nowrap="nowrap">1.0</td>
      <td class="ParameterDesc">
       <ul>
        <li>Initial version.</li>
@@ -1417,8 +1384,7 @@
    </table>
   </div>
 
-  <div class="SectionTitle"><a name="Credits">Credits</a></div>
-  <hr size="1" />
+  <div class="SectionTitle"><a name="Credits"></a>Credits</div>
   <a href="#TOC">Return to TOC</a><br /><br />
   <div class="SectionBody">
    Thanks to:

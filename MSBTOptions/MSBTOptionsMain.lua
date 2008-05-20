@@ -36,8 +36,8 @@ local tabListbox;
 -------------------------------------------------------------------------------
 
 -- Local references to certain modules for faster access.
-local MSBTLocale = MikSBT.Locale;
 local MSBTControls = MSBTOptions.Controls;
+local L = MikSBT.translations;
 
 
 -------------------------------------------------------------------------------

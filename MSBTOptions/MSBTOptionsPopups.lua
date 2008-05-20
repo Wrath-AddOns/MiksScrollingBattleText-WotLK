@@ -52,10 +52,10 @@ local tempConfig = {};
 
 -- Local references to certain modules for faster access.
 local MSBTControls = MSBTOptions.Controls;
-local MSBTLocale = MikSBT.Locale;
 local MSBTProfiles = MikSBT.Profiles;
 local MSBTAnimations = MikSBT.Animations;
 local MSBTTriggers = MikSBT.Triggers;
+local L = MikSBT.translations;
 
 -- Local references to certain functions for faster access.
 local EraseTable = MikSBT.EraseTable;
@@ -253,7 +253,7 @@ local function CreateInput()
  
  -- Okay button.
  local button = MSBTControls.CreateOptionButton(frame);
- local objLocale = MSBTLocale.BUTTONS["inputOkay"];
+ local objLocale = L.BUTTONS["inputOkay"];
  button:Configure(20, objLocale.label, objLocale.tooltip);
  button:SetPoint("BOTTOMRIGHT", frame, "BOTTOM", -10, 40);
  button:SetClickHandler(SaveInput);
@@ -261,7 +261,7 @@ local function CreateInput()
 
  -- Cancel button.
  button = MSBTControls.CreateOptionButton(frame);
- objLocale = MSBTLocale.BUTTONS["inputCancel"];
+ objLocale = L.BUTTONS["inputCancel"];
  button:Configure(20, objLocale.label, objLocale.tooltip);
  button:SetPoint("BOTTOMLEFT", frame, "BOTTOM", 10, 40);
  button:SetClickHandler(
@@ -345,7 +345,7 @@ local function CreateAcknowledge()
  local fontString = frame:CreateFontString(nil, "OVERLAY", "GameFontNormalSmall");
  fontString:SetPoint("TOPLEFT", frame, "TOPLEFT", 30, -20);
  fontString:SetPoint("TOPRIGHT", frame, "TOPRIGHT", -30, -20);
- fontString:SetText(MSBTLocale.MSG_ACKNOWLEDGE_TEXT);
+ fontString:SetText(L.MSG_ACKNOWLEDGE_TEXT);
 
  -- Yes button.
  local button = MSBTControls.CreateOptionButton(frame);
@@ -486,7 +486,7 @@ local function CreateFontPopup()
 
  -- Normal font dropdown.
  local dropdown =  MSBTControls.CreateDropdown(normalControlsFrame);
- objLocale = MSBTLocale.DROPDOWNS["normalFont"];
+ objLocale = L.DROPDOWNS["normalFont"];
  dropdown:Configure(150, objLocale.label, objLocale.tooltip);
  dropdown:SetListboxHeight(200);
  dropdown:SetPoint("TOPLEFT");
@@ -499,7 +499,7 @@ local function CreateFontPopup()
 
  -- Normal outline dropdown.
  dropdown =  MSBTControls.CreateDropdown(normalControlsFrame);
- objLocale = MSBTLocale.DROPDOWNS["normalOutline"];
+ objLocale = L.DROPDOWNS["normalOutline"];
  dropdown:Configure(150, objLocale.label, objLocale.tooltip);
  dropdown:SetPoint("TOPLEFT", frame.normalFontDropdown, "BOTTOMLEFT", 0, -20);
  dropdown:SetChangeHandler(
@@ -507,14 +507,14 @@ local function CreateFontPopup()
      UpdateFontPreviews();
   end
  );
- for outlineIndex, outlineName in ipairs(MSBTLocale.OUTLINES) do
+ for outlineIndex, outlineName in ipairs(L.OUTLINES) do
   dropdown:AddItem(outlineName, outlineIndex);
  end
  frame.normalOutlineDropdown = dropdown;
 
  -- Normal font size slider.
  local slider = MSBTControls.CreateSlider(normalControlsFrame);
- objLocale = MSBTLocale.SLIDERS["normalFontSize"]; 
+ objLocale = L.SLIDERS["normalFontSize"]; 
  slider:Configure(150, objLocale.label, objLocale.tooltip);
  slider:SetPoint("TOPLEFT", frame.normalOutlineDropdown, "BOTTOMLEFT", 0, -30);
  slider:SetMinMaxValues(4, 38);
@@ -528,7 +528,7 @@ local function CreateFontPopup()
 
  -- Normal font opacity slider.
  slider = MSBTControls.CreateSlider(normalControlsFrame);
- objLocale = MSBTLocale.SLIDERS["normalFontOpacity"]; 
+ objLocale = L.SLIDERS["normalFontOpacity"]; 
  slider:Configure(150, objLocale.label, objLocale.tooltip);
  slider:SetPoint("TOPLEFT", frame.normalFontSizeSlider, "BOTTOMLEFT", 0, -10);
  slider:SetMinMaxValues(1, 100);
@@ -543,7 +543,7 @@ local function CreateFontPopup()
  -- Normal preview.
  fontString = normalControlsFrame:CreateFontString(nil, "OVERLAY", "GameFontNormalSmall");
  fontString:SetPoint("BOTTOM", normalControlsFrame, "BOTTOM", 0, 10);
- fontString:SetText(MSBTLocale.MSG_NORMAL_PREVIEW_TEXT);
+ fontString:SetText(L.MSG_NORMAL_PREVIEW_TEXT);
  frame.normalPreviewFontString = fontString;
 
 
@@ -557,7 +557,7 @@ local function CreateFontPopup()
  
  -- Inherit normal font name checkbox.
  local checkbox = MSBTControls.CreateCheckbox(normalInheritFrame);
- objLocale = MSBTLocale.CHECKBOXES["inheritField"]; 
+ objLocale = L.CHECKBOXES["inheritField"]; 
  checkbox:Configure(20, nil, objLocale.tooltip);
  checkbox:SetPoint("BOTTOMLEFT", frame.normalFontDropdown, "BOTTOMRIGHT", 10, 0);
  checkbox:SetClickHandler(
@@ -607,7 +607,7 @@ local function CreateFontPopup()
  -- Inherit normal column label.
  fontString = normalInheritFrame:CreateFontString(nil, "OVERLAY", "GameFontNormalSmall");
  fontString:SetPoint("BOTTOM", frame.normalFontCheckbox, "TOP", 0, 7);
- fontString:SetText(MSBTLocale.CHECKBOXES["inheritField"].label);
+ fontString:SetText(L.CHECKBOXES["inheritField"].label);
 
  
  
@@ -629,7 +629,7 @@ local function CreateFontPopup()
 
  -- Crit font dropdown.
  dropdown =  MSBTControls.CreateDropdown(critControlsFrame);
- objLocale = MSBTLocale.DROPDOWNS["critFont"];
+ objLocale = L.DROPDOWNS["critFont"];
  dropdown:Configure(150, objLocale.label, objLocale.tooltip);
  dropdown:SetListboxHeight(200);
  dropdown:SetPoint("TOPLEFT");
@@ -642,7 +642,7 @@ local function CreateFontPopup()
  
  -- Crit outline dropdown.
  dropdown =  MSBTControls.CreateDropdown(critControlsFrame);
- objLocale = MSBTLocale.DROPDOWNS["critOutline"];
+ objLocale = L.DROPDOWNS["critOutline"];
  dropdown:Configure(150, objLocale.label, objLocale.tooltip);
  dropdown:SetPoint("TOPLEFT", frame.critFontDropdown, "BOTTOMLEFT", 0, -20);
  dropdown:SetChangeHandler(
@@ -650,14 +650,14 @@ local function CreateFontPopup()
      UpdateFontPreviews();
   end
  );
- for outlineIndex, outlineName in ipairs(MSBTLocale.OUTLINES) do
+ for outlineIndex, outlineName in ipairs(L.OUTLINES) do
   dropdown:AddItem(outlineName, outlineIndex);
  end
  frame.critOutlineDropdown = dropdown;
 
  -- Crit font size slider.
  slider = MSBTControls.CreateSlider(critControlsFrame);
- objLocale = MSBTLocale.SLIDERS["critFontSize"]; 
+ objLocale = L.SLIDERS["critFontSize"]; 
  slider:Configure(150, objLocale.label, objLocale.tooltip);
  slider:SetPoint("TOPLEFT", frame.critOutlineDropdown, "BOTTOMLEFT", 0, -30);
  slider:SetMinMaxValues(4, 38);
@@ -671,7 +671,7 @@ local function CreateFontPopup()
 
  -- Crit font opacity slider.
  slider = MSBTControls.CreateSlider(critControlsFrame);
- objLocale = MSBTLocale.SLIDERS["critFontOpacity"]; 
+ objLocale = L.SLIDERS["critFontOpacity"]; 
  slider:Configure(150, objLocale.label, objLocale.tooltip);
  slider:SetPoint("TOPLEFT", frame.critFontSizeSlider, "BOTTOMLEFT", 0, -10);
  slider:SetMinMaxValues(1, 100);
@@ -686,7 +686,7 @@ local function CreateFontPopup()
  -- Crit Preview. 
  fontString = critControlsFrame:CreateFontString(nil, "OVERLAY", "GameFontNormalSmall");
  fontString:SetPoint("BOTTOM", critControlsFrame, "BOTTOM", 0, 10);
- fontString:SetText(MSBTLocale.MSG_CRIT);
+ fontString:SetText(L.MSG_CRIT);
  frame.critPreviewFontString = fontString;
 
 
@@ -701,7 +701,7 @@ local function CreateFontPopup()
 
  -- Inherit crit font name checkbox.
  local checkbox = MSBTControls.CreateCheckbox(critInheritFrame);
- objLocale = MSBTLocale.CHECKBOXES["inheritField"]; 
+ objLocale = L.CHECKBOXES["inheritField"]; 
  checkbox:Configure(20, nil, objLocale.tooltip);
  checkbox:SetPoint("BOTTOMLEFT", frame.critFontDropdown, "BOTTOMRIGHT", 10, 0);
  checkbox:SetClickHandler(
@@ -751,11 +751,11 @@ local function CreateFontPopup()
  -- Inherit normal column label.
  fontString = critInheritFrame:CreateFontString(nil, "OVERLAY", "GameFontNormalSmall");
  fontString:SetPoint("BOTTOM", frame.critFontCheckbox, "TOP", 0, 7);
- fontString:SetText(MSBTLocale.CHECKBOXES["inheritField"].label);
+ fontString:SetText(L.CHECKBOXES["inheritField"].label);
 
  -- Save button.
  local button = MSBTControls.CreateOptionButton(frame);
- objLocale = MSBTLocale.BUTTONS["genericSave"];
+ objLocale = L.BUTTONS["genericSave"];
  button:Configure(20, objLocale.label, objLocale.tooltip);
  button:SetPoint("BOTTOMRIGHT", frame, "BOTTOM", -10, 20);
  button:SetClickHandler(
@@ -768,7 +768,7 @@ local function CreateFontPopup()
 
  -- Cancel button.
  button = MSBTControls.CreateOptionButton(frame);
- objLocale = MSBTLocale.BUTTONS["genericCancel"];
+ objLocale = L.BUTTONS["genericCancel"];
  button:Configure(20, objLocale.label, objLocale.tooltip);
  button:SetPoint("BOTTOMLEFT", frame, "BOTTOM", 10, 20);
  button:SetClickHandler(
@@ -925,7 +925,7 @@ local function CreatePartialEffects()
 
  -- Color partial effects.
  local checkbox = MSBTControls.CreateCheckbox(frame);
- local objLocale = MSBTLocale.CHECKBOXES["colorPartialEffects"];
+ local objLocale = L.CHECKBOXES["colorPartialEffects"];
  checkbox:Configure(24, objLocale.label, objLocale.tooltip);
  checkbox:SetPoint("TOPLEFT", frame, "TOPLEFT", 20, -20);
  checkbox:SetClickHandler(
@@ -950,7 +950,7 @@ local function CreatePartialEffects()
    end
   );
   checkbox = MSBTControls.CreateCheckbox(frame);
-  objLocale = MSBTLocale.CHECKBOXES[effectType];
+  objLocale = L.CHECKBOXES[effectType];
   checkbox:Configure(24, objLocale.label, objLocale.tooltip);
   checkbox:SetPoint("LEFT", colorswatch, "RIGHT", 5, 0);
   checkbox:SetClickHandler(
@@ -1019,7 +1019,7 @@ local function CreateDamageColors()
 
  -- Color damage amounts.
  local checkbox = MSBTControls.CreateCheckbox(frame);
- local objLocale = MSBTLocale.CHECKBOXES["colorDamageAmounts"];
+ local objLocale = L.CHECKBOXES["colorDamageAmounts"];
  checkbox:Configure(24, objLocale.label, objLocale.tooltip);
  checkbox:SetPoint("TOPLEFT", frame, "TOPLEFT", 20, -20);
  checkbox:SetClickHandler(
@@ -1045,7 +1045,7 @@ local function CreateDamageColors()
    end
   );
   checkbox = MSBTControls.CreateCheckbox(frame);
-  objLocale = MSBTLocale.CHECKBOXES["colorDamageEntry"];
+  objLocale = L.CHECKBOXES["colorDamageEntry"];
   checkbox:Configure(24, _G["SPELL_SCHOOL" .. globalStringSchoolIndex .. "_CAP"], objLocale.tooltip);
   checkbox:SetPoint("LEFT", colorswatch, "RIGHT", 5, 0);
   checkbox:SetClickHandler(
@@ -1153,13 +1153,13 @@ local function ChangeAnimationStyle(styleKey)
   for direction in string.gmatch(styleSettings.availableDirections, "[^;]+") do
    if (not firstEntry) then firstEntry = direction; end
    objLocale = styleSettings.localizationTable;
-   name = objLocale and objLocale[direction] or MSBTLocale.ANIMATION_STYLE_DATA[direction] or direction;
+   name = objLocale and objLocale[direction] or L.ANIMATION_STYLE_DATA[direction] or direction;
    frame.directionDropdown:AddItem(name, direction);
   end
   frame.directionDropdown:SetSelectedID(firstEntry);  
  else
   -- No available directions, so just add a normal entry.
-  frame.directionDropdown:AddItem(MSBTLocale.ANIMATION_STYLE_DATA["Normal"], "MSBT_NORMAL");
+  frame.directionDropdown:AddItem(L.ANIMATION_STYLE_DATA["Normal"], "MSBT_NORMAL");
   frame.directionDropdown:SetSelectedID("MSBT_NORMAL");
  end
  
@@ -1170,13 +1170,13 @@ local function ChangeAnimationStyle(styleKey)
   for behavior in string.gmatch(styleSettings.availableBehaviors, "[^;]+") do
    if (not firstEntry) then firstEntry = behavior; end
    objLocale = styleSettings.localizationTable;
-   name = objLocale and objLocale[behavior] or MSBTLocale.ANIMATION_STYLE_DATA[behavior] or behavior;
+   name = objLocale and objLocale[behavior] or L.ANIMATION_STYLE_DATA[behavior] or behavior;
    frame.behaviorDropdown:AddItem(name, behavior);
   end
   frame.behaviorDropdown:SetSelectedID(firstEntry);  
  else
   -- No available behaviors, so just add a normal entry.
-  frame.behaviorDropdown:AddItem(MSBTLocale.ANIMATION_STYLE_DATA["Normal"], "MSBT_NORMAL");
+  frame.behaviorDropdown:AddItem(L.ANIMATION_STYLE_DATA["Normal"], "MSBT_NORMAL");
   frame.behaviorDropdown:SetSelectedID("MSBT_NORMAL");
  end
 end
@@ -1196,13 +1196,13 @@ local function ChangeStickyAnimationStyle(styleKey)
   for direction in string.gmatch(styleSettings.availableDirections, "[^;]+") do
    if (not firstEntry) then firstEntry = direction; end
    objLocale = styleSettings.localizationTable;
-   name = objLocale and objLocale[direction] or MSBTLocale.ANIMATION_STYLE_DATA[direction] or direction;
+   name = objLocale and objLocale[direction] or L.ANIMATION_STYLE_DATA[direction] or direction;
    frame.stickyDirectionDropdown:AddItem(name, direction);
   end
   frame.stickyDirectionDropdown:SetSelectedID(firstEntry);  
  else
   -- No available directions, so just add a normal entry.
-  frame.stickyDirectionDropdown:AddItem(MSBTLocale.ANIMATION_STYLE_DATA["Normal"], "MSBT_NORMAL");
+  frame.stickyDirectionDropdown:AddItem(L.ANIMATION_STYLE_DATA["Normal"], "MSBT_NORMAL");
   frame.stickyDirectionDropdown:SetSelectedID("MSBT_NORMAL");
  end
  
@@ -1213,13 +1213,13 @@ local function ChangeStickyAnimationStyle(styleKey)
   for behavior in string.gmatch(styleSettings.availableBehaviors, "[^;]+") do
    if (not firstEntry) then firstEntry = behavior; end
    objLocale = styleSettings.localizationTable;
-   name = objLocale and objLocale[behavior] or MSBTLocale.ANIMATION_STYLE_DATA[behavior] or behavior;
+   name = objLocale and objLocale[behavior] or L.ANIMATION_STYLE_DATA[behavior] or behavior;
    frame.stickyBehaviorDropdown:AddItem(name, behavior);
   end
   frame.stickyBehaviorDropdown:SetSelectedID(firstEntry);  
  else
   -- No available behaviors, so just add a normal entry.
-  frame.stickyBehaviorDropdown:AddItem(MSBTLocale.ANIMATION_STYLE_DATA["Normal"], "MSBT_NORMAL");
+  frame.stickyBehaviorDropdown:AddItem(L.ANIMATION_STYLE_DATA["Normal"], "MSBT_NORMAL");
   frame.stickyBehaviorDropdown:SetSelectedID("MSBT_NORMAL");
  end
 end
@@ -1238,7 +1238,7 @@ local function ChangeConfigScrollArea(scrollArea)
  frame.animationStyleDropdown:Clear();
  for styleKey, settings in pairs(MSBTAnimations.animationStyles) do 
   objLocale = settings.localizationTable;
-  name = objLocale and objLocale[styleKey] or MSBTLocale.ANIMATION_STYLE_DATA[styleKey] or styleKey;
+  name = objLocale and objLocale[styleKey] or L.ANIMATION_STYLE_DATA[styleKey] or styleKey;
   frame.animationStyleDropdown:AddItem(name, styleKey);
  end
  frame.animationStyleDropdown:SetSelectedID(saSettings.animationStyle);
@@ -1254,7 +1254,7 @@ local function ChangeConfigScrollArea(scrollArea)
  frame.stickyAnimationStyleDropdown:Clear();
  for styleKey, settings in pairs(MSBTAnimations.stickyAnimationStyles) do 
   objLocale = settings.localizationTable;
-  name = objLocale and objLocale[styleKey] or MSBTLocale.ANIMATION_STYLE_DATA[styleKey] or styleKey;
+  name = objLocale and objLocale[styleKey] or L.ANIMATION_STYLE_DATA[styleKey] or styleKey;
   frame.stickyAnimationStyleDropdown:AddItem(name, styleKey);
  end
  frame.stickyAnimationStyleDropdown:SetSelectedID(saSettings.stickyAnimationStyle);
@@ -1437,7 +1437,7 @@ local function CreateScrollAreaConfig()
  
  -- Scroll area dropdown.
  local dropdown =  MSBTControls.CreateDropdown(frame);
- objLocale = MSBTLocale.DROPDOWNS["scrollArea"];
+ objLocale = L.DROPDOWNS["scrollArea"];
  dropdown:Configure(200, objLocale.label, objLocale.tooltip);
  dropdown:SetPoint("TOP", frame, "TOP", 0, -20);
  dropdown:SetChangeHandler(
@@ -1459,7 +1459,7 @@ local function CreateScrollAreaConfig()
  
  -- Normal animation style dropdown.
  dropdown =  MSBTControls.CreateDropdown(frame);
- objLocale = MSBTLocale.DROPDOWNS["animationStyle"];
+ objLocale = L.DROPDOWNS["animationStyle"];
  dropdown:Configure(135, objLocale.label, objLocale.tooltip);
  dropdown:SetPoint("TOPLEFT", texture, "BOTTOMLEFT", 5, -15);
  dropdown:SetChangeHandler(
@@ -1474,7 +1474,7 @@ local function CreateScrollAreaConfig()
 
  -- Sticky animation style dropdown.
  dropdown =  MSBTControls.CreateDropdown(frame);
- objLocale = MSBTLocale.DROPDOWNS["stickyAnimationStyle"];
+ objLocale = L.DROPDOWNS["stickyAnimationStyle"];
  dropdown:Configure(135, objLocale.label, objLocale.tooltip);
  dropdown:SetPoint("LEFT", frame.animationStyleDropdown, "RIGHT", 15, 0);
  dropdown:SetChangeHandler(
@@ -1489,7 +1489,7 @@ local function CreateScrollAreaConfig()
 
  -- Normal direction dropdown.
  dropdown =  MSBTControls.CreateDropdown(frame);
- objLocale = MSBTLocale.DROPDOWNS["direction"];
+ objLocale = L.DROPDOWNS["direction"];
  dropdown:Configure(135,objLocale.label, objLocale.tooltip);
  dropdown:SetPoint("TOPLEFT", frame.animationStyleDropdown, "BOTTOMLEFT", 0, -10);
  dropdown:SetChangeHandler(
@@ -1501,7 +1501,7 @@ local function CreateScrollAreaConfig()
 
  -- Sticky direction dropdown.
  dropdown =  MSBTControls.CreateDropdown(frame);
- objLocale = MSBTLocale.DROPDOWNS["direction"];
+ objLocale = L.DROPDOWNS["direction"];
  dropdown:Configure(135, objLocale.label, objLocale.tooltip);
  dropdown:SetPoint("TOPLEFT", frame.stickyAnimationStyleDropdown, "BOTTOMLEFT", 0, -10);
  dropdown:SetChangeHandler(
@@ -1513,7 +1513,7 @@ local function CreateScrollAreaConfig()
 
  -- Normal behavior dropdown.
  dropdown =  MSBTControls.CreateDropdown(frame);
- objLocale = MSBTLocale.DROPDOWNS["behavior"];
+ objLocale = L.DROPDOWNS["behavior"];
  dropdown:Configure(135, objLocale.label, objLocale.tooltip);
  dropdown:SetPoint("TOPLEFT", frame.directionDropdown, "BOTTOMLEFT", 0, -10);
   dropdown:SetChangeHandler(
@@ -1525,7 +1525,7 @@ local function CreateScrollAreaConfig()
 
  -- Sticky behavior dropdown.
  dropdown =  MSBTControls.CreateDropdown(frame);
- objLocale = MSBTLocale.DROPDOWNS["behavior"];
+ objLocale = L.DROPDOWNS["behavior"];
  dropdown:Configure(135, objLocale.label, objLocale.tooltip);
  dropdown:SetPoint("TOPLEFT", frame.stickyDirectionDropdown, "BOTTOMLEFT", 0, -10);
  dropdown:SetChangeHandler(
@@ -1537,7 +1537,7 @@ local function CreateScrollAreaConfig()
 
  -- Normal text align dropdown.
  dropdown =  MSBTControls.CreateDropdown(frame);
- objLocale = MSBTLocale.DROPDOWNS["textAlign"];
+ objLocale = L.DROPDOWNS["textAlign"];
  dropdown:Configure(135, objLocale.label, objLocale.tooltip);
  dropdown:SetPoint("TOPLEFT", frame.behaviorDropdown, "BOTTOMLEFT", 0, -10);
  dropdown:SetChangeHandler(
@@ -1545,14 +1545,14 @@ local function CreateScrollAreaConfig()
    frame.previewSettings[frame.currentScrollArea].textAlignIndex = id;
   end
  );
- for index, anchorPoint in ipairs(MSBTLocale.TEXT_ALIGNS) do
+ for index, anchorPoint in ipairs(L.TEXT_ALIGNS) do
   dropdown:AddItem(anchorPoint, index);
  end
  frame.textAlignDropdown = dropdown;
 
  -- Sticky text align dropdown.
  dropdown =  MSBTControls.CreateDropdown(frame);
- objLocale = MSBTLocale.DROPDOWNS["textAlign"];
+ objLocale = L.DROPDOWNS["textAlign"];
  dropdown:Configure(135, objLocale.label, objLocale.tooltip);
  dropdown:SetPoint("TOPLEFT", frame.stickyBehaviorDropdown, "BOTTOMLEFT", 0, -10);
  dropdown:SetChangeHandler(
@@ -1560,7 +1560,7 @@ local function CreateScrollAreaConfig()
    frame.previewSettings[frame.currentScrollArea].stickyTextAlignIndex = id;
   end
  );
- for index, anchorPoint in ipairs(MSBTLocale.TEXT_ALIGNS) do
+ for index, anchorPoint in ipairs(L.TEXT_ALIGNS) do
   dropdown:AddItem(anchorPoint, index);
  end
  frame.stickyTextAlignDropdown = dropdown;
@@ -1577,7 +1577,7 @@ local function CreateScrollAreaConfig()
  
  -- Scroll height slider.
  local slider = MSBTControls.CreateSlider(frame);
- objLocale = MSBTLocale.SLIDERS["scrollHeight"]; 
+ objLocale = L.SLIDERS["scrollHeight"]; 
  slider:Configure(135, objLocale.label, objLocale.tooltip);
  slider:SetPoint("TOPLEFT", texture, "BOTTOMLEFT", 5, -15);
  slider:SetMinMaxValues(50, 600);
@@ -1592,7 +1592,7 @@ local function CreateScrollAreaConfig()
 
  -- Scroll width slider.
  slider = MSBTControls.CreateSlider(frame);
- objLocale = MSBTLocale.SLIDERS["scrollWidth"]; 
+ objLocale = L.SLIDERS["scrollWidth"]; 
  slider:Configure(135, objLocale.label, objLocale.tooltip);
  slider:SetPoint("LEFT", frame.scrollHeightSlider, "RIGHT", 15, 0);
  slider:SetMinMaxValues(10, 800);
@@ -1607,7 +1607,7 @@ local function CreateScrollAreaConfig()
 
  -- Animation speed slider.
  slider = MSBTControls.CreateSlider(frame);
- objLocale = MSBTLocale.SLIDERS["scrollAnimationSpeed"]; 
+ objLocale = L.SLIDERS["scrollAnimationSpeed"]; 
  slider:Configure(135, objLocale.label, objLocale.tooltip);
  slider:SetPoint("TOPLEFT", frame.scrollHeightSlider, "BOTTOMLEFT", 0, -10);
  slider:SetMinMaxValues(20, 250);
@@ -1621,7 +1621,7 @@ local function CreateScrollAreaConfig()
  
  -- Inherit animation speed checkbox.
  checkbox = MSBTControls.CreateCheckbox(frame);
- objLocale = MSBTLocale.CHECKBOXES["inheritField"]; 
+ objLocale = L.CHECKBOXES["inheritField"]; 
  checkbox:Configure(20, objLocale.label, objLocale.tooltip);
  checkbox:SetPoint("BOTTOMLEFT", frame.animationSpeedSlider, "BOTTOMRIGHT", 10, 5);
  checkbox:SetClickHandler(
@@ -1634,7 +1634,7 @@ local function CreateScrollAreaConfig()
 
  -- X offset editbox.
  local editbox = MSBTControls.CreateEditbox(frame);
- objLocale = MSBTLocale.EDITBOXES["xOffset"]; 
+ objLocale = L.EDITBOXES["xOffset"]; 
  editbox:Configure(135, objLocale.label, objLocale.tooltip);
  editbox:SetPoint("TOPLEFT", frame.animationSpeedSlider, "BOTTOMLEFT", 0, -10);
  editbox:SetTextChangedHandler(
@@ -1650,7 +1650,7 @@ local function CreateScrollAreaConfig()
 
  -- Y offset editbox.
  editbox = MSBTControls.CreateEditbox(frame);
- objLocale = MSBTLocale.EDITBOXES["yOffset"]; 
+ objLocale = L.EDITBOXES["yOffset"]; 
  editbox:Configure(135, objLocale.label, objLocale.tooltip);
  editbox:SetPoint("LEFT", frame.xOffsetEditbox, "RIGHT", 15, 0);
  editbox:SetTextChangedHandler(
@@ -1676,7 +1676,7 @@ local function CreateScrollAreaConfig()
 
  -- Preview button.
  button = MSBTControls.CreateOptionButton(frame);
- objLocale = MSBTLocale.BUTTONS["scrollAreasPreview"];
+ objLocale = L.BUTTONS["scrollAreasPreview"];
  button:Configure(20, objLocale.label, objLocale.tooltip);
  button:SetPoint("BOTTOM", frame, "BOTTOM", 0, 50);
  button:SetClickHandler(
@@ -1694,7 +1694,7 @@ local function CreateScrollAreaConfig()
  
  -- Save button.
  local button = MSBTControls.CreateOptionButton(frame);
- objLocale = MSBTLocale.BUTTONS["genericSave"];
+ objLocale = L.BUTTONS["genericSave"];
  button:Configure(20, objLocale.label, objLocale.tooltip);
  button:SetPoint("BOTTOMRIGHT", frame, "BOTTOM", -10, 20);
  button:SetClickHandler(
@@ -1706,7 +1706,7 @@ local function CreateScrollAreaConfig()
 
  -- Cancel button.
  button = MSBTControls.CreateOptionButton(frame);
- objLocale = MSBTLocale.BUTTONS["genericCancel"];
+ objLocale = L.BUTTONS["genericCancel"];
  button:Configure(20, objLocale.label, objLocale.tooltip);
  button:SetPoint("BOTTOMLEFT", frame, "BOTTOM", 10, 20);
  button:SetClickHandler(
@@ -1778,7 +1778,7 @@ local function CreateScrollAreaSelection()
  
  -- Scroll area dropdown.
  local dropdown =  MSBTControls.CreateDropdown(frame);
- objLocale = MSBTLocale.DROPDOWNS["outputScrollArea"];
+ objLocale = L.DROPDOWNS["outputScrollArea"];
  dropdown:Configure(150, objLocale.label, objLocale.tooltip);
  dropdown:SetPoint("TOPLEFT", frame, "TOPLEFT", 20, -45);
  frame.scrollAreaDropdown = dropdown;
@@ -1786,7 +1786,7 @@ local function CreateScrollAreaSelection()
  
  -- Okay button.
  local button = MSBTControls.CreateOptionButton(frame);
- local objLocale = MSBTLocale.BUTTONS["inputOkay"];
+ local objLocale = L.BUTTONS["inputOkay"];
  button:Configure(20, objLocale.label, objLocale.tooltip);
  button:SetPoint("BOTTOMRIGHT", frame, "BOTTOM", -10, 20);
  button:SetClickHandler(
@@ -1799,7 +1799,7 @@ local function CreateScrollAreaSelection()
 
  -- Cancel button.
  button = MSBTControls.CreateOptionButton(frame);
- objLocale = MSBTLocale.BUTTONS["inputCancel"];
+ objLocale = L.BUTTONS["inputCancel"];
  button:Configure(20, objLocale.label, objLocale.tooltip);
  button:SetPoint("BOTTOMLEFT", frame, "BOTTOM", 10, 20);
  button:SetClickHandler(
@@ -1863,7 +1863,7 @@ local function PopulateEventSounds(selectedSound)
  local isCustomSound = selectedSound and true;
  controls.soundDropdown:Clear();
  for soundName in pairs(MSBTAnimations.sounds) do
-  if (soundName ~= NONE) then controls.soundDropdown:AddItem(MSBTLocale.SOUNDS[soundName] or soundName, soundName); end
+  if (soundName ~= NONE) then controls.soundDropdown:AddItem(L.SOUNDS[soundName] or soundName, soundName); end
   if (soundName == selectedSound) then isCustomSound = nil; end
  end
  controls.soundDropdown:AddItem(NONE, "");
@@ -1888,7 +1888,7 @@ end
 -- ****************************************************************************
 local function ValidateSoundFileName(fileName)
  if (not string.find(fileName, ".mp3") and not string.find(fileName, ".wav")) then
-  return MSBTLocale.MSG_INVALID_SOUND_FILE;
+  return L.MSG_INVALID_SOUND_FILE;
  end
 end
 
@@ -1918,33 +1918,33 @@ local function CreateEvent()
 
  -- Scroll area dropdown.
  local dropdown =  MSBTControls.CreateDropdown(frame);
- objLocale = MSBTLocale.DROPDOWNS["outputScrollArea"];
+ objLocale = L.DROPDOWNS["outputScrollArea"];
  dropdown:Configure(150, objLocale.label, objLocale.tooltip);
  dropdown:SetPoint("TOPLEFT", frame, "TOPLEFT", 20, -60);
  controls.scrollAreaDropdown = dropdown;
 
  -- Output message editbox.
  local editbox = MSBTControls.CreateEditbox(frame);
- local objLocale = MSBTLocale.EDITBOXES["eventMessage"];
+ local objLocale = L.EDITBOXES["eventMessage"];
  editbox:Configure(250, objLocale.label, nil);
  editbox:SetPoint("TOPLEFT", controls.scrollAreaDropdown, "BOTTOMLEFT", 0, -20);
  controls.messageEditbox = editbox;
 
  -- Sound dropdown. 
  local dropdown =  MSBTControls.CreateDropdown(frame);
- objLocale = MSBTLocale.DROPDOWNS["sound"];
+ objLocale = L.DROPDOWNS["sound"];
  dropdown:Configure(150, objLocale.label, objLocale.tooltip);
  dropdown:SetPoint("TOPLEFT", controls.messageEditbox, "BOTTOMLEFT", 0, -20);
  controls.soundDropdown = dropdown;
 
  -- Edit trigger classes button.
  local button = MSBTControls.CreateIconButton(frame, "Configure");
- local objLocale = MSBTLocale.BUTTONS["customSound"];
+ local objLocale = L.BUTTONS["customSound"];
  button:SetTooltip(objLocale.tooltip);
  button:SetPoint("LEFT", controls.soundDropdown, "RIGHT", 10, -5);
  button:SetClickHandler(
   function (this)
-   local objLocale = MSBTLocale.EDITBOXES["soundFile"];
+   local objLocale = L.EDITBOXES["soundFile"];
    EraseTable(tempConfig);
    tempConfig.editboxLabel = objLocale.label;
    tempConfig.editboxTooltip = objLocale.tooltip;
@@ -1963,7 +1963,7 @@ local function CreateEvent()
 
  -- Always sticky checkbox.
  local checkbox = MSBTControls.CreateCheckbox(frame);
- objLocale = MSBTLocale.CHECKBOXES["stickyEvent"]; 
+ objLocale = L.CHECKBOXES["stickyEvent"]; 
  checkbox:Configure(28, objLocale.label, objLocale.tooltip);
  checkbox:SetPoint("TOPLEFT", controls.soundDropdown, "BOTTOMLEFT", 0, -20);
  controls.stickyCheckbox = checkbox; 
@@ -1971,7 +1971,7 @@ local function CreateEvent()
  
  -- Icon skill editbox.
  editbox = MSBTControls.CreateEditbox(frame);
- local objLocale = MSBTLocale.EDITBOXES["iconSkill"];
+ local objLocale = L.EDITBOXES["iconSkill"];
  editbox:Configure(250, objLocale.label, objLocale.tooltip);
  editbox:SetPoint("TOPLEFT", controls.stickyCheckbox, "BOTTOMLEFT", 0, -20);
  controls.iconSkillEditbox = editbox;
@@ -1980,7 +1980,7 @@ local function CreateEvent()
 
  -- Save button.
  button = MSBTControls.CreateOptionButton(frame);
- objLocale = MSBTLocale.BUTTONS["genericSave"];
+ objLocale = L.BUTTONS["genericSave"];
  button:Configure(20, objLocale.label, objLocale.tooltip);
  button:SetPoint("BOTTOMRIGHT", frame, "BOTTOM", -10, 20);
  button:SetClickHandler(
@@ -1999,7 +1999,7 @@ local function CreateEvent()
 
  -- Cancel button.
  button = MSBTControls.CreateOptionButton(frame);
- objLocale = MSBTLocale.BUTTONS["genericCancel"];
+ objLocale = L.BUTTONS["genericCancel"];
  button:Configure(20, objLocale.label, objLocale.tooltip);
  button:SetPoint("BOTTOMLEFT", frame, "BOTTOM", 10, 20);
  button:SetClickHandler(
@@ -2038,7 +2038,7 @@ local function ShowEvent(configTable)
  controls.scrollAreaDropdown:Sort();
  controls.scrollAreaDropdown:SetSelectedID(configTable.scrollArea);
 
- local objLocale = MSBTLocale.EDITBOXES["eventMessage"];
+ local objLocale = L.EDITBOXES["eventMessage"];
  controls.messageEditbox:SetText(configTable.message);
  controls.messageEditbox:SetTooltip(objLocale.tooltip .. "\n\n" .. (configTable.codes or ""));
  PopulateEventSounds(configTable.soundFile);
@@ -2089,7 +2089,7 @@ local function CreateClasses()
  
  -- All classes checkbox.
  local checkbox = MSBTControls.CreateCheckbox(frame);
- objLocale = MSBTLocale.CHECKBOXES["allClasses"]; 
+ objLocale = L.CHECKBOXES["allClasses"]; 
  checkbox:Configure(24, objLocale.label, objLocale.tooltip);
  checkbox:SetPoint("TOPLEFT", frame, "TOPLEFT", 20, -40);
  checkbox:SetClickHandler(
@@ -2114,7 +2114,7 @@ local function CreateClasses()
  local anchor = checkbox;
  for class in string.gmatch("DRUID HUNTER MAGE PALADIN PRIEST ROGUE SHAMAN WARLOCK WARRIOR", "[^ ]+") do
   checkbox = MSBTControls.CreateCheckbox(frame);
-  checkbox:Configure(24, MSBTLocale.CLASS_NAMES[class], nil);
+  checkbox:Configure(24, L.CLASS_NAMES[class], nil);
   checkbox:SetPoint("TOPLEFT", anchor, "BOTTOMLEFT", anchor == frame.allClassesCheckbox and 20 or 0, anchor == frame.allClassesCheckbox and -10 or 0);
   checkbox:SetClickHandler(
    function (this, isChecked)
@@ -2301,7 +2301,7 @@ local function CreateMainEvent()
 
  -- Main event dropdown.
  local dropdown =  MSBTControls.CreateDropdown(frame);
- local objLocale = MSBTLocale.DROPDOWNS["mainEvent"];
+ local objLocale = L.DROPDOWNS["mainEvent"];
  dropdown:Configure(200, objLocale.label, nil);
  dropdown:SetListboxHeight(200);
  dropdown:SetPoint("TOPLEFT", frame, "TOPLEFT", 20, -40);
@@ -2310,7 +2310,7 @@ local function CreateMainEvent()
    SetupMainEventControls();
   end
  );
- for eventType, eventName in pairs(MSBTLocale.TRIGGER_MAIN_EVENTS) do
+ for eventType, eventName in pairs(L.TRIGGER_MAIN_EVENTS) do
   dropdown:AddItem(eventName, eventType);
  end
  dropdown:Sort();
@@ -2318,7 +2318,7 @@ local function CreateMainEvent()
 
  -- Unit dropdown.
  local dropdown = MSBTControls.CreateDropdown(frame);
- objLocale = MSBTLocale.DROPDOWNS["affectedUnit"];
+ objLocale = L.DROPDOWNS["affectedUnit"];
  dropdown:Configure(150, objLocale.label, objLocale.tooltip);
  dropdown:SetListboxHeight(120);
  dropdown:SetPoint("TOPLEFT", frame.mainEventDropdown, "BOTTOMLEFT", 0, -20);
@@ -2326,14 +2326,14 @@ local function CreateMainEvent()
  
  -- Hostile checkbox.
  local checkbox = MSBTControls.CreateCheckbox(frame);
- objLocale = MSBTLocale.CHECKBOXES["hostileOnly"]; 
+ objLocale = L.CHECKBOXES["hostileOnly"]; 
  checkbox:Configure(20, objLocale.label, objLocale.tooltip);
  checkbox:SetPoint("LEFT", frame.unitDropdown, "RIGHT", 20, -5);
  frame.hostileCheckbox = checkbox; 
 
  -- Parameter editbox.
  local editbox = MSBTControls.CreateEditbox(frame);
- objLocale = MSBTLocale.EDITBOXES["skillName"];
+ objLocale = L.EDITBOXES["skillName"];
  editbox:Configure(0, objLocale.label, objLocale.tooltip);
  editbox:SetPoint("TOPLEFT", dropdown, "BOTTOMLEFT", 0, -20);
  editbox:SetPoint("RIGHT", frame, "RIGHT", -35, 0);
@@ -2341,7 +2341,7 @@ local function CreateMainEvent()
 
  -- Direction dropdown.
  local dropdown = MSBTControls.CreateDropdown(frame);
- objLocale = MSBTLocale.DROPDOWNS["eventDirection"];
+ objLocale = L.DROPDOWNS["eventDirection"];
  dropdown:Configure(150, objLocale.label, objLocale.tooltip);
  dropdown:SetListboxHeight(120);
  dropdown:SetPoint("TOPLEFT", frame.unitDropdown, "BOTTOMLEFT", 0, -20);
@@ -2349,7 +2349,7 @@ local function CreateMainEvent()
  
  -- Parameter slider.
  local slider = MSBTControls.CreateSlider(frame);
- objLocale = MSBTLocale.SLIDERS["genericAmount"]; 
+ objLocale = L.SLIDERS["genericAmount"]; 
  slider:Configure(180, objLocale.label, objLocale.tooltip);
  slider:SetPoint("TOPLEFT", editbox, "BOTTOMLEFT", 0, -30);
  frame.parameterSlider = slider;
@@ -2357,7 +2357,7 @@ local function CreateMainEvent()
 
  -- Save button.
  local button = MSBTControls.CreateOptionButton(frame);
- objLocale = MSBTLocale.BUTTONS["genericSave"];
+ objLocale = L.BUTTONS["genericSave"];
  button:Configure(20, objLocale.label, objLocale.tooltip);
  button:SetPoint("BOTTOMRIGHT", frame, "BOTTOM", -10, 20);
  button:SetClickHandler(
@@ -2372,7 +2372,7 @@ local function CreateMainEvent()
 
  -- Cancel button.
  button = MSBTControls.CreateOptionButton(frame);
- objLocale = MSBTLocale.BUTTONS["genericCancel"];
+ objLocale = L.BUTTONS["genericCancel"];
  button:Configure(20, objLocale.label, objLocale.tooltip);
  button:SetPoint("BOTTOMLEFT", frame, "BOTTOM", 10, 20);
  button:SetClickHandler(
@@ -2384,8 +2384,8 @@ local function CreateMainEvent()
  
  local thresholdUnits = popupFrames.triggerFrame.thresholdUnits;
  local typicalUnits = popupFrames.triggerFrame.typicalUnits;
- local threholdDirections = {rising = MSBTLocale.MSG_RISES_ABOVE, declining = MSBTLocale.MSG_FALLS_BELOW};
- local directions = {incoming = MSBTLocale.MSG_INCOMING, outgoing = MSBTLocale.MSG_OUTGOING};
+ local threholdDirections = {rising = L.MSG_RISES_ABOVE, declining = L.MSG_FALLS_BELOW};
+ local directions = {incoming = L.MSG_INCOMING, outgoing = L.MSG_OUTGOING};
  
  -- Controls to show for each main event category.
  local controlMap = {
@@ -2532,7 +2532,7 @@ local function CreateTriggerException()
 
  -- Exception dropdown.
  local dropdown =  MSBTControls.CreateDropdown(frame);
- local objLocale = MSBTLocale.DROPDOWNS["triggerException"];
+ local objLocale = L.DROPDOWNS["triggerException"];
  dropdown:Configure(200, objLocale.label, nil);
  dropdown:SetListboxHeight(200);
  dropdown:SetPoint("TOPLEFT", frame, "TOPLEFT", 20, -40);
@@ -2541,7 +2541,7 @@ local function CreateTriggerException()
    SetupTriggerExceptionControls();
   end
  );
- for exceptionType, exceptionName in pairs(MSBTLocale.TRIGGER_EXCEPTIONS) do
+ for exceptionType, exceptionName in pairs(L.TRIGGER_EXCEPTIONS) do
   dropdown:AddItem(exceptionName, exceptionType);
  end
  dropdown:Sort();
@@ -2576,7 +2576,7 @@ local function CreateTriggerException()
 
  -- Save button.
  local button = MSBTControls.CreateOptionButton(frame);
- objLocale = MSBTLocale.BUTTONS["genericSave"];
+ objLocale = L.BUTTONS["genericSave"];
  button:Configure(20, objLocale.label, objLocale.tooltip);
  button:SetPoint("BOTTOMRIGHT", frame, "BOTTOM", -10, 20);
  button:SetClickHandler(
@@ -2591,7 +2591,7 @@ local function CreateTriggerException()
 
  -- Cancel button.
  button = MSBTControls.CreateOptionButton(frame);
- objLocale = MSBTLocale.BUTTONS["genericCancel"];
+ objLocale = L.BUTTONS["genericCancel"];
  button:Configure(20, objLocale.label, objLocale.tooltip);
  button:SetPoint("BOTTOMLEFT", frame, "BOTTOM", 10, 20);
  button:SetClickHandler(
@@ -2610,44 +2610,44 @@ local function CreateTriggerException()
  -- Controls to show for exception category.
  local controlMap = {
   BuffActive = {
-   {controlType="Editbox", controlName="parameterEditbox", paramField="effect", locals=MSBTLocale.EDITBOXES["skillName"]},
-   {controlType="Checkbox", controlName="reverseCheckbox", paramField="reversed", locals=MSBTLocale.CHECKBOXES["reverseLogic"]},
+   {controlType="Editbox", controlName="parameterEditbox", paramField="effect", locals=L.EDITBOXES["skillName"]},
+   {controlType="Checkbox", controlName="reverseCheckbox", paramField="reversed", locals=L.CHECKBOXES["reverseLogic"]},
   },
 
   InsufficientPower = {
-   {controlType="Slider", controlName="parameterSlider", paramField="amount", minValue=1, maxValue=100, step=1, default=20, locals=MSBTLocale.SLIDERS["genericAmount"]},
-   {controlType="Checkbox", controlName="reverseCheckbox", paramField="reversed", locals=MSBTLocale.CHECKBOXES["reverseLogic"]},
+   {controlType="Slider", controlName="parameterSlider", paramField="amount", minValue=1, maxValue=100, step=1, default=20, locals=L.SLIDERS["genericAmount"]},
+   {controlType="Checkbox", controlName="reverseCheckbox", paramField="reversed", locals=L.CHECKBOXES["reverseLogic"]},
   },
 
   InsufficientComboPoints = {
-   {controlType="Slider", controlName="parameterSlider", paramField="amount", minValue=1, maxValue=5, step=1, default=5, locals=MSBTLocale.SLIDERS["genericAmount"]},  
-   {controlType="Checkbox", controlName="reverseCheckbox", paramField="reversed", locals=MSBTLocale.CHECKBOXES["reverseLogic"]},
+   {controlType="Slider", controlName="parameterSlider", paramField="amount", minValue=1, maxValue=5, step=1, default=5, locals=L.SLIDERS["genericAmount"]},  
+   {controlType="Checkbox", controlName="reverseCheckbox", paramField="reversed", locals=L.CHECKBOXES["reverseLogic"]},
   },
   
   NotInArena = {
-   {controlType="Checkbox", controlName="reverseCheckbox", paramField="reversed", locals=MSBTLocale.CHECKBOXES["reverseLogic"]},
+   {controlType="Checkbox", controlName="reverseCheckbox", paramField="reversed", locals=L.CHECKBOXES["reverseLogic"]},
   },
 
   NotInPvPZone = {
-   {controlType="Checkbox", controlName="reverseCheckbox", paramField="reversed", locals=MSBTLocale.CHECKBOXES["reverseLogic"]},
+   {controlType="Checkbox", controlName="reverseCheckbox", paramField="reversed", locals=L.CHECKBOXES["reverseLogic"]},
   },
   
   RecentlyFired = {
-   {controlType="Slider", controlName="parameterSlider", paramField="duration", minValue=1, maxValue=10, step=1, default=5, locals=MSBTLocale.SLIDERS["genericAmount"]},
+   {controlType="Slider", controlName="parameterSlider", paramField="duration", minValue=1, maxValue=10, step=1, default=5, locals=L.SLIDERS["genericAmount"]},
   },
 
   SkillUnavailable = {
-   {controlType="Editbox", controlName="parameterEditbox", paramField="effect", locals=MSBTLocale.EDITBOXES["skillName"]},
-   {controlType="Checkbox", controlName="reverseCheckbox", paramField="reversed", locals=MSBTLocale.CHECKBOXES["reverseLogic"]},
+   {controlType="Editbox", controlName="parameterEditbox", paramField="effect", locals=L.EDITBOXES["skillName"]},
+   {controlType="Checkbox", controlName="reverseCheckbox", paramField="reversed", locals=L.CHECKBOXES["reverseLogic"]},
   },
 
   TrivialTarget = {
-   {controlType="Checkbox", controlName="reverseCheckbox", paramField="reversed", locals=MSBTLocale.CHECKBOXES["reverseLogic"]},
+   {controlType="Checkbox", controlName="reverseCheckbox", paramField="reversed", locals=L.CHECKBOXES["reverseLogic"]},
   },
   
   WarriorStance = {
-   {controlType="Dropdown", controlName="parameterDropdown", dropdownItems=warriorStances, paramField="stance", default=1, locals=MSBTLocale.DROPDOWNS["warriorStance"]},
-   {controlType="Checkbox", controlName="reverseCheckbox", paramField="reversed", locals=MSBTLocale.CHECKBOXES["reverseLogic"]},
+   {controlType="Dropdown", controlName="parameterDropdown", dropdownItems=warriorStances, paramField="stance", default=1, locals=L.DROPDOWNS["warriorStance"]},
+   {controlType="Checkbox", controlName="reverseCheckbox", paramField="reversed", locals=L.CHECKBOXES["reverseLogic"]},
   },
  };
 
@@ -2699,10 +2699,10 @@ local function UpdateClassesText()
  -- Get localized list of seleced classes.
  local selectedClasses = "";
  if (frame.classes["ALL"]) then
-  selectedClasses = MSBTLocale.CHECKBOXES["allClasses"].label;
+  selectedClasses = L.CHECKBOXES["allClasses"].label;
  else
   for className in pairs(frame.classes) do
-   selectedClasses = selectedClasses .. MSBTLocale.CLASS_NAMES[className] .. ", ";
+   selectedClasses = selectedClasses .. L.CLASS_NAMES[className] .. ", ";
   end
 
   -- Strip off the extra comma and space.
@@ -2845,7 +2845,7 @@ local function CreateMainEventsLine(this)
 
  -- Edit event button.
  local button = MSBTControls.CreateIconButton(frame, "Configure");
- local objLocale = MSBTLocale.BUTTONS["editEventConditions"];
+ local objLocale = L.BUTTONS["editEventConditions"];
  button:SetTooltip(objLocale.tooltip);
  button:SetPoint("LEFT", frame, "LEFT", 0, 0);
  button:SetClickHandler(EditMainEventButtonOnClick);
@@ -2855,7 +2855,7 @@ local function CreateMainEventsLine(this)
  
  -- Delete event button.
  button = MSBTControls.CreateIconButton(frame, "Delete");
- objLocale = MSBTLocale.BUTTONS["deleteMainEvent"];
+ objLocale = L.BUTTONS["deleteMainEvent"];
  button:SetTooltip(objLocale.tooltip);
  button:SetPoint("RIGHT", frame, "RIGHT", -10, 0);
  button:SetClickHandler(DeleteMainEventButtonOnClick);
@@ -2883,7 +2883,7 @@ local function CreateExceptionsLine(this)
 
  -- Edit exception button.
  local button = MSBTControls.CreateIconButton(frame, "Configure");
- local objLocale = MSBTLocale.BUTTONS["editExceptionConditions"];
+ local objLocale = L.BUTTONS["editExceptionConditions"];
  button:SetTooltip(objLocale.tooltip);
  button:SetPoint("LEFT", frame, "LEFT", 0, 0);
  button:SetClickHandler(EditExceptionButtonOnClick);
@@ -2893,7 +2893,7 @@ local function CreateExceptionsLine(this)
  
  -- Delete exception button.
  button = MSBTControls.CreateIconButton(frame, "Delete");
- objLocale = MSBTLocale.BUTTONS["deleteException"];
+ objLocale = L.BUTTONS["deleteException"];
  button:SetTooltip(objLocale.tooltip);
  button:SetPoint("RIGHT", frame, "RIGHT", -10, 0);
  button:SetClickHandler(DeleteExceptionButtonOnClick);
@@ -2920,21 +2920,21 @@ local function DisplayMainEventsLine(this, line, key, isSelected)
  local frame = popupFrames.triggerFrame;
  local eventType = frame.mainEvents[key];
  local eventCategory = frame.mainEventCategories[eventType];
- local eventText = MSBTLocale.TRIGGER_MAIN_EVENTS[eventType] or UNKNOWN;
+ local eventText = L.TRIGGER_MAIN_EVENTS[eventType] or UNKNOWN;
  local eventConditions = frame.eventConditions[key];
  
  -- Threshold trigger.
  if (eventCategory == "threshold") then
   if (eventConditions.threshold) then eventText = eventText .. " - " .. tostring(eventConditions.threshold); end
   if (eventConditions.unit) then eventText = eventText .. " - " .. frame.thresholdUnits[eventConditions.unit]; end
-  if (eventConditions.hostile) then eventText = eventText .. " - " .. MSBTLocale.MSG_HOSTILE; end
+  if (eventConditions.hostile) then eventText = eventText .. " - " .. L.MSG_HOSTILE; end
 
  -- Incoming/Outgoing trigger.
  elseif (eventCategory == "inout") then
   if (eventConditions.direction == "incoming") then
-   eventText = eventText .. " - " .. MSBTLocale.MSG_INCOMING;
+   eventText = eventText .. " - " .. L.MSG_INCOMING;
   elseif (eventConditions.direction == "outgoing") then 
-   eventText = eventText .. " - " .. MSBTLocale.MSG_OUTGOING;
+   eventText = eventText .. " - " .. L.MSG_OUTGOING;
   end
   
  -- Aura application trigger.
@@ -2942,14 +2942,14 @@ local function DisplayMainEventsLine(this, line, key, isSelected)
   if (eventConditions.effect) then eventText = eventText .. " - " .. eventConditions.effect; end
   if (eventConditions.amount) then eventText = eventText .. " - " .. eventConditions.amount; end
   if (eventConditions.unit) then eventText = eventText .. " - " .. frame.typicalUnits[eventConditions.unit]; end
-  if (eventConditions.hostile) then eventText = eventText .. " - " .. MSBTLocale.MSG_HOSTILE; end
+  if (eventConditions.hostile) then eventText = eventText .. " - " .. L.MSG_HOSTILE; end
   
 
  -- Aura fade/Cast trigger.
  elseif (eventCategory == "aurafade" or eventCategory == "cast") then
   if (eventConditions.effect) then eventText = eventText .. " - " .. eventConditions.effect; end
   if (eventConditions.unit) then eventText = eventText .. " - " .. frame.typicalUnits[eventConditions.unit]; end
-  if (eventConditions.hostile) then eventText = eventText .. " - " .. MSBTLocale.MSG_HOSTILE; end
+  if (eventConditions.hostile) then eventText = eventText .. " - " .. L.MSG_HOSTILE; end
  end
 
  line.eventFontString:SetText(eventText);
@@ -2965,7 +2965,7 @@ local function DisplayExceptionsLine(this, line, key, isSelected)
  local frame = popupFrames.triggerFrame;
  local exceptionType = frame.exceptions[key];
  local exceptionCategory = frame.exceptionCategories[exceptionType];
- local exceptionText = MSBTLocale.TRIGGER_EXCEPTIONS[exceptionType] or UNKNOWN;
+ local exceptionText = L.TRIGGER_EXCEPTIONS[exceptionType] or UNKNOWN;
  local exceptionConditions = frame.exceptionConditions[key];
 
  -- Skill condition.
@@ -2986,7 +2986,7 @@ local function DisplayExceptionsLine(this, line, key, isSelected)
  end
 
  -- Logic Reversed.
- if (exceptionConditions.reversed) then exceptionText = exceptionText .. " - " .. MSBTLocale.CHECKBOXES["reverseLogic"].label; end
+ if (exceptionConditions.reversed) then exceptionText = exceptionText .. " - " .. L.CHECKBOXES["reverseLogic"].label; end
  
  line.exceptionFontString:SetText(exceptionText);
 end
@@ -3010,12 +3010,12 @@ local function CreateTriggerPopup()
  -- Trigger classes label.
  fontString = frame:CreateFontString(nil, "OVERLAY", "GameFontNormalSmall");
  fontString:SetPoint("TOPLEFT", frame, "TOPLEFT", 20, -50);
- fontString:SetText(MSBTLocale.MSG_TRIGGER_CLASSES .. ":");
+ fontString:SetText(L.MSG_TRIGGER_CLASSES .. ":");
  frame.classesLabel = fontString;
 
  -- Edit trigger classes button.
  local button = MSBTControls.CreateIconButton(frame, "Configure");
- local objLocale = MSBTLocale.BUTTONS["editTriggerClasses"];
+ local objLocale = L.BUTTONS["editTriggerClasses"];
  button:SetTooltip(objLocale.tooltip);
  button:SetPoint("TOPLEFT", frame.classesLabel, "BOTTOMLEFT", 10, -5);
  button:SetClickHandler(
@@ -3045,12 +3045,12 @@ local function CreateTriggerPopup()
  -- Main events label.
  fontString = frame:CreateFontString(nil, "OVERLAY", "GameFontNormalSmall");
  fontString:SetPoint("TOPLEFT", controls[#controls], "BOTTOMLEFT", -10, -15);
- fontString:SetText(MSBTLocale.MSG_MAIN_EVENTS .. ":");
+ fontString:SetText(L.MSG_MAIN_EVENTS .. ":");
  frame.mainEventsLabel = fontString;
  
  -- Add main events button.
  button = MSBTControls.CreateOptionButton(frame);
- objLocale = MSBTLocale.BUTTONS["addMainEvent"];
+ objLocale = L.BUTTONS["addMainEvent"];
  button:Configure(20, objLocale.label, objLocale.tooltip);
  button:SetPoint("LEFT", frame.mainEventsLabel, "RIGHT", 10, 0);
  button:SetClickHandler(
@@ -3082,12 +3082,12 @@ local function CreateTriggerPopup()
  -- Trigger exceptions label.
  fontString = frame:CreateFontString(nil, "OVERLAY", "GameFontNormalSmall");
  fontString:SetPoint("TOPLEFT", frame.mainEventsListbox, "BOTTOMLEFT", -10, -15);
- fontString:SetText(MSBTLocale.MSG_TRIGGER_EXCEPTIONS .. ":");
+ fontString:SetText(L.MSG_TRIGGER_EXCEPTIONS .. ":");
  frame.triggerExceptionsLabel = fontString;
  
  -- Add trigger exceptions button.
  button = MSBTControls.CreateOptionButton(frame);
- objLocale = MSBTLocale.BUTTONS["addTriggerException"];
+ objLocale = L.BUTTONS["addTriggerException"];
  button:Configure(20, objLocale.label, objLocale.tooltip);
  button:SetPoint("LEFT", frame.triggerExceptionsLabel, "RIGHT", 10, 0);
  button:SetClickHandler(
@@ -3119,7 +3119,7 @@ local function CreateTriggerPopup()
 
  -- Save button.
  button = MSBTControls.CreateOptionButton(frame);
- objLocale = MSBTLocale.BUTTONS["genericSave"];
+ objLocale = L.BUTTONS["genericSave"];
  button:Configure(20, objLocale.label, objLocale.tooltip);
  button:SetPoint("BOTTOMRIGHT", frame, "BOTTOM", -10, 20);
  button:SetClickHandler(
@@ -3177,7 +3177,7 @@ local function CreateTriggerPopup()
 
  -- Cancel button.
  button = MSBTControls.CreateOptionButton(frame);
- objLocale = MSBTLocale.BUTTONS["genericCancel"];
+ objLocale = L.BUTTONS["genericCancel"];
  button:Configure(20, objLocale.label, objLocale.tooltip);
  button:SetPoint("BOTTOMLEFT", frame, "BOTTOM", 10, 20);
  button:SetClickHandler(
@@ -3197,7 +3197,7 @@ local function CreateTriggerPopup()
 
  -- Localized unit types. 
  frame.thresholdUnits = { player = YOU, target = TARGET, focus = FOCUS, pet = PET };
- frame.typicalUnits = { player = YOU, target = TARGET, focus = FOCUS, any = MSBTLocale.MSG_ANY };
+ frame.typicalUnits = { player = YOU, target = TARGET, focus = FOCUS, any = L.MSG_ANY };
 
 
  -- Categories for main event.
@@ -3328,11 +3328,11 @@ end
 -- ****************************************************************************
 local function ValidateSkillListName(skillName)
  if (not skillName or skillName == "") then
-  return MSBTLocale.MSG_INVALID_SKILL_NAME;
+  return L.MSG_INVALID_SKILL_NAME;
  end
 
  if (popupFrames.skillListFrame.skills[skillName]) then
-  return MSBTLocale.MSG_SKILL_ALREADY_EXISTS;
+  return L.MSG_SKILL_ALREADY_EXISTS;
  end
 end
 
@@ -3384,7 +3384,7 @@ local function CreateSkillListLine(this)
 
  -- Delete skill button.
  local button = MSBTControls.CreateIconButton(frame, "Delete");
- objLocale = MSBTLocale.BUTTONS["deleteSkill"];
+ objLocale = L.BUTTONS["deleteSkill"];
  button:SetTooltip(objLocale.tooltip);
  button:SetPoint("RIGHT", frame, "RIGHT", -10, 0);
  button:SetClickHandler(DeleteSkillButtonOnClick);
@@ -3393,7 +3393,7 @@ local function CreateSkillListLine(this)
 
  -- Time slider.
  local slider = MSBTControls.CreateSlider(frame);
- objLocale = MSBTLocale.SLIDERS["skillThrottleTime"]; 
+ objLocale = L.SLIDERS["skillThrottleTime"]; 
  slider:Configure(120, objLocale.label, objLocale.tooltip);
  slider:SetPoint("RIGHT", frame.deleteButton, "LEFT", -10, -5);
  slider:SetMinMaxValues(1, 5);
@@ -3454,17 +3454,17 @@ local function CreateSkillList()
  
  fontString = frame:CreateFontString(nil, "OVERLAY", "GameFontNormalSmall");
  fontString:SetPoint("TOPLEFT", frame, "TOPLEFT", 20, -50);
- fontString:SetText(MSBTLocale.MSG_SKILLS .. ":");
+ fontString:SetText(L.MSG_SKILLS .. ":");
  frame.skillsFontString = fontString;
  
  -- Add skill button.
  local button = MSBTControls.CreateOptionButton(frame);
- objLocale = MSBTLocale.BUTTONS["addSkill"];
+ objLocale = L.BUTTONS["addSkill"];
  button:Configure(20, objLocale.label, objLocale.tooltip);
  button:SetPoint("LEFT", frame.skillsFontString, "RIGHT", 10, 0);
  button:SetClickHandler(
   function (this)
-   local objLocale = MSBTLocale.EDITBOXES["skillName"];
+   local objLocale = L.EDITBOXES["skillName"];
    EraseTable(tempConfig);
    tempConfig.editboxLabel = objLocale.label;
    tempConfig.editboxTooltip = objLocale.tooltip;
@@ -3474,7 +3474,7 @@ local function CreateSkillList()
    tempConfig.saveHandler = SaveSkillListName;
    tempConfig.hideHandler = EnableSkillListControls;
    if (frame.listType == "substitution") then
-    objLocale = MSBTLocale.EDITBOXES["substitutionText"];
+    objLocale = L.EDITBOXES["substitutionText"];
     tempConfig.showSecondEditbox = true;
     tempConfig.secondEditboxLabel = objLocale.label;
     tempConfig.secondEditboxTooltip = objLocale.tooltip;
@@ -3497,7 +3497,7 @@ local function CreateSkillList()
  
  -- Save button.
  button = MSBTControls.CreateOptionButton(frame);
- objLocale = MSBTLocale.BUTTONS["genericSave"];
+ objLocale = L.BUTTONS["genericSave"];
  button:Configure(20, objLocale.label, objLocale.tooltip);
  button:SetPoint("BOTTOMRIGHT", frame, "BOTTOM", -10, 20);
  button:SetClickHandler(
@@ -3510,7 +3510,7 @@ local function CreateSkillList()
 
  -- Cancel button.
  button = MSBTControls.CreateOptionButton(frame);
- objLocale = MSBTLocale.BUTTONS["genericCancel"];
+ objLocale = L.BUTTONS["genericCancel"];
  button:Configure(20, objLocale.label, objLocale.tooltip);
  button:SetPoint("BOTTOMLEFT", frame, "BOTTOM", 10, 20);
  button:SetClickHandler(

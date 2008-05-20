@@ -88,11 +88,11 @@ local currentBuffs = MikSBT.Parser.currentAuras.buffs;
 -------------------------------------------------------------------------------
 
 -- Local references to certain MSBT modules for faster access.
-local MSBTLocale = MikSBT.Locale;
 local MSBTAnimations = MikSBT.Animations;
 local MSBTParser = MikSBT.Parser;
 local MSBTTriggers = MikSBT.Triggers;
 local MSBTProfiles = MikSBT.Profiles;
+local L = MikSBT.translations;
 
 -- Local references to certain functions and variables for faster access.
 local table_remove = table.remove;
@@ -462,7 +462,7 @@ local function MergeEvents(numEvents)
     -- The skill names match.
     elseif (unmergedEvent.effectName == mergedEvent.effectName) then
      -- Change the name to the multiple targets string if the names don't match.
-     if (unmergedEvent.name ~= mergedEvent.name) then mergedEvent.name = MSBTLocale.MSG_MULTIPLE_TARGETS; end
+     if (unmergedEvent.name ~= mergedEvent.name) then mergedEvent.name = L.MSG_MULTIPLE_TARGETS; end
 
      -- Set the merge flag.
      doMerge = true; 
@@ -517,11 +517,11 @@ local function MergeEvents(numEvents)
    -- Create the crit trailer text if there were any crits.
    local critTrailer = "";
    if (mergedEvent.numCrits > 0) then
-    critTrailer = string_format(", %d %s", mergedEvent.numCrits, mergedEvent.numCrits == 1 and MSBTLocale.MSG_CRIT or MSBTLocale.MSG_CRITS);
+    critTrailer = string_format(", %d %s", mergedEvent.numCrits, mergedEvent.numCrits == 1 and L.MSG_CRIT or L.MSG_CRITS);
    end
    
    -- Set the event's merge trailer field.
-   mergedEvent.mergeTrailer = string_format(" [%d %s%s]", mergedEvent.numMerged + 1, MSBTLocale.MSG_HITS, critTrailer);
+   mergedEvent.mergeTrailer = string_format(" [%d %s%s]", mergedEvent.numMerged + 1, L.MSG_HITS, critTrailer);
   end -- Events were merged.
  end
 
@@ -590,7 +590,7 @@ local function CommandHandler(params)
   showUsage = false;
 
   -- Reset.
-  elseif (currentParam == MSBTLocale.COMMAND_RESET) then
+  elseif (currentParam == L.COMMAND_RESET) then
   -- Reset the current profile.
   MSBTProfiles.ResetProfile(nil, true);
 
@@ -598,29 +598,29 @@ local function CommandHandler(params)
   showUsage = false;
   
  -- Disable.
- elseif (currentParam == MSBTLocale.COMMAND_DISABLE) then
+ elseif (currentParam == L.COMMAND_DISABLE) then
   -- Set the user disabled option.
   MSBTProfiles.SetOptionUserDisabled(true);
 
   -- Output an informative message.
-  Print(MSBTLocale.MSG_DISABLE, 1,1,1);
+  Print(L.MSG_DISABLE, 1,1,1);
 
   -- Don't show the usage info.
   showUsage = false;
 
  -- Enable.
- elseif (currentParam == MSBTLocale.COMMAND_ENABLE) then
+ elseif (currentParam == L.COMMAND_ENABLE) then
   -- Unset the user disabled option.
   MSBTProfiles.SetOptionUserDisabled(false);
 
   -- Output an informative message.
-  Print(MSBTLocale.MSG_ENABLE, 1,1,1);
+  Print(L.MSG_ENABLE, 1,1,1);
 
   -- Don't show the usage info.
   showUsage = false;
 
  -- Version.
- elseif (currentParam == MSBTLocale.COMMAND_SHOWVER) then
+ elseif (currentParam == L.COMMAND_SHOWVER) then
   -- Output the current version number.
   Print(MikSBT.VERSION_STRING, 1,1,1);
 
@@ -632,7 +632,7 @@ local function CommandHandler(params)
  -- Check if the usage information should be shown.
  if (showUsage) then
   -- Loop through all of the entries in the command usage list.
-  for _, msg in ipairs(MSBTLocale.COMMAND_USAGE) do
+  for _, msg in ipairs(L.COMMAND_USAGE) do
    Print(msg, 1, 1, 1);
   end
  end -- Show usage.
@@ -1204,7 +1204,7 @@ local function OnEvent(this, event, arg1, arg2)
   MSBTProfiles.SetOptionUserDisabled(MSBTProfiles.IsModDisabled());
 
   -- Display warning if the old icon module is loaded.  
-  if (MSBTIconSupport) then message(MSBTLocale.MSG_ICON_MODULE_WARNING); end
+  if (MSBTIconSupport) then message(L.MSG_ICON_MODULE_WARNING); end
   collectgarbage("collect");
 
 

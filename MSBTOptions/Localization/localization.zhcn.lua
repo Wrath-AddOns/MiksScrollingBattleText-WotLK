@@ -8,8 +8,7 @@
 if (GetLocale() ~= "zhCN") then return; end
 
 -- Local reference for faster access.
-local MSBTLocale = MikSBT.Locale;
-
+local L = MikSBT.translations;
 
 -------------------------------------------------------------------------------
 -- Simplified Chinese localization
@@ -20,33 +19,33 @@ local MSBTLocale = MikSBT.Locale;
 -- Interface messages
 ------------------------------
 
-MSBTLocale.MSG_NEW_PROFILE					= "新建配置";
-MSBTLocale.MSG_PROFILE_ALREADY_EXISTS		= "此配置文件已存在";
-MSBTLocale.MSG_INVALID_PROFILE_NAME			= "无效的配置名字";
-MSBTLocale.MSG_NEW_SCROLL_AREA				= "新建滚动区域";
-MSBTLocale.MSG_SCROLL_AREA_ALREADY_EXISTS	= "此滚动区域已存在";
-MSBTLocale.MSG_INVALID_SCROLL_AREA_NAME		= "无效的滚动区名字";
-MSBTLocale.MSG_ACKNOWLEDGE_TEXT				= "你确定想这样做吗？";
-MSBTLocale.MSG_NORMAL_PREVIEW_TEXT			= "普通文字";
-MSBTLocale.MSG_INVALID_SOUND_FILE			= "声音必须为MP3或WAV文件。";
-MSBTLocale.MSG_NEW_TRIGGER					= "新建触发器";
-MSBTLocale.MSG_TRIGGER_CLASSES				= "触发种类";
---MSBTLocale.MSG_MAIN_EVENTS					= "Main Events";
---MSBTLocale.MSG_TRIGGER_EXCEPTIONS			= "Trigger Exceptions";
-MSBTLocale.MSG_SKILLS						= "技能";
-MSBTLocale.MSG_SKILL_ALREADY_EXISTS			= "技能名字已存在";
-MSBTLocale.MSG_INVALID_SKILL_NAME			= "无效的技能名字";
---MSBTLocale.MSG_HOSTILE						= "Hostile";
---MSBTLocale.MSG_ANY							= "Any";
---MSBTLocale.MSG_RISES_ABOVE					= "Rises Above";
---MSBTLocale.MSG_FALLS_BELOW					= "Falls Below";
+L.MSG_NEW_PROFILE					= "新建配置";
+L.MSG_PROFILE_ALREADY_EXISTS		= "此配置文件已存在";
+L.MSG_INVALID_PROFILE_NAME			= "无效的配置名字";
+L.MSG_NEW_SCROLL_AREA				= "新建滚动区域";
+L.MSG_SCROLL_AREA_ALREADY_EXISTS	= "此滚动区域已存在";
+L.MSG_INVALID_SCROLL_AREA_NAME		= "无效的滚动区名字";
+L.MSG_ACKNOWLEDGE_TEXT				= "你确定想这样做吗？";
+L.MSG_NORMAL_PREVIEW_TEXT			= "普通文字";
+L.MSG_INVALID_SOUND_FILE			= "声音必须为MP3或WAV文件。";
+L.MSG_NEW_TRIGGER					= "新建触发器";
+L.MSG_TRIGGER_CLASSES				= "触发种类";
+--L.MSG_MAIN_EVENTS					= "Main Events";
+--L.MSG_TRIGGER_EXCEPTIONS			= "Trigger Exceptions";
+L.MSG_SKILLS						= "技能";
+L.MSG_SKILL_ALREADY_EXISTS			= "技能名字已存在";
+L.MSG_INVALID_SKILL_NAME			= "无效的技能名字";
+--L.MSG_HOSTILE						= "Hostile";
+--L.MSG_ANY							= "Any";
+--L.MSG_RISES_ABOVE					= "Rises Above";
+--L.MSG_FALLS_BELOW					= "Falls Below";
 
 
 ------------------------------
 -- Class Names.
 ------------------------------
 
-local obj = MSBTLocale.CLASS_NAMES;
+local obj = L.CLASS_NAMES;
 obj["DRUID"]	= "德鲁伊";
 obj["HUNTER"]	= "猎人";
 obj["MAGE"]		= "法师";
@@ -62,7 +61,7 @@ obj["WARRIOR"]	= "战士";
 -- Interface tabs
 ------------------------------
 
-obj = MSBTLocale.TABS;
+obj = L.TABS;
 obj[1] = { label="总体", tooltip="总体设置"};
 obj[2] = { label="滚动区域", tooltip="创建、删除和配置滚动区域；鼠标指向按钮可得到更多提示"};
 obj[3] = { label="事件", tooltip="设置承受伤害、输出伤害和通告的事件；鼠标指向按钮可得到更多提示"};
@@ -76,7 +75,7 @@ obj[7] = { label="技能图标", tooltip="设置技能图标"};
 -- Interface checkboxes
 ------------------------------
 
-obj = MSBTLocale.CHECKBOXES;
+obj = L.CHECKBOXES;
 obj["enableMSBT"]				= { label="启用MSBT", tooltip="启用MSBT"};
 obj["stickyCrits"]				= { label="爆击粘滞显示", tooltip="使用粘滞样式显示爆击"};
 obj["gameDamage"]				= { label="游戏内置伤害", tooltip="在敌人头上显示游戏内置伤害信息"};
@@ -113,7 +112,7 @@ obj["exclusiveSkills"]			= { label="否则仅显示技能名字", tooltip="如�
 -- Interface dropdowns
 ------------------------------
 
-obj = MSBTLocale.DROPDOWNS;
+obj = L.DROPDOWNS;
 obj["profile"]				= { label="当前配置文件：", tooltip="设置当前配置文件"};
 obj["normalFont"]			= { label="普通字体：", tooltip="选择非爆击伤害的字体"};
 obj["critFont"]				= { label="爆击字体：", tooltip="选择爆击伤害的字体"};
@@ -139,7 +138,7 @@ obj["outputScrollArea"]		= { label="输出滚动区域：", tooltip="选择输�
 -- Interface buttons
 ------------------------------
 
-obj = MSBTLocale.BUTTONS;
+obj = L.BUTTONS;
 obj["copyProfile"]				= { label="复制配置", tooltip="复制配置文件到新建的配置中"};
 obj["resetProfile"]				= { label="重置配置", tooltip="重置配置至默认设置"};
 obj["deleteProfile"]			= { label="删除配置", tooltip="删除配置文件"};
@@ -185,7 +184,7 @@ obj["cooldownExclusions"]		= { label="冷却排除列表", tooltip="不追踪指
 -- Interface editboxes
 ------------------------------
 
-obj = MSBTLocale.EDITBOXES;
+obj = L.EDITBOXES;
 obj["copyProfile"]		= { label="新建配置：", tooltip="输入新建配置的名称"};
 obj["scrollAreaName"]	= { label="新建滚动区域:", tooltip="新建滚动区域的名称"};
 obj["xOffset"]			= { label="X值：", tooltip="所选择滚动区域的X值"};
@@ -201,7 +200,7 @@ obj["substitutionText"]	= { label="替代文本：", tooltip="用来代替技能
 -- Interface sliders
 ------------------------------
 
-obj = MSBTLocale.SLIDERS;
+obj = L.SLIDERS;
 obj["animationSpeed"]		= { label="动画速度", tooltip="设置主动画速度\n每个滚动区域也可以设置自身独有的速度"};
 obj["normalFontSize"]		= { label="普通字体大小", tooltip="设置非爆击字体的大小"};
 obj["normalFontOpacity"]	= { label="普通字体不透明度", tooltip="设置非爆击字体的不透明度"};
@@ -224,7 +223,7 @@ obj["cooldownThreshold"]	= { label="冷却阈值", tooltip="冷却时间低于�
 ------------------------------
 -- Event categories
 ------------------------------
-obj = MSBTLocale.EVENT_CATEGORIES;
+obj = L.EVENT_CATEGORIES;
 obj[1] = "玩家受到伤害";
 obj[2] = "宠物受到伤害";
 obj[3] = "玩家输出伤害";
@@ -236,7 +235,7 @@ obj[5] = "通告";
 -- Event codes
 ------------------------------
 
-obj = MSBTLocale.EVENT_CODES;
+obj = L.EVENT_CODES;
 obj["DAMAGE_TAKEN"]			= "%a - Amount of damage taken.\n";
 obj["HEALING_TAKEN"]		= "%a - Amount of healing taken.\n";
 obj["DAMAGE_DONE"]			= "%a - Amount of damage done.\n";
@@ -275,7 +274,7 @@ obj["POWER_TYPE"]			= "%p - Type of power (energy, rage, mana).\n";
 -- Incoming events
 ------------------------------
 
-obj = MSBTLocale.INCOMING_PLAYER_EVENTS;
+obj = L.INCOMING_PLAYER_EVENTS;
 obj[1]	= { label="近战伤害", tooltip="显示被近战伤害"};
 obj[2]	= { label="近战爆击", tooltip="显示被近战爆击"};
 obj[3]	= { label="近战未命中", tooltip="显示未被近战命中"};
@@ -301,7 +300,7 @@ obj[22]	= { label="爆击治疗", tooltip="显示被治疗爆击"};
 obj[23]	= { label="持续治疗", tooltip="显示被持续治疗"};
 obj[24]	= { label="环境伤害", tooltip="显示环境伤害（如跌落，窒息，熔岩等）"};
 
-obj = MSBTLocale.INCOMING_PET_EVENTS;
+obj = L.INCOMING_PET_EVENTS;
 obj[1]	= { label="近战伤害", tooltip="显示宠物被近战伤害"};
 obj[2]	= { label="近战爆击", tooltip="显示宠物被近战爆击"};
 obj[3]	= { label="近战未命中", tooltip="显示宠物未被近战命中"};
@@ -329,7 +328,7 @@ obj[21]	= { label="持续治疗", tooltip="显示宠物被持续治疗"};
 -- Outgoing events
 ------------------------------
 
-obj = MSBTLocale.OUTGOING_PLAYER_EVENTS;
+obj = L.OUTGOING_PLAYER_EVENTS;
 obj[1]	= { label="近战伤害", tooltip="显示对敌近战伤害"};
 obj[2]	= { label="近战爆击", tooltip="显示对敌近战爆击"};
 obj[3]	= { label="近战未命中", tooltip="显示近战未命中敌人"};
@@ -357,7 +356,7 @@ obj[24]	= { label="治疗爆击", tooltip="显示爆击治疗目标"};
 obj[25]	= { label="持续治疗", tooltip="显示持续治疗目标"};
 --obj[26] = { label="Dispels", tooltip="Enable outgoing dispels."};
 
-obj = MSBTLocale.OUTGOING_PET_EVENTS;
+obj = L.OUTGOING_PET_EVENTS;
 obj[1]	= { label="近战伤害", tooltip="显示宠物近战伤害"};
 obj[2]	= { label="近战爆击", tooltip="显示宠物近战爆击"};
 obj[3]	= { label="近战未命中", tooltip="显示宠物的近战攻击未命中敌人"};
@@ -385,7 +384,7 @@ obj[20]	= { label="技能闪避", tooltip="显示宠物的技能攻击被闪避"
 -- Notification events
 ------------------------------
 
-obj = MSBTLocale.NOTIFICATION_EVENTS;
+obj = L.NOTIFICATION_EVENTS;
 obj[1]	= { label="Debuff", tooltip="显示你遭受的Debuff"};
 obj[2]	= { label="Buff", tooltip="显示你得到的Buff"};
 obj[3]	= { label="物品Buff", tooltip="显示使用物品得到的Buff"};
@@ -417,7 +416,7 @@ obj[24]	= { label="获得金钱", tooltip="显示获得的金钱"};
 ------------------------------
 
 -- Holds the available trigger main events.
-obj = MSBTLocale.TRIGGER_MAIN_EVENTS;
+obj = L.TRIGGER_MAIN_EVENTS;
 --obj["Health"]				= "Health Threshold";
 --obj["Mana"]					= "Mana Threshold";
 --obj["Energy"]				= "Energy Threshold";
@@ -437,7 +436,7 @@ obj = MSBTLocale.TRIGGER_MAIN_EVENTS;
 
 
 -- Holds the available trigger exceptions.
-obj = MSBTLocale.TRIGGER_EXCEPTIONS;
+obj = L.TRIGGER_EXCEPTIONS;
 --obj["BuffActive"]				= "Buff Active";
 --obj["InsufficientPower"]		= "Insufficient Power";
 --obj["InsufficientComboPoints"]	= "Insufficient Combo Points";
@@ -454,13 +453,13 @@ obj["WarriorStance"]		= "战士姿态";
 ------------------------------
 
 -- Font outlines.
-obj = MSBTLocale.OUTLINES;
+obj = L.OUTLINES;
 obj[1] = "无";
 obj[2] = "细";
 obj[3] = "粗";
 
 -- Text aligns.
-obj = MSBTLocale.TEXT_ALIGNS;
+obj = L.TEXT_ALIGNS;
 obj[1] = "左边";
 obj[2] = "中间";
 obj[3] = "右边";
@@ -470,7 +469,7 @@ obj[3] = "右边";
 -- Sound info
 ------------------------------
 
-obj = MSBTLocale.SOUNDS;
+obj = L.SOUNDS;
 obj["LowMana"]		= "能量不足";
 obj["LowHealth"]	= "血量不足";
 
@@ -480,7 +479,7 @@ obj["LowHealth"]	= "血量不足";
 ------------------------------
 
 -- Animation styles
-obj = MSBTLocale.ANIMATION_STYLE_DATA;
+obj = L.ANIMATION_STYLE_DATA;
 obj["Horizontal"]	= "水平";
 obj["Parabola"]		= "抛物线";
 obj["Straight"]		= "直线";

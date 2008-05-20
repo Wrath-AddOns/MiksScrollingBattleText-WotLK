@@ -7,33 +7,33 @@
 MSBTOptions = {};
 
 -- Local reference for faster access.
-local MSBTLocale = MikSBT.Locale;
+local L = MikSBT.translations;
 
 
 ------------------------------
 -- Interface object tables
 ------------------------------
 
-MSBTLocale.CLASS_NAMES = {};
-MSBTLocale.TABS = {};
-MSBTLocale.CHECKBOXES = {};
-MSBTLocale.DROPDOWNS = {};
-MSBTLocale.BUTTONS = {};
-MSBTLocale.EDITBOXES = {};
-MSBTLocale.SLIDERS = {};
-MSBTLocale.EVENT_CATEGORIES = {};
-MSBTLocale.EVENT_CODES = {};
-MSBTLocale.INCOMING_PLAYER_EVENTS = {};
-MSBTLocale.INCOMING_PET_EVENTS = {};
-MSBTLocale.OUTGOING_PLAYER_EVENTS = {};
-MSBTLocale.OUTGOING_PET_EVENTS = {};
-MSBTLocale.NOTIFICATION_EVENTS = {};
-MSBTLocale.TRIGGER_MAIN_EVENTS = {};
-MSBTLocale.TRIGGER_EXCEPTIONS = {};
-MSBTLocale.OUTLINES = {};
-MSBTLocale.TEXT_ALIGNS = {};
-MSBTLocale.SOUNDS = {};
-MSBTLocale.ANIMATION_STYLE_DATA = {};
+L.CLASS_NAMES = {};
+L.TABS = {};
+L.CHECKBOXES = {};
+L.DROPDOWNS = {};
+L.BUTTONS = {};
+L.EDITBOXES = {};
+L.SLIDERS = {};
+L.EVENT_CATEGORIES = {};
+L.EVENT_CODES = {};
+L.INCOMING_PLAYER_EVENTS = {};
+L.INCOMING_PET_EVENTS = {};
+L.OUTGOING_PLAYER_EVENTS = {};
+L.OUTGOING_PET_EVENTS = {};
+L.NOTIFICATION_EVENTS = {};
+L.TRIGGER_MAIN_EVENTS = {};
+L.TRIGGER_EXCEPTIONS = {};
+L.OUTLINES = {};
+L.TEXT_ALIGNS = {};
+L.SOUNDS = {};
+L.ANIMATION_STYLE_DATA = {};
 
 
 -------------------------------------------------------------------------------
@@ -45,33 +45,33 @@ MSBTLocale.ANIMATION_STYLE_DATA = {};
 -- Interface messages
 ------------------------------
 
-MSBTLocale.MSG_NEW_PROFILE					= "New Profile";
-MSBTLocale.MSG_PROFILE_ALREADY_EXISTS		= "Profile already exists.";
-MSBTLocale.MSG_INVALID_PROFILE_NAME			= "Invalid profile name.";
-MSBTLocale.MSG_NEW_SCROLL_AREA				= "New Scroll Area";
-MSBTLocale.MSG_SCROLL_AREA_ALREADY_EXISTS	= "Scroll area name already exists.";
-MSBTLocale.MSG_INVALID_SCROLL_AREA_NAME		= "Invalid scroll area name.";
-MSBTLocale.MSG_ACKNOWLEDGE_TEXT				= "Are you sure you wish to perform this action?";
-MSBTLocale.MSG_NORMAL_PREVIEW_TEXT			= "Normal";
-MSBTLocale.MSG_INVALID_SOUND_FILE			= "Sound must be a .mp3 or .wav file.";
-MSBTLocale.MSG_NEW_TRIGGER					= "New Trigger";
-MSBTLocale.MSG_TRIGGER_CLASSES				= "Trigger Classes";
-MSBTLocale.MSG_MAIN_EVENTS					= "Main Events";
-MSBTLocale.MSG_TRIGGER_EXCEPTIONS			= "Trigger Exceptions";
-MSBTLocale.MSG_SKILLS						= "Skills";
-MSBTLocale.MSG_SKILL_ALREADY_EXISTS			= "Skill name already exists.";
-MSBTLocale.MSG_INVALID_SKILL_NAME			= "Invalid skill name.";
-MSBTLocale.MSG_HOSTILE						= "Hostile";
-MSBTLocale.MSG_ANY							= "Any";
-MSBTLocale.MSG_RISES_ABOVE					= "Rises Above";
-MSBTLocale.MSG_FALLS_BELOW					= "Falls Below";
+L.MSG_NEW_PROFILE					= "New Profile";
+L.MSG_PROFILE_ALREADY_EXISTS		= "Profile already exists.";
+L.MSG_INVALID_PROFILE_NAME			= "Invalid profile name.";
+L.MSG_NEW_SCROLL_AREA				= "New Scroll Area";
+L.MSG_SCROLL_AREA_ALREADY_EXISTS	= "Scroll area name already exists.";
+L.MSG_INVALID_SCROLL_AREA_NAME		= "Invalid scroll area name.";
+L.MSG_ACKNOWLEDGE_TEXT				= "Are you sure you wish to perform this action?";
+L.MSG_NORMAL_PREVIEW_TEXT			= "Normal";
+L.MSG_INVALID_SOUND_FILE			= "Sound must be a .mp3 or .wav file.";
+L.MSG_NEW_TRIGGER					= "New Trigger";
+L.MSG_TRIGGER_CLASSES				= "Trigger Classes";
+L.MSG_MAIN_EVENTS					= "Main Events";
+L.MSG_TRIGGER_EXCEPTIONS			= "Trigger Exceptions";
+L.MSG_SKILLS						= "Skills";
+L.MSG_SKILL_ALREADY_EXISTS			= "Skill name already exists.";
+L.MSG_INVALID_SKILL_NAME			= "Invalid skill name.";
+L.MSG_HOSTILE						= "Hostile";
+L.MSG_ANY							= "Any";
+L.MSG_RISES_ABOVE					= "Rises Above";
+L.MSG_FALLS_BELOW					= "Falls Below";
 
 
 ------------------------------
 -- Class Names.
 ------------------------------
 
-local obj = MSBTLocale.CLASS_NAMES;
+local obj = L.CLASS_NAMES;
 obj["DRUID"]	= "Druid";
 obj["HUNTER"]	= "Hunter";
 obj["MAGE"]		= "Mage";
@@ -87,7 +87,7 @@ obj["WARRIOR"]	= "Warrior";
 -- Interface tabs
 ------------------------------
 
-obj = MSBTLocale.TABS;
+obj = L.TABS;
 obj[1] = { label="General", tooltip="Display general options."};
 obj[2] = { label="Scroll Areas", tooltip="Display options for creating, deleting, and configuring scroll areas.\n\nMouse over the icon buttons for more information."};
 obj[3] = { label="Events", tooltip="Display options for incoming, outgoing, and notification events.\n\nMouse over the icon buttons for more information."};
@@ -101,7 +101,7 @@ obj[7] = { label="Skill Icons", tooltip="Display options for skill icons."};
 -- Interface checkboxes
 ------------------------------
 
-obj = MSBTLocale.CHECKBOXES;
+obj = L.CHECKBOXES;
 obj["enableMSBT"]				= { label="Enable Mik's Scrolling Battle Text", tooltip="Enable MSBT."};
 obj["stickyCrits"]				= { label="Sticky Crits", tooltip="Display crits using the sticky style."};
 obj["gameDamage"]				= { label="Game Damage", tooltip="Display blizzard's default damage above the enemy's heads."};
@@ -138,7 +138,7 @@ obj["reverseLogic"]				= { label="Reverse Logic", tooltip="Reverses the meaning 
 -- Interface dropdowns
 ------------------------------
 
-obj = MSBTLocale.DROPDOWNS;
+obj = L.DROPDOWNS;
 obj["profile"]				= { label="Current Profile:", tooltip="Sets the current profile."};
 obj["normalFont"]			= { label="Normal Font:", tooltip="Sets the font that will be used for non-crits."};
 obj["critFont"]				= { label="Crit Font:", tooltip="Sets the font that will be used for crits."};
@@ -164,7 +164,7 @@ obj["warriorStance"]		= { label="Warrior Stance:", tooltip="The stance the warri
 -- Interface buttons
 ------------------------------
 
-obj = MSBTLocale.BUTTONS;
+obj = L.BUTTONS;
 obj["copyProfile"]				= { label="Copy Profile", tooltip="Copies the profile to a new profile with the name you specify."};
 obj["resetProfile"]				= { label="Reset Profile", tooltip="Resets the profile to the default settings."};
 obj["deleteProfile"]			= { label="Delete Profile", tooltip="Deletes the profile."};
@@ -210,7 +210,7 @@ obj["cooldownExclusions"]		= { label="Cooldown Exclusions", tooltip="Specify ski
 -- Interface editboxes
 ------------------------------
 
-obj = MSBTLocale.EDITBOXES;
+obj = L.EDITBOXES;
 obj["copyProfile"]		= { label="New profile name:", tooltip="Name of the new profile to copy the currently selected one to."};
 obj["scrollAreaName"]	= { label="New scroll area name:", tooltip="New name for the scroll area."};
 obj["xOffset"]			= { label="X Offset:", tooltip="The X offset of the selected scroll area."};
@@ -226,7 +226,7 @@ obj["substitutionText"]	= { label="Substition text:", tooltip="The text to be su
 -- Interface sliders
 ------------------------------
 
-obj = MSBTLocale.SLIDERS;
+obj = L.SLIDERS;
 obj["animationSpeed"]		= { label="Animation Speed", tooltip="Sets the master animation speed.\n\nEach scroll area may also be configured to have its own independent speed."};
 obj["normalFontSize"]		= { label="Normal Size", tooltip="Sets the font size for non-crits."};
 obj["normalFontOpacity"]	= { label="Normal Opacity", tooltip="Sets the font opacity for non-crits."};
@@ -249,7 +249,7 @@ obj["genericAmount"]		= { label="Amount", tooltip="Select the amount."};
 ------------------------------
 -- Event categories
 ------------------------------
-obj = MSBTLocale.EVENT_CATEGORIES;
+obj = L.EVENT_CATEGORIES;
 obj[1] = "Incoming Player";
 obj[2] = "Incoming Pet";
 obj[3] = "Outgoing Player";
@@ -261,7 +261,7 @@ obj[5] = "Notification";
 -- Event codes
 ------------------------------
 
-obj = MSBTLocale.EVENT_CODES;
+obj = L.EVENT_CODES;
 obj["DAMAGE_TAKEN"]			= "%a - Amount of damage taken.\n";
 obj["HEALING_TAKEN"]		= "%a - Amount of healing taken.\n";
 obj["DAMAGE_DONE"]			= "%a - Amount of damage done.\n";
@@ -300,7 +300,7 @@ obj["POWER_TYPE"]			= "%p - Type of power (energy, rage, mana).\n";
 -- Incoming events
 ------------------------------
 
-obj = MSBTLocale.INCOMING_PLAYER_EVENTS;
+obj = L.INCOMING_PLAYER_EVENTS;
 obj[1]	= { label="Melee Hits", tooltip="Enable incoming melee hits."};
 obj[2]	= { label="Melee Crits", tooltip="Enable incoming melee crits."};
 obj[3]	= { label="Melee Misses", tooltip="Enable incoming melee misses."};
@@ -326,7 +326,7 @@ obj[22]	= { label="Crit Heals", tooltip="Enable incoming crit heals."};
 obj[23]	= { label="Heals Over Time", tooltip="Enable incoming heals over time."};
 obj[24]	= { label="Environmental Damage", tooltip="Enable environmental (falling, drowning, lava, etc...) damage."};
 
-obj = MSBTLocale.INCOMING_PET_EVENTS;
+obj = L.INCOMING_PET_EVENTS;
 obj[1]	= { label="Melee Hits", tooltip="Enable your pet's incoming melee hits."};
 obj[2]	= { label="Melee Crits", tooltip="Enable your pet's incoming melee crits."};
 obj[3]	= { label="Melee Misses", tooltip="Enable your pet's incoming melee misses."};
@@ -354,7 +354,7 @@ obj[21]	= { label="Heals Over Time", tooltip="Enable your pet's incoming heals o
 -- Outgoing events
 ------------------------------
 
-obj = MSBTLocale.OUTGOING_PLAYER_EVENTS;
+obj = L.OUTGOING_PLAYER_EVENTS;
 obj[1]	= { label="Melee Hits", tooltip="Enable outgoing melee hits."};
 obj[2]	= { label="Melee Crits", tooltip="Enable outgoing melee crits."};
 obj[3]	= { label="Melee Misses", tooltip="Enable outgoing melee misses."};
@@ -382,7 +382,7 @@ obj[24]	= { label="Crit Heals", tooltip="Enable outgoing crit heals."};
 obj[25]	= { label="Heals Over Time", tooltip="Enable outgoing heals over time."};
 obj[26] = { label="Dispels", tooltip="Enable outgoing dispels."};
 
-obj = MSBTLocale.OUTGOING_PET_EVENTS;
+obj = L.OUTGOING_PET_EVENTS;
 obj[1]	= { label="Melee Hits", tooltip="Enable your pet's outgoing melee hits."};
 obj[2]	= { label="Melee Crits", tooltip="Enable your pet's outgoing melee crits."};
 obj[3]	= { label="Melee Misses", tooltip="Enable your pet's outgoing melee misses."};
@@ -410,7 +410,7 @@ obj[21] = { label="Dispels", tooltip="Enable your pet's outgoing dispels."};
 -- Notification events
 ------------------------------
 
-obj = MSBTLocale.NOTIFICATION_EVENTS;
+obj = L.NOTIFICATION_EVENTS;
 obj[1]	= { label="Debuffs", tooltip="Enable debuffs you are afflicted by."};
 obj[2]	= { label="Buffs", tooltip="Enable buffs you receive."};
 obj[3]	= { label="Item Buffs", tooltip="Enable buffs your items receive."};
@@ -442,7 +442,7 @@ obj[24]	= { label="Money Gains", tooltip="Enable money you gain."};
 ------------------------------
 
 -- Holds the available trigger main events.
-obj = MSBTLocale.TRIGGER_MAIN_EVENTS;
+obj = L.TRIGGER_MAIN_EVENTS;
 obj["Health"]				= "Health Threshold";
 obj["Mana"]					= "Mana Threshold";
 obj["Energy"]				= "Energy Threshold";
@@ -460,7 +460,7 @@ obj["KillingBlow"]			= "Killing Blow";
 
 
 -- Holds the available trigger exceptions.
-obj = MSBTLocale.TRIGGER_EXCEPTIONS;
+obj = L.TRIGGER_EXCEPTIONS;
 obj["BuffActive"]				= "Buff Active";
 obj["InsufficientPower"]		= "Insufficient Power";
 obj["InsufficientComboPoints"]	= "Insufficient Combo Points";
@@ -477,13 +477,13 @@ obj["WarriorStance"]			= "Warrior Stance";
 ------------------------------
 
 -- Font outlines.
-obj = MSBTLocale.OUTLINES;
+obj = L.OUTLINES;
 obj[1] = "None";
 obj[2] = "Thin";
 obj[3] = "Thick";
 
 -- Text aligns.
-obj = MSBTLocale.TEXT_ALIGNS;
+obj = L.TEXT_ALIGNS;
 obj[1] = "Left";
 obj[2] = "Center";
 obj[3] = "Right";
@@ -493,7 +493,7 @@ obj[3] = "Right";
 -- Sound info
 ------------------------------
 
-obj = MSBTLocale.SOUNDS;
+obj = L.SOUNDS;
 obj["LowMana"]		= "Low Mana";
 obj["LowHealth"]	= "Low Health";
 
@@ -503,7 +503,7 @@ obj["LowHealth"]	= "Low Health";
 ------------------------------
 
 -- Animation styles
-obj = MSBTLocale.ANIMATION_STYLE_DATA;
+obj = L.ANIMATION_STYLE_DATA;
 obj["Horizontal"]	= "Horizontal";
 obj["Parabola"]		= "Parabola";
 obj["Straight"]		= "Straight";

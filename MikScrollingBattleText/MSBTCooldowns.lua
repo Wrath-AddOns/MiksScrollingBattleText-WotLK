@@ -46,7 +46,6 @@ local lastUpdate = 0;
 -------------------------------------------------------------------------------
 
 -- Local references to certain MSBT modules for faster access.
-local MSBTLocale = MikSBT.Locale;
 local MSBTProfiles = MikSBT.Profiles;
 
 -- Local references to certain functions for faster access.

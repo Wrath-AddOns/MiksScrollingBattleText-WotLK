@@ -45,11 +45,11 @@ local skillsTable = {};
 local MSBTOptMain = MSBTOptions.Main;
 local MSBTControls = MSBTOptions.Controls;
 local MSBTPopups = MSBTOptions.Popups;
-local MSBTLocale = MikSBT.Locale;
 local MSBTProfiles = MikSBT.Profiles;
 local MSBTAnimations = MikSBT.Animations;
 local MSBTTriggers = MikSBT.Triggers;
 local MSBTCooldowns = MikSBT.Cooldowns;
+local L = MikSBT.translations;
 
 -- Local references to certain functions for faster access.
 local EraseTable = MikSBT.EraseTable;
@@ -172,11 +172,11 @@ end
 -- ****************************************************************************
 local function GenerelTab_ValidateProfileName(profileName)
  if (not profileName or profileName == "") then
-  return MSBTLocale.MSG_INVALID_PROFILE_NAME;
+  return L.MSG_INVALID_PROFILE_NAME;
  end
 
  if (MSBTProfiles.savedVariables.profiles[profileName]) then
-  return MSBTLocale.MSG_PROFILE_ALREADY_EXISTS;
+  return L.MSG_PROFILE_ALREADY_EXISTS;
  end
 end
 
@@ -256,7 +256,7 @@ local function GeneralTab_Create()
  
  -- Enable checkbox.
  local checkbox = MSBTControls.CreateCheckbox(tabFrame);
- local objLocale = MSBTLocale.CHECKBOXES["enableMSBT"];
+ local objLocale = L.CHECKBOXES["enableMSBT"];
  checkbox:Configure(28, objLocale.label, objLocale.tooltip);
  checkbox:SetPoint("TOPLEFT", tabFrame, "TOPLEFT", 5, -5);
  checkbox:SetClickHandler(
@@ -269,7 +269,7 @@ local function GeneralTab_Create()
 
  -- Profile dropdown.
  local dropdown =  MSBTControls.CreateDropdown(tabFrame);
- objLocale = MSBTLocale.DROPDOWNS["profile"];
+ objLocale = L.DROPDOWNS["profile"];
  dropdown:Configure(180, objLocale.label, objLocale.tooltip);
  dropdown:SetPoint("TOPLEFT", checkbox, "BOTTOMLEFT", 0, -30);
  dropdown:SetChangeHandler(
@@ -284,14 +284,14 @@ local function GeneralTab_Create()
  
  -- Copy profile button.
  local button = MSBTControls.CreateOptionButton(tabFrame);
- objLocale = MSBTLocale.BUTTONS["copyProfile"];
+ objLocale = L.BUTTONS["copyProfile"];
  button:Configure(20, objLocale.label, objLocale.tooltip);
  button:SetPoint("TOPLEFT", dropdown, "BOTTOMLEFT", 0, -20);
  button:SetClickHandler(
    function (this)
-    local objLocale = MSBTLocale.EDITBOXES["copyProfile"];
+    local objLocale = L.EDITBOXES["copyProfile"];
     EraseTable(configTable);
-    configTable.defaultText = MSBTLocale.MSG_NEW_PROFILE;
+    configTable.defaultText = L.MSG_NEW_PROFILE;
     configTable.editboxLabel = objLocale.label;
     configTable.editboxTooltip = objLocale.tooltip
     configTable.parentFrame = tabFrame;
@@ -307,7 +307,7 @@ local function GeneralTab_Create()
 
  -- Reset profile button.
  button = MSBTControls.CreateOptionButton(tabFrame);
- objLocale = MSBTLocale.BUTTONS["resetProfile"];
+ objLocale = L.BUTTONS["resetProfile"];
  button:Configure(20, objLocale.label, objLocale.tooltip);
  button:SetPoint("LEFT", controls.copyProfileButton, "RIGHT", 10, 0);
  button:SetClickHandler(
@@ -325,7 +325,7 @@ local function GeneralTab_Create()
  
  -- Delete profile button.
  button = MSBTControls.CreateOptionButton(tabFrame);
- objLocale = MSBTLocale.BUTTONS["deleteProfile"];
+ objLocale = L.BUTTONS["deleteProfile"];
  button:Configure(20, objLocale.label, objLocale.tooltip);
  button:SetPoint("LEFT", controls.resetProfileButton, "RIGHT", 10, 0);
  button:SetClickHandler(
@@ -346,7 +346,7 @@ local function GeneralTab_Create()
 
  -- Animation speed slider.
  local slider = MSBTControls.CreateSlider(tabFrame);
- objLocale = MSBTLocale.SLIDERS["animationSpeed"]; 
+ objLocale = L.SLIDERS["animationSpeed"]; 
  slider:Configure(180, objLocale.label, objLocale.tooltip);
  slider:SetPoint("TOPLEFT", controls.copyProfileButton, "BOTTOMLEFT", 0, -45);
  slider:SetMinMaxValues(20, 250);
@@ -361,7 +361,7 @@ local function GeneralTab_Create()
  
  -- Enable sounds checkbox.
  checkbox = MSBTControls.CreateCheckbox(tabFrame);
- objLocale = MSBTLocale.CHECKBOXES["enableSounds"];
+ objLocale = L.CHECKBOXES["enableSounds"];
  checkbox:Configure(28, objLocale.label, objLocale.tooltip);
  checkbox:SetPoint("BOTTOMRIGHT", tabFrame, "BOTTOMRIGHT", -10, 15);
  checkbox:SetClickHandler(
@@ -373,7 +373,7 @@ local function GeneralTab_Create()
 
  -- Game healing checkbox.
  checkbox = MSBTControls.CreateCheckbox(tabFrame);
- objLocale = MSBTLocale.CHECKBOXES["gameHealing"];
+ objLocale = L.CHECKBOXES["gameHealing"];
  checkbox:Configure(28, objLocale.label, objLocale.tooltip);
  checkbox:SetPoint("BOTTOMRIGHT", controls.enableSoundsCheckbox, "TOPRIGHT", 0, 0);
  checkbox:SetClickHandler(
@@ -386,7 +386,7 @@ local function GeneralTab_Create()
  
  -- Game damage checkbox.
  checkbox = MSBTControls.CreateCheckbox(tabFrame);
- objLocale = MSBTLocale.CHECKBOXES["gameDamage"];
+ objLocale = L.CHECKBOXES["gameDamage"];
  checkbox:Configure(28, objLocale.label, objLocale.tooltip);
  checkbox:SetPoint("BOTTOMRIGHT", controls.gameHealingCheckbox, "TOPRIGHT", 0, 0);
  checkbox:SetClickHandler(
@@ -399,7 +399,7 @@ local function GeneralTab_Create()
 
  -- Sticky crits checkbox.
  checkbox = MSBTControls.CreateCheckbox(tabFrame);
- objLocale = MSBTLocale.CHECKBOXES["stickyCrits"];
+ objLocale = L.CHECKBOXES["stickyCrits"];
  checkbox:Configure(28, objLocale.label, objLocale.tooltip);
  checkbox:SetPoint("BOTTOMRIGHT", controls.gameDamageCheckbox, "TOPRIGHT", 0, 0);
  checkbox:SetClickHandler(
@@ -413,7 +413,7 @@ local function GeneralTab_Create()
 
   -- Damage colors button.
  button = MSBTControls.CreateOptionButton(tabFrame);
- objLocale = MSBTLocale.BUTTONS["damageColors"];
+ objLocale = L.BUTTONS["damageColors"];
  button:Configure(20, objLocale.label, objLocale.tooltip);
  button:SetPoint("BOTTOMLEFT", tabFrame, "BOTTOMLEFT", 5, 15);
  button:SetClickHandler(
@@ -432,7 +432,7 @@ local function GeneralTab_Create()
 
  -- Partial effects button.
  button = MSBTControls.CreateOptionButton(tabFrame);
- objLocale = MSBTLocale.BUTTONS["partialEffects"];
+ objLocale = L.BUTTONS["partialEffects"];
  button:Configure(20, objLocale.label, objLocale.tooltip);
  button:SetPoint("BOTTOMLEFT", controls.damageColorsButton, "TOPLEFT", 0, 10);
  button:SetClickHandler(
@@ -451,7 +451,7 @@ local function GeneralTab_Create()
 
  -- Master font settings button.
  button = MSBTControls.CreateOptionButton(tabFrame);
- objLocale = MSBTLocale.BUTTONS["masterFont"];
+ objLocale = L.BUTTONS["masterFont"];
  button:Configure(20, objLocale.label, objLocale.tooltip);
  button:SetPoint("BOTTOMLEFT", controls.partialEffectsButton, "TOPLEFT", 0, 10);
  button:SetClickHandler(
@@ -533,11 +533,11 @@ end
 -- ****************************************************************************
 local function ScrollAreasTab_ValidateScrollAreaName(scrollAreaName)
  if (not scrollAreaName or scrollAreaName == "") then
-  return MSBTLocale.MSG_INVALID_SCROLL_AREA_NAME;
+  return L.MSG_INVALID_SCROLL_AREA_NAME;
  end
 
  for saKey, saSettings in pairs(MSBTAnimations.scrollAreas) do
-  if (saSettings.name == scrollAreaName) then return MSBTLocale.MSG_SCROLL_AREA_ALREADY_EXISTS; end
+  if (saSettings.name == scrollAreaName) then return L.MSG_SCROLL_AREA_ALREADY_EXISTS; end
  end
 end
 
@@ -585,7 +585,7 @@ end
 -- ****************************************************************************
 local function ScrollAreasTab_EditNameButtonOnClick(this)
   local saKey = this:GetParent().scrollAreaKey;
-  local objLocale = MSBTLocale.EDITBOXES["scrollAreaName"];
+  local objLocale = L.EDITBOXES["scrollAreaName"];
   EraseTable(configTable);
   configTable.defaultText = MSBTProfiles.currentProfile.scrollAreas[saKey].name;
   configTable.editboxLabel = objLocale.label;
@@ -712,7 +712,7 @@ local function ScrollAreasTab_CreateLine(this)
 
  -- Enable checkbox.
  local checkbox = MSBTControls.CreateCheckbox(frame);
- local objLocale = MSBTLocale.CHECKBOXES["enableScrollArea"];
+ local objLocale = L.CHECKBOXES["enableScrollArea"];
  checkbox:Configure(24, nil, objLocale.tooltip);
  checkbox:SetPoint("LEFT", frame, "LEFT", 5, 0);
  checkbox:SetClickHandler(ScrollAreasTab_EnableOnClick);
@@ -721,7 +721,7 @@ local function ScrollAreasTab_CreateLine(this)
 
  -- Delete scroll area button. 
  button = MSBTControls.CreateIconButton(frame, "Delete");
- objLocale = MSBTLocale.BUTTONS["deleteScrollArea"];
+ objLocale = L.BUTTONS["deleteScrollArea"];
  button:SetTooltip(objLocale.tooltip);
  button:SetPoint("RIGHT", frame, "RIGHT", -10, 0);
  button:SetClickHandler(ScrollAreasTab_DeleteButtonOnClick);
@@ -730,7 +730,7 @@ local function ScrollAreasTab_CreateLine(this)
 
  -- Edit scroll area name button. 
  local button = MSBTControls.CreateIconButton(frame, "Configure");
- objLocale = MSBTLocale.BUTTONS["editScrollAreaName"];
+ objLocale = L.BUTTONS["editScrollAreaName"];
  button:SetTooltip(objLocale.tooltip);
  button:SetPoint("RIGHT", controls[#controls], "LEFT", 0, 0);
  button:SetClickHandler(ScrollAreasTab_EditNameButtonOnClick);
@@ -739,7 +739,7 @@ local function ScrollAreasTab_CreateLine(this)
  
  -- Scroll area font settings button. 
  button = MSBTControls.CreateIconButton(frame, "FontSettings");
- objLocale = MSBTLocale.BUTTONS["scrollAreaFontSettings"];
+ objLocale = L.BUTTONS["scrollAreaFontSettings"];
  button:SetTooltip(objLocale.tooltip);
  button:SetPoint("RIGHT", controls[#controls], "LEFT", 0, 0);
  button:SetClickHandler(ScrollAreasTab_FontButtonOnClick);
@@ -785,14 +785,14 @@ local function ScrollAreasTab_Create()
 
  -- Add scroll area button.
  local button = MSBTControls.CreateOptionButton(tabFrame);
- local objLocale = MSBTLocale.BUTTONS["addScrollArea"];
+ local objLocale = L.BUTTONS["addScrollArea"];
  button:Configure(20, objLocale.label, objLocale.tooltip);
  button:SetPoint("BOTTOMLEFT", texture, "TOPLEFT", 5, 15);
  button:SetClickHandler(
    function (this)
-    objLocale = MSBTLocale.EDITBOXES["scrollAreaName"];
+    objLocale = L.EDITBOXES["scrollAreaName"];
     EraseTable(configTable);
-    configTable.defaultText = MSBTLocale.MSG_NEW_SCROLL_AREA;
+    configTable.defaultText = L.MSG_NEW_SCROLL_AREA;
     configTable.editboxLabel = objLocale.label;
     configTable.editboxTooltip = objLocale.tooltip
     configTable.parentFrame = tabFrames.scrollAreas;
@@ -808,7 +808,7 @@ local function ScrollAreasTab_Create()
  
  -- Configure scroll areas button.
  button = MSBTControls.CreateOptionButton(tabFrame);
- objLocale = MSBTLocale.BUTTONS["configScrollAreas"];
+ objLocale = L.BUTTONS["configScrollAreas"];
  button:Configure(20, objLocale.label, objLocale.tooltip);
  button:SetPoint("BOTTOMRIGHT", texture, "TOPRIGHT", -5, 15);
  button:SetClickHandler(
@@ -877,8 +877,8 @@ end
 -- codes.
 -- ****************************************************************************
 local function EventsTab_SetupEvents()
- local c = MSBTLocale.EVENT_CODES;
- local obj = MSBTLocale.INCOMING_PLAYER_EVENTS;
+ local c = L.EVENT_CODES;
+ local obj = L.INCOMING_PLAYER_EVENTS;
  EventsTab_SetupEvent(obj[1], "INCOMING_DAMAGE", c.DAMAGE_TAKEN .. c.ATTACKER_NAME);
  EventsTab_SetupEvent(obj[2], "INCOMING_DAMAGE_CRIT", c.DAMAGE_TAKEN .. c.ATTACKER_NAME);
  EventsTab_SetupEvent(obj[3], "INCOMING_MISS", c.ATTACKER_NAME);
@@ -904,7 +904,7 @@ local function EventsTab_SetupEvents()
  EventsTab_SetupEvent(obj[23], "INCOMING_HOT", c.HEALING_TAKEN .. c.HEALER_NAME .. c.SPELL_NAME .. c.SKILL_LONG);
  EventsTab_SetupEvent(obj[24], "INCOMING_ENVIRONMENTAL", c.DAMAGE_TAKEN .. c.ENVIRONMENTAL_DAMAGE);
 
- obj = MSBTLocale.INCOMING_PET_EVENTS;
+ obj = L.INCOMING_PET_EVENTS;
  EventsTab_SetupEvent(obj[1], "PET_INCOMING_DAMAGE", c.DAMAGE_TAKEN .. c.ATTACKER_NAME);
  EventsTab_SetupEvent(obj[2], "PET_INCOMING_DAMAGE_CRIT", c.DAMAGE_TAKEN .. c.ATTACKER_NAME);
  EventsTab_SetupEvent(obj[3], "PET_INCOMING_MISS", c.ATTACKER_NAME);
@@ -927,7 +927,7 @@ local function EventsTab_SetupEvents()
  EventsTab_SetupEvent(obj[20], "PET_INCOMING_HEAL_CRIT", c.HEALING_TAKEN .. c.HEALER_NAME .. c.SPELL_NAME .. c.SKILL_LONG);
  EventsTab_SetupEvent(obj[21], "PET_INCOMING_HOT", c.HEALING_TAKEN .. c.HEALER_NAME .. c.SPELL_NAME .. c.SKILL_LONG);
 
- obj = MSBTLocale.OUTGOING_PLAYER_EVENTS;
+ obj = L.OUTGOING_PLAYER_EVENTS;
  EventsTab_SetupEvent(obj[1], "OUTGOING_DAMAGE", c.DAMAGE_DONE .. c.ATTACKED_NAME);
  EventsTab_SetupEvent(obj[2], "OUTGOING_DAMAGE_CRIT", c.DAMAGE_DONE .. c.ATTACKED_NAME);
  EventsTab_SetupEvent(obj[3], "OUTGOING_MISS", c.ATTACKED_NAME);
@@ -955,7 +955,7 @@ local function EventsTab_SetupEvents()
  EventsTab_SetupEvent(obj[25], "OUTGOING_HOT", c.HEALING_DONE .. c.HEALED_NAME .. c.SPELL_NAME .. c.SKILL_LONG);
  EventsTab_SetupEvent(obj[26], "OUTGOING_DISPEL", c.BUFF_NAME .. c.SKILL_LONG);
  
- obj = MSBTLocale.OUTGOING_PET_EVENTS;
+ obj = L.OUTGOING_PET_EVENTS;
  EventsTab_SetupEvent(obj[1], "PET_OUTGOING_DAMAGE", c.DAMAGE_DONE .. c.ATTACKED_NAME);
  EventsTab_SetupEvent(obj[2], "PET_OUTGOING_DAMAGE_CRIT", c.DAMAGE_DONE .. c.ATTACKED_NAME);
  EventsTab_SetupEvent(obj[3], "PET_OUTGOING_MISS", c.ATTACKED_NAME);
@@ -978,7 +978,7 @@ local function EventsTab_SetupEvents()
  EventsTab_SetupEvent(obj[20], "PET_OUTGOING_SPELL_EVADE", c.ATTACKED_NAME .. c.SKILL_NAME .. c.SKILL_LONG);
  EventsTab_SetupEvent(obj[21], "PET_OUTGOING_DISPEL", c.BUFF_NAME .. c.SKILL_LONG);
  
- obj = MSBTLocale.NOTIFICATION_EVENTS;
+ obj = L.NOTIFICATION_EVENTS;
  EventsTab_SetupEvent(obj[1], "NOTIFICATION_DEBUFF", c.DEBUFF_NAME .. c.SKILL_LONG);
  EventsTab_SetupEvent(obj[2], "NOTIFICATION_BUFF", c.BUFF_NAME .. c.SKILL_LONG);
  EventsTab_SetupEvent(obj[3], "NOTIFICATION_ITEM_BUFF", c.ITEM_BUFF_NAME .. c.SKILL_LONG);
@@ -1013,7 +1013,7 @@ local function EventsTab_ChangeEventCategory(category)
  local controls = tabFrames.events.controls;
  
  controls.eventsListbox:Clear();
- for index in ipairs(MSBTLocale[category]) do
+ for index in ipairs(L[category]) do
   controls.eventsListbox:AddItem(index);
  end
 end
@@ -1033,7 +1033,7 @@ end
 -- Moves all the events in the selected category to the passed scroll area.
 -- ****************************************************************************
 local function EventsTab_MoveAll(scrollArea)
- local events = MSBTLocale[tabFrames.events.controls.eventCategoryDropdown:GetSelectedID()];
+ local events = L[tabFrames.events.controls.eventCategoryDropdown:GetSelectedID()];
  for index, eventData in ipairs(events) do
   MSBTProfiles.SetOption("events." .. eventData.eventType, "scrollArea", scrollArea);
  end
@@ -1207,7 +1207,7 @@ local function EventsTab_CreateLine(this)
  
  -- Event settings button. 
  button = MSBTControls.CreateIconButton(frame, "Configure");
- objLocale = MSBTLocale.BUTTONS["eventSettings"];
+ objLocale = L.BUTTONS["eventSettings"];
  button:SetTooltip(objLocale.tooltip);
  button:SetPoint("RIGHT", frame, "RIGHT", -10, 0);
  button:SetClickHandler(EventsTab_SettingsButtonOnClick);
@@ -1215,7 +1215,7 @@ local function EventsTab_CreateLine(this)
 
  -- Event font settings button. 
  button = MSBTControls.CreateIconButton(frame, "FontSettings");
- objLocale = MSBTLocale.BUTTONS["eventFontSettings"];
+ objLocale = L.BUTTONS["eventFontSettings"];
  button:SetTooltip(objLocale.tooltip);
  button:SetPoint("RIGHT", controls[#controls], "LEFT", 0, 0);
  button:SetClickHandler(EventsTab_FontButtonOnClick);
@@ -1237,7 +1237,7 @@ end
 -- Called by listbox to display a line.
 -- ****************************************************************************
 local function EventsTab_DisplayLine(this, line, key, isSelected)
- local events = MSBTLocale[tabFrames.events.controls.eventCategoryDropdown:GetSelectedID()];
+ local events = L[tabFrames.events.controls.eventCategoryDropdown:GetSelectedID()];
  local eventType = events[key].eventType;
  local eventSettings = MSBTProfiles.currentProfile.events[eventType];
  local objLocale = events[key];
@@ -1270,7 +1270,7 @@ local function EventsTab_Create()
 
  -- Move all button.
  local button = MSBTControls.CreateOptionButton(tabFrame);
- objLocale = MSBTLocale.BUTTONS["moveAll"];
+ objLocale = L.BUTTONS["moveAll"];
  button:Configure(15, objLocale.label, objLocale.tooltip);
  button:SetPoint("BOTTOMLEFT", texture, "TOPLEFT", 5, 5);
  button:SetClickHandler(
@@ -1289,12 +1289,12 @@ local function EventsTab_Create()
 
  -- Toggle all button.
  local button = MSBTControls.CreateOptionButton(tabFrame);
- objLocale = MSBTLocale.BUTTONS["toggleAll"];
+ objLocale = L.BUTTONS["toggleAll"];
  button:Configure(15, objLocale.label, objLocale.tooltip);
  button:SetPoint("BOTTOMLEFT", controls.moveButton, "TOPLEFT", 0, 10);
  button:SetClickHandler(
   function (this)
-   local events = MSBTLocale[controls.eventCategoryDropdown:GetSelectedID()];
+   local events = L[controls.eventCategoryDropdown:GetSelectedID()];
    for index, eventData in ipairs(events) do
     MSBTProfiles.SetOption("events." .. eventData.eventType, "disabled", not MSBTProfiles.currentProfile.events[eventData.eventType].disabled);
     controls.eventsListbox:Refresh();
@@ -1305,7 +1305,7 @@ local function EventsTab_Create()
 
  -- Event category dropdown.
  local dropdown = MSBTControls.CreateDropdown(tabFrame);
- objLocale = MSBTLocale.DROPDOWNS["eventCategory"];
+ objLocale = L.DROPDOWNS["eventCategory"];
  dropdown:Configure(180, objLocale.label, objLocale.tooltip);
  dropdown:SetPoint("BOTTOMRIGHT", texture, "TOPRIGHT", -5, 8);
  dropdown:SetChangeHandler(
@@ -1328,7 +1328,7 @@ local function EventsTab_Create()
  EventsTab_SetupEvents();
 
  -- Populate the available event categories and select incoming player by default.
- for index, category in ipairs(MSBTLocale.EVENT_CATEGORIES) do
+ for index, category in ipairs(L.EVENT_CATEGORIES) do
   dropdown:AddItem(category, EVENT_CATEGORY_MAP[index]);
  end
  dropdown:SetSelectedID(EVENT_CATEGORY_MAP[1]);
@@ -1583,7 +1583,7 @@ local function TriggersTab_CreateLine(this)
 
  -- Enable checkbox.
  local checkbox = MSBTControls.CreateCheckbox(frame);
- local objLocale = MSBTLocale.CHECKBOXES["enableTrigger"];
+ local objLocale = L.CHECKBOXES["enableTrigger"];
  checkbox:Configure(24, nil, objLocale.tooltip);
  checkbox:SetPoint("LEFT", colorswatch, "RIGHT", 5, 0);
  checkbox:SetPoint("RIGHT", frame, "LEFT", 190, 0);
@@ -1593,7 +1593,7 @@ local function TriggersTab_CreateLine(this)
  
  -- Delete trigger button. 
  button = MSBTControls.CreateIconButton(frame, "Delete");
- objLocale = MSBTLocale.BUTTONS["deleteTrigger"];
+ objLocale = L.BUTTONS["deleteTrigger"];
  button:SetTooltip(objLocale.tooltip);
  button:SetPoint("RIGHT", frame, "RIGHT", -10, 0);
  button:SetClickHandler(TriggersTab_DeleteButtonOnClick);
@@ -1601,7 +1601,7 @@ local function TriggersTab_CreateLine(this)
 
  -- Event settings button. 
  button = MSBTControls.CreateIconButton(frame, "Configure");
- objLocale = MSBTLocale.BUTTONS["eventSettings"];
+ objLocale = L.BUTTONS["eventSettings"];
  button:SetTooltip(objLocale.tooltip);
  button:SetPoint("RIGHT", controls[#controls], "LEFT", 0, 0);
  button:SetClickHandler(TriggersTab_EventSettingsButtonOnClick);
@@ -1609,7 +1609,7 @@ local function TriggersTab_CreateLine(this)
 
  -- Event font settings button. 
  button = MSBTControls.CreateIconButton(frame, "FontSettings");
- objLocale = MSBTLocale.BUTTONS["eventFontSettings"];
+ objLocale = L.BUTTONS["eventFontSettings"];
  button:SetTooltip(objLocale.tooltip);
  button:SetPoint("RIGHT", controls[#controls], "LEFT", 0, 0);
  button:SetClickHandler(TriggersTab_FontButtonOnClick);
@@ -1617,7 +1617,7 @@ local function TriggersTab_CreateLine(this)
 
  -- Trigger settings button. 
  button = MSBTControls.CreateIconButton(frame, "TriggerSettings");
- objLocale = MSBTLocale.BUTTONS["triggerSettings"];
+ objLocale = L.BUTTONS["triggerSettings"];
  button:SetTooltip(objLocale.tooltip);
  button:SetPoint("RIGHT", controls[#controls], "LEFT", 0, 0);
  button:SetClickHandler(TriggersTab_TriggerSettingsButtonOnClick);
@@ -1658,14 +1658,14 @@ local function TriggersTab_Create()
 
  -- Add trigger button.
  local button = MSBTControls.CreateOptionButton(tabFrame);
- local objLocale = MSBTLocale.BUTTONS["addTrigger"];
+ local objLocale = L.BUTTONS["addTrigger"];
  button:Configure(20, objLocale.label, objLocale.tooltip);
  button:SetPoint("BOTTOMLEFT", texture, "TOPLEFT", 5, 15);
  button:SetClickHandler(
    function (this)
-    objLocale = MSBTLocale.EDITBOXES["eventMessage"];
+    objLocale = L.EDITBOXES["eventMessage"];
     EraseTable(configTable);
-    configTable.defaultText = MSBTLocale.MSG_NEW_TRIGGER;
+    configTable.defaultText = L.MSG_NEW_TRIGGER;
     configTable.editboxLabel = objLocale.label;
     configTable.editboxTooltip = objLocale.tooltip
     configTable.parentFrame = tabFrames.triggers;
@@ -1758,7 +1758,7 @@ local function SpamTab_Create()
 
  -- Heal threshold slider.
  local slider = MSBTControls.CreateSlider(tabFrame);
- objLocale = MSBTLocale.SLIDERS["healThreshold"];
+ objLocale = L.SLIDERS["healThreshold"];
  slider:Configure(150, objLocale.label, objLocale.tooltip);
  slider:SetPoint("TOPLEFT", tabFrame, "TOPLEFT", 5, -10);
  slider:SetMinMaxValues(0, 1000);
@@ -1772,7 +1772,7 @@ local function SpamTab_Create()
 
  -- Damage threshold slider.
  slider = MSBTControls.CreateSlider(tabFrame);
- objLocale = MSBTLocale.SLIDERS["damageThreshold"];
+ objLocale = L.SLIDERS["damageThreshold"];
  slider:Configure(150, objLocale.label, objLocale.tooltip);
  slider:SetPoint("TOPLEFT", controls.healSlider, "BOTTOMLEFT", 0, -10);
  slider:SetMinMaxValues(0, 500);
@@ -1786,7 +1786,7 @@ local function SpamTab_Create()
 
  -- Power threshold slider.
  slider = MSBTControls.CreateSlider(tabFrame);
- objLocale = MSBTLocale.SLIDERS["powerThreshold"];
+ objLocale = L.SLIDERS["powerThreshold"];
  slider:Configure(150, objLocale.label, objLocale.tooltip);
  slider:SetPoint("TOPLEFT", controls.damageSlider, "BOTTOMLEFT", 0, -10);
  slider:SetMinMaxValues(0, 250);
@@ -1800,7 +1800,7 @@ local function SpamTab_Create()
 
  -- HoT throttling time slider.
  slider = MSBTControls.CreateSlider(tabFrame);
- objLocale = MSBTLocale.SLIDERS["hotThrottleTime"];
+ objLocale = L.SLIDERS["hotThrottleTime"];
  slider:Configure(150, objLocale.label, objLocale.tooltip);
  slider:SetPoint("LEFT", controls.healSlider, "RIGHT", 40, 0);
  slider:SetMinMaxValues(0, 5);
@@ -1814,7 +1814,7 @@ local function SpamTab_Create()
 
  -- DoT throttling time slider.
  slider = MSBTControls.CreateSlider(tabFrame);
- objLocale = MSBTLocale.SLIDERS["dotThrottleTime"];
+ objLocale = L.SLIDERS["dotThrottleTime"];
  slider:Configure(150, objLocale.label, objLocale.tooltip);
  slider:SetPoint("TOPLEFT", controls.hotThrottlingSlider, "BOTTOMLEFT", 0, -10);
  slider:SetMinMaxValues(0, 5);
@@ -1828,7 +1828,7 @@ local function SpamTab_Create()
 
  -- Power throttling time slider.
  slider = MSBTControls.CreateSlider(tabFrame);
- objLocale = MSBTLocale.SLIDERS["powerThrottleTime"];
+ objLocale = L.SLIDERS["powerThrottleTime"];
  slider:Configure(150, objLocale.label, objLocale.tooltip);
  slider:SetPoint("TOPLEFT", controls.dotThrottlingSlider, "BOTTOMLEFT", 0, -10);
  slider:SetMinMaxValues(0, 5);
@@ -1842,7 +1842,7 @@ local function SpamTab_Create()
  
  -- All power gains checkbox.
  local checkbox = MSBTControls.CreateCheckbox(tabFrame);
- local objLocale = MSBTLocale.CHECKBOXES["allPowerGains"];
+ local objLocale = L.CHECKBOXES["allPowerGains"];
  checkbox:Configure(28, objLocale.label, objLocale.tooltip);
  checkbox:SetPoint("TOPLEFT", tabFrame, "TOPLEFT", 5, -150);
  checkbox:SetClickHandler(
@@ -1854,7 +1854,7 @@ local function SpamTab_Create()
 
  -- Hyper regen checkbox.
  checkbox = MSBTControls.CreateCheckbox(tabFrame);
- objLocale = MSBTLocale.CHECKBOXES["hyperRegen"];
+ objLocale = L.CHECKBOXES["hyperRegen"];
  checkbox:Configure(28, objLocale.label, objLocale.tooltip);
  checkbox:SetPoint("TOPLEFT", controls.allPowerCheckbox, "BOTTOMLEFT", 0, 0);
  checkbox:SetClickHandler(
@@ -1866,7 +1866,7 @@ local function SpamTab_Create()
 
  -- Abbreviate skills checkbox.
  checkbox = MSBTControls.CreateCheckbox(tabFrame);
- objLocale = MSBTLocale.CHECKBOXES["abbreviateSkills"];
+ objLocale = L.CHECKBOXES["abbreviateSkills"];
  checkbox:Configure(28, objLocale.label, objLocale.tooltip);
  checkbox:SetPoint("TOPLEFT", controls.hyperRegenCheckbox, "BOTTOMLEFT", 0, 0);
  checkbox:SetClickHandler(
@@ -1878,7 +1878,7 @@ local function SpamTab_Create()
  
  -- Hide skills checkbox.
  checkbox = MSBTControls.CreateCheckbox(tabFrame);
- objLocale = MSBTLocale.CHECKBOXES["hideSkills"];
+ objLocale = L.CHECKBOXES["hideSkills"];
  checkbox:Configure(28, objLocale.label, objLocale.tooltip);
  checkbox:SetPoint("LEFT", controls.powerThrottlingSlider, "LEFT", 0, 0);
  checkbox:SetPoint("TOP", controls.allPowerCheckbox, "TOP", 0, 0);
@@ -1891,7 +1891,7 @@ local function SpamTab_Create()
 
  -- Hide names checkbox.
  checkbox = MSBTControls.CreateCheckbox(tabFrame);
- objLocale = MSBTLocale.CHECKBOXES["hideNames"];
+ objLocale = L.CHECKBOXES["hideNames"];
  checkbox:Configure(28, objLocale.label, objLocale.tooltip);
  checkbox:SetPoint("TOPLEFT", controls.hideSkillsCheckbox, "BOTTOMLEFT");
  checkbox:SetClickHandler(
@@ -1903,7 +1903,7 @@ local function SpamTab_Create()
  
  -- Merge exclusions button.
  button = MSBTControls.CreateOptionButton(tabFrame);
- objLocale = MSBTLocale.BUTTONS["mergeExclusions"];
+ objLocale = L.BUTTONS["mergeExclusions"];
  button:Configure(20, objLocale.label, objLocale.tooltip);
  button:SetPoint("BOTTOMLEFT", tabFrame, "BOTTOMLEFT", 5, 15);
  button:SetClickHandler(
@@ -1928,7 +1928,7 @@ local function SpamTab_Create()
 
  -- Throttle list button.
  local button = MSBTControls.CreateOptionButton(tabFrame);
- objLocale = MSBTLocale.BUTTONS["throttleList"];
+ objLocale = L.BUTTONS["throttleList"];
  button:Configure(20, objLocale.label, objLocale.tooltip);
  button:SetPoint("BOTTOMLEFT", controls.mergeExclusionsButton, "TOPLEFT", 0, 10);
  button:SetClickHandler(
@@ -1954,7 +1954,7 @@ local function SpamTab_Create()
 
  -- Skill substitutions button.
  button = MSBTControls.CreateOptionButton(tabFrame);
- objLocale = MSBTLocale.BUTTONS["skillSubstitutions"];
+ objLocale = L.BUTTONS["skillSubstitutions"];
  button:Configure(20, objLocale.label, objLocale.tooltip);
  button:SetPoint("BOTTOMRIGHT", tabFrame, "BOTTOMRIGHT", -10, 15);
  button:SetClickHandler(
@@ -1980,7 +1980,7 @@ local function SpamTab_Create()
 
  -- Skill suppressions button.
  button = MSBTControls.CreateOptionButton(tabFrame);
- objLocale = MSBTLocale.BUTTONS["skillSuppressions"];
+ objLocale = L.BUTTONS["skillSuppressions"];
  button:Configure(20, objLocale.label, objLocale.tooltip);
  button:SetPoint("BOTTOMLEFT", controls.skillSubstitutionsButton, "TOPLEFT", 0, 10);
  button:SetClickHandler(
@@ -2093,7 +2093,7 @@ local function CooldownsTab_Create()
 
  -- Enable checkbox.
  local checkbox = MSBTControls.CreateCheckbox(tabFrame);
- local objLocale = MSBTLocale.CHECKBOXES["enableCooldowns"];
+ local objLocale = L.CHECKBOXES["enableCooldowns"];
  checkbox:Configure(24, objLocale.label, objLocale.tooltip);
  checkbox:SetPoint("LEFT", colorswatch, "RIGHT", 5, 0);
  checkbox:SetPoint("RIGHT", tabFrame, "TOPLEFT", 190, -10);
@@ -2107,7 +2107,7 @@ local function CooldownsTab_Create()
  
  -- Event settings button. 
  local button = MSBTControls.CreateIconButton(tabFrame, "Configure");
- objLocale = MSBTLocale.BUTTONS["eventSettings"];
+ objLocale = L.BUTTONS["eventSettings"];
  button:SetTooltip(objLocale.tooltip);
  button:SetPoint("TOPRIGHT", tabFrame, "TOPRIGHT", -10, -5);
  button:SetClickHandler(
@@ -2115,9 +2115,9 @@ local function CooldownsTab_Create()
     local eventSettings = MSBTProfiles.currentProfile.events.NOTIFICATION_COOLDOWN;
  
     EraseTable(configTable);
-    configTable.title = MSBTLocale.TABS[6].label;
+    configTable.title = L.TABS[6].label;
     configTable.message = eventSettings.message;
-    configTable.codes = MSBTLocale.EVENT_CODES["COOLDOWN_NAME"];
+    configTable.codes = L.EVENT_CODES["COOLDOWN_NAME"];
     configTable.scrollArea = eventSettings.scrollArea or DEFAULT_SCROLL_AREA;
     configTable.alwaysSticky = eventSettings.alwaysSticky;
     configTable.soundFile = eventSettings.soundFile;
@@ -2135,7 +2135,7 @@ local function CooldownsTab_Create()
 
  -- Font settings button. 
  button = MSBTControls.CreateIconButton(tabFrame, "FontSettings");
- objLocale = MSBTLocale.BUTTONS["eventFontSettings"];
+ objLocale = L.BUTTONS["eventFontSettings"];
  button:SetTooltip(objLocale.tooltip);
  button:SetPoint("RIGHT", controls[#controls], "LEFT", 0, 0);
  button:SetClickHandler(
@@ -2146,7 +2146,7 @@ local function CooldownsTab_Create()
     local fonts = MSBTAnimations.fonts;
  
     EraseTable(configTable);
-    configTable.title = MSBTLocale.TABS[6].label;
+    configTable.title = L.TABS[6].label;
  
     -- Inherit from the correct scroll area.
     local fontName = saSettings.normalFontName;
@@ -2186,7 +2186,7 @@ local function CooldownsTab_Create()
  
  -- Cooldown threshold slider.
  local slider = MSBTControls.CreateSlider(tabFrame);
- objLocale = MSBTLocale.SLIDERS["cooldownThreshold"]; 
+ objLocale = L.SLIDERS["cooldownThreshold"]; 
  slider:Configure(180, objLocale.label, objLocale.tooltip);
  slider:SetPoint("TOPLEFT", controls.colorSwatch, "BOTTOMLEFT", 0, -40);
  slider:SetMinMaxValues(5, 300);
@@ -2200,7 +2200,7 @@ local function CooldownsTab_Create()
 
  -- Cooldown exclusions button.
  button = MSBTControls.CreateOptionButton(tabFrame);
- objLocale = MSBTLocale.BUTTONS["cooldownExclusions"];
+ objLocale = L.BUTTONS["cooldownExclusions"];
  button:Configure(20, objLocale.label, objLocale.tooltip);
  button:SetPoint("TOPLEFT", controls.cooldownSlider, "BOTTOMLEFT", 0, -40);
  button:SetClickHandler(
@@ -2257,7 +2257,7 @@ local function SkillIconsTab_Create()
  
  -- Enable checkbox.
  local checkbox = MSBTControls.CreateCheckbox(tabFrame);
- local objLocale = MSBTLocale.CHECKBOXES["enableIcons"];
+ local objLocale = L.CHECKBOXES["enableIcons"];
  checkbox:Configure(24, objLocale.label, objLocale.tooltip);
  checkbox:SetPoint("TOPLEFT", tabFrame, "TOPLEFT", 5, -10);
  checkbox:SetClickHandler(
@@ -2270,7 +2270,7 @@ local function SkillIconsTab_Create()
 
  -- Exclusive skills checkbox.
  checkbox = MSBTControls.CreateCheckbox(tabFrame);
- local objLocale = MSBTLocale.CHECKBOXES["exclusiveSkills"];
+ local objLocale = L.CHECKBOXES["exclusiveSkills"];
  checkbox:Configure(24, objLocale.label, objLocale.tooltip);
  checkbox:SetPoint("TOPLEFT", controls.enableCheckbox, "BOTTOMLEFT", 20, -10);
  checkbox:SetClickHandler(
@@ -2317,49 +2317,49 @@ local function OnLoad()
  tabFrame:Hide();
  tabFrame:SetScript("OnShow", GeneralTab_OnShow);
  tabFrames.general = tabFrame;
- MSBTOptMain.AddTab(tabFrame, MSBTLocale.TABS[1].label, MSBTLocale.TABS[1].tooltip);
+ MSBTOptMain.AddTab(tabFrame, L.TABS[1].label, L.TABS[1].tooltip);
 
  -- Create an empty frame for the scroll areas tab that will be dynamically created when shown.
  tabFrame = CreateFrame("Frame");
  tabFrame:Hide();
  tabFrame:SetScript("OnShow", ScrollAreasTab_OnShow);
  tabFrames.scrollAreas = tabFrame;
- MSBTOptMain.AddTab(tabFrame, MSBTLocale.TABS[2].label, MSBTLocale.TABS[2].tooltip);
+ MSBTOptMain.AddTab(tabFrame, L.TABS[2].label, L.TABS[2].tooltip);
 
  -- Create an empty frame for the events tab that will be dynamically created when shown.
  tabFrame = CreateFrame("Frame");
  tabFrame:Hide();
  tabFrame:SetScript("OnShow", EventsTab_OnShow);
  tabFrames.events = tabFrame;
- MSBTOptMain.AddTab(tabFrame, MSBTLocale.TABS[3].label, MSBTLocale.TABS[3].tooltip);
+ MSBTOptMain.AddTab(tabFrame, L.TABS[3].label, L.TABS[3].tooltip);
 
  -- Create an empty frame for the triggers tab that will be dynamically created when shown.
  tabFrame = CreateFrame("Frame");
  tabFrame:Hide();
  tabFrame:SetScript("OnShow", TriggersTab_OnShow);
  tabFrames.triggers = tabFrame;
- MSBTOptMain.AddTab(tabFrame, MSBTLocale.TABS[4].label, MSBTLocale.TABS[4].tooltip);
+ MSBTOptMain.AddTab(tabFrame, L.TABS[4].label, L.TABS[4].tooltip);
 
  -- Create an empty frame for the spam tab that will be dynamically created when shown.
  tabFrame = CreateFrame("Frame");
  tabFrame:Hide();
  tabFrame:SetScript("OnShow", SpamTab_OnShow);
  tabFrames.spam = tabFrame;
- MSBTOptMain.AddTab(tabFrame, MSBTLocale.TABS[5].label, MSBTLocale.TABS[5].tooltip);
+ MSBTOptMain.AddTab(tabFrame, L.TABS[5].label, L.TABS[5].tooltip);
 
  -- Create an empty frame for the cooldowns tab that will be dynamically created when shown.
  tabFrame = CreateFrame("Frame");
  tabFrame:Hide();
  tabFrame:SetScript("OnShow", CooldownsTab_OnShow);
  tabFrames.cooldowns = tabFrame;
- MSBTOptMain.AddTab(tabFrame, MSBTLocale.TABS[6].label, MSBTLocale.TABS[6].tooltip);
+ MSBTOptMain.AddTab(tabFrame, L.TABS[6].label, L.TABS[6].tooltip);
 
  -- Create an empty frame for the icons tab that will be dynamically created when shown.
  tabFrame = CreateFrame("Frame");
  tabFrame:Hide();
  tabFrame:SetScript("OnShow", SkillIconsTab_OnShow);
  tabFrames.skillIcons = tabFrame;
- MSBTOptMain.AddTab(tabFrame, MSBTLocale.TABS[7].label, MSBTLocale.TABS[7].tooltip);
+ MSBTOptMain.AddTab(tabFrame, L.TABS[7].label, L.TABS[7].tooltip);
 end
 
 

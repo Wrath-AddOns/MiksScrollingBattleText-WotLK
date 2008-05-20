@@ -87,7 +87,7 @@ local pathTable = {};
 -------------------------------------------------------------------------------
 
 -- Local references to certain MSBT modules for faster access.
-local MSBTLocale = MikSBT.Locale;
+local L = MikSBT.translations;
 
 -- Local references to certain functions for faster access.
 local string_find = string.find;
@@ -105,7 +105,7 @@ local Print = MikSBT.Print;
 local masterProfile = {
  scrollAreas = {
   Incoming = {
-   name					= MSBTLocale.MSG_INCOMING,
+   name					= L.MSG_INCOMING,
    offsetX				= -140,
    offsetY				= -160,
    animationStyle		= "Parabola",
@@ -116,7 +116,7 @@ local masterProfile = {
    stickyTextAlignIndex	= 3,
   },
   Outgoing = {
-   name					= MSBTLocale.MSG_OUTGOING,
+   name					= L.MSG_OUTGOING,
    offsetX				= 100,
    offsetY				= -160,
    animationStyle		= "Parabola",
@@ -127,14 +127,14 @@ local masterProfile = {
    stickyTextAlignIndex	= 1,
   },
   Notification = {
-   name					= MSBTLocale.MSG_NOTIFICATION,
+   name					= L.MSG_NOTIFICATION,
    offsetX				= -175,
    offsetY				= 120,
    scrollHeight			= 200,
    scrollWidth			= 350,
   },
   Static = {
-   name					= MSBTLocale.MSG_STATIC,
+   name					= L.MSG_STATIC,
    offsetX				= -20,
    offsetY				= -300,
    scrollHeight			= 125,
@@ -424,7 +424,7 @@ local masterProfile = {
   },
   OUTGOING_DISPEL = {
    colorB		= 0.5,
-   message		= MSBTLocale.MSG_DISPEL .. "! (%s)",
+   message		= L.MSG_DISPEL .. "! (%s)",
    scrollArea	= "Outgoing",
   },
 
@@ -683,7 +683,7 @@ local masterProfile = {
   }, 
   PET_OUTGOING_DISPEL = {
    colorB		= 0.73,
-   message		= PET .. " " .. MSBTLocale.MSG_DISPEL .. "! (%s)",
+   message		= PET .. " " .. L.MSG_DISPEL .. "! (%s)",
    scrollArea	= "Outgoing",
   },
 
@@ -725,10 +725,10 @@ local masterProfile = {
    message		= "-[%sl]",
   },
   NOTIFICATION_COMBAT_ENTER = {
-   message		= "+" .. MSBTLocale.MSG_COMBAT,
+   message		= "+" .. L.MSG_COMBAT,
   },
   NOTIFICATION_COMBAT_LEAVE = {
-   message		= "-" .. MSBTLocale.MSG_COMBAT,
+   message		= "-" .. L.MSG_COMBAT,
   },
   NOTIFICATION_POWER_GAIN = {
    colorB		= 0,
@@ -741,12 +741,12 @@ local masterProfile = {
   NOTIFICATION_CP_GAIN = {
    colorG		= 0.5,
    colorB		= 0,
-   message		= "%a " .. MSBTLocale.MSG_CP,
+   message		= "%a " .. L.MSG_CP,
   },
   NOTIFICATION_CP_FULL = {
    colorG		= 0.5,
    colorB		= 0,
-   message		= MSBTLocale.MSG_CP_FULL .. "!",
+   message		= L.MSG_CP_FULL .. "!",
    alwaysSticky	= true,
    fontSize		= 26,
   },
@@ -785,7 +785,7 @@ local masterProfile = {
   NOTIFICATION_PC_KILLING_BLOW = {
    colorR		= 0.333,
    colorG		= 0.333,
-   message		= MSBTLocale.MSG_KILLING_BLOW .. "! (%e)",
+   message		= L.MSG_KILLING_BLOW .. "! (%e)",
    alwaysSticky	= true,
    fontSize		= 26,
   },
@@ -793,7 +793,7 @@ local masterProfile = {
    disabled		= true,
    colorR		= 0.333,
    colorG		= 0.333,
-   message		= MSBTLocale.MSG_KILLING_BLOW .. "! (%e)",
+   message		= L.MSG_KILLING_BLOW .. "! (%e)",
    alwaysSticky	= true,
    fontSize		= 26,
   },
@@ -827,7 +827,7 @@ local masterProfile = {
    scrollArea	= "Static",
   },
   NOTIFICATION_COOLDOWN = {
-   message		= "%e " .. MSBTLocale.MSG_READY_NOW .. "!",
+   message		= "%e " .. L.MSG_READY_NOW .. "!",
    scrollArea	= "Static",
    fontSize		= 22,
   },
@@ -924,7 +924,7 @@ local masterProfile = {
   MSBT_TRIGGER_LOW_HEALTH = {
    colorG			= 0.5,
    colorB			= 0.5,
-   message			= MSBTLocale.MSG_TRIGGER_LOW_HEALTH .. "! (%1)",
+   message			= L.MSG_TRIGGER_LOW_HEALTH .. "! (%1)",
    alwaysSticky		= true,
    fontSize			= 26,
    soundFile		= "LowHealth",
@@ -934,7 +934,7 @@ local masterProfile = {
   MSBT_TRIGGER_LOW_MANA = {
    colorR			= 0.5,
    colorG			= 0.5,
-   message			= MSBTLocale.MSG_TRIGGER_LOW_MANA .. "! (%1)",
+   message			= L.MSG_TRIGGER_LOW_MANA .. "! (%1)",
    alwaysSticky		= true,
    fontSize			= 26,
    soundFile		= "LowMana",
@@ -945,7 +945,7 @@ local masterProfile = {
   MSBT_TRIGGER_LOW_PET_HEALTH = {
    colorG			= 0.5,
    colorB			= 0.5,
-   message			= MSBTLocale.MSG_TRIGGER_LOW_PET_HEALTH .. "! (%1)",
+   message			= L.MSG_TRIGGER_LOW_PET_HEALTH .. "! (%1)",
    fontSize			= 26,
    classes			= "HUNTER,MAGE,WARLOCK",
    mainEvents		= "Health[direction=declining;;threshold=40;;unit=pet]",
@@ -1311,10 +1311,13 @@ end
 local function UpdateProfiles()
  -- Loop through all the profiles.
  for profileName, profile in pairs(savedVariables.profiles) do
+  -- Get numeric creation version.
+  local creationVersion = tonumber(select(3, string_find(tostring(profile.creationVersion), "(%d+%.%d+)")));
+
   -- Delete triggers if upgrading from a version prior to 5.1.
-  if (profile.creationVersion < 5.1) then
+  if (creationVersion < 5.1) then
    profile.triggers = nil;
-   profile.creationVersion = MikSBT.VERSION_NUMBER;
+   profile.creationVersion = MikSBT.VERSION;
   end
  end
 end
@@ -1398,7 +1401,7 @@ local function ResetProfile(profileName, showOutput)
   EraseTable(savedVariables.profiles[profileName]);
 
   -- Reset the profile's creation version.
-  savedVariables.profiles[profileName].creationVersion = MikSBT.VERSION_NUMBER;
+  savedVariables.profiles[profileName].creationVersion = MikSBT.VERSION;
   
   
   -- Check if it's the current profile being reset.
@@ -1410,7 +1413,7 @@ local function ResetProfile(profileName, showOutput)
   -- Check if the output text is to be shown.
   if (showOutput) then
    -- Print the profile reset string.
-   Print(profileName .. " " .. MSBTLocale.MSG_PROFILE_RESET, 0, 1, 0);
+   Print(profileName .. " " .. L.MSG_PROFILE_RESET, 0, 1, 0);
   end
  end 
 end
@@ -1448,7 +1451,7 @@ local function InitSavedVariables()
   savedVariables.profiles = {};
   savedVariables.profiles[DEFAULT_PROFILE_NAME] = {};
 
-  savedVariables.profiles[DEFAULT_PROFILE_NAME].creationVersion = MikSBT.VERSION_NUMBER;
+  savedVariables.profiles[DEFAULT_PROFILE_NAME].creationVersion = MikSBT.VERSION;
   
  -- There are saved variables.
  else

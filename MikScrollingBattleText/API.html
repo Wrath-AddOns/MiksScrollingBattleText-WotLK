@@ -3,31 +3,30 @@
  <head>
   <title>Mik's Scrolling Battle Text API</title>
   <style type="text/css">
-   body { font-size : 10pt; font-family : verdana,arial,helvetica,sans-serif; }
-   hr   { color : #e0e0e0; }
+   body { font-size: 10pt; font-family: verdana, arial, helvetica, sans-serif; }
 
-   a:link    { color : #000060; text-decoration : none; }
-   a:visited { color : #000060; text-decoration : none; }
-   a:hover   { text-decoration : underline; }
+   a:link    { color: #000060; text-decoration: none; }
+   a:visited { color: #000060; text-decoration: none; }
+   a:hover   { text-decoration: underline; }
 
-   div.TOCTitle        { font-weight : bold; font-size : 12pt; }
-   div.TOC             { margin : 2ex 1ex 2ex 2ex; }
-   div.TOCSection      { margin : 1ex 1ex 2ex 2ex; }
+   div.TOCTitle   { font-weight: bold; font-size: 14pt; color: #004080; border-bottom: 1px solid #000060; }
+   div.TOC        { margin: 2ex 1ex 2ex 2ex; }
+   div.TOCSection { margin: 1ex 1ex 2ex 2ex; }
 
-   div.SectionTitle    { margin-top : 6ex; font-weight : bold; font-size : 14pt; }
-   div.SectionDesc     { margin-top : 1ex; margin-bottom : 2ex; }
-   div.SubsectionTitle { font-weight : bold; }
-   div.SubsectionBody  { margin : 2ex 10ex 2ex 5ex; }
-   div.Syntax          { background-color : #e0e0e0; padding-left : 1ex; }
+   div.SectionTitle    { margin-top: 6ex; font-weight: bold; font-size: 14pt; color: #004080; border-bottom: 1px solid #000060; }
+   div.SectionDesc     { margin-top: 1ex; margin-bottom: 2ex; }
+   div.SubsectionTitle { font-weight: bold; }
+   div.SubsectionBody  { margin: 2ex 10ex 2ex 5ex; }
+   div.Syntax          { background-color: #e0e0e0; padding-left: 1ex; }
 
-   td.ParameterName { font-size : 10pt; background-color : #e0e0e0; vertical-align : top; }
-   td.ParameterDesc { font-size : 10pt; background-color : #e0e0e0; text-align : left; }
+   td.ParameterName { font-size: 10pt; background-color: #e0e0e0; vertical-align: top; }
+   td.ParameterDesc { font-size: 10pt; background-color: #e0e0e0; text-align: left; }
   </style>
  </head>
  <body>
   <div>
    This file contains a reference for all of MSBT's publicly accessible functions and structures.<br /><br />
-   <div class="TOCTitle"><a name="TOC">Table of Contents:</a></div>
+   <div class="TOCTitle"><a name="TOC"></a>Table of Contents:</div>
   </div>
   <div class="TOC">
    <b>Mod State:</b>
@@ -42,8 +41,8 @@
     <a href="#MikSBT.DisplayMessage">MikSBT.DisplayMessage</a><br />
     <a href="#MikSBT.IterateFonts">MikSBT.IterateFonts</a><br />
     <a href="#MikSBT.IterateScrollAreas">MikSBT.IterateScrollAreas</a><br />
-	<span style="color : red;">MikSBT.GetRegisteredFontList - DEPRECATED</span><br />
-	<span style="color : red;">MikSBT.GetScrollAreaList - DEPRECATED</span><br />
+	<span style="color: red;">MikSBT.GetRegisteredFontList - DEPRECATED</span><br />
+	<span style="color: red;">MikSBT.GetScrollAreaList - DEPRECATED</span><br />
 
    </div>
    <b>Sounds:</b>
@@ -65,8 +64,7 @@
   </div>
 
 
-  <div class="SectionTitle"><a name="MikSBT.IsModDisabled">MikSBT.IsModDisabled</a></div>
-  <hr size="1" />
+  <div class="SectionTitle"><a name="MikSBT.IsModDisabled"></a>MikSBT.IsModDisabled</div>
   <a href="#TOC">Return to TOC</a><br /><br />
   <div class="SectionDesc">
    Returns a flag indicating if the mod is disabled.
@@ -113,8 +111,7 @@
   </div>
 
 
-  <div class="SectionTitle"><a name="DisplayOverview">Displaying Messages Overview</a></div>
-  <hr size="1" />
+  <div class="SectionTitle"><a name="DisplayOverview"></a>Displaying Messages Overview</div>
   <a href="#TOC">Return to TOC</a><br /><br />
   <div class="SectionDesc">
    MSBT allows you to output messages via the <a href="#MikSBT.DisplayMessage">MikSBT.DisplayMessage</a> function.
@@ -125,8 +122,7 @@
   </div>
 
 
-  <div class="SectionTitle"><a name="MikSBT.RegisterFont">MikSBT.RegisterFont</a></div>
-  <hr size="1" />
+  <div class="SectionTitle"><a name="MikSBT.RegisterFont"></a>MikSBT.RegisterFont</div>
   <a href="#TOC">Return to TOC</a><br /><br />
   <div class="SectionDesc">
    Registers a font with MSBT.<br /><br />
@@ -177,8 +173,7 @@
   </div>
 
 
-  <div class="SectionTitle"><a name="MikSBT.DisplayMessage">MikSBT.DisplayMessage</a></div>
-  <hr size="1" />
+  <div class="SectionTitle"><a name="MikSBT.DisplayMessage"></a>MikSBT.DisplayMessage</div>
   <a href="#TOC">Return to TOC</a><br /><br />
   <div class="SectionDesc">Displays the passed message with the passed formatting options.</div>
   <div class="SubsectionTitle">Syntax</div>
@@ -304,8 +299,7 @@
   </div>
 
 
-  <div class="SectionTitle"><a name="MikSBT.IterateFonts">MikSBT.IterateFonts</a></div>
-  <hr size="1" />
+  <div class="SectionTitle"><a name="MikSBT.IterateFonts"></a>MikSBT.IterateFonts</div>
   <a href="#TOC">Return to TOC</a><br /><br />
   <div class="SectionDesc">
    Returns an iterator function for the table containing the registered fonts.
@@ -345,13 +339,12 @@
 
   <div class="SubsectionTitle">Remarks</div>
   <div class="SubsectionBody">
-   This function has superseded the <span style="color : red;">MikSBT.GetRegisteredFontList</span> function.  The
+   This function has superseded the <span style="color: red;">MikSBT.GetRegisteredFontList</span> function.  The
    old function created a new table and returned it every time it was called which was wasteful.
   </div>
 
 
-  <div class="SectionTitle"><a name="MikSBT.IterateScrollAreas">MikSBT.IterateScrollAreas</a></div>
-  <hr size="1" />
+  <div class="SectionTitle"><a name="MikSBT.IterateScrollAreas"></a>MikSBT.IterateScrollAreas</div>
   <a href="#TOC">Return to TOC</a><br /><br />
   <div class="SectionDesc">
    Returns an iterator function for the table containing the available scroll areas.
@@ -391,13 +384,12 @@
 
   <div class="SubsectionTitle">Remarks</div>
   <div class="SubsectionBody">
-   This function has superseded the <span style="color : red;">MikSBT.GetScrollAreaList</span> function.  The
+   This function has superseded the <span style="color: red;">MikSBT.GetScrollAreaList</span> function.  The
    old function created a new table and returned it every time it was called which was wasteful.
   </div>
 
 
-  <div class="SectionTitle"><a name="SoundsOverview">Sounds Overview</a></div>
-  <hr size="1" />
+  <div class="SectionTitle"><a name="SoundsOverview"></a>Sounds Overview</div>
   <a href="#TOC">Return to TOC</a><br /><br />
   <div class="SectionDesc">
    MSBT allows you to register sounds which the user can assign to be played when events and triggers occur.<br /><br />
@@ -407,8 +399,7 @@
   </div>
 
 
-  <div class="SectionTitle"><a name="MikSBT.RegisterSound">MikSBT.RegisterSound</a></div>
-  <hr size="1" />
+  <div class="SectionTitle"><a name="MikSBT.RegisterSound"></a>MikSBT.RegisterSound</div>
   <a href="#TOC">Return to TOC</a><br /><br />
   <div class="SectionDesc">
    Registers a sound with MSBT.<br /><br />
@@ -456,8 +447,7 @@
   </div>
 
 
-  <div class="SectionTitle"><a name="MikSBT.IterateSounds">MikSBT.IterateSounds</a></div>
-  <hr size="1" />
+  <div class="SectionTitle"><a name="MikSBT.IterateSounds"></a>MikSBT.IterateSounds</div>
   <a href="#TOC">Return to TOC</a><br /><br />
   <div class="SectionDesc">
    Returns an iterator function for the table containing the registered sounds.
@@ -499,8 +489,7 @@
   <div class="SubsectionBody">None.</div>
 
 
-  <div class="SectionTitle"><a name="CustomAnimationStylesOverview">Custom Animation Styles Overview</a></div>
-  <hr size="1" />
+  <div class="SectionTitle"><a name="CustomAnimationStylesOverview"></a>Custom Animation Styles Overview</div>
   <a href="#TOC">Return to TOC</a><br /><br />
   <div class="SectionDesc">
    MSBT has a custom animation style registration system that allows other mod authors to create new animation styles.
@@ -547,8 +536,7 @@
   </div>
 
 
-  <div class="SectionTitle"><a name="MikSBT.RegisterAnimationStyle">MikSBT.RegisterAnimationStyle</a></div>
-  <hr size="1" />
+  <div class="SectionTitle"><a name="MikSBT.RegisterAnimationStyle"></a>MikSBT.RegisterAnimationStyle</div>
   <a href="#TOC">Return to TOC</a><br /><br />
   <div class="SectionDesc">
    Registers a new animation style with MSBT.
@@ -619,8 +607,7 @@
   </div>
 
 
-  <div class="SectionTitle"><a name="MikSBT.RegisterStickyAnimationStyle">MikSBT.RegisterStickyAnimationStyle</a></div>
-  <hr size="1" />
+  <div class="SectionTitle"><a name="MikSBT.RegisterStickyAnimationStyle"></a>MikSBT.RegisterStickyAnimationStyle</div>
   <a href="#TOC">Return to TOC</a><br /><br />
   <div class="SectionDesc">
    Registers a new sticky animation style with MSBT.
@@ -690,8 +677,7 @@
   </div>
 
 
-  <div class="SectionTitle"><a name="InitDisplayEventCallback">InitDisplayEvent Callback</a></div>
-  <hr size="1" />
+  <div class="SectionTitle"><a name="InitDisplayEventCallback"></a>InitDisplayEvent Callback</div>
   <a href="#TOC">Return to TOC</a><br /><br />
   <div class="SectionDesc">
    Each time a new <a href="#DisplayEventTable">DisplayEvent</a> is added to a scroll area, this function is called with it, an array of
@@ -763,8 +749,7 @@
   </div>
 
 
-  <div class="SectionTitle"><a name="AnimationCallback">Animation Callback</a></div>
-  <hr size="1" />
+  <div class="SectionTitle"><a name="AnimationCallback"></a>Animation Callback</div>
   <a href="#TOC">Return to TOC</a><br /><br />
   <div class="SectionDesc">
    This function is called continously (typically every 15 or so milliseconds) for every active <a href="#DisplayEventTable">DisplayEvent</a> that is animating
@@ -827,8 +812,7 @@
 
 
 
-  <div class="SectionTitle"><a name="DisplayEventTable">DisplayEvent Table</a></div>
-  <hr size="1" />
+  <div class="SectionTitle"><a name="DisplayEventTable"></a>DisplayEvent Table</div>
   <a href="#TOC">Return to TOC</a><br /><br />
   <div class="SectionDesc">
    This table respresents an animating event.

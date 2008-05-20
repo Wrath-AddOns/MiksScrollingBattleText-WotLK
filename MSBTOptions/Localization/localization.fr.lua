@@ -8,8 +8,7 @@
 if (GetLocale() ~= "frFR") then return; end
 
 -- Local reference for faster access.
-local MSBTLocale = MikSBT.Locale;
-
+local L = MikSBT.translations;
 
 -------------------------------------------------------------------------------
 -- French localization
@@ -20,33 +19,33 @@ local MSBTLocale = MikSBT.Locale;
 -- Interface messages
 ------------------------------
 
-MSBTLocale.MSG_NEW_PROFILE					= "Nouveau Profil";
-MSBTLocale.MSG_PROFILE_ALREADY_EXISTS		= "Le Profil existe d\195\169j\195\160.";
-MSBTLocale.MSG_INVALID_PROFILE_NAME			= "Nom de profil invalide.";
-MSBTLocale.MSG_NEW_SCROLL_AREA				= "Nouveau zone de d\195\169filement";
-MSBTLocale.MSG_SCROLL_AREA_ALREADY_EXISTS	= "Une zone de d\195\169filement portant ce nom existe d\195\169j\195\160.";
-MSBTLocale.MSG_INVALID_SCROLL_AREA_NAME		= "Nom de zone de d\195\169filement invalide.";
-MSBTLocale.MSG_ACKNOWLEDGE_TEXT				= "Etes-vous certain de vouloir effectuer cette action?";
---MSBTLocale.MSG_NORMAL_PREVIEW_TEXT			= "Normal";
---MSBTLocale.MSG_INVALID_SOUND_FILE			= "Sound must be a .mp3 or .wav file.";
-MSBTLocale.MSG_NEW_TRIGGER					= "Nouveau d\195\169clencheur";
-MSBTLocale.MSG_TRIGGER_CLASSES				= "Classes du d\195\169clencheur";
---MSBTLocale.MSG_MAIN_EVENTS					= "Main Events";
---MSBTLocale.MSG_TRIGGER_EXCEPTIONS			= "Trigger Exceptions";
-MSBTLocale.MSG_SKILLS						= "Comp\195\169tences";
---MSBTLocale.MSG_SKILL_ALREADY_EXISTS			= "Skill name already exists.";
-MSBTLocale.MSG_INVALID_SKILL_NAME			= "Nom de comp\195\169tence invalide.";
---MSBTLocale.MSG_HOSTILE						= "Hostile";
---MSBTLocale.MSG_ANY							= "Any";
---MSBTLocale.MSG_RISES_ABOVE					= "Rises Above";
---MSBTLocale.MSG_FALLS_BELOW					= "Falls Below";
+L.MSG_NEW_PROFILE					= "Nouveau Profil";
+L.MSG_PROFILE_ALREADY_EXISTS		= "Le Profil existe d\195\169j\195\160.";
+L.MSG_INVALID_PROFILE_NAME			= "Nom de profil invalide.";
+L.MSG_NEW_SCROLL_AREA				= "Nouveau zone de d\195\169filement";
+L.MSG_SCROLL_AREA_ALREADY_EXISTS	= "Une zone de d\195\169filement portant ce nom existe d\195\169j\195\160.";
+L.MSG_INVALID_SCROLL_AREA_NAME		= "Nom de zone de d\195\169filement invalide.";
+L.MSG_ACKNOWLEDGE_TEXT				= "Etes-vous certain de vouloir effectuer cette action?";
+--L.MSG_NORMAL_PREVIEW_TEXT			= "Normal";
+--L.MSG_INVALID_SOUND_FILE			= "Sound must be a .mp3 or .wav file.";
+L.MSG_NEW_TRIGGER					= "Nouveau d\195\169clencheur";
+L.MSG_TRIGGER_CLASSES				= "Classes du d\195\169clencheur";
+--L.MSG_MAIN_EVENTS					= "Main Events";
+--L.MSG_TRIGGER_EXCEPTIONS			= "Trigger Exceptions";
+L.MSG_SKILLS						= "Comp\195\169tences";
+--L.MSG_SKILL_ALREADY_EXISTS			= "Skill name already exists.";
+L.MSG_INVALID_SKILL_NAME			= "Nom de comp\195\169tence invalide.";
+--L.MSG_HOSTILE						= "Hostile";
+--L.MSG_ANY							= "Any";
+--L.MSG_RISES_ABOVE					= "Rises Above";
+--L.MSG_FALLS_BELOW					= "Falls Below";
 
 
 ------------------------------
 -- Class Names.
 ------------------------------
 
-local obj = MSBTLocale.CLASS_NAMES;
+local obj = L.CLASS_NAMES;
 obj["DRUID"]	= "Druide";
 obj["HUNTER"]	= "Chasseur";
 obj["MAGE"]		= "Mage";
@@ -63,7 +62,7 @@ obj["WARRIOR"]	= "Guerrier";
 ------------------------------
 
 -- #2, 3, and 4 need additional translation.
-obj = MSBTLocale.TABS;
+obj = L.TABS;
 obj[1] = { label="G\195\169n\195\169ral", tooltip="Afficher les options g\195\169n\195\169rales."};
 obj[2] = { label="Zones de d\195\169filement", tooltip="Affiche les options de cr\195\169ation, suppression et configuration des zones de d\195\169filement.\n\nMouse over the icon buttons for more information."};
 obj[3] = { label="Ev\195\168nements", tooltip="Affiche les options pour les \195\169v\195\168nements entrants, sortants et de notification.\n\nMouse over the icon buttons for more information."};
@@ -77,7 +76,7 @@ obj[4] = { label="D\195\169clencheurs", tooltip="Affiche les options du syst\195
 -- Interface checkboxes
 ------------------------------
 
-obj = MSBTLocale.CHECKBOXES;
+obj = L.CHECKBOXES;
 obj["enableMSBT"]				= { label="Activer Mik's Scrolling Battle Text", tooltip="Activer MSBT."};
 obj["stickyCrits"]				= { label="Coups critiques persistants", tooltip="Utiliser le style persistant pour les coups critiques."};
 obj["gameDamage"]				= { label="Dommages du jeu", tooltip="Afficher les dommages par d\195\169faut du jeu au dessus de la t\195\170te des ennemis."};
@@ -114,7 +113,7 @@ obj["allClasses"]				= { label="Toutes les classes"};
 -- Interface dropdowns
 ------------------------------
 
-obj = MSBTLocale.DROPDOWNS;
+obj = L.DROPDOWNS;
 obj["profile"]				= { label="Profil actuel:", tooltip="Assigne le profil actif."};
 obj["normalFont"]			= { label="Police normale:", tooltip="Assigne la police de caract\195\168res utilis\195\169e pour les coups non critiques."};
 obj["critFont"]				= { label="Police critique:", tooltip="Assigne la police de caract\195\168res utilis\195\169e pour les coups critiques."};
@@ -140,7 +139,7 @@ obj["outputScrollArea"]		= { label="Zone de d\195\169filement sortante:", toolti
 -- Interface buttons
 ------------------------------
 
-obj = MSBTLocale.BUTTONS;
+obj = L.BUTTONS;
 obj["copyProfile"]				= { label="Copier", tooltip="Copie le profil sous un nouveau nom."};
 obj["resetProfile"]				= { label="R\195\169initialiser", tooltip="R\195\169initialise le profil avec les param\195\168tres par d\195\169faut."};
 obj["deleteProfile"]			= { label="Supprimer", tooltip="Supprime le profil."};
@@ -186,7 +185,7 @@ obj["editTriggerClasses"]		= { tooltip="D\195\169termine \195\160 quelles classe
 -- Interface editboxes
 ------------------------------
 
-obj = MSBTLocale.EDITBOXES;
+obj = L.EDITBOXES;
 obj["copyProfile"]		= { label="Nom du nouveau profil:", tooltip="Nom du nouveau profil vers lequel copier le profil courant."};
 obj["scrollAreaName"]	= { label="Nouveau nom pour la zone de d\195\169filement:", tooltip="Nouveau nom pour la zone de d\195\169filement."};
 obj["xOffset"]			= { label="D\195\169calage X:", tooltip="Le d\195\169calage horizontale de la zone de d\195\169filement."};
@@ -202,7 +201,7 @@ obj["eventMessage"]		= { label="Message affich\195\169:", tooltip="Le message af
 -- Interface sliders
 ------------------------------
 
-obj = MSBTLocale.SLIDERS;
+obj = L.SLIDERS;
 obj["animationSpeed"]		= { label="Vitesse d'animation", tooltip="D\195\169finit la vitesse ma\195\174tre de l'animation."};
 obj["normalFontSize"]		= { label="Taille normale", tooltip="D\195\169finit la taille de la police pour les coups non critiques."};
 --obj["normalFontOpacity"]	= { label="Normal Opacity", tooltip="Sets the font opacity for non-crits."};
@@ -224,7 +223,7 @@ obj["skillThrottleTime"]	= { label="D\195\169lai de r\195\169gulation", tooltip=
 ------------------------------
 -- Event categories
 ------------------------------
-obj = MSBTLocale.EVENT_CATEGORIES;
+obj = L.EVENT_CATEGORIES;
 obj[1] = "Entrant player";
 obj[2] = "Entrant familier";
 obj[3] = "Sortant player";
@@ -236,7 +235,7 @@ obj[5] = "Alertes";
 -- Event codes
 ------------------------------
 
-obj = MSBTLocale.EVENT_CODES;
+obj = L.EVENT_CODES;
 obj["DAMAGE_TAKEN"]			= "%a - Quantit\195\169 de dommages.\n";
 obj["HEALING_TAKEN"]		= "%a - Quantit\195\169 de soins re\195\167us.\n";
 obj["DAMAGE_DONE"]			= "%a - Dommages inflig\195\169s.\n";
@@ -275,7 +274,7 @@ obj["POWER_TYPE"]			= "%p - Type de pouvoir (\195\169nergie, rage, mana).\n";
 -- Incoming events
 ------------------------------
 
-obj = MSBTLocale.INCOMING_PLAYER_EVENTS;
+obj = L.INCOMING_PLAYER_EVENTS;
 obj[1]	= { label="M\195\170l\195\169e", tooltip="Afficher les dommages des attaques de m\195\170l\195\169e."};
 obj[2]	= { label="M\195\170l\195\169e critiques", tooltip="Afficher les dommages des attaques critiques de m\195\170l\195\169e."};
 obj[3]	= { label="Manques de m\195\170l\195\169e", tooltip="Afficher les attaques de m\195\170l\195\169e manqu\195\169es."};
@@ -301,7 +300,7 @@ obj[22]	= { label="Soins critiques", tooltip="Afficher les soins critiques re\19
 obj[23]	= { label="Soins sur le temps (HoT)", tooltip="Afficher les soins des soins sur le temps (HoT)."};
 obj[24]	= { label="Dommages de l'environnement", tooltip="Afficher les effets de l'environnement (chutes, noyades, lave, etc...)."};
 
-obj = MSBTLocale.INCOMING_PET_EVENTS;
+obj = L.INCOMING_PET_EVENTS;
 --obj[1]	= { label="M\195\170l\195\169e", tooltip="Enable your pet's incoming melee hits."};
 --obj[2]	= { label="M\195\170l\195\169e critiques", tooltip="Enable your pet's incoming melee crits."};
 --obj[3]	= { label="Manques de m\195\170l\195\169e", tooltip="Enable your pet's incoming melee misses."};
@@ -329,7 +328,7 @@ obj = MSBTLocale.INCOMING_PET_EVENTS;
 -- Outgoing events
 ------------------------------
 
-obj = MSBTLocale.OUTGOING_PLAYER_EVENTS;
+obj = L.OUTGOING_PLAYER_EVENTS;
 obj[1]	= { label="M\195\170l\195\169e", tooltip="Afficher les dommages inflig\195\169s en m\195\170l\195\169e."};
 obj[2]	= { label="M\195\170l\195\169e critiques", tooltip="Afficher les dommages critiques inflig\195\169s en m\195\170l\195\169e."};
 obj[3]	= { label="Manques de m\195\170l\195\169e", tooltip="Afficher vos attaques manquées en m\195\170l\195\169e."};
@@ -357,7 +356,7 @@ obj[24]	= { label="Soins critiques", tooltip="Afficher les soins critiques effec
 obj[25]	= { label="Soins sur le temps (HoT)", tooltip="Afficher les soins sur le temps."};
 --obj[26] = { label="Dispels", tooltip="Enable outgoing dispels."};
 
-obj = MSBTLocale.OUTGOING_PET_EVENTS;
+obj = L.OUTGOING_PET_EVENTS;
 obj[1]	= { label="M\195\170l\195\169e", tooltip="Afficher les dommages inflig\195\169s par votre familier."};
 obj[2]	= { label="M\195\170l\195\169e critiques", tooltip="Afficher les dommages critiques inflig\195\169s par votre familier."};
 obj[3]	= { label="Manques de m\195\170l\195\169e", tooltip="Afficher les attaques manqu\195\169es par votre familier."};
@@ -385,7 +384,7 @@ obj[20]	= { label="Evites comp\195\169tences", tooltip="Afficher les \195\169vit
 -- Notification events
 ------------------------------
 
-obj = MSBTLocale.NOTIFICATION_EVENTS;
+obj = L.NOTIFICATION_EVENTS;
 obj[1]	= { label="Debuffs", tooltip="Afficher les debuffs par lesquels vous \195\170tes affect\195\169s."};
 obj[2]	= { label="Buffs", tooltip="Afficher les buffs re\195\167us."};
 obj[3]	= { label="Buffs des objets", tooltip="Afficher les buffs re\195\167us par les objets."};
@@ -417,7 +416,7 @@ obj[21]	= { label="Attaques suppl\195\169mentaires", tooltip="Afficher les gains
 ------------------------------
 
 -- Holds the available trigger main events.
-obj = MSBTLocale.TRIGGER_MAIN_EVENTS;
+obj = L.TRIGGER_MAIN_EVENTS;
 obj["Health"]				= "Vie Seuil";
 obj["Mana"]					= "Mana Seuil";
 obj["Energy"]				= "Energie Seuil";
@@ -437,7 +436,7 @@ obj["Energy"]				= "Energie Seuil";
 
 
 -- Holds the available trigger exceptions.
-obj = MSBTLocale.TRIGGER_EXCEPTIONS;
+obj = L.TRIGGER_EXCEPTIONS;
 --obj["BuffActive"]				= "Buff Active";
 --obj["InsufficientPower"]		= "Insufficient Power";
 --obj["InsufficientComboPoints"]	= "Insufficient Combo Points";
@@ -454,13 +453,13 @@ obj = MSBTLocale.TRIGGER_EXCEPTIONS;
 ------------------------------
 
 -- Font outlines.
-obj = MSBTLocale.OUTLINES;
+obj = L.OUTLINES;
 obj[1] = "Aucun";
 obj[2] = "Fin";
 obj[3] = "Epais";
 
 -- Text aligns.
-obj = MSBTLocale.TEXT_ALIGNS;
+obj = L.TEXT_ALIGNS;
 obj[1] = "Gauche";
 obj[2] = "Centre";
 obj[3] = "Droite";
@@ -470,7 +469,7 @@ obj[3] = "Droite";
 -- Sound info
 ------------------------------
 
-obj = MSBTLocale.SOUNDS;
+obj = L.SOUNDS;
 obj["LowMana"]		= "Mana Faible";
 obj["LowHealth"]	= "Vie Faible";
 
@@ -480,7 +479,7 @@ obj["LowHealth"]	= "Vie Faible";
 ------------------------------
 
 -- Animation styles
-obj = MSBTLocale.ANIMATION_STYLE_DATA;
+obj = L.ANIMATION_STYLE_DATA;
 --obj["Horizontal"]	= "Horizontal";
 obj["Parabola"]		= "Parabole";
 obj["Straight"]		= "Directement";
