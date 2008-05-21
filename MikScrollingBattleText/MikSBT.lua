@@ -13,10 +13,10 @@ _G[modName] = mod;
 -- Mod constants
 -------------------------------------------------------------------------------
 
-mod.VERSION	= string.gsub(GetAddOnMetadata("MikScrollingBattleText", "Version"), "wowi:revision", 0);
-mod.VERSION_STRING	= "v" .. mod.VERSION;
+mod.VERSION = string.gsub(GetAddOnMetadata("MikScrollingBattleText", "Version"), "wowi:revision", 0);
+mod.VERSION_STRING = "v" .. mod.VERSION;
 
-mod.COMMAND		= "/msbt";
+mod.COMMAND = "/msbt";
 
 
 -------------------------------------------------------------------------------

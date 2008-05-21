@@ -82,15 +82,15 @@ local currentAuras = {buffs = {}, debuffs = {}};
 local savedAuras = {buffs = {}, debuffs = {}};
 local aurasInitialized;
 
--- Map of data to capture and set for combat log events.
-local captureMaps;
+-- Map of functions to call for supported combat log events.
+local captureFuncs;
 
 -- Events to parse even if the source or recipient is not the player or pet.
 local fullParseEvents;
 
 -- Information about global strings for CHAT_MSG_X events.
 local searchMap;
-local searchCaptureMaps;
+local searchCaptureFuncs;
 local rareWords = {};
 local searchPatterns = {};
 local captureOrders = {};
@@ -293,9 +293,9 @@ local function ParseSearchMessage(event, combatMessage)
 
  -- Loop through all of the global strings to search for the event.
  for _, globalStringName in pairs(searchMap[event]) do
-  -- Make sure the capture map for the global string exists.
-  local captureMap = searchCaptureMaps[globalStringName];
-  if (captureMap) then
+  -- Make sure the capture func for the global string exists.
+  local captureFunc = searchCaptureFuncs[globalStringName];
+  if (captureFunc) then
    -- First, check if there is a rare word for the global string and it is in the combat
    -- message since a plain text search is faster than doing a full regular expression search.
    if (not rareWords[globalStringName] or string_find(combatMessage, rareWords[globalStringName], 1, true)) then
@@ -318,23 +318,16 @@ local function ParseSearchMessage(event, combatMessage)
      parserEvent.recipientName = playerName;
      parserEvent.recipientFlags = FLAGS_ME;
      parserEvent.recipientUnit = "player";
-
+	 
      -- Map the captured arguments into the parser event table.
-     for argumentNum, fieldName in ipairs(captureMap) do
-      parserEvent[fieldName] = captureTable[argumentNum];
-     end
-
-     -- Copy any additional fields from the capture map into the parser event table.
-     for fieldName, fieldValue in pairs(captureMap) do
-      if(type(fieldName) == "string") then parserEvent[fieldName] = fieldValue; end
-     end
+     captureFunc(parserEvent, captureTable);
 
      -- Send the event.
      SendParserEvent();
      return;
     end -- Match found.
    end -- Fast plain search.
-  end -- Capture map is valid.
+  end -- Capture func is valid.
  end -- Loop through global strings to search. 
 end
 
@@ -343,9 +336,9 @@ end
 -- Parses the parameter style events going to the combat log.
 -- ****************************************************************************
 local function ParseLogMessage(timestamp, event, sourceGUID, sourceName, sourceFlags, recipientGUID, recipientName, recipientFlags, ...)
- -- Make sure the capture map for the event exists.
- local captureMap = captureMaps[event];
- if (not captureMap) then return; end
+ -- Make sure the capture function for the event exists.
+ local captureFunc = captureFuncs[event];
+ if (not captureFunc) then return; end
 
  -- Look for spells the player reflected and make the damage belong to the player.
  if (sourceGUID == recipientGUID and reflectedTimes[recipientGUID] and event == "SPELL_DAMAGE") then
@@ -391,16 +384,8 @@ local function ParseLogMessage(timestamp, event, sourceGUID, sourceName, sourceF
  parserEvent.sourceUnit = sourceUnit;
  parserEvent.recipientUnit = recipientUnit;
  
-
  -- Map the local arguments into the parser event table.
- for argumentNum, fieldName in ipairs(captureMap) do
-  parserEvent[fieldName] = select(argumentNum, ...);
- end
-
- -- Copy any additional fields from the capture map into the parser event table.
- for fieldName, fieldValue in pairs(captureMap) do
-  if(type(fieldName) == "string") then parserEvent[fieldName] = fieldValue; end
- end
+ captureFunc(parserEvent, ...);
 
  -- Add new auras parsed from the combat log to a list of recent auras so they are not
  -- duplicated by the aura change event.
@@ -431,9 +416,6 @@ local function ParseLogMessage(timestamp, event, sourceGUID, sourceName, sourceF
   -- Save the time of the reflect and the reflected skillID.
   reflectedTimes[sourceGUID] = timestamp;
   reflectedSkills[sourceGUID] = parserEvent.skillID;
-
-  -- Ignore the reflect until the amount can be obtained.
-  return;
  end
 
  -- Send the event.
@@ -502,42 +484,42 @@ end
 
 
 -- ****************************************************************************
--- Creates a map of data to capture for supported global strings.
+-- Creates a map of capture functions for supported global strings.
 -- ****************************************************************************
-local function CreateSearchCaptureMaps()
- searchCaptureMaps = {
+local function CreateSearchCaptureFuncs()
+ searchCaptureFuncs = {
   -- Honor events.
-  COMBATLOG_HONORAWARD = {eventType = "honor", "amount"},
-  COMBATLOG_HONORGAIN = {eventType = "honor", "sourceName", "sourceRank", "amount"},
+  COMBATLOG_HONORAWARD = function (p, c) p.eventType, p.amount = "honor", c[1]; end,
+  COMBATLOG_HONORGAIN = function (p, c) p.eventType, p.sourceName, p.sourceRank, p.amount = "honor", c[1], c[2], c[3]; end,
 
   -- Experience events.
-  COMBATLOG_XPGAIN_FIRSTPERSON = {eventType = "experience", "sourceName", "amount"},
-  COMBATLOG_XPGAIN_FIRSTPERSON_UNNAMED = {eventType = "experience", "amount"},
+  COMBATLOG_XPGAIN_FIRSTPERSON = function (p, c) p.eventType, p.sourceName, p.amount = "experience", c[1], c[2]; end,
+  COMBATLOG_XPGAIN_FIRSTPERSON_UNNAMED = function (p, c) p.eventType, p.amount = "experience", c[1]; end,
 
   -- Reputation events.
-  FACTION_STANDING_DECREASED = {eventType = "reputation", isLoss = true, "factionName", "amount"},
-  FACTION_STANDING_INCREASED = {eventType = "reputation", "factionName", "amount"},
+  FACTION_STANDING_DECREASED = function (p, c) p.eventType, p.isLoss, p.factionName, p.amount = "reputation", true, c[1], c[2]; end,
+  FACTION_STANDING_INCREASED = function (p, c) p.eventType, p.factionName, p.amount = "reputation", c[1], c[2]; end,
 
   -- Proficiency events.
-  SKILL_RANK_UP = {eventType = "proficiency", "skillName", "amount"},
+  SKILL_RANK_UP = function (p, c) p.eventType, p.skillName, p.amount = "proficiency", c[1], c[2]; end,
 
   -- Loot events.
-  LOOT_ITEM_CREATED_SELF = {eventType = "loot", "itemLink", "amount"},
-  LOOT_MONEY_SPLIT = {eventType = "loot", isMoney = true, "moneyString"},
+  LOOT_ITEM_CREATED_SELF = function (p, c) p.eventType, p.itemLink, p.amount = "loot", c[1], c[2]; end,
+  LOOT_MONEY_SPLIT = function (p, c) p.eventType, p.isMoney, p.moneyString = "loot", true, c[1]; end,
  };
 
- searchCaptureMaps["LOOT_ITEM_CREATED_SELF_MULTIPLE"] = searchCaptureMaps["LOOT_ITEM_CREATED_SELF"];
- searchCaptureMaps["LOOT_ITEM_PUSHED_SELF"] = searchCaptureMaps["LOOT_ITEM_CREATED_SELF"];
- searchCaptureMaps["LOOT_ITEM_PUSHED_SELF_MULTIPLE"] = searchCaptureMaps["LOOT_ITEM_CREATED_SELF"];
- searchCaptureMaps["LOOT_ITEM_SELF"] = searchCaptureMaps["LOOT_ITEM_CREATED_SELF"];
- searchCaptureMaps["LOOT_ITEM_SELF_MULTIPLE"] = searchCaptureMaps["LOOT_ITEM_CREATED_SELF"];
- searchCaptureMaps["YOU_LOOT_MONEY"] = searchCaptureMaps["LOOT_MONEY_SPLIT"];
+ searchCaptureFuncs["LOOT_ITEM_CREATED_SELF_MULTIPLE"] = searchCaptureFuncs["LOOT_ITEM_CREATED_SELF"];
+ searchCaptureFuncs["LOOT_ITEM_PUSHED_SELF"] = searchCaptureFuncs["LOOT_ITEM_CREATED_SELF"];
+ searchCaptureFuncs["LOOT_ITEM_PUSHED_SELF_MULTIPLE"] = searchCaptureFuncs["LOOT_ITEM_CREATED_SELF"];
+ searchCaptureFuncs["LOOT_ITEM_SELF"] = searchCaptureFuncs["LOOT_ITEM_CREATED_SELF"];
+ searchCaptureFuncs["LOOT_ITEM_SELF_MULTIPLE"] = searchCaptureFuncs["LOOT_ITEM_CREATED_SELF"];
+ searchCaptureFuncs["YOU_LOOT_MONEY"] = searchCaptureFuncs["LOOT_MONEY_SPLIT"];
 
  -- Print an error message for each global string that isn't found and remove it from the map.
- for globalStringName in pairs(searchCaptureMaps) do
+ for globalStringName in pairs(searchCaptureFuncs) do
   if (not _G[globalStringName]) then
    Print("Unable to find global string: " .. globalStringName, 1, 0, 0);
-   searchCaptureMaps[globalStringName] = nil;
+   searchCaptureFuncs[globalStringName] = nil;
   end
  end
 end
@@ -551,7 +533,7 @@ local function FindRareWords()
  local wordCounts = {};
 
  -- Loop through all of the supported global strings.
- for globalStringName in pairs(searchCaptureMaps) do
+ for globalStringName in pairs(searchCaptureFuncs) do
   -- Strip out all of the formatting codes.
   local strippedGS = string.gsub(_G[globalStringName], "%%%d?%$?[sd]", "");
 
@@ -563,7 +545,7 @@ local function FindRareWords()
 
 
  -- Loop through all of the supported global strings.
- for globalStringName in pairs(searchCaptureMaps) do
+ for globalStringName in pairs(searchCaptureFuncs) do
   local leastSeen, rarestWord;
 
   -- Strip out all of the formatting codes.
@@ -602,8 +584,8 @@ end
 -- Converts all of the supported global strings.
 -- ****************************************************************************
 local function ConvertGlobalStrings()
- -- Loop through all of the global string capture maps.
- for globalStringName in pairs(searchCaptureMaps) do
+ -- Loop through all of the supported global strings.
+ for globalStringName in pairs(searchCaptureFuncs) do
   -- Get the global string converted to a lua search pattern and prepend an anchor to
   -- speed up searching.
   searchPatterns[globalStringName] = "^" .. ConvertGlobalString(globalStringName);
@@ -612,68 +594,71 @@ end
 
 
 -- ****************************************************************************
--- Creates a map of fields to capture for each combat log event.
+-- Creates a map of capture functions for each supported combat log event.
 -- ****************************************************************************
-local function CreateCaptureMaps()
- captureMaps = {
+local function CreateCaptureFuncs()
+ captureFuncs = {
   -- Damage events.
-  SWING_DAMAGE = {eventType = "damage", "amount", "damageType", "resistAmount", "blockAmount", "absorbAmount", "isCrit", "isGlancing", "isCrushing"},
-  RANGE_DAMAGE = {eventType = "damage", isRange = true, "skillID", "skillName", "skillSchool", "amount", "damageType", "resistAmount", "blockAmount", "absorbAmount", "isCrit", "isGlancing", "isCrushing"},
-  SPELL_DAMAGE = {eventType = "damage", "skillID", "skillName", "skillSchool", "amount", "damageType", "resistAmount", "blockAmount", "absorbAmount", "isCrit", "isGlancing", "isCrushing"},
-  SPELL_PERIODIC_DAMAGE = {eventType = "damage", isDoT = true, "skillID", "skillName", "skillSchool", "amount", "damageType", "resistAmount", "blockAmount", "absorbAmount", "isCrit", "isGlancing", "isCrushing"},
-  DAMAGE_SPLIT = {eventType = "damage", "skillID", "skillName", "skillSchool", "amount", "damageType", "resistAmount", "blockAmount", "absorbAmount", "isCrit", "isGlancing", "isCrushing"},
-  DAMAGE_SHIELD = {eventType = "damage", isDamageShield = true, "skillID", "skillName", "skillSchool", "amount", "damageType", "resistAmount", "blockAmount", "absorbAmount", "isCrit", "isGlancing", "isCrushing"},
+  SWING_DAMAGE = function (p, ...) p.eventType, p.amount, p.damageType, p.resistAmount, p.blockAmount, p.absorbAmount, p.isCrit, p.isGlancing, p.isCrushing = "damage", ...; end,
+  RANGE_DAMAGE = function (p, ...) p.eventType, p.isRange, p.skillID, p.skillName, p.skillSchool, p.amount, p.damageType, p.resistAmount, p.blockAmount, p.absorbAmount, p.isCrit, p.isGlancing, p.isCrushing = "damage", true, ...; end,
+  SPELL_DAMAGE = function (p, ...) p.eventType, p.skillID, p.skillName, p.skillSchool, p.amount, p.damageType, p.resistAmount, p.blockAmount, p.absorbAmount, p.isCrit, p.isGlancing, p.isCrushing = "damage", ...; end,
+  SPELL_PERIODIC_DAMAGE = function (p, ...) p.eventType, p.isDoT, p.skillID, p.skillName, p.skillSchool, p.amount, p.damageType, p.resistAmount, p.blockAmount, p.absorbAmount, p.isCrit, p.isGlancing, p.isCrushing = "damage", true, ...; end,
+  DAMAGE_SHIELD = function (p, ...) p.eventType, p.isDamageShield, p.skillID, p.skillName, p.skillSchool, p.amount, p.damageType, p.resistAmount, p.blockAmount, p.absorbAmount, p.isCrit, p.isGlancing, p.isCrushing = "damage", true, ...; end,
 
   -- Miss events.
-  SWING_MISSED = {eventType = "miss", "missType"},
-  RANGE_MISSED = {eventType = "miss", isRange = true, "skillID", "skillName", "skillSchool", "missType"},
-  SPELL_MISSED = {eventType = "miss", "skillID", "skillName", "skillSchool", "missType"},
-  SPELL_DISPEL_FAILED = {eventType = "miss", missType = "RESIST", "skillID", "skillName", "skillSchool", "extraSkillID", "extraSkillName", "extraSkillSchool"},
-  DAMAGE_SHIELD_MISS = {eventType = "miss", isDamageShield = true, "skillID", "skillName", "skillSchool", "missType"},
+  SWING_MISSED = function (p, ...) p.eventType, p.missType = "miss", ...; end,
+  RANGE_MISSED = function (p, ...) p.eventType, p.isRange, p.skillID, p.skillName, p.skillSchool, p.missType = "miss", true, ...; end,
+  SPELL_MISSED = function (p, ...) p.eventType, p.skillID, p.skillName, p.skillSchool, p.missType = "miss", ...; end,
+  SPELL_DISPEL_FAILED = function (p, ...) p.eventType, p.missType, p.skillID, p.skillName, p.skillSchool, p.extraSkillID, p.extraSkillname, p.extraSkillSchool = "miss", "RESIST", ...; end,
+  DAMAGE_SHIELD_MISSED = function (p, ...) p.eventType, p.isDamageShield, p.skillID, p.skillName, p.skillSchool, p.missType = "miss", true, ...; end,
 
   -- Heal events.
-  SPELL_HEAL = {eventType = "heal", "skillID", "skillName", "skillSchool", "amount", "isCrit"},
-  SPELL_PERIODIC_HEAL = {eventType = "heal", isHoT = true, "skillID", "skillName", "skillSchool", "amount", "isCrit"},
+  SPELL_HEAL = function (p, ...) p.eventType, p.skillID, p.skillName, p.skillSchool, p.amount, p.isCrit = "heal", ...; end,
+  SPELL_PERIODIC_HEAL = function (p, ...) p.eventType, p.isHoT, p.skillID, p.skillName, p.skillSchool, p.amount, p.isCrit = "heal", true, ...; end,
   
   -- Environmental events.
-  ENVIRONMENTAL_DAMAGE = {eventType = "environmental", "hazardType", "amount", "damageType", "resistAmount", "blockAmount", "absorbAmount", "isCrit", "isGlancing", "isCrushing"},
+  ENVIRONMENTAL_DAMAGE = function (p, ...) p.eventType, p.hazardType, p.amount, p.damageType, p.resistAmount, p.blockAmount, p.absorbAmount, p.isCrit, p.isGlancing, p.isCrushing = "environmental", ...; end,
 
   -- Power events.
-  SPELL_ENERGIZE = {eventType = "power", isGain = true, "skillID", "skillName", "skillSchool", "amount", "powerType"},
-  SPELL_DRAIN = {eventType = "power", isDrain = true, "skillID", "skillName", "skillSchool", "amount", "powerType", "extraAmount"},
-  SPELL_LEECH = {eventType = "power", isLeech = true, "skillID", "skillName", "skillSchool", "amount", "powerType", "extraAmount"},
+  SPELL_ENERGIZE = function (p, ...) p.eventType, p.isGain, p.skillID, p.skillName, p.skillSchool, p.amount, p.powerType = "power", true, ...; end,
+  SPELL_DRAIN = function (p, ...) p.eventType, p.isDrain, p.skillID, p.skillName, p.skillSchool, p.amount, p.powerType, p.extraAmount = "power", true, ...; end,
+  SPELL_LEECH = function (p, ...) p.eventType, p.isLeech, p.skillID, p.skillName, p.skillSchool, p.amount, p.powerType, p.extraAmount = "power", true, ...; end,
 
   -- Interrupt events.
-  SPELL_INTERRUPT = {eventType = "interrupt", "skillID", "skillName", "skillSchool", "extraSkillID", "extraSkillName", "extraSkillSchool"},
+  SPELL_INTERRUPT = function (p, ...) p.eventType, p.skillID, p.skillName, p.skillSchool, p.extraSkillID, p.extraSkillName, p.extraSkillSchool = "interrupt", ...; end,
   
   -- Aura events.
-  SPELL_AURA_APPLIED = {eventType = "aura", "skillID", "skillName", "skillSchool", "auraType", "amount"},
-  SPELL_AURA_REMOVED = {eventType = "aura", isFade = true, "skillID", "skillName", "skillSchool", "auraType", "amount"},
+  SPELL_AURA_APPLIED = function (p, ...) p.eventType, p.amount, p.skillID, p.skillName, p.skillSchool, p.auraType = "aura", 1, ...; end,
+  SPELL_AURA_APPLIED_DOSE = function (p, ...) p.eventType, p.skillID, p.skillName, p.skillSchool, p.auraType, p.amount = "aura", ...; end,
+  SPELL_AURA_REMOVED = function (p, ...) p.eventType, p.isFade, p.amount, p.skillID, p.skillName, p.skillSchool, p.auraType = "aura", true, 1, ...; end,
+  SPELL_AURA_REMOVED_DOSE = function (p, ...) p.eventType, p.isFade, p.skillID, p.skillName, p.skillSchool, p.auraType, p.amount = "aura", true, ...; end,
 
   -- Enchant events.
-  ENCHANT_APPLIED = {eventType = "enchant", "skillName", "itemID", "itemName"},
-  ENCHANT_REMOVED = {eventType = "enchant", isFade = true, "skillName", "itemID", "itemName"},
+  ENCHANT_APPLIED = function (p, ...) p.eventType, p.skillName, p.itemID, p.itemName = "enchant", ...; end,
+  ENCHANT_REMOVED = function (p, ...) p.eventType, p.isFade, p.skillName, p.itemID, p.itemName = "enchant", true, ...; end,
   
   -- Dispel events.
-  SPELL_AURA_DISPELLED = {eventType = "dispel", "skillID", "skillName", "skillSchool", "extraSkillID", "extraSkillName", "extraSkillSchool", "auraType"},
+  SPELL_AURA_DISPELLED = function (p, ...) p.eventType, p.skillID, p.skillName, p.skillSchool, p.extraSkillID, p.extraSkillName, p.extraSkillSchool, p.auraType = "dispel", ...; end,
 
   -- Cast events.
-  SPELL_CAST_START = {eventType = "cast", "skillID", "skillName", "skillSchool"},
+  SPELL_CAST_START = function (p, ...) p.eventType, p.skillID, p.skillName, p.skillSchool = "cast", ...; end,
 
   -- Kill events.
-  PARTY_KILL = {eventType = "kill"},
+  PARTY_KILL = function (p, ...) p.eventType = "kill"; end,
   
   -- Extra Attack events.
-  SPELL_EXTRA_ATTACKS = {eventType = "extraattacks", "skillID", "skillName", "skillSchool", "amount"},
+  SPELL_EXTRA_ATTACKS = function (p, ...) p.eventType, p.skillID, p.skillName, p.skillSchool, p.amount = "extraattacks", ...; end,
  };
 
- captureMaps["SPELL_PERIODIC_MISSED"] = captureMaps["SPELL_MISSED"];
- captureMaps["SPELL_PERIODIC_ENERGIZE"] = captureMaps["SPELL_ENERGIZE"];
- captureMaps["SPELL_PERIODIC_DRAIN"] = captureMaps["SPELL_DRAIN"];
- captureMaps["SPELL_PERIODIC_LEECH"] = captureMaps["SPELL_LEECH"];
- captureMaps["SPELL_AURA_STOLEN"] = captureMaps["SPELL_AURA_DISPELLED"];
- captureMaps["SPELL_AURA_APPLIED_DOSE"] = captureMaps["SPELL_AURA_APPLIED"];
- captureMaps["SPELL_AURA_REMOVED_DOSE"] = captureMaps["SPELL_AURA_REMOVED"];
+ captureFuncs["DAMAGE_SPLIT"] = captureFuncs["SPELL_DAMAGE"]
+ captureFuncs["SPELL_PERIODIC_MISSED"] = captureFuncs["SPELL_MISSED"];
+ captureFuncs["SPELL_PERIODIC_ENERGIZE"] = captureFuncs["SPELL_ENERGIZE"];
+ captureFuncs["SPELL_PERIODIC_DRAIN"] = captureFuncs["SPELL_DRAIN"];
+ captureFuncs["SPELL_PERIODIC_LEECH"] = captureFuncs["SPELL_LEECH"];
+ captureFuncs["SPELL_AURA_STOLEN"] = captureFuncs["SPELL_AURA_DISPELLED"];
+
+ -- Expose the capture functions.
+ module.captureFuncs = captureFuncs;
 end
 
 
@@ -971,8 +956,8 @@ local function OnLoad()
  
  -- Create various maps.
  CreateSearchMap();
- CreateSearchCaptureMaps();
- CreateCaptureMaps();
+ CreateSearchCaptureFuncs();
+ CreateCaptureFuncs();
  
  -- Create the list of events that should be fully parsed.
  CreateFullParseList();
