@@ -36,7 +36,7 @@
  <body>
   <h1>Mik's Scrolling Battle Text</h1>
   <div id="HeaderBlock">
-   Version: 5.13<br />
+   Version: 5.2 Beta<br />
    Author: Mik<br />
    Released: April 27, 2008<br />
    Official Site: <a href="http://mikord.wowinterface.com">http://mikord.wowinterface.com</a><br /><br />
@@ -240,6 +240,8 @@
   <div class="SectionTitle"><a name="TriggerGuide"></a>Trigger Guide</div>
   <a href="#TOC">Return to TOC</a><br /><br />
   <div class="SectionBody">
+   Documentation is not yet available this version of beta.
+<!--
    The trigger system is a powerful, flexible, and efficient system that allows you to specify custom events to be displayed based on
    specific game events that are not already handled by default.  There are several mechanisms in place to ensure triggers are efficient as
    possible so they are not needlessly wasting CPU cycles checking conditions that aren't relevant.  Due to this optimization, several common
@@ -297,9 +299,11 @@
      </td>
     </tr>
    </table>
-
+-->
    <div class="SubsectionTitle"><a name="MainEvents"></a>Trigger Main Events:</div>
    <div class="SubsectionBody">
+    Documentation is not yet available this version of beta.
+<!--
     <table cellspacing="3">
      <tr>
       <td class="ParameterName" nowrap="nowrap">Health Threshold:</td>
@@ -428,7 +432,6 @@
        Fires when a debuff is applied to a unit.
        <br /><br />
        The conditions and available substitution codes are identical to a Buff Application.  See above for further details.
-      
       </td>
      </tr>
      <tr>
@@ -472,11 +475,13 @@
       </td>
      </tr>
     </table>
+-->
    </div>
-
 
    <div class="SubsectionTitle"><a name="TriggerExceptions"></a>Trigger Exceptions:</div>
    <div class="SubsectionBody">
+    Documentation is not yet available this version of beta.
+<!--
     <table cellpacing="3">
      <tr>
       <td class="ParameterName" nowrap="nowrap">Buff Active:</td>
@@ -587,6 +592,7 @@
       </td>
      </tr>
     </table>
+-->
    </div>
   </div>
 
@@ -721,6 +727,8 @@
     <li class="FAQListItem">
      <a name="FAQNewTrigger"></a><b>How do I create a new trigger?</b>
      <br /><br />
+     Documentation is not yet available this version of beta.
+<!--
      The first step is to <b>read</b> the <a href="#TriggerGuide">Trigger Guide</a> section above.
      Every event and exception is explained along with the conditions and available substitution codes.
      <br /><br />
@@ -753,6 +761,7 @@
      You already knew that though because you read the <a href="#TriggerGuide">Trigger Guide</a>!
      <br /><br />
      The color, font settings, sticky state, sound, and output scroll area for the trigger can be set like any other event.
+-->
     </li>
 
     <li class="FAQListItem">
@@ -870,6 +879,19 @@
      <td class="ParameterDesc">
       <ul>
        <li>Rewrote the core of the event parser to reduce its CPU usage by about 60%.</li>
+       <li>
+        The trigger system was completely redesigned with the main focus on flexibility.
+        <ul>
+         <li>Triggers now make extensive use of "short-circuiting" to cut down the number of tests needed thereby increasing performance.</li>
+         <li>Anything that has a patch 2.4 style combat log entry (COMBAT_LOG_EVENT_UNFILTERED) can now be used for a trigger.</li>
+         <li>The number of available conditions per main event has been substantially increased.</li>
+         <li>Each parameter for a main event type can now specify various relationships.</li>
+         <li>Parameters involving strings like skill names and unit names can now choose between an exact match or a search pattern in most cases.</li>
+         <li>Added a new main event for skill cooldown completions.</li>
+        </ul>
+       </li>
+       <br />
+       <li>Full paths may now be entered for sounds.  This includes path to sound files internal to WoW.</li>
       </ul>
      </td>
     </tr>

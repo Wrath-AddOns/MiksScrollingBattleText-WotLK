@@ -32,13 +32,14 @@ L.MSG_NEW_TRIGGER					= "Neuer Ausl\195\182ser";
 --L.MSG_TRIGGER_CLASSES				= "Trigger Classes";
 --L.MSG_MAIN_EVENTS					= "Main Events";
 --L.MSG_TRIGGER_EXCEPTIONS			= "Trigger Exceptions";
+--L.MSG_EVENT_CONDITIONS				= "Event Conditions";
 --L.MSG_SKILLS						= "Skills";
 --L.MSG_SKILL_ALREADY_EXISTS			= "Skill name already exists.";
 --L.MSG_INVALID_SKILL_NAME			= "Invalid skill name.";
 --L.MSG_HOSTILE						= "Hostile";
 --L.MSG_ANY							= "Any";
---L.MSG_RISES_ABOVE					= "Rises Above";
---L.MSG_FALLS_BELOW					= "Falls Below";
+--L.MSG_CONDITION						= "Condition";
+--L.MSG_CONDITIONS					= "Conditions";
 
 
 ------------------------------
@@ -106,8 +107,6 @@ obj["allClasses"]				= { label="Alle Klassen"};
 --obj["enableCooldowns"]			= { label="Enable Cooldowns", tooltip="Display notifications when cooldowns complete."};
 --obj["enableIcons"]				= { label="Enable Skill Icons", tooltip="Displays icons for events that have a skill when possible."};
 obj["exclusiveSkills"]			= { label="Exclusive Skill Names", tooltip="Only show skill names when an icon is not available."};
---obj["hostileOnly"]				= { label="Hostile Only", tooltip="Only fire the trigger if the selected unit is hostile."};
---obj["reverseLogic"]				= { label="Reverse Logic", tooltip="Reverses the meaning of the selected exception.  For example, Buff Active would mean Buff Inactive."};
 
 
 ------------------------------
@@ -130,10 +129,9 @@ obj["textAlign"]			= { label="Text ausrichten:", tooltip="Die Ausrichtung des Te
 obj["eventCategory"]		= { label="Ereignis-Kategorie:", tooltip="Die Kategorie der zu konfigurienden Ereignisse."};
 obj["outputScrollArea"]		= { label="Scrollbereich:", tooltip="Den Scrollbereich f\195\188r die Textausgabe ausw\195\164hlen."};
 --obj["mainEvent"]			= { label="Main Event:"};
---obj["affectedUnit"]			= { label="Affected Unit:", tooltip="The unit the event must be associated with."};
---obj["eventDirection"]		= { label="Direction:", tooltip="The direction associated with the event."};
---obj["triggerException"]		= { label="Exception:"};
---obj["warriorStance"]		= { label="Warrior Stance:", tooltip="The stance the warrior is currently in."};
+--obj["triggerCondition"]		= { label="Condition:", tooltip="The condition to test."};
+--obj["triggerRelation"]		= { label="Relation:"};
+--obj["triggerParameter"]		= { label="Parameter:"};
 
 
 ------------------------------
@@ -170,9 +168,9 @@ obj["deleteTrigger"]			= { tooltip="Klicken, um diesen Ausl\195\182ser zu l\195\
 --obj["addTriggerException"]		= { label="Add Exception", tooltip="When ANY of these exceptions are true, the trigger will not fire."};
 --obj["editEventConditions"]		= { tooltip="Click to edit the conditions for the event."};
 --obj["deleteMainEvent"]			= { tooltip="Click to delete the event."};
---obj["editExceptionConditions"]	= { tooltip="Click to edit the conditions for the exception."};
---obj["deleteException"]			= { tooltip="Click to delete the exception."};
-obj["triggerEventTypes"]		= { label="Ausl\195\182ser: Ereignisarten", tooltip="Legt fest, nach welchen Ereignisarten gesucht werden soll."};
+--obj["addEventCondition"]		= { label="Add Condition", tooltip="When ALL of these conditions are true for the selected event, the trigger will fire unless one of the specified exceptions is true."};
+--obj["editCondition"]			= { tooltip="Click to edit the condition."};
+--obj["deleteCondition"]			= { tooltip="Click to delete the condition."};
 --obj["throttleList"]				= { label="Throttle List", tooltip="Set custom throttle times for specified skills."};
 --obj["mergeExclusions"]			= { label="Merge Exclusions", tooltip="Prevent specified skills from being merged."};
 --obj["skillSuppressions"]		= { label="Skill Suppressions", tooltip="Suppress skills by their name."};
@@ -220,7 +218,6 @@ obj["scrollAnimationSpeed"]	= { label="Geschwindigkeit", tooltip="Die Geschwindi
 --obj["powerThrottleTime"]	= { label="Throttle Time", tooltip="The number of seconds to throttle power changes."};
 --obj["skillThrottleTime"]	= { label="Throttle Time", tooltip="The number of seconds to throttle the skill."};
 --obj["cooldownThreshold"]	= { label="Cooldown Threshold", tooltip="Skills with a cooldown less than the specified number of seconds will not be displayed."};
---obj["genericAmount"]		= { label="Amount", tooltip="Select the amount."};
 
 ------------------------------
 -- Event categories
@@ -417,37 +414,144 @@ obj = L.NOTIFICATION_EVENTS;
 -- Trigger info
 ------------------------------
 
--- Holds the available trigger main events.
-obj = L.TRIGGER_MAIN_EVENTS;
---obj["Health"]				= "Health Threshold";
---obj["Mana"]					= "Mana Threshold";
---obj["Energy"]				= "Energy Threshold";
---obj["Rage"]					= "Rage Threshold";
---obj["Crit"]					= "Crit";
---obj["Block"]				= "Block";
---obj["Dodge"]				= "Dodge";
---obj["Parry"]				= "Parry";
---obj["BuffGain"]				= "Buff Gain";
---obj["BuffFade"]				= "Buff Fade";
---obj["BuffApplication"]		= "Buff Application";
---obj["DebuffGain"]			= "Debuff Gain";
---obj["DebuffFade"]			= "Debuff Fade";
---obj["DebuffApplication"]	= "Debuff Application";
---obj["CastStart"]			= "Cast Start";
---obj["KillingBlow"]			= "Killing Blow";
+-- Main events.
+obj = L.TRIGGER_DATA;
+--obj["SWING_DAMAGE"]				= "Swing Damage";
+--obj["RANGE_DAMAGE"]				= "Range Damage";
+--obj["SPELL_DAMAGE"]				= "Skill Damage";
+--obj["GENERIC_DAMAGE"]			= "Swing/Range/Skill Damage";
+--obj["SPELL_PERIODIC_DAMAGE"]	= "Periodic Skill Damage (DoT)";
+--obj["DAMAGE_SHIELD"]			= "Damage Shield Damage";
+--obj["DAMAGE_SPLIT"]				= "Split Damage";
+--obj["ENVIRONMENTAL_DAMAGE"]		= "Environmental Damage";
+--obj["SWING_MISSED"]				= "Swing Miss";
+--obj["RANGE_MISSED"]				= "Range Miss";
+--obj["SPELL_MISSED"]				= "Skill Miss";
+--obj["GENERIC_MISSED"]			= "Swing/Range/Skill Miss";
+--obj["SPELL_PERIODIC_MISSED"]	= "Periodic Skill Miss";
+--obj["SPELL_DISPEL_FAILED"]		= "Dispel Failed";
+--obj["DAMAGE_SHIELD_MISSED"]		= "Damage Shield Miss";
+--obj["SPELL_HEAL"]				= "Heal";
+--obj["SPELL_PERIODIC_HEAL"]		= "Periodic Heal (HoT)";
+--obj["SPELL_ENERGIZE"]			= "Power Gain";
+--obj["SPELL_PERIODIC_ENERGIZE"]	= "Periodic Power Gain";
+--obj["SPELL_DRAIN"]				= "Power Drain";
+--obj["SPELL_PERIODIC_DRAIN"]		= "Periodic Power Drain";
+--obj["SPELL_LEECH"]				= "Power Leech";
+--obj["SPELL_PERIODIC_LEECH"]		= "Periodic Power Leech";
+--obj["SPELL_INTERRUPT"]			= "Skill Interrupt";
+--obj["SPELL_AURA_APPLIED"]		= "Aura Application";
+--obj["SPELL_AURA_REMOVED"]		= "Aura Removal";
+--obj["SPELL_AURA_STOLEN"]		= "Aura Stolen";
+--obj["SPELL_AURA_DISPELLED"]		= "Aura Dispel";
+--obj["ENCHANT_APPLIED"]			= "Enchant Application";
+--obj["ENCHANT_REMOVED"]			= "Enchant Removal";
+--obj["SPELL_CAST_START"]			= "Cast Start";
+--obj["SPELL_CAST_SUCCESS"]		= "Cast Success";
+--obj["SPELL_CAST_FAILED"]		= "Cast Failure";
+--obj["SPELL_SUMMON"]				= "Summon";
+--obj["SPELL_CREATE"]				= "Create";
+--obj["PARTY_KILL"]				= "Killing Blow";
+--obj["UNIT_DIED"]				= "Unit Death";
+--obj["UNIT_DESTROYED"]			= "Unit Destroy";
+--obj["SPELL_EXTRA_ATTACKS"]		= "Extra Attacks";
+--obj["UNIT_HEALTH"]				= "Health Change";
+--obj["UNIT_MANA"]				= "Mana Change";
+--obj["UNIT_ENERGY"]				= "Energy Change";
+--obj["UNIT_RAGE"]				= "Rage Change";
+--obj["SKILL_COOLDOWN"]			= "Skill Cooldown Complete";
+ 
+-- Main event conditions.
+--obj["sourceName"]				= "Source Unit Name";
+--obj["sourceAffiliation"]		= "Source Unit Affiliation";
+--obj["sourceReaction"]			= "Source Unit Reaction";
+--obj["sourceControl"]			= "Source Unit Control";
+--obj["sourceUnitType"]			= "Source Unit Type";
+--obj["recipientName"]			= "Recipient Unit Name";
+--obj["recipientAffiliation"]		= "Recipient Unit Affiliation";
+--obj["recipientReaction"]		= "Recipient Unit Reaction";
+--obj["recipientControl"]			= "Recipient Unit Control";
+--obj["recipientUnitType"]		= "Recipient Unit Type";
+--obj["skillID"]					= "Skill ID";
+--obj["skillName"]				= "Skill Name";
+--obj["skillSchool"]				= "Skill School";
+--obj["extraSkillID"]				= "Extra Skill ID";
+--obj["extraSkillName"]			= "Extra Skill Name";
+--obj["extraSkillSchool"]			= "Extra Skill School";
+--obj["amount"]					= "Amount";
+--obj["damageType"]				= "Damage Type";
+--obj["resistAmount"]				= "Resist Amount";
+--obj["blockAmount"]				= "Block Amount";
+--obj["absorbAmount"]				= "Absorb Amount";
+--obj["isCrit"]					= "Crit";
+--obj["isGlancing"]				= "Glancing Hit";
+--obj["isCrushing"]				= "Crushing Blow";
+--obj["extraAmount"]				= "Extra Amount";
+--obj["missType"]					= "Miss Type";
+--obj["hazardType"]				= "Hazard Type";
+--obj["powerType"]				= "Power Type";
+--obj["auraType"]					= "Aura Type";
+--obj["threshold"]				= "Threshold";
+--obj["unitID"]					= "Unit ID";
+--obj["unitReaction"]				= "Unit Reaction";
 
+-- Exception conditions.
+--obj["buffActive"]				= "Buff Active";
+--obj["currentCP"]				= "Current Combo Points";
+--obj["currentPower"]				= "Current Power";
+--obj["recentlyFired"]			= "Trigger Recently Fired";
+--obj["trivialTarget"]			= "Trivial Target";
+--obj["unavailableSkill"]			= "Unavailable Skill";
+--obj["warriorStance"]			= "Warrior Stance";
+--obj["zoneName"]					= "Zone Name";
+--obj["zoneType"]					= "Zone Type";
+ 
+-- Realationships.
+--obj["eq"]						= "Is Equal To";
+--obj["ne"]						= "Is Not Equal To";
+--obj["like"]						= "Is Like";
+--obj["unlike"]					= "Is Not Like";
+--obj["lt"]						= "Is Less Than";
+--obj["gt"]						= "Is Greater Than";
+ 
+-- Affiliations.
+--obj["affiliationMine"]			= "Mine";
+--obj["affiliationParty"]			= "Party Member";
+--obj["affiliationRaid"]			= "Raid Member";
+--obj["affiliationOutsider"]		= "Outsider";
+obj["affiliationTarget"]		= TARGET;
+obj["affiliationFocus"]			= FOCUS;
+obj["affiliationYou"]			= YOU;
 
--- Holds the available trigger exceptions.
-obj = L.TRIGGER_EXCEPTIONS;
---obj["BuffActive"]				= "Buff Active";
---obj["InsufficientPower"]		= "Insufficient Power";
---obj["InsufficientComboPoints"]	= "Insufficient Combo Points";
---obj["NotInArena"]				= "Not In Arena";
---obj["NotInPvPZone"]				= "Not In PvP Zone";
---obj["RecentlyFired"]			= "Trigger Recently Fired";
---obj["SkillUnavailable"]			= "Skill Unavailable";
---obj["TrivialTarget"]			= "Trivial Target";
---obj["WarriorStance"]			= "Warrior Stance";
+-- Reactions.
+--obj["reactionFriendly"]			= "Friendly";
+--obj["reactionNeutral"]			= "Neutral";
+--obj["reactionHostile"]			= HOSTILE;
+
+-- Control types.
+--obj["controlServer"]			= "Server";
+--obj["controlHuman"]				= "Human";
+
+-- Unit types.
+obj["unitTypePlayer"]			= PLAYER; 
+--obj["unitTypeNPC"]				= "NPC";
+obj["unitTypePet"]				= PET;
+--obj["unitTypeGuardian"]			= "Guardian";
+--obj["unitTypeObject"]			= "Object";
+
+-- Aura types.
+--obj["auraTypeBuff"]				= "Buff";
+--obj["auraTypeDebuff"]			= "Debuff";
+
+-- Zone types.
+--obj["zoneTypeArena"]			= "Arena";
+obj["zoneTypePvP"]				= BATTLEGROUND;
+--obj["zoneTypeParty"]			= "5 man instance";
+--obj["zoneTypeRaid"]				= "Raid instance";
+
+-- Booleans
+--obj["booleanTrue"]				= "True";
+--obj["booleanFalse"]				= "False";
 
 
 ------------------------------

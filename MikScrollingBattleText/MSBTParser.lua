@@ -609,7 +609,7 @@ local function CreateCaptureFuncs()
   SWING_MISSED = function (p, ...) p.eventType, p.missType = "miss", ...; end,
   RANGE_MISSED = function (p, ...) p.eventType, p.isRange, p.skillID, p.skillName, p.skillSchool, p.missType = "miss", true, ...; end,
   SPELL_MISSED = function (p, ...) p.eventType, p.skillID, p.skillName, p.skillSchool, p.missType = "miss", ...; end,
-  SPELL_DISPEL_FAILED = function (p, ...) p.eventType, p.missType, p.skillID, p.skillName, p.skillSchool, p.extraSkillID, p.extraSkillname, p.extraSkillSchool = "miss", "RESIST", ...; end,
+  SPELL_DISPEL_FAILED = function (p, ...) p.eventType, p.missType, p.skillID, p.skillName, p.skillSchool, p.extraSkillID, p.extraSkillName, p.extraSkillSchool = "miss", "RESIST", ...; end,
   DAMAGE_SHIELD_MISSED = function (p, ...) p.eventType, p.isDamageShield, p.skillID, p.skillName, p.skillSchool, p.missType = "miss", true, ...; end,
 
   -- Heal events.

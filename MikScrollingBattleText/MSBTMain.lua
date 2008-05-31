@@ -1356,6 +1356,10 @@ end
 -- Module interface.
 -------------------------------------------------------------------------------
 
+-- Protected Variables.
+module.damageTypeMap		= damageTypeMap;
+module.powerTypes			= powerTypes;
+
 -- Protected Functions.
 module.Enable				= Enable;
 module.Disable				= Disable;

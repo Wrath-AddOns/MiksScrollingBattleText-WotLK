@@ -20,6 +20,7 @@ local DEFAULT_SCROLL_WIDTH = 40;
 local DEFAULT_ANIMATION_STYLE = "Straight";
 local DEFAULT_STICKY_ANIMATION_STYLE = "Pow";
 
+local FLAG_YOU = 0xF0000000;
 
 -------------------------------------------------------------------------------
 -- Private variables.
@@ -55,6 +56,8 @@ local MSBTControls = MSBTOptions.Controls;
 local MSBTProfiles = MikSBT.Profiles;
 local MSBTAnimations = MikSBT.Animations;
 local MSBTTriggers = MikSBT.Triggers;
+local MSBTParser = MikSBT.Parser;
+local MSBTMain = MikSBT.Main;
 local L = MikSBT.translations;
 
 -- Local references to certain functions for faster access.
@@ -2173,187 +2176,103 @@ end
 
 
 -------------------------------------------------------------------------------
--- Trigger main event frame functions.
+-- Trigger condition frame functions.
 -------------------------------------------------------------------------------
 
 -- ****************************************************************************
--- Sets up the controls on the passed frame using the passed control map
--- control values.
+-- Called when one of the condition dropdowns are changed.
 -- ****************************************************************************
-local function SetupControls(frame, controlMap, controlValues)
- -- Loop through the controls in the passed control map.
- local control, controlType, value;
- for _, controlData in ipairs(controlMap) do
-  control = frame[controlData.controlName];
-  if (control) then
-   controlType = controlData.controlType;
-   value = controlValues and controlValues[controlData.paramField];
-
-   -- Editbox.
-   if (controlType == "Editbox") then
-    if (controlData.locals) then control:SetLabel(controlData.locals.label); control:SetTooltip(controlData.locals.tooltip); end
-    control:SetText(value);
-    control:Show();
-
-   -- Slider.
-   elseif (controlType == "Slider") then
-    if (controlData.locals) then control:SetLabel(controlData.locals.label); control:SetTooltip(controlData.locals.tooltip); end
-    control:SetMinMaxValues(controlData.minValue, controlData.maxValue)
-    control:SetValueStep(controlData.step);
-    control:SetValue(value or controlData.default);
-    control:Show();
-
-   -- Dropdown.
-   elseif (controlType == "Dropdown") then
-    if (controlData.locals) then control:SetLabel(controlData.locals.label); control:SetTooltip(controlData.locals.tooltip); end
-    control:HideSelections();
-	control:Clear();
-    for k, v in pairs(controlData.dropdownItems) do
-     control:AddItem(v, k);
-    end
-    control:Sort();
-    control:Show();
-    control:SetSelectedID(value or controlData.default);
-
-   -- Checkbox.
-   elseif (controlType == "Checkbox") then
-    if (controlData.locals) then control:SetLabel(controlData.locals.label); control:SetTooltip(controlData.locals.tooltip); end
-    control:SetChecked(value);
-	control:Show();
-   end
-  end -- Control exists check.
- end -- Controls loop.
-end
-
-
--- ****************************************************************************
--- Sets up the controls for the selected main event.
--- ****************************************************************************
-local function SetupMainEventControls(eventConditions)
- -- Hide all controls and only show the ones for the category.
- local frame = popupFrames.mainEventFrame;
- frame.unitDropdown:Hide();
- frame.hostileCheckbox:Hide();
- frame.parameterEditbox:Hide();
- frame.directionDropdown:Hide();
- frame.parameterSlider:Hide();
-
- local eventCategory = popupFrames.triggerFrame.mainEventCategories[frame.mainEventDropdown:GetSelectedID()];
- local controlMap = frame.controlMap[eventCategory];
- if (not controlMap) then return; end
-
- SetupControls(frame, controlMap, eventConditions);
-end
-
-
--- ****************************************************************************
--- Returns a table with the selected main event conditions set.
--- ****************************************************************************
-local function GetMainEventConditions()
- local frame = popupFrames.mainEventFrame;
- local eventConditions = {};
-
- local eventCategory = popupFrames.triggerFrame.mainEventCategories[frame.mainEventDropdown:GetSelectedID()];
- local controlMap = frame.controlMap[eventCategory];
- if (not controlMap) then return eventConditions; end
-
- -- Loop through the controls for the condition type.
- local control, controlType, value;
- for _, controlData in ipairs(controlMap) do
-  control = frame[controlData.controlName];
-
-  if (control) then
-   controlType = controlData.controlType;
-
-   -- Editbox.
-   if (controlType == "Editbox") then
-    value = control:GetText();
-
-   -- Slider.
-   elseif (controlType == "Slider") then
-    value = control:GetValue();
-
-   -- Dropdown.
-   elseif (controlType == "Dropdown") then
-    value = control:GetSelectedID();
-
-   -- Checkbox.
-   elseif (controlType == "Checkbox") then
-    value = control:GetChecked() and true or nil;
-   end
-  end -- Control exists check.
-  
-  -- Set the value for the parameter field.
-  eventConditions[controlData.paramField] = value;
- end -- Controls loop.
+local function ConditionDropdownOnChange(this, id)
+ local frame = popupFrames.triggerConditionFrame;
+ local conditionData = popupFrames.triggerFrame.conditionData[id];
  
- return eventConditions;
+ frame.parameterEditbox:Hide();
+ frame.parameterSlider:Hide();
+ frame.parameterDropdown:Hide();
+ 
+ frame.relationDropdown:Clear();
+ if (conditionData) then
+  if (conditionData.relations) then
+   for relationType, relationName in pairs(conditionData.relations) do
+    frame.relationDropdown:AddItem(relationName, relationType);
+   end
+   frame.relationDropdown:SetSelectedID(conditionData.defaultRelation or "eq");
+  end
+
+  local control;
+  if (conditionData.controlType == "editbox") then
+   control = frame.parameterEditbox;
+   control:Show();
+   control:SetText(conditionData.default or "");
+  elseif (conditionData.controlType == "slider") then
+   control = frame.parameterSlider;
+   control:Show();
+   control:SetMinMaxValues(conditionData.minValue, conditionData.maxValue);
+   control:SetValueStep(conditionData.step);
+   control:SetValue(conditionData.default or conditionData.minValue);
+  elseif (conditionData.controlType == "dropdown") then
+   control = frame.parameterDropdown;
+   control:Show();
+   control:Clear();
+   for itemValue, itemName in pairs(conditionData.items) do
+    control:AddItem(itemName, itemValue);
+   end
+   control:Sort();
+   control:SetSelectedID(conditionData.default);
+   
+  end
+ end
 end
 
 
 -- ****************************************************************************
--- Creates the popup main event frame.
+-- Creates the trigger condition frame.
 -- ****************************************************************************
-local function CreateMainEvent()
+local function CreateTriggerCondition()
  local frame = CreatePopup();
  frame:SetWidth(350);
- frame:SetHeight(325);
+ frame:SetHeight(240);
 
- -- Main event dropdown.
- local dropdown =  MSBTControls.CreateDropdown(frame);
- local objLocale = L.DROPDOWNS["mainEvent"];
- dropdown:Configure(200, objLocale.label, nil);
- dropdown:SetListboxHeight(200);
- dropdown:SetPoint("TOPLEFT", frame, "TOPLEFT", 20, -40);
- dropdown:SetChangeHandler(
-  function (this, id)
-   SetupMainEventControls();
-  end
- );
- for eventType, eventName in pairs(L.TRIGGER_MAIN_EVENTS) do
-  dropdown:AddItem(eventName, eventType);
- end
- dropdown:Sort();
- frame.mainEventDropdown = dropdown;
-
- -- Unit dropdown.
+ -- Condition dropdown.
  local dropdown = MSBTControls.CreateDropdown(frame);
- objLocale = L.DROPDOWNS["affectedUnit"];
- dropdown:Configure(150, objLocale.label, objLocale.tooltip);
- dropdown:SetListboxHeight(120);
- dropdown:SetPoint("TOPLEFT", frame.mainEventDropdown, "BOTTOMLEFT", 0, -20);
- frame.unitDropdown = dropdown;
- 
- -- Hostile checkbox.
- local checkbox = MSBTControls.CreateCheckbox(frame);
- objLocale = L.CHECKBOXES["hostileOnly"]; 
- checkbox:Configure(20, objLocale.label, objLocale.tooltip);
- checkbox:SetPoint("LEFT", frame.unitDropdown, "RIGHT", 20, -5);
- frame.hostileCheckbox = checkbox; 
+ local objLocale = L.DROPDOWNS["triggerCondition"];
+ dropdown:Configure(200, objLocale.label, objLocale.tooltip);
+ dropdown:SetListboxHeight(200);
+ dropdown:SetListboxWidth(200);
+ dropdown:SetPoint("TOPLEFT", frame, "TOPLEFT", 20, -20);
+ dropdown:SetChangeHandler(ConditionDropdownOnChange);
+ frame.conditionDropdown = dropdown;
 
+ -- Relation dropdown.
+ local dropdown = MSBTControls.CreateDropdown(frame);
+ local objLocale = L.DROPDOWNS["triggerRelation"];
+ dropdown:Configure(120, objLocale.label, objLocale.tooltip);
+ dropdown:SetListboxHeight(200);
+ dropdown:SetPoint("TOPLEFT", frame.conditionDropdown, "BOTTOMLEFT", 0, -20);
+ frame.relationDropdown = dropdown;
+  
  -- Parameter editbox.
  local editbox = MSBTControls.CreateEditbox(frame);
- objLocale = L.EDITBOXES["skillName"];
+ local objLocale = L.DROPDOWNS["triggerParameter"];
  editbox:Configure(0, objLocale.label, objLocale.tooltip);
  editbox:SetPoint("TOPLEFT", dropdown, "BOTTOMLEFT", 0, -20);
  editbox:SetPoint("RIGHT", frame, "RIGHT", -35, 0);
  frame.parameterEditbox = editbox;
-
- -- Direction dropdown.
- local dropdown = MSBTControls.CreateDropdown(frame);
- objLocale = L.DROPDOWNS["eventDirection"];
- dropdown:Configure(150, objLocale.label, objLocale.tooltip);
- dropdown:SetListboxHeight(120);
- dropdown:SetPoint("TOPLEFT", frame.unitDropdown, "BOTTOMLEFT", 0, -20);
- frame.directionDropdown = dropdown;
  
  -- Parameter slider.
  local slider = MSBTControls.CreateSlider(frame);
- objLocale = L.SLIDERS["genericAmount"]; 
+ local objLocale = L.DROPDOWNS["triggerParameter"];
  slider:Configure(180, objLocale.label, objLocale.tooltip);
- slider:SetPoint("TOPLEFT", editbox, "BOTTOMLEFT", 0, -30);
+ slider:SetPoint("TOPLEFT", dropdown, "BOTTOMLEFT", 0, -30);
  frame.parameterSlider = slider;
- 
+
+ -- Parameter dropdown.
+ local dropdown = MSBTControls.CreateDropdown(frame);
+ local objLocale = L.DROPDOWNS["triggerParameter"];
+ dropdown:Configure(150, objLocale.label, objLocale.tooltip);
+ dropdown:SetListboxHeight(120);
+ dropdown:SetPoint("TOPLEFT", frame.relationDropdown, "BOTTOMLEFT", 0, -20);
+ frame.parameterDropdown = dropdown;
 
  -- Save button.
  local button = MSBTControls.CreateOptionButton(frame);
@@ -2363,8 +2282,15 @@ local function CreateMainEvent()
  button:SetClickHandler(
   function (this)
    EraseTable(returnSettings);
-   returnSettings.eventType = frame.mainEventDropdown:GetSelectedID();
-   returnSettings.eventConditions = GetMainEventConditions();
+   returnSettings.conditionType = frame.conditionDropdown:GetSelectedID();
+   returnSettings.conditionRelation = frame.relationDropdown:GetSelectedID();
+   if (frame.parameterEditbox:IsShown()) then
+    returnSettings.conditionValue = frame.parameterEditbox:GetText();
+   elseif (frame.parameterSlider:IsShown()) then
+    returnSettings.conditionValue = frame.parameterSlider:GetValue();
+   elseif (frame.parameterDropdown:IsShown()) then
+    returnSettings.conditionValue = frame.parameterDropdown:GetSelectedID();
+   end
    if (frame.saveHandler) then frame.saveHandler(returnSettings, frame.saveArg1); end
    frame:Hide();
   end
@@ -2381,46 +2307,319 @@ local function CreateMainEvent()
   end
  );
 
- 
- local thresholdUnits = popupFrames.triggerFrame.thresholdUnits;
- local typicalUnits = popupFrames.triggerFrame.typicalUnits;
- local threholdDirections = {rising = L.MSG_RISES_ABOVE, declining = L.MSG_FALLS_BELOW};
- local directions = {incoming = L.MSG_INCOMING, outgoing = L.MSG_OUTGOING};
- 
- -- Controls to show for each main event category.
- local controlMap = {
-  auraapplication = {
-   {controlType="Dropdown", controlName="unitDropdown", dropdownItems=typicalUnits, paramField="unit", default="player"},
-   {controlType="Checkbox", controlName="hostileCheckbox", paramField="hostile"},
-   {controlType="Editbox", controlName="parameterEditbox", paramField="effect"},
-   {controlType="Slider", controlName="parameterSlider", paramField="amount", minValue=1, maxValue=10, step=1, default=1},
-  },
+ return frame;
+end
 
-  aurafade = {
-   {controlType="Dropdown", controlName="unitDropdown", dropdownItems=typicalUnits, paramField="unit", default="player"},
-   {controlType="Checkbox", controlName="hostileCheckbox", paramField="hostile"},
-   {controlType="Editbox", controlName="parameterEditbox", paramField="effect"},
-  },
-  
-  threshold = {
-   {controlType="Dropdown", controlName="unitDropdown", dropdownItems=thresholdUnits, paramField="unit", default="player"},
-   {controlType="Checkbox", controlName="hostileCheckbox", paramField="hostile"},
-   {controlType="Dropdown", controlName="directionDropdown", dropdownItems=threholdDirections, paramField="direction", default="declining"},
-   {controlType="Slider", controlName="parameterSlider", paramField="threshold", minValue=1, maxValue=100, step=1, default=35},   
-  },
-  
-  inout = {
-   {controlType="Dropdown", controlName="directionDropdown", dropdownItems=directions, paramField="direction", default="incoming"},
-  },
-  
-  cast = {
-   {controlType="Dropdown", controlName="unitDropdown", dropdownItems=typicalUnits, paramField="unit", default="player"},
-   {controlType="Editbox", controlName="parameterEditbox", paramField="effect"},
-   {controlType="Checkbox", controlName="hostileCheckbox", paramField="hostile"},
-  },
- };
 
- frame.controlMap = controlMap;
+-- ****************************************************************************
+-- Shows the popup trigger condition frame.
+-- ****************************************************************************
+local function ShowTriggerCondition(configTable)
+ -- Don't do anything if required parameters weren't passed.
+ if (not configTable or not configTable.anchorFrame or not configTable.parentFrame) then return; end
+
+ -- Create the frame if it hasn't already been.
+ if (not popupFrames.triggerConditionFrame) then popupFrames.triggerConditionFrame = CreateTriggerCondition(); end
+
+ -- Set parent.
+ local frame = popupFrames.triggerConditionFrame;
+ ChangePopupParent(frame, configTable.parentFrame)
+
+ -- Populate condition type.
+ frame.conditionDropdown:Clear();
+ for conditionType in string.gmatch(configTable.availableConditions, "[^%s]+") do
+  frame.conditionDropdown:AddItem(L.TRIGGER_DATA[conditionType] or conditionType, conditionType);
+ end 
+ frame.conditionDropdown:Sort();
+ frame.conditionDropdown:SetSelectedID(configTable.conditionType);
+ ConditionDropdownOnChange(frame.conditionDropdown, configTable.conditionType);
+ 
+ -- Populate the condition relation.
+ frame.relationDropdown:SetSelectedID(configTable.conditionRelation);
+
+ -- Populate the condition value.
+ local conditionData = popupFrames.triggerFrame.conditionData[configTable.conditionType];
+ local conditionValue = configTable.conditionValue;
+ if (type(conditionValue) == "boolean") then conditionValue = tostring(conditionValue); end
+ if (conditionData.controlType == "editbox") then
+  frame.parameterEditbox:SetText(conditionValue);
+ elseif (conditionData.controlType == "slider") then
+  frame.parameterSlider:SetValue(conditionValue);
+ elseif (conditionData.controlType == "dropdown") then
+  frame.parameterDropdown:SetSelectedID(conditionValue);
+ end
+
+
+ -- Configure the frame.
+ frame.saveHandler = configTable.saveHandler;
+ frame.saveArg1 = configTable.saveArg1;
+ frame.hideHandler = configTable.hideHandler;
+ frame:ClearAllPoints();
+ frame:SetPoint(configTable.anchorPoint or "TOPLEFT", configTable.anchorFrame, configTable.relativePoint or "BOTTOMLEFT");
+ frame:Show();
+ frame:Raise();
+end
+
+
+-------------------------------------------------------------------------------
+-- Trigger main event frame functions.
+-------------------------------------------------------------------------------
+
+-- ****************************************************************************
+-- Enables the controls on the trigger popup.
+-- ****************************************************************************
+local function EnableMainEventControls()
+ for name, frame in pairs(popupFrames.mainEventFrame.controls) do
+  if (frame.Enable) then frame:Enable(); end
+ end
+end
+
+
+-- ****************************************************************************
+-- Updates the main event conditions listbox.
+-- ****************************************************************************
+local function UpdateMainEventConditions()
+ local frame = popupFrames.mainEventFrame;
+ frame.conditionsListbox:Clear();
+ for x = 1, #frame.eventConditions, 3 do
+  frame.conditionsListbox:AddItem(x)
+ end
+end
+
+
+-- ****************************************************************************
+-- Saves the condition the user entered.
+-- ****************************************************************************
+local function SaveMainEventCondition(settings, conditionNum)
+ local frame = popupFrames.mainEventFrame;
+ frame.eventConditions[conditionNum] = settings.conditionType;
+ frame.eventConditions[conditionNum+1] = settings.conditionRelation;
+ frame.eventConditions[conditionNum+2] = settings.conditionValue;
+ UpdateMainEventConditions();
+end
+
+
+-- ****************************************************************************
+-- Called when one of the exception delete buttons is clicked.
+-- ****************************************************************************
+local function DeleteConditionButtonOnClick(this)
+ local frame = popupFrames.mainEventFrame;
+ local line = this:GetParent();
+ table.remove(frame.eventConditions, line.conditionNum);
+ table.remove(frame.eventConditions, line.conditionNum);
+ table.remove(frame.eventConditions, line.conditionNum);
+ UpdateMainEventConditions();
+end
+
+
+-- ****************************************************************************
+-- Called when one of the main event edit buttons is clicked.
+-- ****************************************************************************
+local function EditConditionButtonOnClick(this)
+ local frame = popupFrames.mainEventFrame;
+ local line = this:GetParent();
+ local eventType = frame.mainEventDropdown:GetSelectedID();
+ local conditionData = popupFrames.triggerFrame.eventConditionData[eventType];
+
+ EraseTable(tempConfig);
+ tempConfig.conditionType = frame.eventConditions[line.conditionNum];
+ tempConfig.conditionRelation = frame.eventConditions[line.conditionNum+1];
+ tempConfig.conditionValue = frame.eventConditions[line.conditionNum+2];
+ tempConfig.availableConditions = conditionData and conditionData.availableConditions;
+ tempConfig.saveHandler = SaveMainEventCondition;
+ tempConfig.saveArg1 = line.conditionNum;
+ tempConfig.parentFrame = frame;
+ tempConfig.anchorFrame = this;
+ tempConfig.anchorPoint = "BOTTOMLEFT";
+ tempConfig.relativePoint = "TOPLEFT";
+ tempConfig.hideHandler = EnableMainEventControls;
+ DisableControls(frame.controls);
+ ShowTriggerCondition(tempConfig);
+end
+
+
+-- ****************************************************************************
+-- Called by listbox to create a line for main event conditions.
+-- ****************************************************************************
+local function CreateMainEventConditionsLine(this)
+ local controls = popupFrames.mainEventFrame.controls;
+ local frame = CreateFrame("Button", nil, this);
+ frame:EnableMouse(false);
+
+ -- Edit condition button.
+ local button = MSBTControls.CreateIconButton(frame, "Configure");
+ local objLocale = L.BUTTONS["editCondition"];
+ button:SetTooltip(objLocale.tooltip);
+ button:SetPoint("LEFT", frame, "LEFT", 0, 0);
+ button:SetClickHandler(EditConditionButtonOnClick);
+ frame.editConditionButton = button;
+ controls[#controls+1] = button; 
+ 
+ -- Delete condition button.
+ button = MSBTControls.CreateIconButton(frame, "Delete");
+ objLocale = L.BUTTONS["deleteCondition"];
+ button:SetTooltip(objLocale.tooltip);
+ button:SetPoint("RIGHT", frame, "RIGHT", -10, -5);
+ button:SetClickHandler(DeleteConditionButtonOnClick);
+ controls[#controls+1] = button;
+ 
+ -- Condition text.
+ local fontString = frame:CreateFontString(nil, "OVERLAY", "GameFontNormalSmall");
+ fontString:SetPoint("LEFT", frame.editConditionButton, "RIGHT", 5, 0);
+ fontString:SetPoint("RIGHT", controls[#controls], "LEFT", -10, 0);
+ fontString:SetJustifyH("LEFT");
+ fontString:SetTextColor(1, 1, 1);
+ frame.conditionFontString = fontString;
+ 
+ return frame;
+end
+
+
+-- ****************************************************************************
+-- Called by listbox to display an exception line.
+-- ****************************************************************************
+local function DisplayMainEventConditionsLine(this, line, key, isSelected)
+ line.conditionNum = key;
+
+ local frame = popupFrames.mainEventFrame;
+ local conditionType = frame.eventConditions[key];
+ local conditionData = popupFrames.triggerFrame.conditionData[conditionType];
+ local relation = conditionData and conditionData.relations[frame.eventConditions[key+1]];
+
+ -- Get the localized parameter.
+ local parameter = frame.eventConditions[key+2];
+ if (type(parameter) == "boolean") then parameter = tostring(parameter); end
+ if (conditionData and conditionData.controlType == "dropdown") then parameter = conditionData.items[parameter]; end
+
+ local conditionText = L.TRIGGER_DATA[conditionType] or conditionType;
+ if (relation) then conditionText = conditionText .. " - " .. relation; end
+ if (parameter) then conditionText = conditionText .. " - " .. parameter; end
+ 
+ line.conditionFontString:SetText(conditionText);
+end
+
+
+
+-- ****************************************************************************
+-- Creates the popup main event frame.
+-- ****************************************************************************
+local function CreateMainEvent()
+ local frame = CreatePopup();
+ frame:SetWidth(450);
+ frame:SetHeight(325);
+ frame.controls = {};
+ local controls = frame.controls;
+
+
+ -- Main event dropdown.
+ local dropdown =  MSBTControls.CreateDropdown(frame);
+ local objLocale = L.DROPDOWNS["mainEvent"];
+ dropdown:Configure(200, objLocale.label, nil);
+ dropdown:SetListboxHeight(200);
+ dropdown:SetPoint("TOPLEFT", frame, "TOPLEFT", 20, -40);
+ dropdown:SetChangeHandler(
+  function (this, id)
+   EraseTable(frame.eventConditions);
+   local conditionData = popupFrames.triggerFrame.eventConditionData[id];
+   if (conditionData and conditionData.defaultConditions and conditionData.defaultConditions ~= "") then
+    for conditionEntry in string.gmatch(conditionData.defaultConditions .. ";;", "(.-);;") do
+     frame.eventConditions[#frame.eventConditions+1] = ConvertType(conditionEntry);
+    end
+   end
+   UpdateMainEventConditions();
+  end
+ );
+ for eventType in pairs(popupFrames.triggerFrame.eventConditionData) do
+  dropdown:AddItem(L.TRIGGER_DATA[eventType] or eventType, eventType);
+ end
+ dropdown:Sort();
+ frame.mainEventDropdown = dropdown;
+ controls[#controls+1] = dropdown;
+
+
+ -- Trigger conditions label.
+ fontString = frame:CreateFontString(nil, "OVERLAY", "GameFontNormalSmall");
+ fontString:SetPoint("TOPLEFT", frame.mainEventDropdown, "BOTTOMLEFT", 0, -30);
+ fontString:SetText(L.MSG_EVENT_CONDITIONS .. ":");
+ frame.triggerConditionsLabel = fontString;
+ 
+ -- Add event condition button.
+ button = MSBTControls.CreateOptionButton(frame);
+ objLocale = L.BUTTONS["addEventCondition"];
+ button:Configure(20, objLocale.label, objLocale.tooltip);
+ button:SetPoint("LEFT", frame.triggerConditionsLabel, "RIGHT", 10, 0);
+ button:SetClickHandler(
+  function (this)
+   local eventType = frame.mainEventDropdown:GetSelectedID();
+   local conditionData = popupFrames.triggerFrame.eventConditionData[eventType];
+   local conditionType, conditionRelation, conditionValue;
+   if (conditionData and conditionData.defaultConditions ~= "") then
+    _, _, conditionType, conditionRelation, conditionValue = string.find(conditionData.defaultConditions, "(.-);;(.-);;(.-)");
+	conditionValue = conditionValue and ConvertType(conditionValue);
+	if (type(conditionValue == "boolean")) then conditionValue = tostring(conditionValue); end
+   end
+   EraseTable(tempConfig);
+   tempConfig.conditionType = conditionType or "skillName";
+   tempConfig.conditionRelation = conditionRelation or "eq";
+   tempConfig.conditionValue = conditionValue or "";
+   tempConfig.availableConditions = conditionData and conditionData.availableConditions;
+   tempConfig.saveHandler = SaveMainEventCondition;
+   tempConfig.saveArg1 = #frame.eventConditions+1;
+   tempConfig.parentFrame = frame;
+   tempConfig.anchorFrame = this;
+   tempConfig.anchorPoint = "BOTTOMLEFT";
+   tempConfig.relativePoint = "TOPLEFT";
+   tempConfig.hideHandler = EnableMainEventControls;
+   DisableControls(frame.controls);
+   ShowTriggerCondition(tempConfig);
+  end
+ );
+ controls[#controls+1] = button;
+
+ -- Main event conditions listbox.
+ listbox = MSBTControls.CreateListbox(frame);
+ listbox:Configure(400, 100, 25);
+ listbox:SetPoint("TOPLEFT", frame.triggerConditionsLabel, "BOTTOMLEFT", 10, -10);
+ listbox:SetCreateLineHandler(CreateMainEventConditionsLine);
+ listbox:SetDisplayHandler(DisplayMainEventConditionsLine);
+ frame.conditionsListbox = listbox;
+ controls[#controls+1] = listbox;
+
+ 
+
+ -- Save button.
+ local button = MSBTControls.CreateOptionButton(frame);
+ objLocale = L.BUTTONS["genericSave"];
+ button:Configure(20, objLocale.label, objLocale.tooltip);
+ button:SetPoint("BOTTOMRIGHT", frame, "BOTTOM", -10, 20);
+ button:SetClickHandler(
+  function (this)
+   EraseTable(returnSettings);
+   returnSettings.eventType = frame.mainEventDropdown:GetSelectedID();
+   returnSettings.eventConditions = {};
+   for _, conditionEntry in ipairs(frame.eventConditions) do
+    returnSettings.eventConditions[#returnSettings.eventConditions+1] = conditionEntry;
+   end
+   if (frame.saveHandler) then frame.saveHandler(returnSettings, frame.saveArg1); end
+   frame:Hide();
+  end
+ );
+ controls[#controls+1] = button;
+
+ -- Cancel button.
+ button = MSBTControls.CreateOptionButton(frame);
+ objLocale = L.BUTTONS["genericCancel"];
+ button:Configure(20, objLocale.label, objLocale.tooltip);
+ button:SetPoint("BOTTOMLEFT", frame, "BOTTOM", 10, 20);
+ button:SetClickHandler(
+  function (this)
+   frame:Hide();
+  end
+ );
+ controls[#controls+1] = button;
+
+ frame.eventConditions = {};
+ 
  return frame;
 end
 
@@ -2441,238 +2640,12 @@ local function ShowMainEvent(configTable)
 
  -- Populate data.
  frame.mainEventDropdown:SetSelectedID(configTable.eventType);
- SetupMainEventControls(configTable.eventConditions);
-
- -- Configure the frame.
- frame.saveHandler = configTable.saveHandler;
- frame.saveArg1 = configTable.saveArg1;
- frame.hideHandler = configTable.hideHandler;
- frame:ClearAllPoints();
- frame:SetPoint(configTable.anchorPoint or "TOPLEFT", configTable.anchorFrame, configTable.relativePoint or "BOTTOMLEFT");
- frame:Show();
- frame:Raise();
-end
-
-
--------------------------------------------------------------------------------
--- Trigger exception frame functions.
--------------------------------------------------------------------------------
-
--- ****************************************************************************
--- Sets up the controls for the selected trigger exception.
--- ****************************************************************************
-local function SetupTriggerExceptionControls(exceptionConditions)
- -- Hide all controls and only show the ones for the category.
- local frame = popupFrames.triggerExceptionFrame;
- frame.parameterEditbox:Hide();
- frame.parameterSlider:Hide();
- frame.parameterDropdown:Hide();
- frame.reverseCheckbox:Hide();
-
- local exceptionType = frame.exceptionDropdown:GetSelectedID();
- local controlMap = frame.controlMap[exceptionType];
- if (not controlMap) then return; end
  
- SetupControls(frame, controlMap, exceptionConditions);
-end
-
-
--- ****************************************************************************
--- Returns a table with the selected exception conditions set.
--- ****************************************************************************
-local function GetExceptionConditions()
- local frame = popupFrames.triggerExceptionFrame;
- local exceptionConditions = {};
-
- local exceptionType = frame.exceptionDropdown:GetSelectedID();
- local controlMap = frame.controlMap[exceptionType];
- if (not controlMap) then return exceptionConditions; end
-
- -- Loop through the controls for the condition type.
- local control, controlType, value;
- for _, controlData in ipairs(controlMap) do
-  control = frame[controlData.controlName];
-
-  if (control) then
-   controlType = controlData.controlType;
-
-   -- Editbox.
-   if (controlType == "Editbox") then
-    value = control:GetText();
-
-   -- Slider.
-   elseif (controlType == "Slider") then
-    value = control:GetValue();
-
-   -- Dropdown.
-   elseif (controlType == "Dropdown") then
-    value = control:GetSelectedID();
-
-   -- Checkbox.
-   elseif (controlType == "Checkbox") then
-    value = control:GetChecked() and true or nil;
-   end
-  end -- Control exists check.
-  
-  -- Set the value for the parameter field.
-  exceptionConditions[controlData.paramField] = value;
- end -- Controls loop.
- 
- return exceptionConditions;
-end
-
-
--- ****************************************************************************
--- Creates the popup main event frame.
--- ****************************************************************************
-local function CreateTriggerException()
- local frame = CreatePopup();
- frame:SetWidth(350);
- frame:SetHeight(240);
-
- -- Exception dropdown.
- local dropdown =  MSBTControls.CreateDropdown(frame);
- local objLocale = L.DROPDOWNS["triggerException"];
- dropdown:Configure(200, objLocale.label, nil);
- dropdown:SetListboxHeight(200);
- dropdown:SetPoint("TOPLEFT", frame, "TOPLEFT", 20, -40);
- dropdown:SetChangeHandler(
-  function (this, id)
-   SetupTriggerExceptionControls();
-  end
- );
- for exceptionType, exceptionName in pairs(L.TRIGGER_EXCEPTIONS) do
-  dropdown:AddItem(exceptionName, exceptionType);
+ EraseTable(frame.eventConditions);
+ for _, conditionEntry in ipairs(configTable.eventConditions) do
+  frame.eventConditions[#frame.eventConditions+1] = conditionEntry;
  end
- dropdown:Sort();
- frame.exceptionDropdown = dropdown;
-
- -- Parameter editbox.
- local editbox = MSBTControls.CreateEditbox(frame);
- editbox:Configure(0, nil, nil);
- editbox:SetPoint("TOPLEFT", dropdown, "BOTTOMLEFT", 0, -20);
- editbox:SetPoint("RIGHT", frame, "RIGHT", -35, 0);
- frame.parameterEditbox = editbox;
- 
- -- Parameter slider.
- local slider = MSBTControls.CreateSlider(frame);
- slider:Configure(180, nil, nil);
- slider:SetPoint("TOPLEFT", dropdown, "BOTTOMLEFT", 0, -30);
- frame.parameterSlider = slider;
-
- -- Parameter dropdown.
- local dropdown = MSBTControls.CreateDropdown(frame);
- dropdown:Configure(150, nil, nil);
- dropdown:SetListboxHeight(120);
- dropdown:SetPoint("TOPLEFT", frame.exceptionDropdown, "BOTTOMLEFT", 0, -20);
- frame.parameterDropdown = dropdown;
-
- -- Reverse Logic checkbox.
- local checkbox = MSBTControls.CreateCheckbox(frame);
- checkbox:Configure(20, nil, nil);
- checkbox:SetPoint("TOPLEFT", frame.parameterDropdown, "BOTTOMLEFT", 0, -20);
- frame.reverseCheckbox = checkbox; 
-
-
- -- Save button.
- local button = MSBTControls.CreateOptionButton(frame);
- objLocale = L.BUTTONS["genericSave"];
- button:Configure(20, objLocale.label, objLocale.tooltip);
- button:SetPoint("BOTTOMRIGHT", frame, "BOTTOM", -10, 20);
- button:SetClickHandler(
-  function (this)
-   EraseTable(returnSettings);
-   returnSettings.exceptionType = frame.exceptionDropdown:GetSelectedID();
-   returnSettings.exceptionConditions = GetExceptionConditions();
-   if (frame.saveHandler) then frame.saveHandler(returnSettings, frame.saveArg1); end
-   frame:Hide();
-  end
- );
-
- -- Cancel button.
- button = MSBTControls.CreateOptionButton(frame);
- objLocale = L.BUTTONS["genericCancel"];
- button:Configure(20, objLocale.label, objLocale.tooltip);
- button:SetPoint("BOTTOMLEFT", frame, "BOTTOM", 10, 20);
- button:SetClickHandler(
-  function (this)
-   frame:Hide();
-  end
- );
-
- -- Get the localized warrior stances.
- local warriorStances = {
-  [1] = GetSpellInfo(2457),
-  [2] = GetSpellInfo(71),
-  [3] = GetSpellInfo(2458),
- };
-
- -- Controls to show for exception category.
- local controlMap = {
-  BuffActive = {
-   {controlType="Editbox", controlName="parameterEditbox", paramField="effect", locals=L.EDITBOXES["skillName"]},
-   {controlType="Checkbox", controlName="reverseCheckbox", paramField="reversed", locals=L.CHECKBOXES["reverseLogic"]},
-  },
-
-  InsufficientPower = {
-   {controlType="Slider", controlName="parameterSlider", paramField="amount", minValue=1, maxValue=100, step=1, default=20, locals=L.SLIDERS["genericAmount"]},
-   {controlType="Checkbox", controlName="reverseCheckbox", paramField="reversed", locals=L.CHECKBOXES["reverseLogic"]},
-  },
-
-  InsufficientComboPoints = {
-   {controlType="Slider", controlName="parameterSlider", paramField="amount", minValue=1, maxValue=5, step=1, default=5, locals=L.SLIDERS["genericAmount"]},  
-   {controlType="Checkbox", controlName="reverseCheckbox", paramField="reversed", locals=L.CHECKBOXES["reverseLogic"]},
-  },
-  
-  NotInArena = {
-   {controlType="Checkbox", controlName="reverseCheckbox", paramField="reversed", locals=L.CHECKBOXES["reverseLogic"]},
-  },
-
-  NotInPvPZone = {
-   {controlType="Checkbox", controlName="reverseCheckbox", paramField="reversed", locals=L.CHECKBOXES["reverseLogic"]},
-  },
-  
-  RecentlyFired = {
-   {controlType="Slider", controlName="parameterSlider", paramField="duration", minValue=1, maxValue=10, step=1, default=5, locals=L.SLIDERS["genericAmount"]},
-  },
-
-  SkillUnavailable = {
-   {controlType="Editbox", controlName="parameterEditbox", paramField="effect", locals=L.EDITBOXES["skillName"]},
-   {controlType="Checkbox", controlName="reverseCheckbox", paramField="reversed", locals=L.CHECKBOXES["reverseLogic"]},
-  },
-
-  TrivialTarget = {
-   {controlType="Checkbox", controlName="reverseCheckbox", paramField="reversed", locals=L.CHECKBOXES["reverseLogic"]},
-  },
-  
-  WarriorStance = {
-   {controlType="Dropdown", controlName="parameterDropdown", dropdownItems=warriorStances, paramField="stance", default=1, locals=L.DROPDOWNS["warriorStance"]},
-   {controlType="Checkbox", controlName="reverseCheckbox", paramField="reversed", locals=L.CHECKBOXES["reverseLogic"]},
-  },
- };
-
- frame.controlMap = controlMap;
- return frame;
-end
-
-
--- ****************************************************************************
--- Shows the popup trigger exception frame.
--- ****************************************************************************
-local function ShowTriggerException(configTable)
- -- Don't do anything if required parameters weren't passed.
- if (not configTable or not configTable.anchorFrame or not configTable.parentFrame) then return; end
-
- -- Create the frame if it hasn't already been.
- if (not popupFrames.triggerExceptionFrame) then popupFrames.triggerExceptionFrame = CreateTriggerException(); end
-
- -- Set parent.
- local frame = popupFrames.triggerExceptionFrame;
- ChangePopupParent(frame, configTable.parentFrame)
-
- -- Populate data.
- frame.exceptionDropdown:SetSelectedID(configTable.exceptionType);
- SetupTriggerExceptionControls(configTable.exceptionConditions);
+ UpdateMainEventConditions();
 
  -- Configure the frame.
  frame.saveHandler = configTable.saveHandler;
@@ -2683,7 +2656,6 @@ local function ShowTriggerException(configTable)
  frame:Show();
  frame:Raise();
 end
-
 
 
 -------------------------------------------------------------------------------
@@ -2731,8 +2703,8 @@ end
 local function UpdateExceptions()
  local frame = popupFrames.triggerFrame;
  frame.exceptionsListbox:Clear();
- for index in pairs(frame.exceptions) do
-  frame.exceptionsListbox:AddItem(index)
+ for x = 1, #frame.exceptions, 3 do
+  frame.exceptionsListbox:AddItem(x)
  end
 end
 
@@ -2763,8 +2735,9 @@ end
 -- ****************************************************************************
 local function SaveException(settings, exceptionNum)
  local frame = popupFrames.triggerFrame;
- frame.exceptions[exceptionNum] = settings.exceptionType;
- frame.exceptionConditions[exceptionNum] = settings.exceptionConditions;
+ frame.exceptions[exceptionNum] = settings.conditionType;
+ frame.exceptions[exceptionNum+1] = settings.conditionRelation;
+ frame.exceptions[exceptionNum+2] = settings.conditionValue;
  UpdateExceptions();
 end
 
@@ -2797,8 +2770,10 @@ local function EditExceptionButtonOnClick(this)
  local line = this:GetParent();
 
  EraseTable(tempConfig);
- tempConfig.exceptionType = frame.exceptions[line.exceptionNum];
- tempConfig.exceptionConditions = frame.exceptionConditions[line.exceptionNum];
+ tempConfig.conditionType = frame.exceptions[line.exceptionNum];
+ tempConfig.conditionRelation = frame.exceptions[line.exceptionNum+1];
+ tempConfig.conditionValue = frame.exceptions[line.exceptionNum+2];
+ tempConfig.availableConditions = frame.availableExceptions;
  tempConfig.saveHandler = SaveException;
  tempConfig.saveArg1 = line.exceptionNum;
  tempConfig.parentFrame = frame;
@@ -2807,7 +2782,7 @@ local function EditExceptionButtonOnClick(this)
  tempConfig.relativePoint = "TOPLEFT";
  tempConfig.hideHandler = EnableTriggerControls;
  DisableControls(frame.controls);
- ShowTriggerException(tempConfig);
+ ShowTriggerCondition(tempConfig);
 end
 
 
@@ -2830,7 +2805,8 @@ local function DeleteExceptionButtonOnClick(this)
  local frame = popupFrames.triggerFrame;
  local line = this:GetParent();
  table.remove(frame.exceptions, line.exceptionNum);
- table.remove(frame.exceptionConditions, line.exceptionNum);
+ table.remove(frame.exceptions, line.exceptionNum);
+ table.remove(frame.exceptions, line.exceptionNum);
  UpdateExceptions();
 end
 
@@ -2883,19 +2859,18 @@ local function CreateExceptionsLine(this)
 
  -- Edit exception button.
  local button = MSBTControls.CreateIconButton(frame, "Configure");
- local objLocale = L.BUTTONS["editExceptionConditions"];
+ local objLocale = L.BUTTONS["editCondition"];
  button:SetTooltip(objLocale.tooltip);
  button:SetPoint("LEFT", frame, "LEFT", 0, 0);
  button:SetClickHandler(EditExceptionButtonOnClick);
  frame.editExceptionButton = button;
- controls[#controls+1] = button;
- 
+ controls[#controls+1] = button; 
  
  -- Delete exception button.
  button = MSBTControls.CreateIconButton(frame, "Delete");
- objLocale = L.BUTTONS["deleteException"];
+ objLocale = L.BUTTONS["deleteCondition"];
  button:SetTooltip(objLocale.tooltip);
- button:SetPoint("RIGHT", frame, "RIGHT", -10, 0);
+ button:SetPoint("RIGHT", frame, "RIGHT", -10, -5);
  button:SetClickHandler(DeleteExceptionButtonOnClick);
  controls[#controls+1] = button;
  
@@ -2906,7 +2881,7 @@ local function CreateExceptionsLine(this)
  fontString:SetJustifyH("LEFT");
  fontString:SetTextColor(1, 1, 1);
  frame.exceptionFontString = fontString;
-
+ 
  return frame;
 end
 
@@ -2919,38 +2894,11 @@ local function DisplayMainEventsLine(this, line, key, isSelected)
 
  local frame = popupFrames.triggerFrame;
  local eventType = frame.mainEvents[key];
- local eventCategory = frame.mainEventCategories[eventType];
- local eventText = L.TRIGGER_MAIN_EVENTS[eventType] or UNKNOWN;
+ local eventText = L.TRIGGER_DATA[eventType] or UNKNOWN;
  local eventConditions = frame.eventConditions[key];
  
- -- Threshold trigger.
- if (eventCategory == "threshold") then
-  if (eventConditions.threshold) then eventText = eventText .. " - " .. tostring(eventConditions.threshold); end
-  if (eventConditions.unit) then eventText = eventText .. " - " .. frame.thresholdUnits[eventConditions.unit]; end
-  if (eventConditions.hostile) then eventText = eventText .. " - " .. L.MSG_HOSTILE; end
-
- -- Incoming/Outgoing trigger.
- elseif (eventCategory == "inout") then
-  if (eventConditions.direction == "incoming") then
-   eventText = eventText .. " - " .. L.MSG_INCOMING;
-  elseif (eventConditions.direction == "outgoing") then 
-   eventText = eventText .. " - " .. L.MSG_OUTGOING;
-  end
-  
- -- Aura application trigger.
- elseif (eventCategory == "auraapplication") then
-  if (eventConditions.effect) then eventText = eventText .. " - " .. eventConditions.effect; end
-  if (eventConditions.amount) then eventText = eventText .. " - " .. eventConditions.amount; end
-  if (eventConditions.unit) then eventText = eventText .. " - " .. frame.typicalUnits[eventConditions.unit]; end
-  if (eventConditions.hostile) then eventText = eventText .. " - " .. L.MSG_HOSTILE; end
-  
-
- -- Aura fade/Cast trigger.
- elseif (eventCategory == "aurafade" or eventCategory == "cast") then
-  if (eventConditions.effect) then eventText = eventText .. " - " .. eventConditions.effect; end
-  if (eventConditions.unit) then eventText = eventText .. " - " .. frame.typicalUnits[eventConditions.unit]; end
-  if (eventConditions.hostile) then eventText = eventText .. " - " .. L.MSG_HOSTILE; end
- end
+ local numConditions = #eventConditions / 3;
+ eventText = eventText .. " - " .. numConditions .. " " .. (numConditions == 1 and L.MSG_CONDITION or L.MSG_CONDITIONS);
 
  line.eventFontString:SetText(eventText);
 end
@@ -2964,29 +2912,17 @@ local function DisplayExceptionsLine(this, line, key, isSelected)
 
  local frame = popupFrames.triggerFrame;
  local exceptionType = frame.exceptions[key];
- local exceptionCategory = frame.exceptionCategories[exceptionType];
- local exceptionText = L.TRIGGER_EXCEPTIONS[exceptionType] or UNKNOWN;
- local exceptionConditions = frame.exceptionConditions[key];
+ local conditionData = frame.conditionData[exceptionType];
+ local relation = conditionData.relations[frame.exceptions[key+1]];
 
- -- Skill condition.
- if (exceptionCategory == "skill") then
-  if (exceptionConditions.effect) then exceptionText = exceptionText .. " - " .. exceptionConditions.effect; end
-  
- -- Amount condition.
- elseif (exceptionCategory == "amount") then
-  if (exceptionConditions.amount) then exceptionText = exceptionText .. " - " .. exceptionConditions.amount; end
+ -- Get the localized parameter.
+ local parameter = frame.exceptions[key+2];
+ if (type(parameter) == "boolean") then parameter = tostring(parameter); end
+ if (conditionData.controlType == "dropdown") then parameter = conditionData.items[parameter]; end
 
- -- Duration condition.
- elseif (exceptionCategory == "duration") then
-  if (exceptionConditions.duration) then exceptionText = exceptionText .. " - " .. exceptionConditions.duration; end
-
- -- Stance condition.
- elseif (exceptionCategory == "stance") then
-  if (exceptionConditions.stance) then exceptionText = exceptionText .. " - " .. exceptionConditions.stance; end
- end
-
- -- Logic Reversed.
- if (exceptionConditions.reversed) then exceptionText = exceptionText .. " - " .. L.CHECKBOXES["reverseLogic"].label; end
+ local exceptionText = L.TRIGGER_DATA[exceptionType] or exceptionType;
+ if (relation) then exceptionText = exceptionText .. " - " .. relation; end
+ if (parameter) then exceptionText = exceptionText .. " - " .. parameter; end
  
  line.exceptionFontString:SetText(exceptionText);
 end
@@ -2997,7 +2933,7 @@ end
 -- ****************************************************************************
 local function CreateTriggerPopup()
  local frame = CreatePopup();
- frame:SetWidth(450);
+ frame:SetWidth(500);
  frame:SetHeight(460);
  frame.controls = {};
  local controls = frame.controls;
@@ -3056,8 +2992,8 @@ local function CreateTriggerPopup()
  button:SetClickHandler(
   function (this)
    EraseTable(tempConfig);
-   tempConfig.eventType = "BuffApplication";
-   tempConfig.eventConditions = {amount=1, unit="player"};
+   tempConfig.eventType = "SPELL_AURA_APPLIED";
+   tempConfig.eventConditions = {"recipientAffiliation", "eq", FLAG_YOU, "skillName", "eq", UNKNOWN };
    tempConfig.saveHandler = SaveMainEvent;
    tempConfig.saveArg1 = #frame.mainEvents + 1;
    tempConfig.parentFrame = frame;
@@ -3071,7 +3007,7 @@ local function CreateTriggerPopup()
 
  -- Main events listbox.
  local listbox = MSBTControls.CreateListbox(frame);
- listbox:Configure(400, 100, 25);
+ listbox:Configure(450, 100, 25);
  listbox:SetPoint("TOPLEFT", frame.mainEventsLabel, "BOTTOMLEFT", 10, -10);
  listbox:SetCreateLineHandler(CreateMainEventsLine);
  listbox:SetDisplayHandler(DisplayMainEventsLine);
@@ -3093,24 +3029,26 @@ local function CreateTriggerPopup()
  button:SetClickHandler(
   function (this)
    EraseTable(tempConfig);
-   tempConfig.exceptionType = "RecentlyFired";
-   tempConfig.exceptionConditions = {duration=5};
+   tempConfig.conditionType = "recentlyFired";
+   tempConfig.conditionRelation = "lt";
+   tempConfig.conditionValue = 5;
+   tempConfig.availableConditions = frame.availableExceptions;
    tempConfig.saveHandler = SaveException;
-   tempConfig.saveArg1 = #frame.exceptions + 1;
+   tempConfig.saveArg1 = #frame.exceptions+1;
    tempConfig.parentFrame = frame;
    tempConfig.anchorFrame = this;
    tempConfig.anchorPoint = "BOTTOMLEFT";
    tempConfig.relativePoint = "TOPLEFT";
    tempConfig.hideHandler = EnableTriggerControls;
    DisableControls(frame.controls);
-   ShowTriggerException(tempConfig);
+   ShowTriggerCondition(tempConfig);
   end
  );
  controls[#controls+1] = button;
 
  -- Trigger exceptions listbox.
  listbox = MSBTControls.CreateListbox(frame);
- listbox:Configure(400, 100, 25);
+ listbox:Configure(450, 100, 25);
  listbox:SetPoint("TOPLEFT", frame.triggerExceptionsLabel, "BOTTOMLEFT", 10, -10);
  listbox:SetCreateLineHandler(CreateExceptionsLine);
  listbox:SetDisplayHandler(DisplayExceptionsLine);
@@ -3140,31 +3078,23 @@ local function CreateTriggerPopup()
    if (next(frame.mainEvents)) then
     local events = "";
     for eventNum, eventType in ipairs(frame.mainEvents) do
-     events = events .. eventType .. "["
+     events = events .. eventType .. "{"
      if (next(frame.eventConditions[eventNum])) then
-      for conditionName, conditionValue in PairsByKeys(frame.eventConditions[eventNum]) do
-       events = events .. conditionName .. "=" .. tostring(conditionValue) .. ";;";
+      for _, conditionEntry in ipairs(frame.eventConditions[eventNum]) do
+       events = events .. tostring(conditionEntry) .. ";;";
       end
       events = string.sub(events, 1, -3);
      end
-     events = events .. "]&&";
+     events = events .. "}&&";
     end
     returnSettings.mainEvents = string.sub(events, 1, -3);
    end
 
-
    -- Make the exceptions string.
    if (next(frame.exceptions)) then
     local exceptions = "";
-    for exceptionNum, exceptionType in ipairs(frame.exceptions) do
-     exceptions = exceptions .. exceptionType .. "["
-     if (next(frame.exceptionConditions[exceptionNum])) then
-      for conditionName, conditionValue in PairsByKeys(frame.exceptionConditions[exceptionNum]) do
-       exceptions = exceptions .. conditionName .. "=" .. tostring(conditionValue) .. ";;";
-      end
-      exceptions = string.sub(exceptions, 1, -3);
-     end
-     exceptions = exceptions .. "]&&";
+    for x = 1, #frame.exceptions, 3 do
+     exceptions = exceptions .. string.format("%s;;%s;;%s;;", tostring(frame.exceptions[x]), tostring(frame.exceptions[x+1]), tostring(frame.exceptions[x+2]));
     end
     returnSettings.exceptions = string.sub(exceptions, 1, -3);
    end
@@ -3192,27 +3122,255 @@ local function CreateTriggerPopup()
  frame.mainEvents = {};
  frame.eventConditions = {};
  frame.exceptions = {};
- frame.exceptionConditions = {};
  frame.sortedKeys = {};
 
- -- Localized unit types. 
- frame.thresholdUnits = { player = YOU, target = TARGET, focus = FOCUS, pet = PET };
- frame.typicalUnits = { player = YOU, target = TARGET, focus = FOCUS, any = L.MSG_ANY };
-
-
- -- Categories for main event.
- frame.mainEventCategories = {
-  Health = "threshold", Mana = "threshold", Energy = "threshold", Rage = "threshold",
-  Crit = "inout", Block = "inout", Dodge = "inout", Parry = "inout",
-  BuffApplication = "auraapplication", BuffFade = "aurafade", DebuffApplication = "auraapplication", DebuffFade = "aurafade", 
-  CastStart = "cast",
+ -- Relations.
+ local objLocale = L.TRIGGER_DATA;
+ local equalityRelations = {eq = objLocale["eq"]};
+ local stringRelations = {eq = objLocale["eq"], ne = objLocale["ne"], like = objLocale["like"], unlike = objLocale["unlike"]};
+ local numberRelations = {eq = objLocale["eq"], ne = objLocale["ne"], lt = objLocale["lt"], gt = objLocale["gt"]};
+ local booleanRelations = {eq = objLocale["eq"], ne = objLocale["ne"]};
+ local lessThanRelations = {lt = objLocale["lt"]};
+ 
+ -- Localized warrior stances.
+ local warriorStances = {
+  [1] = GetSpellInfo(2457),
+  [2] = GetSpellInfo(71),
+  [3] = GetSpellInfo(2458),
  };
 
- -- Categories for exceptions.
- frame.exceptionCategories = {
-  BuffActive = "skill", InsufficientPower = "amount", InsufficientComboPoints = "amount",
-  RecentlyFired = "duration", SkillUnavailable = "skill", WarriorStance = "stance",
+ -- Localized affiliations.
+ local affiliationTypes = {
+  [MSBTParser.AFFILIATION_MINE] = objLocale["affiliationMine"],
+  [MSBTParser.AFFILIATION_PARTY] = objLocale["affiliationParty"],
+  [MSBTParser.AFFILIATION_RAID] = objLocale["affiliationRaid"],
+  [MSBTParser.AFFILIATION_OUTSIDER] = objLocale["affiliationOutsider"],
+  [MSBTParser.TARGET_TARGET] = objLocale["affiliationTarget"],
+  [MSBTParser.TARGET_FOCUS] = objLocale["affiliationFocus"],
+  [FLAG_YOU] = objLocale["affiliationYou"],
  };
+
+ -- Localized reactions.
+ local reactionTypes = {
+  [MSBTParser.REACTION_FRIENDLY] = objLocale["reactionFriendly"],
+  [MSBTParser.REACTION_NEUTRAL] = objLocale["reactionNeutral"],
+  [MSBTParser.REACTION_HOSTILE] = objLocale["reactionHostile"],
+ };
+
+ -- Localized control types.
+ local controlTypes = {
+  [MSBTParser.CONTROL_HUMAN] = objLocale["controlHuman"],
+  [MSBTParser.CONTROL_SERVER] = objLocale["controlServer"],
+ };
+
+ -- Localized unit types.
+ local unitTypes = {
+  [MSBTParser.UNITTYPE_PLAYER] = objLocale["unitTypePlayer"],
+  [MSBTParser.UNITTYPE_NPC] = objLocale["unitTypeNPC"],
+  [MSBTParser.UNITTYPE_PET] = objLocale["unitTypePet"],
+  [MSBTParser.UNITTYPE_GUARDIAN] = objLocale["unitTypeGuardian"],
+  [MSBTParser.UNITTYPE_OBJECT] = objLocale["unitTypeObject"],
+ };
+ 
+ -- Miss types.
+ local missTypes = {
+  ["MISS"] = MISS,
+  ["DODGE"] = DODGE,
+  ["PARRY"] = PARRY,
+  ["BLOCK"] = BLOCK,
+  ["RESIST"] = RESIST,
+  ["ABSORB"] = ABSORB,
+  ["IMMUNE"] = IMMUNE,
+  ["EVADE"] = EVADE,
+  ["REFLECT"] = REFLECT,
+ };
+ 
+ -- Hazard type.
+ local hazardTypes = {
+  ["DROWNING"] = STRING_ENVIRONMENTAL_DAMAGE_DROWNING,
+  ["FALLING"] = STRING_ENVIRONMENTAL_DAMAGE_FALLING,
+  ["FATIGUE "] = STRING_ENVIRONMENTAL_DAMAGE_FATIGUE,
+  ["FIRE"] = STRING_ENVIRONMENTAL_DAMAGE_FIRE,
+  ["LAVA"] = STRING_ENVIRONMENTAL_DAMAGE_LAVA,
+  ["SLIME"] = STRING_ENVIRONMENTAL_DAMAGE_SLIME,
+ };
+ 
+ local auraTypes = {
+  BUFF = objLocale["auraTypeBuff"],
+  DEBUFF = objLocale["auraTypeDebuff"],
+ };
+ 
+ local unitIDs = {
+  player = YOU,
+  target = TARGET,
+  focus = FOCUS,
+  pet = PET,
+  party = objLocale["affiliationParty"],
+  party1 = objLocale["affiliationParty"] .. " 1",
+  party2 = objLocale["affiliationParty"] .. " 2",
+  party3 = objLocale["affiliationParty"] .. " 3",
+  party4 = objLocale["affiliationParty"] .. " 4",
+  party5 = objLocale["affiliationParty"] .. " 5",
+  raid = objLocale["affiliationRaid"],
+ }
+ 
+ -- Localized booleans.
+ local booleanItems = {["true"] = objLocale["booleanTrue"], ["false"] = objLocale["booleanFalse"]};
+
+ -- Localized zone types.
+ local zoneTypes = {arena = objLocale["zoneTypeArena"], pvp = objLocale["zoneTypePvP"], party = objLocale["zoneTypeParty"], raid = objLocale["zoneTypeRaid"]};
+ 
+ 
+
+ -- Condition data.
+ frame.conditionData = {
+  -- Main event conditions.
+  -- Source unit.
+  sourceName = {controlType = "editbox", relations = stringRelations},
+  sourceAffiliation = {controlType = "dropdown", items = affiliationTypes, default=FLAG_YOU, relations = booleanRelations},
+  sourceReaction = {controlType = "dropdown", items = reactionTypes, default=MSBTParser.REACTION_HOSTILE, relations = booleanRelations},
+  sourceControl = {controlType = "dropdown", items = controlTypes, default=MSBTParser.CONTROL_HUMAN, relations = booleanRelations},
+  sourceUnitType = {controlType = "dropdown", items = unitTypes, default=MSBTParser.UNITTYPE_PLAYER, relations = booleanRelations},
+
+  -- Recipient unit.
+  recipientName = {controlType = "editbox", relations = stringRelations},
+  recipientAffiliation = {controlType = "dropdown", items = affiliationTypes, default=FLAG_YOU, relations = booleanRelations},
+  recipientReaction = {controlType = "dropdown", items = reactionTypes, default=MSBTParser.REACTION_HOSTILE, relations = booleanRelations},
+  recipientControl = {controlType = "dropdown", items = controlTypes, default=MSBTParser.CONTROL_HUMAN, relations = booleanRelations},
+  recipientUnitType = {controlType = "dropdown", items = unitTypes, default=MSBTParser.UNITTYPE_PLAYER, relations = booleanRelations},
+
+  -- Skill.
+  skillID = {controlType = "editbox", relations = booleanRelations},
+  skillName = {controlType = "editbox", relations = stringRelations},
+  skillSchool = {controlType = "dropdown", items = MSBTMain.damageTypeMap, default=0x1, relations = booleanRelations},
+  
+  -- Extra skill.
+  extraSkillID = {controlType = "editbox", relations = booleanRelations},
+  extraSkillName = {controlType = "editbox", relations = stringRelations},
+  extraSkillSchool = {controlType = "dropdown", items = MSBTMain.damageTypeMap, default=0x1, relations = booleanRelations},
+
+  -- Damage/heal.
+  amount = {controlType = "editbox", relations = numberRelations},
+  damageType = {controlType = "dropdown", items = MSBTMain.damageTypeMap, default=0x1, relations = booleanRelations},
+  resistAmount = {controlType = "editbox", relations = numberRelations},
+  blockAmount = {controlType = "editbox", relations = numberRelations},
+  absorbAmount = {controlType = "editbox", relations = numberRelations},
+  isCrit = {controlType = "dropdown", items = booleanItems, default = "true", relations = booleanRelations},
+  isGlancing = {controlType = "dropdown", items = booleanItems, default = "true", relations = booleanRelations},
+  isCrushing = {controlType = "dropdown", items = booleanItems, default = "true", relations = booleanRelations},
+
+  -- Miss/environmental/power.
+  missType = {controlType = "dropdown", items = missTypes, default="MISS", relations = booleanRelations},
+  hazardType = {controlType = "dropdown", items = hazardTypes, default="FALLING", relations = booleanRelations},
+  powerType = {controlType = "dropdown", items = MSBTMain.powerTypes, default=0, relations = booleanRelations},
+  extraAmount = {controlType = "editbox", relations = numberRelations},
+  
+  -- Aura.
+  auraType = {controlType = "dropdown", items = auraTypes, default="BUFF", relations = booleanRelations},
+
+  -- Health/power changes.
+  threshold = {controlType = "slider", minValue=1, maxValue=100, step=1, default=40, relations=numberRelations, defaultRelation = "lt"},
+  unitID = {controlType = "dropdown", items = unitIDs, default="player", relations = booleanRelations},
+  unitReaction = {controlType = "dropdown", items = reactionTypes, default=MSBTParser.REACTION_HOSTILE, relations = booleanRelations},
+
+  -- Exception conditions.
+  buffActive = {controlType = "editbox", relations = equalityRelations},
+  currentCP = {controlType = "slider", minValue = 1, maxValue = 5, step = 1, default = 5, relations = numberRelations, defaultRelation = "lt"},
+  currentPower = {controlType = "slider", minValue = 1, maxValue = 100, step = 1, default = 20, relations = numberRelations, defaultRelation = "lt"},
+  recentlyFired = {controlType = "slider", minValue = 1, maxValue = 30, step = 1, default = 5, relations = lessThanRelations, defaultRelation = "lt"},
+  trivialTarget = {controlType = "dropdown", items = booleanItems, default = "false", relations = booleanRelations},
+  unavailableSkill = {controlType = "editbox", relations = equalityRelations},
+  warriorStance = {controlType = "dropdown", items = warriorStances, default = 1, relations = booleanRelations},
+  zoneName = {controlType = "editbox", relations = stringRelations},
+  zoneType = {controlType = "dropdown", items = zoneTypes, default="arena", relations = booleanRelations},
+ };
+
+ -- Event condition data.
+ local commonLogFields = "sourceName sourceAffiliation sourceReaction sourceControl sourceUnitType recipientName recipientAffiliation recipientReaction recipientControl recipientUnitType ";
+ local commonSkillFields = "skillID skillName skillSchool ";
+ local commonDamageFields = "amount damageType resistAmount blockAmount absorbAmount isCrit isGlancing isCrushing";
+ local commonExtraSkillFields = "extraSkillID extraSkillName extraSkillSchool ";
+ local commonHealFields = "amount isCrit";
+ local commonPowerFields = "amount powerType";
+ local commonHealthPowerFields = "unitID unitReaction amount threshold";
+ local eventConditionData = {
+  -- Damage events.
+  SWING_DAMAGE = {availableConditions = commonLogFields .. commonDamageFields, defaultConditions="sourceAffiliation;;eq;;" .. FLAG_YOU .. ";;isCrit;;eq;;true"},
+  SPELL_DAMAGE = {availableConditions = commonLogFields .. commonSkillFields .. commonDamageFields, defaultConditions="sourceAffiliation;;eq;;" .. FLAG_YOU .. ";;isCrit;;eq;;true;;skillName;;eq;;" .. UNKNOWN},
+  
+  -- Miss events.
+  SWING_MISSED = {availableConditions = commonLogFields .. "missType", defaultConditions="recipientAffiliation;;eq;;" .. FLAG_YOU .. ";;missType;;eq;;BLOCK"},
+  SPELL_MISSED = {availableConditions = commonLogFields .. commonSkillFields .. "missType", defaultConditions="recipientAffiliation;;eq;;" .. FLAG_YOU .. ";;missType;;eq;;RESIST;;skillName;;eq;;" .. UNKNOWN},
+  SPELL_DISPEL_FAILED = {availableConditions = commonLogFields .. commonSkillFields .. commonExtraSkillFields .. "missType", defaultConditions="sourceAffiliation;;eq;;" .. FLAG_YOU .. ";;skillName;;eq;;" .. UNKNOWN},
+
+  -- Heal events.
+  SPELL_HEAL = {availableConditions = commonLogFields .. commonSkillFields .. commonHealFields, defaultConditions="recipientReaction;;eq;;" .. MSBTParser.REACTION_HOSTILE .. ";;isCrit;;eq;;true"},
+
+  -- Environmental events.
+  ENVIRONMENTAL_DAMAGE = {availableConditions = commonLogFields .. commonDamageFields .. " hazardType", defaultConditions="recipientAffiliation;;eq;;" .. FLAG_YOU .. ";;hazardType;;eq;;DROWNING"},
+
+  -- Power events.
+  SPELL_ENERGIZE = {availableConditions = commonLogFields .. commonSkillFields .. commonPowerFields, defaultConditions="recipientAffiliation;;eq;;" .. FLAG_YOU .. ";;powerType;;eq;;0"},
+  SPELL_DRAIN = {availableConditions = commonLogFields .. commonSkillFields .. commonPowerFields .. " extraAmount", defaultConditions="recipientAffiliation;;eq;;" .. FLAG_YOU .. ";;powerType;;eq;;0"},
+
+  -- Interrupt events.
+  SPELL_INTERRUPT = {availableConditions = commonLogFields .. commonSkillFields .. commonExtraSkillFields, defaultConditions="recipientAffiliation;;eq;;" .. FLAG_YOU},
+
+  -- Aura events.
+  SPELL_AURA_APPLIED = {availableConditions = commonLogFields .. commonSkillFields .. "auraType amount", defaultConditions="recipientAffiliation;;eq;;" .. FLAG_YOU .. ";;skillName;;eq;;" .. UNKNOWN},
+
+  -- Enchant events.
+  ENCHANT_APPLIED = {availableConditions = commonLogFields .. "skillName itemID itemName", defaultConditions="skillName;;eq;;" .. UNKNOWN},
+  
+  -- Dispel events.
+  SPELL_AURA_DISPELLED = {availableConditions = commonLogFields .. commonSkillFields .. commonExtraSkillFields .. " auraType", defaultConditions="recipientAffiliation;;eq;;" .. FLAG_YOU .. ";;skillName;;eq;;" .. UNKNOWN},
+
+  -- Cast events.
+  SPELL_CAST_START = {availableConditions = commonLogFields .. commonSkillFields, defaultConditions="sourceReaction;;eq;;" .. MSBTParser.REACTION_HOSTILE .. ";;skillName;;eq;;" .. UNKNOWN},
+
+  -- Kill events.
+  PARTY_KILL = {availableConditions = commonLogFields, defaultConditions="recipientName;;eq;;" .. UNKNOWN},
+
+  -- Extra Attack events.
+  SPELL_EXTRA_ATTACKS = {availableConditions = commonLogFields .. commonSkillFields .. "amount", defaultConditions="sourceAffiliation;;eq;;" .. FLAG_YOU .. ";;skillName;;eq;;" .. UNKNOWN},
+  
+  -- Threshold events.
+  UNIT_HEALTH = {availableConditions = commonHealthPowerFields, defaultConditions="unitID;;eq;;player;;threshold;;lt;;20"},
+
+  -- Skill cooldowns.
+  SKILL_COOLDOWN = {availableConditions = "skillName", defaultConditions="skillName;;eq;;" .. UNKNOWN},
+ };
+ eventConditionData["RANGE_DAMAGE"] = eventConditionData["SPELL_DAMAGE"];
+ eventConditionData["GENERIC_DAMAGE"] = eventConditionData["SPELL_DAMAGE"];
+ eventConditionData["SPELL_PERIODIC_DAMAGE"] = eventConditionData["SPELL_DAMAGE"];
+ eventConditionData["DAMAGE_SHIELD"] = eventConditionData["SPELL_DAMAGE"];
+ eventConditionData["DAMAGE_SPLIT"] = eventConditionData["SPELL_DAMAGE"];
+ eventConditionData["RANGE_MISSED"] = eventConditionData["SPELL_MISSED"];
+ eventConditionData["GENERIC_MISSED"] = eventConditionData["SPELL_MISSED"];
+ eventConditionData["SPELL_PERIODIC_MISSED"] = eventConditionData["SPELL_MISSED"];
+ eventConditionData["DAMAGE_SHIELD_MISSED"] = eventConditionData["SPELL_MISSED"];
+ eventConditionData["SPELL_PERIODIC_HEAL"] = eventConditionData["SPELL_HEAL"];
+ eventConditionData["SPELL_PERIODIC_ENERGIZE"] = eventConditionData["SPELL_ENERGIZE"];
+ eventConditionData["SPELL_PERIODIC_DRAIN"] = eventConditionData["SPELL_DRAIN"];
+ eventConditionData["SPELL_LEECH"] = eventConditionData["SPELL_DRAIN"];
+ eventConditionData["SPELL_PERIODIC_LEECH"] = eventConditionData["SPELL_DRAIN"];
+ eventConditionData["SPELL_AURA_REMOVED"] = eventConditionData["SPELL_AURA_APPLIED"];
+ eventConditionData["SPELL_AURA_STOLEN"] = eventConditionData["SPELL_AURA_DISPELLED"];
+ eventConditionData["ENCHANT_REMOVED"] = eventConditionData["ENCHANT_APPLIED"];
+ eventConditionData["SPELL_CAST_SUCCESS"] = eventConditionData["SPELL_CAST_START"];
+ eventConditionData["SPELL_CAST_FAILED"] = eventConditionData["SPELL_CAST_START"]; -- Ignore failure reason.
+ eventConditionData["SPELL_SUMMON"] = eventConditionData["SPELL_CAST_START"];
+ eventConditionData["SPELL_CREATE"] = eventConditionData["SPELL_CAST_START"];
+ eventConditionData["UNIT_DIED"] = eventConditionData["PARTY_KILL"];
+ eventConditionData["UNIT_DESTROYED"] = eventConditionData["PARTY_KILL"];
+ eventConditionData["UNIT_MANA"] = eventConditionData["UNIT_HEALTH"];
+ eventConditionData["UNIT_ENERGY"] = eventConditionData["UNIT_HEALTH"];
+ eventConditionData["UNIT_RAGE"] = eventConditionData["UNIT_HEALTH"];
+
+ frame.eventConditionData = eventConditionData;
+
+ -- Available exceptions.
+ frame.availableExceptions = "buffActive currentCP currentPower recentlyFired trivialTarget unavailableSkill warriorStance zoneName zoneType";
 
  return frame;
 end
@@ -3254,11 +3412,13 @@ local function ShowTrigger(configTable)
  EraseTable(frame.mainEvents);
  EraseTable(frame.eventConditions);
  if (settings.mainEvents) then
-  for eventType, eventConditions in string.gmatch(settings.mainEvents .. "&&", "(.-)%[(.-)%]&&") do
+  for eventType, eventConditions in string.gmatch(settings.mainEvents .. "&&", "(.-)%{(.-)%}&&") do
    frame.mainEvents[#frame.mainEvents+1] = eventType;
    conditions = {};
-   for conditionName, conditionValue in string.gmatch(eventConditions .. ";;", "(.-)=(.-);;") do
-    conditions[conditionName] = ConvertType(conditionValue);
+   if (eventConditions ~= "") then
+    for conditionEntry in string.gmatch(eventConditions .. ";;", "(.-);;") do
+     conditions[#conditions+1] = ConvertType(conditionEntry);
+    end
    end
    frame.eventConditions[#frame.eventConditions+1] = conditions;
   end
@@ -3267,15 +3427,9 @@ local function ShowTrigger(configTable)
  
  -- Exceptions.
  EraseTable(frame.exceptions);
- EraseTable(frame.exceptionConditions);
- if (settings.exceptions) then
-  for exceptionType, exceptionConditions in string.gmatch(settings.exceptions .. "&&", "(.-)%[(.-)%]&&") do
-   frame.exceptions[#frame.exceptions+1] = exceptionType;
-   conditions = {};
-   for conditionName, conditionValue in string.gmatch(exceptionConditions .. ";;", "(.-)=(.-);;") do
-    conditions[conditionName] = ConvertType(conditionValue);
-   end
-   frame.exceptionConditions[#frame.exceptionConditions+1] = conditions;
+ if (settings.exceptions and settings.exceptions ~= "") then
+  for exceptionCondition in string.gmatch(settings.exceptions .. ";;", "(.-);;") do
+   frame.exceptions[#frame.exceptions+1] = ConvertType(exceptionCondition);
   end
  end
  UpdateExceptions();
@@ -3289,24 +3443,6 @@ local function ShowTrigger(configTable)
  frame:Show();
  frame:Raise();
 end
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 
 -------------------------------------------------------------------------------

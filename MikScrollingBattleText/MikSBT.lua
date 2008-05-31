@@ -14,7 +14,7 @@ _G[modName] = mod;
 -------------------------------------------------------------------------------
 
 mod.VERSION = string.gsub(GetAddOnMetadata("MikScrollingBattleText", "Version"), "wowi:revision", 0);
-mod.VERSION_STRING = "v" .. mod.VERSION;
+mod.VERSION_STRING = "v" .. mod.VERSION .. " Beta";
 
 mod.COMMAND = "/msbt";
 

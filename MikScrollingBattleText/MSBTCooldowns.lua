@@ -54,6 +54,7 @@ local string_find = string.find;
 local string_format = string.format;
 local EraseTable = MikSBT.EraseTable;
 local DisplayEvent = MikSBT.Animations.DisplayEvent;
+local HandleCooldowns = MikSBT.Triggers.HandleCooldowns;
 
 
 -------------------------------------------------------------------------------
@@ -105,8 +106,10 @@ local function OnUpdate(this, elapsed)
     local eventSettings = MSBTProfiles.currentProfile.events.NOTIFICATION_COOLDOWN;
     if (eventSettings) then
      local message = eventSettings.message;
+	 local texture = GetSpellTexture(spellName);
      message = string_gsub(message, "%%e", string_format("|cffff0000%s|r", string_gsub(spellName, "%(.+%)%(%)$", "")));
-     DisplayEvent(eventSettings, message, GetSpellTexture(spellName));
+     DisplayEvent(eventSettings, message, texture);
+	 HandleCooldowns(spellName, texture);
     end
 
     -- Remove the cooldown from the active cooldowns list.

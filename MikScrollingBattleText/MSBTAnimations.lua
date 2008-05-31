@@ -73,6 +73,7 @@ local MSBTProfiles = MikSBT.Profiles;
 
 -- Local references to certain functions for faster access.
 local table_remove = table.remove;
+local string_find = string.find;
 local IsModDisabled = MSBTProfiles.IsModDisabled;
 local EraseTable = MikSBT.EraseTable;
 
@@ -358,7 +359,7 @@ local function DisplayEvent(eventSettings, message, texturePath)
  -- Play the event's sound file if there is one and sounds are enabled.
  local soundFile = eventSettings.soundFile;
  if (soundFile and not currentProfile.soundsDisabled) then
-  soundFile = sounds[soundFile] or (DEFAULT_SOUND_PATH .. soundFile);
+  soundFile = sounds[soundFile] or (string_find(soundFile, "\\", nil, 1) and soundFile) or DEFAULT_SOUND_PATH .. soundFile;
   PlaySoundFile(soundFile);
  end
 

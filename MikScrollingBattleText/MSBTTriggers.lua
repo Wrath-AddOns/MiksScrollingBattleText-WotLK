@@ -13,32 +13,8 @@ MikSBT[moduleName] = module;
 -- Constants.
 -------------------------------------------------------------------------------
 
--- Main Trigger Events.
-local MAINEVENT_HEALTH				= "Health";
-local MAINEVENT_MANA				= "Mana";
-local MAINEVENT_ENERGY				= "Energy";
-local MAINEVENT_RAGE				= "Rage";
-local MAINEVENT_CRIT				= "Crit";
-local MAINEVENT_BLOCK				= "Block";
-local MAINEVENT_DODGE				= "Dodge";
-local MAINEVENT_PARRY				= "Parry";
-local MAINEVENT_BUFF_APP			= "BuffApplication";
-local MAINEVENT_BUFF_FADE			= "BuffFade";
-local MAINEVENT_DEBUFF_APP			= "DebuffApplication";
-local MAINEVENT_DEBUFF_FADE			= "DebuffFade";
-local MAINEVENT_CAST_START			= "CastStart";
-local MAINEVENT_KILLING_BLOW		= "KillingBlow";
-
--- Trigger Exceptions.
-local EXCEPTION_BUFF_ACTIVE			= "BuffActive";
-local EXCEPTION_INSUFFICIENT_POWER	= "InsufficientPower";
-local EXCEPTION_INSUFFICIENT_CP		= "InsufficientComboPoints";
-local EXCEPTION_NOT_IN_ARENA		= "NotInArena";
-local EXCEPTION_NOT_IN_PVP_ZONE		= "NotInPvPZone";
-local EXCEPTION_RECENTLY_FIRED		= "RecentlyFired";
-local EXCEPTION_SKILL_UNAVAILABLE	= "SkillUnavailable";
-local EXCEPTION_TRIVIAL_TARGET		= "TrivialTarget";
-local EXCEPTION_WARRIOR_STANCE		= "WarriorStance";
+-- Special flag to indicate the player.
+local FLAG_YOU = 0xF0000000;
 
 -- Power types.
 local POWERTYPE_MANA = 0;
@@ -53,22 +29,29 @@ local POWERTYPE_ENERGY = 3;
 -- Holds dynamically created frame for receiving events.
 local eventFrame;
 
--- Holds the player's name, GUID, and  class.
+-- Holds the player's name, GUID, and class.
 local playerName, playerGUID, playerClass;
-local targetGUID, focusGUID;
 
--- Hold the events the triggers use.
+-- Events the triggers use.
 local listenEvents = {};
+
+-- Functions to handle combat log events and conditions.
+local captureFuncs;
+local testFuncs;
+local eventConditionFuncs;
+local exceptionConditionFuncs;
 
 -- Holds triggers in a format optimized for searching.
 local categorizedTriggers = {};
 local triggerExceptions = {};
+local parserEvent = {};
+local lookupTable = {};
 
 -- Information about triggers used for condition checking.
 local lastPercentages = {};
 local lastPowerTypes = {};
 local firedTimes = {};
-local fireTriggers = {};
+local triggersToFire = {};
 
 -- Hold buffs and debuffs that should be suppressed since there is a trigger for them.
 local triggerSuppressions = {};
@@ -82,11 +65,6 @@ local triggerSuppressions = {};
 local MSBTProfiles = MikSBT.Profiles;
 local MSBTParser = MikSBT.Parser;
 
--- Local references to certain constants and variables for faster access.
-local TARGET_TARGET = MSBTParser.TARGET_TARGET;
-local TARGET_FOCUS = MSBTParser.TARGET_FOCUS;
-local REACTION_HOSTILE = bit.bor(MSBTParser.REACTION_HOSTILE, MSBTParser.REACTION_NEUTRAL);
-
 local currentBuffs = MSBTParser.currentAuras.buffs;
 local unitMap = MSBTParser.unitMap;
 
@@ -98,12 +76,140 @@ local Print = MikSBT.Print;
 local EraseTable = MikSBT.EraseTable;
 local DisplayEvent = MikSBT.Animations.DisplayEvent;
 local TestFlagsAny = MSBTParser.TestFlagsAny;
-local TestFlagsAll = MSBTParser.TestFlagsAll;
+
+local REACTION_HOSTILE = MSBTParser.REACTION_HOSTILE;
 
 
 -------------------------------------------------------------------------------
 -- Trigger utility functions.
 -------------------------------------------------------------------------------
+
+-- ****************************************************************************
+-- Returns whether or not the passed spell name is unavailable.
+-- ****************************************************************************
+local function IsSkillUnavailable(skillName)
+ -- Pass if there is no skill to check.
+ if (not skillName or skillName == "") then return true; end
+
+ -- Pass if the skill isn't known.
+ if (not GetSpellInfo(skillName)) then return true; end
+
+ -- Pass check if the skillName is cooling down (but ignore the global cooldown).
+ local start, duration = GetSpellCooldown(skillName);
+ if (start > 0 and duration > 1.5) then return true; end
+end
+
+
+-- ****************************************************************************
+-- Creates a map of test functions for supported test types.
+-- ****************************************************************************
+local function CreateTestFuncs()
+ testFuncs = {
+  eq = function(l, r) return l == r; end,
+  ne = function(l, r) return l ~= r; end,
+  like = function(l, r) return type(l)=="string" and type(r)=="string" and string_find(l, r); end,
+  unlike = function(l, r) return type(l)=="string" and type(r)=="string" and not string_find(l, r); end,
+  lt = function(l, r) return type(l)=="number" and type(r)=="number" and l < r; end,
+  gt = function(l, r) return type(l)=="number" and type(r)=="number" and l > r; end,
+}
+end
+
+
+-- ****************************************************************************
+-- Creates a map of capture functions for supported combat log events.
+-- Also makes use of the ones already defined in the parser module.
+-- ****************************************************************************
+local function CreateCaptureFuncs()
+ captureFuncs = {
+  -- Leave out eventType because we really don't care about it for triggers.
+  SPELL_CAST_SUCCESS = function (p, ...) p.skillID, p.skillName, p.skillSchool = ...; end,
+  SPELL_CAST_FAILED = function (p, ...) p.skillID, p.skillName, p.skillSchool, p.missType = ...; end,
+  SPELL_SUMMON = function (p, ...) p.skillID, p.skillName, p.skillSchool = ...; end,
+  SPELL_CREATE = function (p, ...) p.skillID, p.skillName, p.skillSchool = ...; end,
+  UNIT_DIED = function (p, ...) end,
+  UNIT_DESTROYED = function (p, ...) end,
+ };
+
+ -- Make use of the parser module capture functions instead of redefining them.
+ captureFuncs.__index = MSBTParser.captureFuncs;
+ setmetatable(captureFuncs, captureFuncs);
+end
+
+
+-- ****************************************************************************
+-- Creates maps of functions for supported conditions.
+-- ****************************************************************************
+local function CreateConditionFuncs()
+ -- Event conditions.
+ eventConditionFuncs = {
+  -- Source unit.
+  sourceName = function (f, t, v) return f(t.sourceName, v); end,
+  sourceAffiliation = function (f, t, v) if (v == FLAG_YOU) then return f(t.sourceUnit, "player"); else return f(TestFlagsAny(t.sourceFlags, v), true); end end,
+  sourceReaction = function (f, t, v) return f(TestFlagsAny(t.sourceFlags, v), true); end,
+  sourceControl = function (f, t, v) return f(TestFlagsAny(t.sourceFlags, v), true); end,
+  sourceUnitType = function (f, t, v) return f(TestFlagsAny(t.sourceFlags, v), true); end,	-- player, NPC, pet, guardian, object
+
+  -- Recipient unit.
+  recipientName = function (f, t, v) return f(t.recipientName, v); end,
+  recipientAffiliation = function (f, t, v) if (v == FLAG_YOU) then return f(t.recipientUnit, "player"); else return f(TestFlagsAny(t.recipientFlags, v), true); end end,
+  recipientReaction = function (f, t, v) return f(TestFlagsAny(t.recipientFlags, v), true); end,
+  recipientControl = function (f, t, v) return f(TestFlagsAny(t.recipientFlags, v), true); end,
+  recipientUnitType = function (f, t, v) return f(TestFlagsAny(t.recipientFlags, v), true); end,
+
+  -- Skill.
+  skillID = function (f, t, v) return f(t.skillID, v); end,
+  skillName = function (f, t, v) return f(t.skillName, v); end,
+  skillSchool = function (f, t, v) return f(t.skillSchool, v); end,
+  
+  -- Extra skill.
+  extraSkillID = function (f, t, v) return f(t.extraSkillID, v); end,
+  extraSkillName = function (f, t, v) return f(t.extraSkillName, v); end,
+  extraSkillSchool = function (f, t, v) return f(t.extraSkillSchool, v); end,
+
+  -- Damage/heal.
+  amount = function (f, t, v) return f(t.amount, v); end,
+  damageType = function (f, t, v) return f(t.damageType, v); end,
+  resistAmount = function (f, t, v) return f(t.resistAmount, v); end,
+  blockAmount = function (f, t, v) return f(t.blockAmount, v); end,
+  absorbAmount = function (f, t, v) return f(t.absorbAmount, v); end,
+  isCrit = function (f, t, v) return f(t.isCrit and true or false, v); end,
+  isGlancing = function (f, t, v) return f(t.isGlancing and true or false, v); end,
+  isCrushing = function (f, t, v) return f(t.isCrushing and true or false, v); end,
+
+  -- Miss.
+  missType = function (f, t, v) return f(t.missType, v); end,
+  
+  -- Environmental.
+  hazardType = function (f, t, v) return f(t.hazardType, v); end,
+
+  -- Power.
+  powerType = function (f, t, v) return f(t.powerType, v); end,
+  extraAmount = function (f, t, v) return f(t.extraAmount, v); end,
+  
+  -- Aura.
+  auraType = function (f, t, v) return f(t.auraType, v); end,
+
+  -- Health/power changes.
+  threshold = function (f, t, v) if (type(v)=="number") then return f(t.currentPercentage, v/100) and not f(t.lastPercentage, v/100); end end,
+  unitID = function (f, t, v) if ((v == "party" and string.find(t.unitID, "party%d+")) or (v == "raid" and (string.find(t.unitID, "raid%d+") or string.find(t.unitID, "party%d+")))) then v = t.unitID; end return f(t.unitID, v); end,
+  unitReaction = function (f, t, v) return v == REACTION_HOSTILE and f(UnitIsFriend(t.unitID, "player"), nil) or f(UnitIsFriend(t.unitID, "player"), 1); end,
+ };
+
+
+ -- Exception conditions.
+ exceptionConditionFuncs = {
+  buffActive = function (f, t, v) return currentBuffs[v] and true or false; end,
+  currentCP = function (f, t, v) return f(GetComboPoints(), v); end,
+  currentPower = function (f, t, v) return f(UnitMana("player"), v); end,
+  recentlyFired = function (f, t, v) return f(GetTime() - firedTimes[t], v); end,
+  trivialTarget = function (f, t, v) return f(UnitIsTrivial("target") == 1 and true or false, v); end,
+  unavailableSkill = function (f, t, v) return IsSkillUnavailable(v) and true or false; end,
+  warriorStance = function (f, t, v) if (playerClass == "WARRIOR") then return f(GetShapeshiftForm(true), v); end end,
+  zoneName = function (f, t, v) return f(GetZoneText(), v); end,
+  zoneType = function (f, t, v) local _, zoneType = IsInInstance(); return f(zoneType, v); end,
+ };
+end
+
 
 -- ****************************************************************************
 -- Converts a string representation of a number, boolean, or nil to its
@@ -135,70 +241,143 @@ local function CategorizeTrigger(triggerSettings)
 
  -- Loop through the main events for the trigger. 
  local eventConditions, conditions;
- for mainEvent, conditionsString in string.gmatch(triggerSettings.mainEvents .. "&&", "(.-)%[(.-)%]&&") do
+ for mainEvent, conditionsString in string_gmatch(triggerSettings.mainEvents .. "&&", "(.-)%{(.-)%}&&") do
   -- Loop through the conditions for the event and populate the settings into a conditions table.
   conditions = {triggerSettings = triggerSettings};
-  for conditionName, conditionValue in string.gmatch(conditionsString .. ";;", "(.-)=(.-);;") do
-   conditions[conditionName] = ConvertType(conditionValue);
+  if (conditionsString and conditionsString ~= "") then
+   for conditionEntry in string_gmatch(conditionsString .. ";;", "(.-);;") do
+    conditions[#conditions+1] = ConvertType(conditionEntry);
+   end
   end
 
-  -- Create a table to hold an array of the triggers for the main event if there isn't already one for it. 
-  if (not categorizedTriggers[mainEvent]) then categorizedTriggers[mainEvent] = {}; end
-  eventConditions = categorizedTriggers[mainEvent];
+  -- Check for special consolidated miss events.  
+  if (mainEvent == "GENERIC_MISSED") then
+   listenEvents["COMBAT_LOG_EVENT_UNFILTERED"] = true;
 
-  -- Add the conditions table categorized by main event.
-  eventConditions[#eventConditions+1] = conditions;
+   -- Create a table to hold an array of the triggers for the main events if there isn't already one for it. 
+   if (not categorizedTriggers["SWING_MISSED"]) then categorizedTriggers["SWING_MISSED"] = {}; end
+   if (not categorizedTriggers["RANGE_MISSED"]) then categorizedTriggers["RANGE_MISSED"] = {}; end
+   if (not categorizedTriggers["SPELL_MISSED"]) then categorizedTriggers["SPELL_MISSED"] = {}; end
 
-  -- Health.
-  if (mainEvent == MAINEVENT_HEALTH) then
-   listenEvents["UNIT_HEALTH"] = true;
+   -- Add the conditions table categorized by main events.
+   categorizedTriggers["SWING_MISSED"][#categorizedTriggers["SWING_MISSED"]+1] = conditions;
+   categorizedTriggers["RANGE_MISSED"][#categorizedTriggers["RANGE_MISSED"]+1] = conditions;
+   categorizedTriggers["SPELL_MISSED"][#categorizedTriggers["SPELL_MISSED"]+1] = conditions;
 
-  -- Mana.
-  elseif (mainEvent == MAINEVENT_MANA) then
-   listenEvents["UNIT_MANA"] = true;
+  -- Consolidated damage.  
+  elseif (mainEvent == "GENERIC_DAMAGE") then
+   listenEvents["COMBAT_LOG_EVENT_UNFILTERED"] = true;
 
-  -- Energy.
-  elseif (mainEvent == MAINEVENT_ENERGY) then
-   listenEvents["UNIT_ENERGY"] = true;
+   -- Create a table to hold an array of the triggers for the main events if there isn't already one for it. 
+   if (not categorizedTriggers["SWING_DAMAGE"]) then categorizedTriggers["SWING_DAMAGE"] = {}; end
+   if (not categorizedTriggers["RANGE_DAMAGE"]) then categorizedTriggers["RANGE_DAMAGE"] = {}; end
+   if (not categorizedTriggers["SPELL_DAMAGE"]) then categorizedTriggers["SPELL_DAMAGE"] = {}; end
 
-  -- Rage.
-  elseif (mainEvent == MAINEVENT_RAGE) then
-   listenEvents["UNIT_RAGE"] = true;
+   -- Add the conditions table categorized by main events.
+   categorizedTriggers["SWING_DAMAGE"][#categorizedTriggers["SWING_DAMAGE"]+1] = conditions;
+   categorizedTriggers["RANGE_DAMAGE"][#categorizedTriggers["RANGE_DAMAGE"]+1] = conditions;
+   categorizedTriggers["SPELL_DAMAGE"][#categorizedTriggers["SPELL_DAMAGE"]+1] = conditions;
 
-  -- Buff and debuff gains.
-  elseif (mainEvent == MAINEVENT_BUFF_APP or
-          mainEvent == MAINEVENT_DEBUFF_APP) then
+  -- Consolidated aura application.
+  elseif (mainEvent == "SPELL_AURA_APPLIED") then
+   listenEvents["COMBAT_LOG_EVENT_UNFILTERED"] = true;
 
-   -- Add player buff/debuff names to the trigger suppressions list.
-   if (conditions.unit == "player" and conditions.effect and conditions.amount == 1) then triggerSuppressions[conditions.effect] = true; end
-  end
+   -- Create a table to hold an array of the triggers for the main events if there isn't already one for it. 
+   if (not categorizedTriggers["SPELL_AURA_APPLIED"]) then categorizedTriggers["SPELL_AURA_APPLIED"] = {}; end
+   if (not categorizedTriggers["SPELL_AURA_APPLIED_DOSE"]) then categorizedTriggers["SPELL_AURA_APPLIED_DOSE"] = {}; end
+
+   -- Add the conditions table categorized by main events.
+   categorizedTriggers["SPELL_AURA_APPLIED"][#categorizedTriggers["SPELL_AURA_APPLIED"]+1] = conditions;
+   categorizedTriggers["SPELL_AURA_APPLIED_DOSE"][#categorizedTriggers["SPELL_AURA_APPLIED_DOSE"]+1] = conditions;
+
+   -- Add aura gains to the trigger suppression so the normal buff gain/fade events are ignored.
+   local skillName, recipientAffiliation;
+   for x = 1, #conditions, 3 do
+    if (conditions[x] == "skillName" and conditions[x+1] == "eq" and conditions[x+2]) then skillName = conditions[x+2]; end
+    if (conditions[x] == "recipientAffiliation" and conditions[x+1] == "eq" and conditions[x+2] == FLAG_YOU) then recipientAffiliation = FLAG_YOU; end
+   end
+	
+    if (skillName and recipientAffiliation) then triggerSuppressions[skillName] = true; end
+
+  -- Consolidated aura removal.
+  elseif (mainEvent == "SPELL_AURA_REMOVED") then
+   listenEvents["COMBAT_LOG_EVENT_UNFILTERED"] = true;
+
+   -- Create a table to hold an array of the triggers for the main events if there isn't already one for it. 
+   if (not categorizedTriggers["SPELL_AURA_REMOVED"]) then categorizedTriggers["SPELL_AURA_REMOVED"] = {}; end
+   if (not categorizedTriggers["SPELL_AURA_REMOVED_DOSE"]) then categorizedTriggers["SPELL_AURA_REMOVED_DOSE"] = {}; end
+
+   -- Add the conditions table categorized by main events.
+   categorizedTriggers["SPELL_AURA_REMOVED"][#categorizedTriggers["SPELL_AURA_REMOVED"]+1] = conditions;
+   categorizedTriggers["SPELL_AURA_REMOVED_DOSE"][#categorizedTriggers["SPELL_AURA_REMOVED_DOSE"]+1] = conditions;
+
+  -- Other events.
+  else
+   -- Create a table to hold an array of the triggers for the main event if there isn't already one for it. 
+   if (not categorizedTriggers[mainEvent]) then categorizedTriggers[mainEvent] = {}; end
+   eventConditions = categorizedTriggers[mainEvent];
+
+   -- Health/Mana/Energy/Rage.
+   if (mainEvent == "UNIT_HEALTH" or mainEvent == "UNIT_MANA" or mainEvent == "UNIT_ENERGY" or mainEvent == "UNIT_RAGE") then
+    listenEvents[mainEvent] = true;
+    lastPercentages[mainEvent] = {};
+
+    -- Categorize the change by used unit types for better performance.  The unitID condition is required for
+    -- health and power change triggers.
+    for x = 1, #conditions, 3 do
+     local conditionValue = conditions[x+2];
+
+     -- Expand the consolidated party unit id to individual ones.
+     if (conditions[x] == "unitID") then
+      if (conditionValue == "party") then
+       local unitID = "party" .. i;
+       if (not eventConditions[unitID]) then eventConditions[unitID] = {}; end
+       eventConditions[unitID][#eventConditions[unitID]+1] = conditions;   
+
+      -- Specific unit.
+      else
+       if (not eventConditions[conditionValue]) then eventConditions[conditionValue] = {}; end
+       eventConditions[conditionValue][#eventConditions[conditionValue]+1] = conditions;
+      end
+     end
+    end -- Loop through conditions.
+
+   -- Skill cooldown events.
+   elseif (mainEvent == "SKILL_COOLDOWN") then
+    eventConditions[#eventConditions+1] = conditions;
+
+   -- Combat log event.
+   elseif (captureFuncs[mainEvent]) then
+    listenEvents["COMBAT_LOG_EVENT_UNFILTERED"] = true;
+    eventConditions[#eventConditions+1] = conditions;
+   end
+  end -- Specific events check.
  end -- Loop through conditions.
 
+
  -- Leave the function if there are no exceptions for the trigger. 
- if (not triggerSettings.exceptions) then return; end
+ if (not triggerSettings.exceptions or triggerSettings.exceptions == "") then return; end
 
- -- Create a table to hold an array of the exceptions if there isn't already one for it. 
- if (not triggerExceptions[triggerSettings]) then triggerExceptions[triggerSettings] = {}; end
- local exceptions = triggerExceptions[triggerSettings];
-
- -- Loop through the exceptions for the trigger.
- for exceptionType, exceptionConditions in string_gmatch(triggerSettings.exceptions .. "&&", "(.-)%[(.-)%]&&") do
-  -- Loop through the conditions for the exception and populate the settings into a conditions table.
-  conditions = {exceptionType = exceptionType};
-  for conditionName, conditionValue in string.gmatch(exceptionConditions .. ";;", "(.-)=(.-);;") do
-   conditions[conditionName] = ConvertType(conditionValue);
-  end
-
-  -- Add the conditions to the list of exceptions for the trigger.
-  exceptions[#exceptions+1] = conditions;
+ -- Loop through the conditions for the exceptions for the trigger.
+ local exceptionConditions = {};
+ for exceptionValue in string_gmatch(triggerSettings.exceptions .. ";;", "(.-);;") do
+  exceptionConditions[#exceptionConditions+1] = ConvertType(exceptionValue);
  end
+
+ -- Create an entry to track fired times for the trigger.
+ for x = 1, #exceptionConditions, 3 do
+  if (exceptionConditions[x] == "recentlyFired") then firedTimes[triggerSettings] = 0; end
+ end
+
+ -- Set the exceptions for the trigger.
+ triggerExceptions[triggerSettings] = exceptionConditions;
 end
 
 
 -- ****************************************************************************
 -- Update the categorized triggers table that is used for optimized searching.
 -- ****************************************************************************
-local function UpdateTriggers()
+local function UpdateTriggers() 
  -- Unregister all of the events from the event frame.
  eventFrame:UnregisterAllEvents();
 
@@ -238,22 +417,19 @@ end
 -- ****************************************************************************
 -- Displays the passed trigger settings.
 -- ****************************************************************************
-local function DisplayTrigger(triggerSettings, sourceName, recipientName, effectTexture, ...)
+local function DisplayTrigger(triggerSettings, sourceName, recipientName, skillName, amount, effectTexture)
  -- Get the trigger message and icon skill.
  local message = triggerSettings.message;
  local iconSkill = triggerSettings.iconSkill;
  
- -- Substitute the source and recipient names if there are any. 
+ -- Substitute the codes if there are any. 
  if (sourceName) then message = string_gsub(message, "%%n", sourceName); end
  if (recipientName) then message = string_gsub(message, "%%r", recipientName); end
-
- -- Loop through all of the arguments replacing any %i codes with the corresponding
- -- arguments.
- for i = 1, select("#", ...) do
-  local value = select(i, ...);
-  if (value) then message = string_gsub(message, "%%" .. i, tostring(value)); end
-  if (type(iconSkill) == "string") then iconSkill = string_gsub(iconSkill, "%%" .. i, tostring(value)); end
+ if (skillName) then 
+  message = string_gsub(message, "%%s", skillName);
+  if (iconSkill) then iconSkill = string_gsub(iconSkill, "%%s", skillName); end
  end
+ if (amount) then message = string_gsub(message, "%%a", amount); end
 
  -- Override the texture if there is an icon skill for the trigger.
  if (iconSkill) then _, _, effectTexture = GetSpellInfo(iconSkill); end
@@ -263,318 +439,204 @@ local function DisplayTrigger(triggerSettings, sourceName, recipientName, effect
 end
 
 
--- ****************************************************************************
--- Tests if the passed unit based conditions are satisfied.
--- ****************************************************************************
-local function TestUnitConditions(eventConditions, testUnit, testFlags)
- -- Hostile check.
- if (eventConditions.hostile and not TestFlagsAny(testFlags, REACTION_HOSTILE)) then return false; end
-
- -- Any.
- local conditionUnit = eventConditions.unit;
- if (conditionUnit == "any") then return true; end
-
- -- Player.
- if (conditionUnit == "player" and testUnit == "player") then return true; end
-
- -- Target.
- if (conditionUnit == "target" and TestFlagsAny(testFlags, TARGET_TARGET)) then return true; end
- 
- -- Focus.
- if (conditionUnit == "focus" and TestFlagsAny(testFlags, TARGET_FOCUS)) then return true; end
-end
-
-
 -------------------------------------------------------------------------------
--- Trigger condition functions.
+-- Trigger handler functions.
 -------------------------------------------------------------------------------
 
 -- ****************************************************************************
--- Returns whether or not the passed spell name is unavailable.
+-- Tests if any of the exceptions for the passed trigger settings are true.
 -- ****************************************************************************
-local function IsSpellUnavailable(spellName)
- -- Pass if there is no skill to check.
- if (not spellName or spellName == "") then return true; end
-
- -- Pass if the spell isn't known.
- if (not GetSpellInfo(spellName)) then return true; end
-
- -- Pass check if the spell is cooling down (but ignore the global cooldown).
- local start, duration = GetSpellCooldown(spellName);
- if (start > 0 and duration > 1.5) then return true; end
-end
-
-
--- ****************************************************************************
--- Returns true if any of the exceptions for the passed trigger settings are
--- true.
--- ****************************************************************************
-local function IsTriggerExcluded(triggerSettings)
+local function TestExceptions(triggerSettings)
  -- Trigger is not excluded if there are no exceptions.
  if (not triggerExceptions[triggerSettings]) then return; end
-
- -- Holds whether or not the trigger is excluded.
- local isExcluded;
  
- -- Holds whether or not the trigger has a recently fired exception.
- local hasRecentlyFired;
-
- local exceptionType;
- for _, exceptionConditions in pairs(triggerExceptions[triggerSettings]) do
-  exceptionType = exceptionConditions.exceptionType;
-  
-  -- Buff Active.
-  if (exceptionType == EXCEPTION_BUFF_ACTIVE) then
-   if (currentBuffs[exceptionConditions.effect]) then isExcluded = true; end
-   
-  -- Insufficient Power.
-  elseif (exceptionType == EXCEPTION_INSUFFICIENT_POWER) then
-   if (UnitMana("player") < exceptionConditions.amount) then isExcluded = true; end
-
-  -- Insufficient Combo Points.
-  elseif (exceptionType == EXCEPTION_INSUFFICIENT_CP) then
-   if (GetComboPoints() < exceptionConditions.amount) then isExcluded = true; end
-
-  -- Not In Arena.
-  elseif (exceptionType == EXCEPTION_NOT_IN_ARENA) then
-   local _, zoneType = IsInInstance();
-   if (zoneType ~= "arena") then isExcluded = true; end
-
-  -- Not In PvP Zone.
-  elseif (exceptionType == EXCEPTION_NOT_IN_PVP_ZONE) then
-   local _, zoneType = IsInInstance();
-   if (zoneType ~= "arena" and zoneType ~= "pvp") then isExcluded = true; end
-
-  -- Recently Fired.
-  elseif (exceptionType == EXCEPTION_RECENTLY_FIRED) then
-   hasRecentlyFired = true;
-   local lastFired = firedTimes[triggerSettings] or 0;
-   if ((GetTime() - lastFired) <= exceptionConditions.duration) then isExcluded = true; end
-
-  -- Skill Unavailable.
-  elseif (exceptionType == EXCEPTION_SKILL_UNAVAILABLE) then
-   if (IsSpellUnavailable(exceptionConditions.effect)) then isExcluded = true; end
-
-  -- Trivial Target.
-  elseif (exceptionType == EXCEPTION_TRIVIAL_TARGET) then
-   if (UnitIsTrivial("target")) then isExcluded = true; end
-
-  -- Warrior Stance.
-  elseif (exceptionType == EXCEPTION_WARRIOR_STANCE) then
-   if (playerClass == "WARRIOR" and (GetShapeshiftForm(true) == exceptionConditions.stance)) then
-    isExcluded = true;
-   end
-  end
-
-  -- Reverse the result if the reverse logic flag is set.
-  if (exceptionConditions.reversed) then isExcluded = not isExcluded; end
-  if (isExcluded) then return true; end
- end
+ -- Loop through each exception triplet.
+ local exceptionConditions = triggerExceptions[triggerSettings];
+ for position = 1, #exceptionConditions, 3 do
+  -- Test the exception and if it passes, don't waste time checking others.
+  local conditionFunc = exceptionConditionFuncs[exceptionConditions[position]];
+  local testFunc = testFuncs[exceptionConditions[position+1]];
+  if (conditionFunc and testFunc and conditionFunc(testFunc, triggerSettings, exceptionConditions[position+2])) then return true; end
+ end -- Exceptions loop.
 
  -- Set the current time as the last time the trigger was fired if the the trigger
  -- has a recently fired exception.
- if (hasRecentlyFired) then firedTimes[triggerSettings] = GetTime(); end
+ if (firedTimes[triggerSettings]) then firedTimes[triggerSettings] = GetTime(); end
 end
 
 
 -- ****************************************************************************
--- Fires triggers that have threshold conditions which are satisfied.
+-- Handles triggers for health and power events.
 -- ****************************************************************************
-local function FireThresholdTriggers(unit, mainEvent, currentAmount, maxAmount, powerType)
- -- Ignore the event if it isn't one of the supported units.
- if (unit ~= "player" and unit ~= "target" and unit ~= "pet" and unit ~= "focus") then return; end
+local function HandleHealthAndPowerTriggers(unit, event, currentAmount, maxAmount, powerType)
+ -- Ignore the event if there are no triggers to search for it.
+ if (not categorizedTriggers[event] or not categorizedTriggers[event][unit]) then return; end
 
  -- Calculate current last percentages.
  local currentPercentage = currentAmount / maxAmount;
- local percentageKey = unit .. mainEvent;
- local lastPercentage = lastPercentages[percentageKey];
+ local lastEventPercentages = lastPercentages[event];
+ local lastPercentage = lastEventPercentages[unit];
 
- -- Ignore thresholds on death and power type changes.
- if (not lastPercentage) then lastPercentages[percentageKey] = currentPercentage; return; end
- if (powerType and powerType ~= UnitPowerType(unit) or UnitIsDeadOrGhost(unit)) then lastPercentages[percentageKey] = nil; return; end 
+ -- Ignore thresholds on death and power type changes. 
+ if (not lastPercentage) then lastEventPercentages[unit] = currentPercentage; return; end
+ if (powerType and powerType ~= UnitPowerType(unit) or UnitIsDeadOrGhost(unit)) then lastEventPercentages[unit] = nil; return; end
 
- -- Clear the list of triggers to fire. 
- EraseTable(fireTriggers);
+ -- Populate the lookup table for conditions checking.
+ lookupTable.amount = currentAmount;
+ lookupTable.currentPercentage = currentPercentage;
+ lookupTable.lastPercentage = lastPercentage;
+ lookupTable.unitID = unit;
 
- -- Loop through conditions and test the ones that apply to the affected unit.
- local threshold;
- for _, eventConditions in pairs(categorizedTriggers[mainEvent]) do
-  if (eventConditions.unit == unit and (not eventConditions.hostile or UnitIsEnemy("player", unit))) then
-   threshold = eventConditions.threshold / 100;
-   
-   -- Rising threshold.    
-   if (eventConditions.direction == "rising") then
-    if (currentPercentage > threshold and lastPercentage <= threshold) then
-     fireTriggers[eventConditions.triggerSettings] = true;
-    end
 
-   -- Declining threshold.
-   else
-    if (currentPercentage < threshold and lastPercentage >= threshold) then
-     fireTriggers[eventConditions.triggerSettings] = true;
-    end
-   end -- Rising check. 
-  end -- Applies to unit.
- end -- Conditions loop.
- 
- -- Display the fired triggers if none of the exceptions are true.
- local recipientName = UnitName(unit);
- for triggerSettings in pairs(fireTriggers) do
-  if (not IsTriggerExcluded(triggerSettings)) then
-   DisplayTrigger(triggerSettings, nil, recipientName, nil, currentAmount);
+ -- Erase the list of triggers to fire.
+ for k in pairs(triggersToFire) do triggersToFire[k] = nil; end
+
+ -- Loop through the conditions list for the main event.
+ for _, eventConditions in ipairs(categorizedTriggers[event][unit]) do
+  -- Trigger fires by default.
+  local doFire = true;
+  
+  -- Don't bother checking conditions for a trigger that has already been fired.
+  if (not triggersToFire[eventConditions.triggerSettings]) then
+   -- Loop through each condition triplet.
+   for position = 1, #eventConditions, 3 do
+    -- Test the condition and if it fails, don't waste time checking other conditions.
+    local conditionFunc = eventConditionFuncs[eventConditions[position]];
+    local testFunc = testFuncs[eventConditions[position+1]];
+    if (conditionFunc and testFunc and not conditionFunc(testFunc, lookupTable, eventConditions[position+2])) then doFire = false; break; end
+   end -- Conditions loop.
+
+   -- Set the trigger to be fired if none of the conditions failed.
+   if (doFire) then triggersToFire[eventConditions.triggerSettings] = true; end
   end
  end
 
+ -- Get the texture for the event and display triggers that aren't excepted.
+ if (next(triggersToFire)) then
+  -- Display the fired triggers if none of the exceptions are true.
+  local recipientName = UnitName(unit);
+  local amount = currentAmount;
+  for triggerSettings in pairs(triggersToFire) do
+   if (not TestExceptions(triggerSettings)) then DisplayTrigger(triggerSettings, nil, recipientName, nil, amount); end
+  end
+ end -- Triggers to fire?
+
  -- Update the last percentage for the unit.
- lastPercentages[percentageKey] = currentPercentage;
+ lastEventPercentages[unit] = currentPercentage;
 end
 
 
 -- ****************************************************************************
--- Fires triggers that have incoming/outgoing conditions which are satisfied.
+-- Handles triggers for skill cooldowns.
 -- ****************************************************************************
-local function FireInOutTriggers(mainEvent, parserEvent)
+local function HandleCooldowns(skillName, effectTexture)
  -- Ignore the event if there are no triggers to search for it.
- if (not categorizedTriggers[mainEvent]) then return; end
-
- -- Get local copies for faster access.
- local recipientUnit = parserEvent.recipientUnit;
- local sourceUnit = parserEvent.sourceUnit;
-
- -- Clear the list of triggers to fire. 
- EraseTable(fireTriggers);
+ if (not categorizedTriggers["SKILL_COOLDOWN"]) then return; end
  
- -- Loop through conditions and fire the ones that apply to the affected unit.
- for _, eventConditions in pairs(categorizedTriggers[mainEvent]) do
-  if (recipientUnit == "player" and eventConditions.direction == "incoming" or
-      sourceUnit == "player" and eventConditions.direction == "outgoing") then
-   fireTriggers[eventConditions.triggerSettings] = true;
-  end
- end 
+ -- Populate the lookup table for conditions checking.
+ lookupTable.skillName = skillName;
 
- -- Get the texture for the event any display triggers that meet all conditions if there are any.
- if (next(fireTriggers)) then
+ -- Erase the list of triggers to fire.
+ for k in pairs(triggersToFire) do triggersToFire[k] = nil; end
+
+ -- Loop through the conditions list for the main event.
+ for _, eventConditions in ipairs(categorizedTriggers["SKILL_COOLDOWN"]) do
+  -- Trigger fires by default.
+  local doFire = true;
+
+  -- Don't bother checking conditions for a trigger that has already been fired.
+  if (not triggersToFire[eventConditions.triggerSettings]) then
+   -- Loop through each condition triplet.
+   for position = 1, #eventConditions, 3 do
+    -- Test the condition and if it fails, don't waste time checking other conditions.
+    local conditionFunc = eventConditionFuncs[eventConditions[position]];
+    local testFunc = testFuncs[eventConditions[position+1]];
+    if (conditionFunc and testFunc and not conditionFunc(testFunc, lookupTable, eventConditions[position+2])) then doFire = false; break; end
+   end -- Conditions loop.
+
+   -- Set the trigger to be fired if none of the conditions failed.
+   if (doFire) then triggersToFire[eventConditions.triggerSettings] = true; end
+  end
+ end
+
+ -- Get the texture for the event and display triggers that aren't excepted.
+ if (next(triggersToFire)) then
+  -- Display the fired triggers if none of the exceptions are true.
+  local recipientName = playerName;
+  for triggerSettings in pairs(triggersToFire) do
+   if (not TestExceptions(triggerSettings)) then DisplayTrigger(triggerSettings, nil, recipientName, skillName, nil, effectTexture); end
+  end
+ end -- Triggers to fire?
+end
+
+
+-- ****************************************************************************
+-- Handles triggers for combat log events.
+-- ****************************************************************************
+local function HandleCombatLogTriggers(timestamp, event, sourceGUID, sourceName, sourceFlags, recipientGUID, recipientName, recipientFlags, ...)
+ -- Ignore the event if there are no triggers to search for it.
+ if (not categorizedTriggers[event]) then return; end
+ 
+ -- Make sure the capture function for the event exists.
+ local captureFunc = captureFuncs[event];
+ if (not captureFunc) then return; end
+
+ 
+ -- Erase the parser event table.
+ for k in pairs(parserEvent) do parserEvent[k] = nil; end
+
+ -- Populate fields that exist for all events.
+ parserEvent.sourceGUID = sourceGUID;
+ parserEvent.sourceName = sourceName;
+ parserEvent.sourceFlags = sourceFlags;
+ parserEvent.recipientGUID = recipientGUID;
+ parserEvent.recipientName = recipientName;
+ parserEvent.recipientFlags = recipientFlags; 
+ parserEvent.sourceUnit = unitMap[sourceGUID];
+ parserEvent.recipientUnit = unitMap[recipientGUID];
+
+  
+ -- Map the local arguments into the parser event table.
+ captureFunc(parserEvent, ...);
+
+
+ -- Erase the list of triggers to fire.
+ for k in pairs(triggersToFire) do triggersToFire[k] = nil; end
+
+ -- Loop through the conditions list for the main event.
+ for _, eventConditions in ipairs(categorizedTriggers[event]) do
+  -- Trigger fires by default.
+  local doFire = true;
+  
+  -- Don't bother checking conditions for a trigger that has already been fired.
+  if (not triggersToFire[eventConditions.triggerSettings]) then
+   -- Loop through each condition triplet.
+   for position = 1, #eventConditions, 3 do
+    -- Test the condition and if it fails, don't waste time checking other conditions.
+    local conditionFunc = eventConditionFuncs[eventConditions[position]];
+	local testFunc = testFuncs[eventConditions[position+1]];
+    if (conditionFunc and testFunc and not conditionFunc(testFunc, parserEvent, eventConditions[position+2])) then doFire = false; break; end
+   end -- Conditions loop.
+
+   -- Set the trigger to be fired if none of the conditions failed.
+   if (doFire) then triggersToFire[eventConditions.triggerSettings] = true; end
+  end
+ end
+
+ -- Get the texture for the event and display triggers that aren't excepted.
+ if (next(triggersToFire)) then
   local effectTexture;
   if (parserEvent.skillID) then _, _, effectTexture = GetSpellInfo(parserEvent.skillID); end
 
   -- Display the fired triggers if none of the exceptions are true.
   local sourceName = parserEvent.sourceName;
   local recipientName = parserEvent.recipientName;
-  local skillName = parserEvent.skillName or "";
-  for triggerSettings in pairs(fireTriggers) do
-   if (not IsTriggerExcluded(triggerSettings)) then
-    DisplayTrigger(triggerSettings, sourceName, recipientName, effectTexture, skillName);
-   end
+  local skillName = parserEvent.skillName;
+  local amount = parserEvent.amount;
+  for triggerSettings in pairs(triggersToFire) do
+   if (not TestExceptions(triggerSettings)) then DisplayTrigger(triggerSettings, sourceName, recipientName, skillName, amount, effectTexture); end
   end
- end
-end
-
-
--- ****************************************************************************
--- Fires triggers that have aura conditions which are satisfied.
--- ****************************************************************************
-local function FireAuraTriggers(mainEvent, parserEvent)
- -- Ignore the event if there are no triggers to search for it.
- if (not categorizedTriggers[mainEvent]) then return; end
- 
- -- Get local copies for faster access.
- local skillName = parserEvent.skillName;
- local recipientUnit = parserEvent.recipientUnit;
- local recipientFlags = parserEvent.recipientFlags;
- local amount = parserEvent.amount or 1;
-
- -- Clear the list of triggers to fire. 
- EraseTable(fireTriggers);
-
- -- Loop through conditions and test the conditions.
- local conditionAmount;
- for _, eventConditions in pairs(categorizedTriggers[mainEvent]) do
-  conditionAmount = eventConditions.amount;
-  if (eventConditions.effect == skillName and
-      TestUnitConditions(eventConditions, recipientUnit, recipientFlags) and
-      (not conditionAmount or conditionAmount == amount)) then
-   fireTriggers[eventConditions.triggerSettings] = true;
-  end
- end 
-
- -- Get the texture for the event any display triggers that meet all conditions if there are any.
- if (next(fireTriggers)) then
-  local effectTexture = parserEvent.skillTexture;
-  if (not effectTexture and parserEvent.skillID) then _, _, effectTexture = GetSpellInfo(parserEvent.skillID); end
-
-  -- Display the fired triggers if none of the exceptions are true.
-  local recipientName = parserEvent.recipientName;
-  for triggerSettings in pairs(fireTriggers) do
-   if (not IsTriggerExcluded(triggerSettings)) then
-    DisplayTrigger(triggerSettings, nil, recipientName, effectTexture, skillName, amount);
-   end
-  end
- end
-end
-
-
--- ****************************************************************************
--- Fires triggers that have cast conditions which are satisfied.
--- ****************************************************************************
-local function FireCastTriggers(mainEvent, parserEvent)
- -- Ignore the event if there are no triggers to search for it.
- if (not categorizedTriggers[mainEvent]) then return; end
- 
- -- Get local copies for faster access.
- local skillName = parserEvent.skillName;
- local sourceUnit = parserEvent.sourceUnit;
- local sourceFlags = parserEvent.sourceFlags;
- 
- -- Clear the list of triggers to fire. 
- EraseTable(fireTriggers);
-
- -- Loop through conditions and test the conditions.
- for _, eventConditions in pairs(categorizedTriggers[mainEvent]) do
-  if (eventConditions.effect == skillName and
-      TestUnitConditions(eventConditions, sourceUnit, sourceFlags)) then
-   fireTriggers[eventConditions.triggerSettings] = true;
-  end
- end 
-
- -- Get the texture for the event any display triggers that meet all conditions if there are any.
- if (next(fireTriggers)) then
-  local effectTexture = parserEvent.skillTexture;
-  if (not effectTexture and parserEvent.skillID) then _, _, effectTexture = GetSpellInfo(parserEvent.skillID); end
-
-  -- Display the fired triggers if none of the exceptions are true.
-  local sourceName = parserEvent.sourceName;
-  for triggerSettings in pairs(fireTriggers) do
-   if (not IsTriggerExcluded(triggerSettings)) then
-    DisplayTrigger(triggerSettings, sourceName, nil, effectTexture, skillName);
-   end
-  end
- end
-end
-
-
--- ****************************************************************************
--- Fires triggers for the passed condition type.
--- ****************************************************************************
-local function FireBasicTriggers(mainEvent, parserEvent)
- -- Ignore the event if there are no triggers for it.
- if (not categorizedTriggers[mainEvent]) then return; end
-
- -- Clear the list of triggers to fire. 
- EraseTable(fireTriggers);
-
- -- Loop through conditions and test the ones that apply to the affected unit.
- for _, eventConditions in pairs(categorizedTriggers[mainEvent]) do
-  fireTriggers[eventConditions.triggerSettings] = true;
- end
- 
- -- Display the fired triggers if none of the exceptions are true.
- local sourceName = parserEvent.sourceName;
- local recipientName = parserEvent.recipientName;
- for triggerSettings in pairs(fireTriggers) do
-  if (not IsTriggerExcluded(triggerSettings)) then
-   DisplayTrigger(triggerSettings, sourceName, recipientName);
-  end
- end
+ end -- Triggers to fire?
 end
 
 
@@ -583,69 +645,28 @@ end
 -------------------------------------------------------------------------------
 
 -- ****************************************************************************
--- Handle parser events.
--- ****************************************************************************
-local function ParserEventsHandler(parserEvent)
- local eventType = parserEvent.eventType;
- -- Crit.
- if (eventType == "damage") then
-  if (parserEvent.isCrit) then FireInOutTriggers(MAINEVENT_CRIT, parserEvent); end
-
- -- Miss.
- elseif (eventType == "miss") then
-  -- Block.
-  if (parserEvent.missType == "BLOCK") then
-   FireInOutTriggers(MAINEVENT_BLOCK, parserEvent);
-
-  -- Dodge.
-  elseif (parserEvent.missType == "DODGE") then
-   FireInOutTriggers(MAINEVENT_DODGE, parserEvent);
-
-  -- Miss.
-  elseif (parserEvent.missType == "PARRY") then
-   FireInOutTriggers(MAINEVENT_PARRY, parserEvent);
-  end
-
- -- Aura.
- elseif (eventType == "aura") then
-  local mainEvent = (parserEvent.auraType == "BUFF") and "Buff" or "Debuff";
-  if (parserEvent.isFade) then
-   mainEvent = mainEvent .. "Fade";
-  else
-   mainEvent = mainEvent .. "Application";
-  end
-  FireAuraTriggers(mainEvent, parserEvent);
-
- -- Cast.
- elseif (eventType == "cast") then
-  FireCastTriggers(MAINEVENT_CAST_START, parserEvent);
-
- -- Kill.
- elseif (eventType == "kill") then
-  if (parserEvent.sourceUnit == "player") then FireBasicTriggers(MAINEVENT_KILLING_BLOW, parserEvent); end
- end -- Check eventType.
-end
-
-
--- ****************************************************************************
 -- Called when the registered events occur.
 -- ****************************************************************************
 local function OnEvent(this, event, arg1, ...)
  -- Health.
  if (event == "UNIT_HEALTH") then
-  FireThresholdTriggers(arg1, MAINEVENT_HEALTH, UnitHealth(arg1), UnitHealthMax(arg1));
+  HandleHealthAndPowerTriggers(arg1, event, UnitHealth(arg1), UnitHealthMax(arg1));
 
  -- Mana.
  elseif (event == "UNIT_MANA") then
-  FireThresholdTriggers(arg1, MAINEVENT_MANA, UnitMana(arg1), UnitManaMax(arg1), POWERTYPE_MANA);
+  HandleHealthAndPowerTriggers(arg1, event, UnitMana(arg1), UnitManaMax(arg1), POWERTYPE_MANA);
 
  -- Energy.
  elseif (event == "UNIT_ENERGY") then
-  FireThresholdTriggers(arg1, MAINEVENT_ENERGY, UnitMana(arg1), UnitManaMax(arg1), POWERTYPE_ENERGY);
+  HandleHealthAndPowerTriggers(arg1, event, UnitMana(arg1), UnitManaMax(arg1), POWERTYPE_ENERGY);
 
  -- Rage.
  elseif (event == "UNIT_RAGE") then
-  FireThresholdTriggers(arg1, MAINEVENT_RAGE, UnitMana(arg1), UnitManaMax(arg1), POWERTYPE_RAGE);
+  HandleHealthAndPowerTriggers(arg1, event, UnitMana(arg1), UnitManaMax(arg1), POWERTYPE_RAGE);
+
+ -- Combat log event.
+ elseif (event == "COMBAT_LOG_EVENT_UNFILTERED") then
+  HandleCombatLogTriggers(arg1, ...);
 
  end -- Event types.
 end
@@ -655,13 +676,10 @@ end
 -- Enables the trigger parsing.
 -- ****************************************************************************
 local function Enable()
- -- Register events the triggers use that aren't covered by the parser.
+ -- Register events the triggers use.
  for event in pairs(listenEvents) do
   eventFrame:RegisterEvent(event);
  end
-
- -- Register the parser events handler.
- MSBTParser.RegisterHandler(ParserEventsHandler);
 end
 
 
@@ -671,9 +689,6 @@ end
 local function Disable()
  -- Unregister all of the events from the event frame.
  eventFrame:UnregisterAllEvents();
-
- -- Unregister the parser events handler.
- MSBTParser.UnregisterHandler(ParserEventsHandler);
 end
 
 
@@ -690,6 +705,11 @@ local function OnLoad()
  eventFrame = CreateFrame("Frame");
  eventFrame:Hide();
  eventFrame:SetScript("OnEvent", OnEvent);
+ 
+ -- Create function maps.
+ CreateCaptureFuncs();
+ CreateTestFuncs();
+ CreateConditionFuncs();
 end
 
 
@@ -703,6 +723,7 @@ end
 module.triggerSuppressions = triggerSuppressions;
 
 -- Protected Functions.
+module.HandleCooldowns		= HandleCooldowns;
 module.ConvertType			= ConvertType;
 module.UpdateTriggers		= UpdateTriggers;
 module.Enable				= Enable;

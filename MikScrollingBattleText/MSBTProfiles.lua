@@ -22,9 +22,16 @@ local SAVED_VARS_PER_CHAR_NAME	= "MSBTProfiles_SavedVarsPerChar";
 -- Localized pet name followed by a space.
 local PET_SPACE = PET .. " ";
 
+-- Flags used by the combat log.
+local FLAG_YOU 			= 0xF0000000;
+local TARGET_TARGET		= 0x00010000;
+local REACTION_HOSTILE	= 0x00000040;
+
+
 -- Spell IDs.
 local SPELLID_COUNTER_ATTACK	= 19306;
 local SPELLID_EXECUTE			= 5308;
+local SPELLID_FIRST_AID			= 3273;
 local SPELLID_HAMMER_OF_WRATH	= 24275;
 local SPELLID_KILL_COMMAND		= 34026;
 local SPELLID_MONGOOSE_BITE		= 1495;
@@ -843,7 +850,7 @@ local masterProfile = {
    alwaysSticky		= true,
    fontSize			= 26,
    classes			= "WARLOCK",
-   mainEvents		= "BuffApplication[amount=1;;effect=" .. SPELL_BACKLASH .. ";;unit=player]",
+   mainEvents		= "SPELL_AURA_APPLIED{skillName;;eq;;" .. SPELL_BACKLASH .. ";;recipientAffiliation;;eq;;" .. FLAG_YOU .. "}",
   },
   MSBT_TRIGGER_BLACKOUT = {
    colorR			= 0.709,
@@ -853,7 +860,7 @@ local masterProfile = {
    alwaysSticky		= true,
    fontSize			= 26,
    classes			= "PRIEST",
-   mainEvents		= "DebuffApplication[amount=1;;effect=" .. SPELL_BLACKOUT .. ";;unit=target]",
+   mainEvents		= "SPELL_AURA_APPLIED{skillName;;eq;;" .. SPELL_BLACKOUT .. ";;recipientAffiliation;;eq;;" .. TARGET_TARGET .. "}"
   },
   MSBT_TRIGGER_CLEARCASTING = {
    colorB			= 0,
@@ -861,7 +868,7 @@ local masterProfile = {
    alwaysSticky		= true,
    fontSize			= 26,
    classes			= "DRUID,MAGE,SHAMAN",
-   mainEvents		= "BuffApplication[amount=1;;effect=" .. SPELL_CLEARCASTING .. ";;unit=player]",
+   mainEvents		= "SPELL_AURA_APPLIED{skillName;;eq;;" .. SPELL_CLEARCASTING .. ";;recipientAffiliation;;eq;;" .. FLAG_YOU .. "}",
   },
   MSBT_TRIGGER_COUNTER_ATTACK = {
    colorB			= 0,
@@ -869,8 +876,8 @@ local masterProfile = {
    alwaysSticky		= true,
    fontSize			= 26,
    classes			= "HUNTER",
-   mainEvents		= "Parry[direction=incoming]",
-   exceptions		= "SkillUnavailable[effect=" .. SPELL_COUNTER_ATTACK .. "]",
+   mainEvents		= "GENERIC_MISSED{recipientAffiliation;;eq;;" .. FLAG_YOU .. ";;missType;;eq;;PARRY}",
+   exceptions		= "unavailableSkill;;eq;;" .. SPELL_COUNTER_ATTACK,
    iconSkill		= SPELLID_COUNTER_ATTACK,
   },
   MSBT_TRIGGER_EXECUTE = {
@@ -879,8 +886,8 @@ local masterProfile = {
    alwaysSticky		= true,
    fontSize			= 26,
    classes			= "WARRIOR",
-   mainEvents		= "Health[hostile=true;;threshold=20;;unit=target]",
-   exceptions		= "SkillUnavailable[effect=" .. SPELL_EXECUTE .. "]",
+   mainEvents		= "UNIT_HEALTH{unitID;;eq;;target;;threshold;;lt;;20;;unitReaction;;eq;;" .. REACTION_HOSTILE .. "}",
+   exceptions		= "unavailableSkill;;eq;;" .. SPELL_EXECUTE,
    iconSkill		= SPELLID_EXECUTE,
   },
   MSBT_TRIGGER_FROSTBITE = {
@@ -890,7 +897,7 @@ local masterProfile = {
    alwaysSticky		= true,
    fontSize			= 26,
    classes			= "MAGE",
-   mainEvents		= "DebuffApplication[amount=1;;effect=" .. SPELL_FROSTBITE .. ";;unit=target]",
+   mainEvents		= "SPELL_AURA_APPLIED{skillName;;eq;;" .. SPELL_FROSTBITE .. ";;recipientAffiliation;;eq;;" .. TARGET_TARGET .. "}"
   },
   MSBT_TRIGGER_HAMMER_OF_WRATH = {
    colorB			= 0,
@@ -898,8 +905,8 @@ local masterProfile = {
    alwaysSticky		= true,
    fontSize			= 26,
    classes			= "PALADIN",
-   mainEvents		= "Health[hostile=true;;threshold=20;;unit=target]",
-   exceptions		= "SkillUnavailable[effect=" .. SPELL_HAMMER_OF_WRATH .. "]",
+   mainEvents		= "UNIT_HEALTH{unitID;;eq;;target;;threshold;;lt;;20;;unitReaction;;eq;;" .. REACTION_HOSTILE .. "}",
+   exceptions		= "unavailableSkill;;eq;;" .. SPELL_HAMMER_OF_WRATH,
    iconSkill		= SPELLID_HAMMER_OF_WRATH,
   },
   MSBT_TRIGGER_IMPACT = {
@@ -909,7 +916,7 @@ local masterProfile = {
    alwaysSticky		= true,
    fontSize			= 26,
    classes			= "MAGE",
-   mainEvents		= "DebuffApplication[amount=1;;effect=" .. SPELL_IMPACT .. ";;unit=target]",
+   mainEvents		= "SPELL_AURA_APPLIED{skillName;;eq;;" .. SPELL_IMPACT .. ";;recipientAffiliation;;eq;;" .. TARGET_TARGET .. "}"
   },
   MSBT_TRIGGER_KILL_COMMAND = {
    colorB			= 0,
@@ -917,39 +924,40 @@ local masterProfile = {
    alwaysSticky		= true,
    fontSize			= 26,
    classes			= "HUNTER",
-   mainEvents		= "Crit[direction=outgoing]",
-   exceptions		= "SkillUnavailable[effect=" .. SPELL_KILL_COMMAND .. "]";
+   mainEvents		= "GENERIC_DAMAGE{sourceAffiliation;;eq;;" .. FLAG_YOU .. ";;isCrit;;eq;;true}",
+   exceptions		= "unavailableSkill;;eq;;" .. SPELL_KILL_COMMAND;
    iconSkill		= SPELLID_KILL_COMMAND,
   },
   MSBT_TRIGGER_LOW_HEALTH = {
    colorG			= 0.5,
    colorB			= 0.5,
-   message			= L.MSG_TRIGGER_LOW_HEALTH .. "! (%1)",
+   message			= L.MSG_TRIGGER_LOW_HEALTH .. "! (%a)",
    alwaysSticky		= true,
    fontSize			= 26,
    soundFile		= "LowHealth",
-   mainEvents		= "Health[direction=declining;;threshold=40;;unit=player]",
-   exceptions		= "RecentlyFired[duration=5]",
+   mainEvents		= "UNIT_HEALTH{unitID;;eq;;player;;threshold;;lt;;35}",
+   exceptions		= "recentlyFired;;lt;;5",
+   iconSkill		= SPELLID_FIRST_AID,
   },
   MSBT_TRIGGER_LOW_MANA = {
    colorR			= 0.5,
    colorG			= 0.5,
-   message			= L.MSG_TRIGGER_LOW_MANA .. "! (%1)",
+   message			= L.MSG_TRIGGER_LOW_MANA .. "! (%a)",
    alwaysSticky		= true,
    fontSize			= 26,
    soundFile		= "LowMana",
    classes			= "DRUID,HUNTER,MAGE,PALADIN,PRIEST,SHAMAN,WARLOCK",
-   mainEvents		= "Mana[direction=declining;;threshold=35;;unit=player]",
-   exceptions		= "RecentlyFired[duration=5]",
+   mainEvents		= "UNIT_MANA{unitID;;eq;;player;;threshold;;lt;;35}",
+   exceptions		= "recentlyFired;;lt;;5",
   },
   MSBT_TRIGGER_LOW_PET_HEALTH = {
    colorG			= 0.5,
    colorB			= 0.5,
-   message			= L.MSG_TRIGGER_LOW_PET_HEALTH .. "! (%1)",
+   message			= L.MSG_TRIGGER_LOW_PET_HEALTH .. "! (%a)",
    fontSize			= 26,
    classes			= "HUNTER,MAGE,WARLOCK",
-   mainEvents		= "Health[direction=declining;;threshold=40;;unit=pet]",
-   exceptions		= "RecentlyFired[duration=5]",
+   mainEvents		= "UNIT_HEALTH{unitID;;eq;;pet;;threshold;;lt;;40}",
+   exceptions		= "recentlyFired;;lt;;5",
   },
   MSBT_TRIGGER_MONGOOSE_BITE = {
    colorB			= 0,
@@ -957,8 +965,8 @@ local masterProfile = {
    alwaysSticky		= true,
    fontSize			= 26,
    classes			= "HUNTER",
-   mainEvents		= "Dodge[direction=incoming]",
-   exceptions		= "SkillUnavailable[effect=" .. SPELL_MONGOOSE_BITE .. "]",
+   mainEvents		= "GENERIC_MISSED{recipientAffiliation;;eq;;" .. FLAG_YOU .. ";;missType;;eq;;DODGE}",
+   exceptions		= "unavailableSkill;;eq;;" .. SPELL_MONGOOSE_BITE,
    iconSkill		= SPELLID_MONGOOSE_BITE,
   },
   MSBT_TRIGGER_NIGHTFALL = {
@@ -969,7 +977,7 @@ local masterProfile = {
    alwaysSticky		= true,
    fontSize			= 26,
    classes			= "WARLOCK",
-   mainEvents		= "BuffApplication[amount=1;;effect=" .. SPELL_SHADOW_TRANCE .. ";;unit=player]",
+   mainEvents		= "SPELL_AURA_APPLIED{skillName;;eq;;" .. SPELL_SHADOW_TRANCE .. ";;recipientAffiliation;;eq;;" .. FLAG_YOU .. "}",
   },
   MSBT_TRIGGER_RAMPAGE = {
    colorG			= 0.25,
@@ -978,8 +986,8 @@ local masterProfile = {
    alwaysSticky		= true,
    fontSize			= 26,
    classes			= "WARRIOR",
-   mainEvents		= "Crit[direction=outgoing]",
-   exceptions		= "SkillUnavailable[effect=" .. SPELL_RAMPAGE .. "]&&BuffActive[effect=" .. SPELL_RAMPAGE .. "]&&InsufficientPower[amount=20]",
+   mainEvents		= "GENERIC_DAMAGE{sourceAffiliation;;eq;;" .. FLAG_YOU .. ";;isCrit;;eq;;true}",
+   exceptions		= "unavailableSkill;;eq;;" .. SPELL_RAMPAGE .. ";;buffActive;;eq;;" .. SPELL_RAMPAGE .. ";;currentPower;;lt;;20",
    iconSkill		= SPELLID_RAMPAGE,
   },
   MSBT_TRIGGER_REVENGE = {
@@ -988,8 +996,8 @@ local masterProfile = {
    alwaysSticky		= true,
    fontSize			= 26,
    classes			= "WARRIOR",
-   mainEvents		= "Block[direction=incoming]&&Dodge[direction=incoming]&&Parry[direction=incoming]",
-   exceptions		= "WarriorStance[reversed=true;;stance=2]&&SkillUnavailable[effect=" .. SPELL_REVENGE .. "]&&RecentlyFired[duration=2]",
+   mainEvents		= "GENERIC_MISSED{recipientAffiliation;;eq;;" .. FLAG_YOU .. ";;missType;;eq;;BLOCK}&&GENERIC_MISSED{recipientAffiliation;;eq;;" .. FLAG_YOU .. ";;missType;;eq;;DODGE}&&GENERIC_MISSED{recipientAffiliation;;eq;;" .. FLAG_YOU .. ";;missType;;eq;;PARRY}",
+   exceptions		= "warriorStance;;ne;;2;;unavailableSkill;;eq;;" .. SPELL_REVENGE .. ";;recentlyFired;;lt;;2",
    iconSkill		= SPELLID_REVENGE,
   },
   MSBT_TRIGGER_RIPOSTE = {
@@ -998,8 +1006,8 @@ local masterProfile = {
    alwaysSticky		= true,
    fontSize			= 26,
    classes			= "ROGUE",
-   mainEvents		= "Parry[direction=incoming]",
-   exceptions		= "SkillUnavailable[effect=" .. SPELL_RIPOSTE .. "]",
+   mainEvents		= "GENERIC_MISSED{recipientAffiliation;;eq;;" .. FLAG_YOU .. ";;missType;;eq;;PARRY}",
+   exceptions		= "unavailableSkill;;eq;;" .. SPELL_RIPOSTE,
    iconSkill		= SPELLID_RIPOSTE,
   },
   MSBT_TRIGGER_OVERPOWER = {
@@ -1008,8 +1016,8 @@ local masterProfile = {
    alwaysSticky		= true,
    fontSize			= 26,
    classes			= "WARRIOR",
-   mainEvents		= "Dodge[direction=outgoing]",
-   exceptions		= "SkillUnavailable[effect=" .. SPELL_OVERPOWER .. "]",
+   mainEvents		= "GENERIC_MISSED{sourceAffiliation;;eq;;" .. FLAG_YOU .. ";;missType;;eq;;DODGE}",
+   exceptions		= "unavailableSkill;;eq;;" .. SPELL_OVERPOWER,
    iconSkill		= SPELLID_OVERPOWER,
   },
   MSBT_TRIGGER_VICTORY_RUSH = {
@@ -1019,8 +1027,8 @@ local masterProfile = {
    alwaysSticky		= true,
    fontSize			= 26,
    classes			= "WARRIOR",
-   mainEvents		= "KillingBlow[]",
-   exceptions		= "SkillUnavailable[effect=" .. SPELL_VICTORY_RUSH .. "]&&TrivialTarget[]",
+   mainEvents		= "PARTY_KILL{sourceAffiliation;;eq;;" .. FLAG_YOU .. "}",
+   exceptions		= "unavailableSkill;;eq;;" .. SPELL_VICTORY_RUSH .. ";;trivialTarget;;eq;;true",
    iconSkill		= SPELLID_VICTORY_RUSH,
   },
   MSBT_TRIGGER_VIPER_STING = {
@@ -1030,7 +1038,7 @@ local masterProfile = {
    alwaysSticky		= true,
    fontSize			= 26,
    classes			= "DRUID,HUNTER,MAGE,PALADIN,PRIEST,SHAMAN,WARLOCK",
-   mainEvents		= "DebuffApplication[amount=1;;effect=" .. SPELL_VIPER_STING .. ";;unit=player]",
+   mainEvents		= "SPELL_AURA_APPLIED{skillName;;eq;;" .. SPELL_VIPER_STING .. ";;recipientAffiliation;;eq;;" .. FLAG_YOU .. "}",
   },
  }, -- End triggers
 
@@ -1039,11 +1047,11 @@ local masterProfile = {
  normalFontName		= "Default",
  normalOutlineIndex	= 2,
  normalFontSize		= 18,
- normalFontAlpha	= 85,
+ normalFontAlpha	= 100,
  critFontName		= "Default",
  critOutlineIndex	= 2,
  critFontSize		= 26,
- critFontAlpha		= 85,
+ critFontAlpha		= 100,
 
 
  -- Animation speed. 
@@ -1314,8 +1322,8 @@ local function UpdateProfiles()
   -- Get numeric creation version.
   local creationVersion = tonumber(select(3, string_find(tostring(profile.creationVersion), "(%d+%.%d+)")));
 
-  -- Delete triggers if upgrading from a version prior to 5.1.
-  if (creationVersion < 5.1) then
+  -- Delete triggers if upgrading from a version prior to 5.2.
+  if (creationVersion < 5.2) then
    profile.triggers = nil;
    profile.creationVersion = MikSBT.VERSION;
   end

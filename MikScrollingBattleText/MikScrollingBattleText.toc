@@ -1,5 +1,5 @@
 ## Interface: 20400
-## Version: 5.13.wowi:revision
+## Version: 5.2.wowi:revision
 ## Title: Mik's Scrolling Battle Text
 ## Author: Mik
 ## Notes: Scrolls battle information around the character model.
