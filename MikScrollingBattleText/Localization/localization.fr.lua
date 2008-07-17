@@ -14,6 +14,30 @@ local L = MikSBT.translations;
 -- French localization
 -------------------------------------------------------------------------------
 
+------------------------------
+-- Fonts
+------------------------------
+
+L.FONT_FILES = {
+ Adventure		= "Interface\\Addons\\MikScrollingBattleText\\Fonts\\adventure.ttf",
+ Bazooka		= "Interface\\Addons\\MikScrollingBattleText\\Fonts\\bazooka.ttf",
+ Cooline		= "Interface\\Addons\\MikScrollingBattleText\\Fonts\\cooline.ttf",
+ Default		= "Interface\\Addons\\MikScrollingBattleText\\Fonts\\porky.ttf",
+ Diogenes		= "Interface\\Addons\\MikScrollingBattleText\\Fonts\\diogenes.ttf",
+ Friz			= "Fonts\\FRIZQT__.TTF",
+ Ginko			= "Interface\\Addons\\MikScrollingBattleText\\Fonts\\ginko.ttf",
+ Heroic			= "Interface\\Addons\\MikScrollingBattleText\\Fonts\\heroic.ttf",
+ Talisman		= "Interface\\Addons\\MikScrollingBattleText\\Fonts\\talisman.ttf",
+ Transformers	= "Interface\\Addons\\MikScrollingBattleText\\Fonts\\transformers.ttf",
+ Yellowjacket	= "Interface\\Addons\\MikScrollingBattleText\\Fonts\\yellowjacket.ttf",
+ Zephyr			= "Interface\\Addons\\MikScrollingBattleText\\Fonts\\zephyr.ttf",
+}
+
+
+------------------------------
+-- Commands
+------------------------------
+
 L.COMMAND_USAGE = {
  "Usage: " .. MikSBT.COMMAND .. " <commande> [params]",
  " Commande:",
@@ -22,7 +46,7 @@ L.COMMAND_USAGE = {
  "  " .. L.COMMAND_ENABLE .. " - Active l'addon.",
  "  " .. L.COMMAND_SHOWVER .. " - Affiche la version actuelle.",
  "  " .. L.COMMAND_HELP .. " - Affiche l'aide des commandes.",
-};
+}
 
 
 ------------------------------

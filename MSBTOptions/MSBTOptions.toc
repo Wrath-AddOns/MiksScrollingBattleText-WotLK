@@ -8,6 +8,7 @@ Localization\localization.lua
 Localization\localization.de.lua
 Localization\localization.fr.lua
 Localization\localization.zhcn.lua
+Localization\localization.zhtw.lua
 MSBTOptionsControls.lua
 MSBTOptionsPopups.lua
 MSBTOptionsMain.lua

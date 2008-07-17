@@ -1288,9 +1288,7 @@ local function SetOptionUserDisabled(isDisabled)
   MikSBT.Main.Enable();
   MikSBT.Parser.Enable(); 
   MikSBT.Triggers.Enable();
-  if (not currentProfile.events.NOTIFICATION_COOLDOWN.disabled) then
-   MikSBT.Cooldowns.Enable();
-  end
+  MikSBT.Cooldowns.UpdateEnableState();
 
   -- Disable or enable game damage and healing based on the settings.
   UpdateGameOptions();
@@ -1325,7 +1323,7 @@ local function UpdateProfiles()
   -- Delete triggers if upgrading from a version prior to 5.2.
   if (creationVersion < 5.2) then
    profile.triggers = nil;
-   profile.creationVersion = MikSBT.VERSION;
+   profile.creationVersion = MikSBT.VERSION .. "." .. MikSBT.SVN_REVISION;
   end
  end
 end
@@ -1409,7 +1407,7 @@ local function ResetProfile(profileName, showOutput)
   EraseTable(savedVariables.profiles[profileName]);
 
   -- Reset the profile's creation version.
-  savedVariables.profiles[profileName].creationVersion = MikSBT.VERSION;
+  savedVariables.profiles[profileName].creationVersion = MikSBT.VERSION .. "." .. MikSBT.SVN_REVISION;
   
   
   -- Check if it's the current profile being reset.
@@ -1459,7 +1457,7 @@ local function InitSavedVariables()
   savedVariables.profiles = {};
   savedVariables.profiles[DEFAULT_PROFILE_NAME] = {};
 
-  savedVariables.profiles[DEFAULT_PROFILE_NAME].creationVersion = MikSBT.VERSION;
+  savedVariables.profiles[DEFAULT_PROFILE_NAME].creationVersion = MikSBT.VERSION .. "." .. MikSBT.SVN_REVISION;
   
  -- There are saved variables.
  else

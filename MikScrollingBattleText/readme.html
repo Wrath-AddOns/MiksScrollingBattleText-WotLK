@@ -14,7 +14,6 @@
    div.TOCTitle      { font-weight: bold; font-size: 14pt; color: #004080; border-bottom: 1px solid #000060; }
    div.TOC           { margin: 2ex 1ex 4em 2ex; }
    div.TOCSection    { margin-bottom: 2ex; }
-   div.TOCSection ul { margin-top: 1ex; }
 
    div.SectionTitle    { margin-top: 6ex; font-weight: bold; font-size: 14pt; color: #004080; border-bottom: 1px solid #000060; }
    div.SectionBody     { margin: 2ex 0ex 2ex 2ex; }
@@ -27,6 +26,8 @@
    div.SubsectionTitle { margin-top: 4ex; margin-bottom: 2ex; font-weight: bold; font-size: 110%; color: #004080; }
    div.SubsectionBody  { margin: 2ex 0ex 2ex 2ex; }
 
+   div.TriggerParameter { margin-left: 2ex; }
+
    td.ParameterName { font-size: 10pt; background-color: #e0e0e0; vertical-align: top; }
    td.ParameterDesc { font-size: 10pt; background-color: #e0e0e0; text-align: left; }
 
@@ -36,9 +37,9 @@
  <body>
   <h1>Mik's Scrolling Battle Text</h1>
   <div id="HeaderBlock">
-   Version: 5.2 Beta<br />
+   Version: 5.2<br />
    Author: Mik<br />
-   Released: April 27, 2008<br />
+   Released: July 17, 2008<br />
    Official Site: <a href="http://mikord.wowinterface.com">http://mikord.wowinterface.com</a><br /><br />
    <a href="#Credits">See Credits</a>
   </div>
@@ -54,7 +55,19 @@
 	 <a href="#TriggerGuide">Trigger Guide</a>
      <div class="TOCSection">
       <ul>
+       <li><a href="#TriggerBasicConcepts">Basic Concepts</a></li>
+       <li><a href="#TriggerMechanics">Trigger Mechanics</a></li>
+       <li><a href="#TriggerAdvancedConcepts">Advanced Concepts</a></li>
+       <li><a href="#ExampleTriggers">Example Triggers</a></li>
+      </ul>
+     </div>
+    </li>
+    <li>
+	 <a href="#TriggerReference">Trigger Reference</a>
+     <div class="TOCSection">
+      <ul>
        <li><a href="#MainEvents">Trigger Main Events</a></li>
+       <li><a href="#MainEventConditions">Main Event Conditions</a></li>
        <li><a href="#TriggerExceptions">Trigger Exceptions</a></li>
       </ul>
      </div>
@@ -72,6 +85,7 @@
        <li><a href="#FAQExclusiveIcons">I want to see skill names even when there is an icon.  Is that possible?</a></li>	 
        <li><a href="#FAQSharedMedia">Does MSBT support fonts and sounds from Shared Media?</a></li>
        <li><a href="#FAQGameDamage">Is there a way to show the damage above the target's heads like the default damage text?</a></li>
+       <li><a href="#FAQPvPTrinket">Can I create a trigger to notify me when a player uses a PvP trinket?</a></li>
        <li><a href="#FAQEfficiency">Is MSBT efficient?</a></li>
       </ul>
      </div>
@@ -240,21 +254,236 @@
   <div class="SectionTitle"><a name="TriggerGuide"></a>Trigger Guide</div>
   <a href="#TOC">Return to TOC</a><br /><br />
   <div class="SectionBody">
-   Documentation is not yet available this version of beta.
-<!--
-   The trigger system is a powerful, flexible, and efficient system that allows you to specify custom events to be displayed based on
+   The trigger system is a powerful and flexible system that allows you to specify custom events to be displayed based on
    specific game events that are not already handled by default.  There are several mechanisms in place to ensure triggers are efficient as
    possible so they are not needlessly wasting CPU cycles checking conditions that aren't relevant.  Due to this optimization, several common
    triggers are included by default.
-   <br /><br />
-   The system is based around <a href="#MainEvents">main events</a> and <a href="#TriggerExceptions">exceptions</a>.  Each trigger can have
-   one or more <a href="#MainEvents">main events</a> each with unique conditions.  After ANY (or relationship) one of the <a href="#MainEvents">main events</a>
-   occurs and its conditions are true, the trigger will then check the <a href="#TriggerExceptions">exceptions</a> before firing.
-   The trigger will NOT fire if ANY (or relationship) of the <a href="#TriggerExceptions">exceptions</a> are true.
-   <br /><br />
-   Triggers will try to choose an appropriate icon based on the <a href="#MainEvents">main event</a> that fired it.
-   <br /><br />
-   The <a href="#FAQ">Frequently Asked Questions</a> section has step-by-step instructions on the process of <a href="#FAQNewTrigger">creating a trigger</a>.
+   <div class="SubsectionTitle"><a name="TriggerBasicConcepts"></a>Basic Concepts:</div>
+   <div class="SubsectionBody">
+    Every time almost anything happens in the game, a combat log entry is generated for it.  While it is not readily visible, each of these
+    combat log entries is categorized by Blizzard according to specific event types.  It is these event types that drive triggers.  Triggers are
+    really just definitions of a specific set of circumstances that must occur before they will fire.
+    <br /><br />
+    Aside from being categorized into an event type, each event that occurs in game has several other pieces of information associated with it such as
+    who the source of the event was, how much the event hit or healed for, and whether or not the event was a crit.  Obviously this additional information
+    varies according to the type of event it is since, for example, an aura application can't crit.
+	<br /><br />
+    The trigger system refers to these event types as <a href="#MainEvents">main events</a> and the additional pieces of information as
+    <a href="#MainEventConditions">conditions</a>, since ultimately it is these additional pieces of information that define the specific
+	circumstances of interest.
+    <br /><br />
+    Let's consider an example event to better understand how the pieces fit together.  Assume that you were just hit by a fireball.  The damage caused
+    to you by the fireball generated an event of type "Skill Damage".  The event also has many of other pieces of information associated with it like
+    the name of the unit who cast the fireball, how much the fireball hit you for, whether or not it crit, whether the unit who cast the fireball is a
+	player or an NPC, etc.
+    <br /><br />
+    Putting the above fireball example in terms of the trigger system, the fireball hitting you was a <a href="#MainEvents">main event</a> of type
+    "Skill Damage", and the <a href="#MainEventConditions">conditions</a> were the name of the unit who cast the fireball, how much it hit you for, and so on.
+    <br /><br />
+	While the <a href="#MainEvents">main events</a> and their <a href="#MainEventConditions">conditions</a> offer a wealth the information, there is other non-event
+	related "state" information available such as the current zone your character is in, whether or not certain buffs are active, and whether or not certain skills are
+    available.  This "state" information forms the basis for what the trigger system refers to as <a href="#TriggerExceptions">exceptions</a>.  An
+	<a href="#TriggerExceptions">exception</a> will prevent a trigger from being displayed when it applies.
+   </div>
+
+   <div class="SubsectionTitle"><a name="TriggerMechanics"></a>Trigger Mechanics:</div>
+   <div class="SubsectionBody">
+    Now that it is clear what <a href="#MainEvents">main events</a>, <a href="#MainEventConditions">conditions</a>, and <a href="#TriggerExceptions">exceptions</a>
+    are, we can explore how triggers make use of them and consequently how they are defined.
+    <br /><br />
+	The following list summarizes the stages a trigger follows to determine whether or not it fires:
+    <ol>
+     <li>One of the <a href="#MainEvents">main events</a> that a trigger has defined occurs.</li>
+     <li>
+      The specific <a href="#MainEventConditions">conditions</a> defined for the <a href="#MainEvents">main event</a> for the trigger are tested.  If any of the
+      conditions do not apply, the trigger will not fire and all processing for the trigger stops.
+	 </li>
+     <li>
+      The <a href="#TriggerExceptions">exceptions</a> defined for the trigger are tested.  If any of the exceptions apply, the trigger will not fire and all
+      processing for the trigger stops.
+     </li>
+     <li>The trigger fires thus displaying the specified output message and event settings.</li>
+    </ol>
+	<br />
+    As mentioned in the "<a href="#TriggerBasicConcepts">Basic Concepts</a>" section above, triggers are driven by <a href="#MainEvents">main events</a>.
+    Each trigger can be based on one or more of these <a href="#MainEvents">main events</a> each with unique <a href="#MainEventConditions">conditions</a>.
+    These <a href="#MainEvents">main events</a> are treated as an "or" relationship meaning that when <b>ANY</b> one of them occurs, the trigger will move to the next
+    stage of testing the <a href="#MainEventConditions">conditions</a>.
+    <br /><br />
+    The <a href="#MainEventConditions">conditions</a> defined for a given <a href="#MainEvents">main event</a> are treated as an "and" relationship meaning that
+    <b>ALL</b> of them must be true for the trigger to move to the next stage of testing <a href="#TriggerExceptions">exceptions</a>.
+    <br /><br />
+    During the final stage, the <a href="#TriggerExceptions">exceptions</a> defined for a trigger are treated as an "or" relationship meaning that when <b>ANY</b> one
+    of them is true, the trigger will not fire.
+   </div>
+
+   <div class="SubsectionTitle"><a name="TriggerAdvancedConcepts"></a>Advanced Concepts:</div>
+   <div class="SubsectionBody">
+    Most common triggers won't need to delve into any of the concepts presented in this section, but using some of the more advanced capabilities
+    can lead to triggers for highly complex events or single triggers capable of handling multiple events.
+    <br /><br />
+    Here is an overview of the main points that will be covered:
+    <ul>
+     <li>Each <a href="#MainEvents">main event</a> can be used multiple times for a single trigger</li>
+     <li>Each <a href="#MainEventConditions">condition</a> can be used multiple times for a given <a href="#MainEvents">main event</a>.</li>
+     <li>Triggers will try to choose an appropriate icon based on the <a href="#MainEvents">main event</a> that fired it.</li>
+     <li>Substitution codes for skill names are available.</li>
+     <li>Skill IDs can be used to discern which rank of a skill was used.</li>
+    </ul>
+	<br />
+	Recall from the "<a href="#TriggerMechanics">Trigger Mechanics</a>" section that each trigger can have multiple <a href="#MainEvents">main events</a> treated
+    as an "or" relationship, and that each <a href="#MainEvents">main event</a> can have its own unique <a href="#MainEventConditions">conditions</a>.  Combining that
+    with the capability to use a <a href="#MainEvents">main event</a> multiple times for a single trigger means you can effectively cover a set of common
+    scenarios all with a single trigger.  For example, imagine you want to see when both Mace Stun and Improved Hamstring proc.  Both cases are an aura application,
+    but they have different skill names.  By adding the same <a href="#MainEvents">main event</a> twice, but specifying a different skill name
+    <a href="#MainEventConditions">condition</a> for each one, you are effectively saying when Mace Stun or Improved Hamstring proc this trigger should fire.  Naturally
+    the other <a href="#MainEventConditions">conditions</a> such as affiliation and reaction would need to also be set for each event.
+	<br /><br />
+	The astute reader will say "Wait a second!  How will I be able to tell which one procced if the output message is the same?".  This problem is solved with substitution
+    codes.  Depending on which event actually caused the trigger to fire, %s will be replaced the appropriate skill name.  Also, the correct icon would be displayed since
+    triggers attempt to choose an appropriate icon based on the <a href="#MainEvents">main event</a> that fired them.
+    <br /><br />
+	The capability of using the same condition multiple times for a given <a href="#MainEvents">main event</a> with different relationships means that things such as ranges
+    and complex pattern matching can be implemented.  For example, imagine you are trying to create a trigger that will fire when an amount is betweeen two values.  The first
+    <a href="#MainEventConditions">condition</a> could be "Amount - Is Greater Than - X" and the second could be "Amount - Is Less Than - Y".
+	<br /><br />
+	Another advanced capability is using skill IDs to detect when specific ranks, such as rank 1, are being used.  Most online databases can be used to ascertain
+    what the skill ID is for the ranks of each skill.  By adding <a href="#MainEventConditions">conditions</a> that specify these specific skill IDs, it is possible
+    to only trigger on specific skill ranks.
+   </div>
+
+   <div class="SubsectionTitle"><a name="ExampleTriggers"></a>Example Triggers:</div>
+   <div class="SubsectionBody">
+    Since the point of the trigger system is to allow for custom events that are not already available, there is no way to cover all of the possibilities.
+    However, most commonly requested triggers fall within the following two categories.  An example trigger or two for each category is provided and can be
+    used as a guide to creating your desired trigger.
+    <br /><br />
+    Please note these examples don't make use of advanced capabilities in order to keep the examples easy
+    understand.
+    <br /><br />
+    <table cellspacing="3">
+     <tr>
+      <td class="ParameterName" nowrap="nowrap">CC Breaks:</td>
+      <td class="ParameterDesc">
+       A common request for triggers is to be notified when crowd control skills like sheep, sap, and blind break from your focus target while in the arena.
+       Nearly all of these effects involve removing an aura and therefore the <a href="#MainEvents">main event</a> type will usually be "Aura Removal".
+       <br /><br />
+       The most common <a href="#MainEventConditions">conditions</a> used for this category of triggers are "Skill Name", "Recipient Unit Affiliation", and
+       "Recipient Unit Reaction".
+       <br /><br />
+       <b><u>Polymorph Broke</u></b>
+       <br /><br />
+	   Output Message: Poly Broke - %r!<br />
+       Main Events:
+       <div class="TriggerParameter">
+        Aura Removal
+        <div class="TriggerParameter">
+         Skill Name - Is Equal To - Polymorph<br />
+         Recipient Unit Affiliation - Is Equal To - Focus<br />
+         Recipient Unit Reaction - Is Equal To - Hostile<br />
+        </div>
+       </div>
+       <br />
+       Exceptions:
+       <div class="TriggerParameter">
+        Zone Type - Is Not Equal To - Arena<br />
+       </div>
+      </td>
+	 </tr>
+     <tr>
+      <td class="ParameterName" nowrap="nowrap">Procs:</td>
+      <td class="ParameterDesc">
+       Another common request for triggers is to be notified when certain procs such as Mace Stun, Improved Wing Clip, or item-based haste effects occur.
+       Nearly all of the effects apply an aura of some sort and as such the <a href="#MainEvents">main event</a> type will usually be "Aura Application".
+       <br /><br />
+       The most common <a href="#MainEventConditions">conditions</a> used for this category of triggers are "Skill Name", "Recipient Unit Affiliation", and
+       "Recipient Unit Reaction".
+       <br /><br />
+       <b><u>Mace Stun</u></b>
+       <br /><br />
+	   Output Message: Mace Stun!<br />
+       Main Events:
+       <div class="TriggerParameter">
+        Aura Application
+        <div class="TriggerParameter">
+         Skill Name - Is Equal To - Mace Stun<br />
+         Recipient Unit Affiliation - Is Equal To - Target<br />
+         Recipient Unit Reaction - Is Equal To - Hostile<br />
+        </div>
+       </div>
+       <br />
+       Exceptions:
+       <div class="TriggerParameter">None</div>
+       <br /><br />
+       
+       <b><u>Focus</u></b> (from Mystical Skyfire Diamond)
+       <br /><br />
+	   Output Message: Focus!<br />
+       Main Events:
+       <div class="TriggerParameter">
+        Aura Application
+        <div class="TriggerParameter">
+         Skill Name - Is Equal To - Focus<br />
+         Recipient Unit Affiliation - Is Equal To - You<br />
+        </div>
+       </div>
+       <br />
+       Exceptions:
+       <div class="TriggerParameter">None</div>
+      </td>
+	 </tr>
+     <tr>
+      <td class="ParameterName" nowrap="nowrap">Key Skill Usage:</td>
+      <td class="ParameterDesc">
+       Many players find it useful to create a trigger for when certain key abilities such as Blessing of Freedom or Blessing of Protection are used while
+       in the arena.  Most of these effects involve successfully casting a spell and so the <a href="#MainEvents">main event</a> type will usually be "Cast Success".
+       <br /><br />
+       The most common <a href="#MainEventConditions">conditions</a> used for this category of triggers are "Skill Name" and "Source Unit Reaction".
+       <br /><br />
+       <b><u>Blessing of Protection Used</u></b>
+       <br /><br />
+	   Output Message: Melee Bubble!<br />
+       Main Events:
+       <div class="TriggerParameter">
+        Cast Success
+        <div class="TriggerParameter">
+         Skill Name - Is Equal To - Blessing of Protection<br />
+         Source Unit Reaction - Is Equal To - Hostile<br />
+        </div>
+       </div>
+       <br />
+       Exceptions:
+       <div class="TriggerParameter">
+        Zone Type - Is Not Equal To - Arena<br />
+       </div>
+       <br /><br />
+       <b><u>Priest Fear Used</u></b>
+       <br /><br />
+	   Output Message: Priest Fear Down!<br />
+       Main Events:
+       <div class="TriggerParameter">
+        Cast Success
+        <div class="TriggerParameter">
+         Skill Name - Is Equal To - Psychic Scream<br />
+         Source Unit Reaction - Is Equal To - Hostile<br />
+        </div>
+       </div>
+       <br />
+       Exceptions:
+       <div class="TriggerParameter">
+        Zone Type - Is Not Equal To - Arena<br />
+       </div>
+      </td>
+	 </tr>
+    </table>
+   </div>
+  </div>
+
+  <div class="SectionTitle"><a name="TriggerReference"></a>Trigger Reference</div>
+  <a href="#TOC">Return to TOC</a><br /><br />
+  <div class="SectionBody">
+   This section provides a reference for each of the <a href="#MainEvents">main events</a>, <a href="#MainEventConditions">conditions</a>,
+   and <a href="#TriggerExceptions">exceptions</a> that triggers may utilize.
    <br /><br />
    The following is a description of the fields unique to the trigger system interface:
    <br /><br />
@@ -262,11 +491,21 @@
     <tr>
      <td class="ParameterName" nowrap="nowrap">Output Message:</td>
      <td class="ParameterDesc">
-      This is the message that will be displayed when the trigger fires.  As detailed in the <a href="#MainEvents">main events</a> table,
-      some of the <a href="#MainEvents">main events</a> return captured information that can be accessed with a substitution code of %1.
+      This is the message that will be displayed when the trigger fires.
       <br /><br />
-      In addition, most <a href="#MainEvents">main events</a> allow %n to be substituted with the name of the source of the event and %r to be
-      substituted with the name of the recipient of the event.
+      Most <a href="#MainEvents">main events</a> allow the following substitution codes:<br />
+      <ul>
+       <li>%n - The name of the source of the event.</li>
+       <li>%r - The name of the recipient of the event.</li>
+       <li>%a - The amount associated with the event.</li>
+       <li>%s - The skill name associated with the event.</li>
+      </ul>
+      <br />
+      In addition, certain <a href="#MainEvents">main events</a> that invlove two different skill names like dispels (the name of skill performing the dispel and
+      the name of the skill being dispelled) allow the following substitution code:
+      <ul>
+       <li>%e - The extra skill name associated with the event.</li>
+      </ul>
      </td>
     </tr>
     <tr>
@@ -281,10 +520,10 @@
      <td class="ParameterName" nowrap="nowrap"><a href="#MainEvents">Main Events</a>:</td>
      <td class="ParameterDesc">
       This allows you to define which <a href="#MainEvents">main events</a> should begin the process of testing the trigger.  When <b>ANY</b>
-      (or relationship) of these main events apply and their conditions are true, the trigger will then make sure none of the
-      <a href="#TriggerExceptions">exceptions</a> are true before firing.
+      (or relationship) of these main events occur and their <a href="#MainEventconditions">conditions</a> are true, the trigger will then make sure
+      none of the <a href="#TriggerExceptions">exceptions</a> are true before firing.
       <br /><br />
-      The <a href="#MainEvents">main events</a> table below details the purpose of each event along with its available conditions.
+      The <a href="#MainEvents">main events</a> reference table details the purpose of each event.
      </td>
     </tr>
     <tr>
@@ -292,307 +531,368 @@
      <td class="ParameterDesc">
       This allows you define <a href="#TriggerExceptions">exceptions</a> to prevent the trigger from firing. 
       <br /><br />
-      They are only checked if one of the <a href="#MainEvents">main events</a> and its conditions has already occurred.
+      They are only checked if one of the <a href="#MainEvents">main events</a> has occured and all its <a href="#MainEventConditions">conditions</a> are true.
       <br /><br />
-      The <a href="#TriggerExceptions">trigger exceptions</a> table below details the purpose of each exception along with its
-      available conditions.
+      The <a href="#TriggerExceptions">trigger exceptions</a> reference table below details the purpose of each exception.
      </td>
     </tr>
    </table>
--->
+   
    <div class="SubsectionTitle"><a name="MainEvents"></a>Trigger Main Events:</div>
    <div class="SubsectionBody">
-    Documentation is not yet available this version of beta.
-<!--
     <table cellspacing="3">
      <tr>
-      <td class="ParameterName" nowrap="nowrap">Health Threshold:</td>
-      <td class="ParameterDesc">
-       Fires when a health percentage falls below or rises above the chosen threshold depending on which direction is selected.
-       <br /><br />
-       Conditions:
-       <ul>
-        <li>Affected Unit - The trigger will only fire if the threshold has been crossed for this unit.</li>
-        <li>Hostile Only - The affected unit must be hostile.  <b>NOTE:</b> "You" can never be hostile, so don't check it in conjunction with yourself!</li>
-        <li>Direction - Specifies whether the trigger should fire when the health percentage falls below or rises above the threshold.</li>
-        <li>Threshold - The percentage that must be crossed for the trigger to fire.</li>
-       </ul>
-       Available Substitution Codes:
-       <ul>
-        <li>%1 - The actual amount of health.</li>
-        <li>%r - The name of the unit whose health changed.</li>
-       </ul>
-      </td>
+      <td class="ParameterName" nowrap="nowrap">Aura Application:</td>
+      <td class="ParameterDesc">Fired when an aura is applied to a unit.</td>
      </tr>
      <tr>
-      <td class="ParameterName" nowrap="nowrap">Mana Threshold:</td>
-      <td class="ParameterDesc">
-       Fires when a mana percentage falls below or rises above the chosen threshold depending on which direction is selected.
-       <br /><br />
-       The conditions and available substitution codes are identical to a health threshold.  See above for further details.
-      </td>
+      <td class="ParameterName" nowrap="nowrap">Aura Dispel:</td>
+      <td class="ParameterDesc">Fired when an aura is dispelled from a unit.</td>
      </tr>
      <tr>
-      <td class="ParameterName" nowrap="nowrap">Energy Threshold:</td>
-      <td class="ParameterDesc">
-       Fires when an energy percentage falls below or rises above the chosen threshold depending on which direction is selected.
-       <br /><br />
-       The conditions and available substitution codes are identical to a health threshold.  See above for further details.
-      </td>
+      <td class="ParameterName" nowrap="nowrap">Aura Removal:</td>
+      <td class="ParameterDesc">Fired when an aura is removed from a unit.</td>
      </tr>
      <tr>
-      <td class="ParameterName" nowrap="nowrap">Rage Threshold:</td>
-      <td class="ParameterDesc">
-       Fires when a rage percentage falls below or rises above the chosen threshold depending on which direction is selected.
-       <br /><br />
-       The conditions and available substitution codes are identical to a health threshold.  See above for further details.
-      </td>
+      <td class="ParameterName" nowrap="nowrap">Aura Stolen:</td>
+      <td class="ParameterDesc">Fired when an aura is stolen from a unit.</td>
      </tr>
      <tr>
-      <td class="ParameterName" nowrap="nowrap">Crit:</td>
-      <td class="ParameterDesc">
-       Fires when an incoming or outgoing critical hit is landed.
-       <br /><br />
-       Conditions:
-       <ul>
-        <li>Direction - Specifies whether the trigger should fire on and incoming (to you) or outgoing (from you) critical hit.</li>
-       </ul>
-       Available Substitution Codes:
-       <ul>
-        <li>%1 - The name of the skill the caused the crit. <b>NOTE:</b>This will be blank when the crit was from a skill such as a regular swing.</li>
-        <li>%n - The name of the unit who did the crit.</li>
-        <li>%r - The name of the unit whose was crit.</li>
-       </ul>
-      </td>
-     </tr>
-     <tr>
-      <td class="ParameterName" nowrap="nowrap">Block:</td>
-      <td class="ParameterDesc">
-       Fires when an incoming or outgoing attack is blocked.
-       <br /><br />
-       The conditions and available substitution codes are identical to a Crit.  See above for further details.
-      </td>
-     </tr>
-     <tr>
-      <td class="ParameterName" nowrap="nowrap">Dodge:</td>
-      <td class="ParameterDesc">
-       Fires when an incoming or outgoing attack is dodged.
-       <br /><br />
-       The conditions and available substitution codes are identical to a Crit.  See above for further details.
-      </td>
-     </tr>
-     <tr>
-      <td class="ParameterName" nowrap="nowrap">Parry:</td>
-      <td class="ParameterDesc">
-       Fires when an incoming or outgoing attack is parried.
-       <br /><br />
-       The conditions and available substitution codes are identical to a Crit.  See above for further details.
-      </td>
-     </tr>
-     <tr>
-      <td class="ParameterName" nowrap="nowrap">Buff Application:</td>
-      <td class="ParameterDesc">
-       Fires when a buff is applied to a unit.
-       <br /><br />
-       Conditions:
-       <ul>
-        <li>Affected Unit - The trigger will only fire if the buff was applied to this unit.</li>
-        <li>Hostile Only - The affected unit must be hostile.  <b>NOTE:</b> "You" can never be hostile, so don't check it in conjunction with yourself!</li>
-        <li>Skill Name - The <b>case-sensitive</b> name of the buff that trigger will fire on.</li>
-        <li>Amount - The application number of the buff.  This is typically 1 for most buffs.</li>
-       </ul>
-       Available Substitution Codes:
-       <ul>
-        <li>%1 - The name of the buff.</li>
-        <li>%r - The name of the unit who received the buff.</li>
-       </ul>
-      </td>
-     </tr>
-     <tr>
-      <td class="ParameterName" nowrap="nowrap">Buff Fade:</td>
-      <td class="ParameterDesc">
-       Fires when a buff fades from a unit.
-       <br /><br />
-       Conditions:
-       <ul>
-        <li>Affected Unit - The trigger will only fire if the buff faded from this unit.</li>
-        <li>Hostile Only - The affected unit must be hostile.  <b>NOTE:</b> "You" can never be hostile, so don't check it in conjunction with yourself!</li>
-        <li>Skill Name - The <b>case-sensitive</b> name of the buff that trigger will fire on.</li>
-       </ul>
-       Available Substitution Codes:
-       <ul>
-        <li>%1 - The name of the buff.</li>
-        <li>%r - The name of the unit who the buff faded from.</li>
-       </ul>
-      </td>
-     </tr>
-     <tr>
-      <td class="ParameterName" nowrap="nowrap">Debuff Application:</td>
-      <td class="ParameterDesc">
-       Fires when a debuff is applied to a unit.
-       <br /><br />
-       The conditions and available substitution codes are identical to a Buff Application.  See above for further details.
-      </td>
-     </tr>
-     <tr>
-      <td class="ParameterName" nowrap="nowrap">Debuff Fade:</td>
-      <td class="ParameterDesc">
-       Fires when a debuff fades from a unit.
-       <br /><br />
-       The conditions and available substitution codes are identical to a Buff Fade.  See above for further details.
-      </td>
+      <td class="ParameterName" nowrap="nowrap">Cast Failure:</td>
+      <td class="ParameterDesc">Fired when a cast fails.</td>
      </tr>
      <tr>
       <td class="ParameterName" nowrap="nowrap">Cast Start:</td>
-      <td class="ParameterDesc">
-       Fires when a skill with a cast time has started.
-       <br /><br />
-       Conditions:
-       <ul>
-        <li>Affected Unit - The trigger will only fire if this unit started the cast.</li>
-        <li>Hostile Only - The affected unit must be hostile.  <b>NOTE:</b> "You" can never be hostile, so don't check it in conjunction with yourself!</li>
-        <li>Skill Name - The <b>case-sensitive</b> name of the skill for which the cast is starting.</li>
-       </ul>
-       Available Substitution Codes:
-       <ul>
-        <li>%1 - The name of the skill for which the cast is starting.</li>
-        <li>%n - The name of the unit that started the cast.</li>
-       </ul>
-      </td>
+      <td class="ParameterDesc">Fired when a cast begins.</td>
+     </tr>
+     <tr>
+      <td class="ParameterName" nowrap="nowrap">Cast Success:</td>
+      <td class="ParameterDesc">Fired when a cast successfully completes.</td>
+     </tr>
+     <tr>
+      <td class="ParameterName" nowrap="nowrap">Create:</td>
+      <td class="ParameterDesc">Fired when items are created.  This is typically for conjured items.</td>
+     </tr>
+     <tr>
+      <td class="ParameterName" nowrap="nowrap">Damage Shield Damage:</td>
+      <td class="ParameterDesc">Fired when damage is done from a damage shield like thorns.</td>
+     </tr>
+     <tr>
+      <td class="ParameterName" nowrap="nowrap">Damage Shield Miss:</td>
+      <td class="ParameterDesc">Fired when damage from a damage shield like thorns is resisted, absorbed, etc.</td>
+     </tr>
+     <tr>
+      <td class="ParameterName" nowrap="nowrap">Dispel Failed:</td>
+      <td class="ParameterDesc">Fired when a dispel attempt fails.</td>
+     </tr>
+     <tr>
+      <td class="ParameterName" nowrap="nowrap">Enchant Application:</td>
+      <td class="ParameterDesc">Fired when an enchant is applied to an item.</td>
+     </tr>
+     <tr>
+      <td class="ParameterName" nowrap="nowrap">Energy Change:</td>
+      <td class="ParameterDesc">Fired when an energy value changes for the one of the supported units.</td>
+     </tr>
+     <tr>
+      <td class="ParameterName" nowrap="nowrap">Environmental Damage:</td>
+      <td class="ParameterDesc">Fired when damage is done as the result of an enivronmental effect like falling and drowning.</td>
+     </tr>
+     <tr>
+      <td class="ParameterName" nowrap="nowrap">Extra Attacks:</td>
+      <td class="ParameterDesc">Fired when extra attacks occur from abilities like Windfury.</td>
+     </tr>
+     <tr>
+      <td class="ParameterName" nowrap="nowrap">Heal:</td>
+      <td class="ParameterDesc">Fired when a unit is healed.</td>
+     </tr>
+     <tr>
+      <td class="ParameterName" nowrap="nowrap">Health Change:</td>
+      <td class="ParameterDesc">Fired when a health value changes for one of the supported units.</td>
      </tr>
      <tr>
       <td class="ParameterName" nowrap="nowrap">Killing Blow:</td>
-      <td class="ParameterDesc">
-       Fires when you perform a killing blow.
-       <br /><br />
-       There are no conditions for this event.
-       <br /><br />
-       Available Substitution Codes:
-       <ul>
-        <li>%n - Your name since you are the source of the killing blow.</li>
-        <li>%r - The name of the unit that was killed.</li>
-       </ul>
-      </td>
+      <td class="ParameterDesc">Fired when a unit gets a killing blow.</td>
+     </tr>
+     <tr>
+      <td class="ParameterName" nowrap="nowrap">Mana Change:</td>
+      <td class="ParameterDesc">Fired when a mana value changes for one of the supported units.</td>
+     </tr>
+     <tr>
+      <td class="ParameterName" nowrap="nowrap">Periodic Skill Damage (DoT):</td>
+      <td class="ParameterDesc">Fired when damage from a periodic source is done.</td>
+     </tr>
+     <tr>
+      <td class="ParameterName" nowrap="nowrap">Periodic Skill Miss:</td>
+      <td class="ParameterDesc">Fired when damage from a periodic source is resisted, absorbed, etc.</td>
+     </tr>
+     <tr>
+      <td class="ParameterName" nowrap="nowrap">Periodic Heal (HoT):</td>
+      <td class="ParameterDesc">Fired when a unit is healed by a periodic source.</td>
+     </tr>
+     <tr>
+      <td class="ParameterName" nowrap="nowrap">Periodic Power Drain:</td>
+      <td class="ParameterDesc">Fired when power is drained as the result of a periodic source.</td>
+     </tr>
+     <tr>
+      <td class="ParameterName" nowrap="nowrap">Periodic Power Gain:</td>
+      <td class="ParameterDesc">Fired when power is gained from a periodic source.</td>
+     </tr>
+     <tr>
+      <td class="ParameterName" nowrap="nowrap">Periodic Power Leech:</td>
+      <td class="ParameterDesc">Fired when power is leeched as the result of a periodic source.</td>
+     </tr>
+     <tr>
+      <td class="ParameterName" nowrap="nowrap">Power Drain:</td>
+      <td class="ParameterDesc">Fired when power is drained from a unit.</td>
+     </tr>
+     <tr>
+      <td class="ParameterName" nowrap="nowrap">Power Gain:</td>
+      <td class="ParameterDesc">Fired when power is gained by a unit.</td>
+     </tr>
+     <tr>
+      <td class="ParameterName" nowrap="nowrap">Power Leech:</td>
+      <td class="ParameterDesc">Fired when power is leeched from a unit.</td>
+     </tr>
+     <tr>
+      <td class="ParameterName" nowrap="nowrap">Rage Change:</td>
+      <td class="ParameterDesc">Fired when a rage value changes for one of the supported units.</td>
+     </tr>
+     <tr>
+      <td class="ParameterName" nowrap="nowrap">Range Damage:</td>
+      <td class="ParameterDesc">Fired when damage from a ranged source like wands/bows is done.</td>
+     </tr>
+     <tr>
+      <td class="ParameterName" nowrap="nowrap">Range Miss:</td>
+      <td class="ParameterDesc">Fired when damage from a ranged source like wands/bows is dodged, absorbed, etc.</td>
+     </tr>
+     <tr>
+      <td class="ParameterName" nowrap="nowrap">Skill Cooldown Complete:</td>
+      <td class="ParameterDesc">Fired when a skill cooldown completes.</td>
+     </tr>
+     <tr>
+      <td class="ParameterName" nowrap="nowrap">Skill Damage:</td>
+      <td class="ParameterDesc">Fired when damage from a skill was done to a unit.</td>
+     </tr>
+     <tr>
+      <td class="ParameterName" nowrap="nowrap">Skill Interrupt:</td>
+      <td class="ParameterDesc">Fired when a skill is interrupted (not pushed back).</td>
+     </tr>
+     <tr>
+      <td class="ParameterName" nowrap="nowrap">Skill Miss:</td>
+      <td class="ParameterDesc">Fired when damage from a skill is resisted, absorbed, etc.</td>
+     </tr>
+     <tr>
+      <td class="ParameterName" nowrap="nowrap">Split Damage:</td>
+      <td class="ParameterDesc">Fired when damage is being split between the source and recipient units.</td>
+     </tr>
+     <tr>
+      <td class="ParameterName" nowrap="nowrap">Swing Damage:</td>
+      <td class="ParameterDesc">Fired when damage from normal melee swings is done to a unit.</td>
+     </tr>
+     <tr>
+      <td class="ParameterName" nowrap="nowrap">Swing/Range/Skill Damage:</td>
+      <td class="ParameterDesc">Fired when any form of non-periodic damage is done to a unit.</td>
+     </tr>
+     <tr>
+      <td class="ParameterName" nowrap="nowrap">Swing Miss:</td>
+      <td class="ParameterDesc">Fired when damage from normal melee swings is dodged, absrobed, etc.</td>
+     </tr>
+     <tr>
+      <td class="ParameterName" nowrap="nowrap">Swing/Range/Skill Miss:</td>
+      <td class="ParameterDesc">Fired when any form of non-periodic damage is dodged, resisted, absorbed, etc.</td>
+     </tr>
+     <tr>
+      <td class="ParameterName" nowrap="nowrap">Summon:</td>
+      <td class="ParameterDesc">Fired when a creature is summoned.</td>
+     </tr>
+     <tr>
+      <td class="ParameterName" nowrap="nowrap">Unit Death:</td>
+      <td class="ParameterDesc">Fired when a unit dies.</td>
+     </tr>
+     <tr>
+      <td class="ParameterName" nowrap="nowrap">Unit Destroy:</td>
+      <td class="ParameterDesc">Fired when a mechanical unit is destroyed.</td>
      </tr>
     </table>
--->
+   </div>
+
+   <div class="SubsectionTitle"><a name="MainEventConditions"></a>Main Event Conditions:</div>
+   <div class="SubsectionBody">
+    <table cellspacing="3">
+     <tr>
+      <td class="ParameterName" nowrap="nowrap">Absorb Amount:</td>
+      <td class="ParameterDesc">The amount of damage absorbed.</td>
+     </tr>
+     <tr>
+      <td class="ParameterName" nowrap="nowrap">Amount:</td>
+      <td class="ParameterDesc">The amount of damage, health, power, etc generated by the event.</td>
+     </tr>
+     <tr>
+      <td class="ParameterName" nowrap="nowrap">Aura Type:</td>
+      <td class="ParameterDesc">The type of aura (buff, debuff) generated by the event.</td>
+     </tr>
+     <tr>
+      <td class="ParameterName" nowrap="nowrap">Block Amount:</td>
+      <td class="ParameterDesc">The amount of damage blocked.</td>
+     </tr>
+     <tr>
+      <td class="ParameterName" nowrap="nowrap">Crit:</td>
+      <td class="ParameterDesc">Whether or not the event is a critical event.</td>
+     </tr>
+     <tr>
+      <td class="ParameterName" nowrap="nowrap">Crushing Blow:</td>
+      <td class="ParameterDesc">Whether or not the hit was a crushing blow.</td>
+     </tr>
+     <tr>
+      <td class="ParameterName" nowrap="nowrap">Damage Type:</td>
+      <td class="ParameterDesc">The type of damage (arcane, fire, holy, etc) associated with the event.</td>
+     </tr>
+     <tr>
+      <td class="ParameterName" nowrap="nowrap">Extra Amount:</td>
+      <td class="ParameterDesc">Secondary amount used for events that have more than one amount value.</td>
+     </tr>
+     <tr>
+      <td class="ParameterName" nowrap="nowrap">Extra Skill ID:</td>
+      <td class="ParameterDesc">The ID of the secondary skill associated with the event.</td>
+     </tr>
+     <tr>
+      <td class="ParameterName" nowrap="nowrap">Extra Skill Name:</td>
+      <td class="ParameterDesc">The name of the secondary skill associated with the event.</td>
+     </tr>
+     <tr>
+      <td class="ParameterName" nowrap="nowrap">Extra Skill School:</td>
+      <td class="ParameterDesc">The school (arcane, fire, holy, etc) of the secondary skill associated with the event.</td>
+     </tr>
+     <tr>
+      <td class="ParameterName" nowrap="nowrap">Glancing Hit:</td>
+      <td class="ParameterDesc">Whether or not the hit was a glancing hit.</td>
+     </tr>
+     <tr>
+      <td class="ParameterName" nowrap="nowrap">Hazard Type:</td>
+      <td class="ParameterDesc">The type of hazard (falling, drowning, etc) that caused environmental damage.</td>
+     </tr>
+     <tr>
+      <td class="ParameterName" nowrap="nowrap">Miss Type:</td>
+      <td class="ParameterDesc">The type of miss (block, dodge, parry, resist, etc) that occured.</td>
+     </tr>
+     <tr>
+      <td class="ParameterName" nowrap="nowrap">Power Type:</td>
+      <td class="ParameterDesc">The type of power (energy, mana, rage, etc) that was affected.</td>
+     </tr>
+     <tr>
+      <td class="ParameterName" nowrap="nowrap">Recipient Unit Affiliation:</td>
+      <td class="ParameterDesc">The affiliation (mine, target, focus, you, party member, etc) of the unit that was the recipient of the event.</td>
+     </tr>
+     <tr>
+      <td class="ParameterName" nowrap="nowrap">Recipient Unit Control:</td>
+      <td class="ParameterDesc">The controlling mechanism (server, human) of the unit that was the recipient of the event.</td>
+     </tr>
+     <tr>
+      <td class="ParameterName" nowrap="nowrap">Recipient Unit Name:</td>
+      <td class="ParameterDesc">The name of the unit that was the recipient of the event.</td>
+     </tr>
+     <tr>
+      <td class="ParameterName" nowrap="nowrap">Recipient Unit Reaction:</td>
+      <td class="ParameterDesc">The reaction (hostile, friendly, neutral) of the unit that was the recipient of the event.</td>
+     </tr>
+     <tr>
+      <td class="ParameterName" nowrap="nowrap">Recipient Unit Type:</td>
+      <td class="ParameterDesc">The type of the unit (player, pet, NPC, etc) that was the recipient of the event.</td>
+     </tr>
+     <tr>
+      <td class="ParameterName" nowrap="nowrap">Resist Amount:</td>
+      <td class="ParameterDesc">The amount of damage resisted.</td>
+     </tr>
+     <tr>
+      <td class="ParameterName" nowrap="nowrap">Skill ID:</td>
+      <td class="ParameterDesc">The ID of the skill associated with the event.</td>
+     </tr>
+     <tr>
+      <td class="ParameterName" nowrap="nowrap">Skill Name:</td>
+      <td class="ParameterDesc">The name of the skill associated with the event.</td>
+     </tr>
+     <tr>
+      <td class="ParameterName" nowrap="nowrap">Skill School:</td>
+      <td class="ParameterDesc">The school (arcane, fire, holy etc) of the skill associated with the event.</td>
+     </tr>
+     <tr>
+      <td class="ParameterName" nowrap="nowrap">Source Unit Affiliation:</td>
+      <td class="ParameterDesc">The affiliation (mine, target, focus, you, party member, etc) of the unit that was the source of the event.</td>
+     </tr>
+     <tr>
+      <td class="ParameterName" nowrap="nowrap">Source Unit Control:</td>
+      <td class="ParameterDesc">The controlling mechanism (server, human) of the unit that was the source of the event.</td>
+     </tr>
+     <tr>
+      <td class="ParameterName" nowrap="nowrap">Source Unit Name:</td>
+      <td class="ParameterDesc">The name of the unit that was the source of the event.</td>
+     </tr>
+     <tr>
+      <td class="ParameterName" nowrap="nowrap">Source Unit Reaction:</td>
+      <td class="ParameterDesc">The reaction (hostile, friendly, neutral) of the unit that was the source of the event.</td>
+     </tr>
+     <tr>
+      <td class="ParameterName" nowrap="nowrap">Source Unit Type:</td>
+      <td class="ParameterDesc">The type of the unit (player, pet, NPC, etc) that was the source of the event.</td>
+     </tr>
+     <tr>
+      <td class="ParameterName" nowrap="nowrap">Threshold:</td>
+      <td class="ParameterDesc">Percentage value that must be crossed when dealing with changes in energy, health, mana, etc.</td>
+     </tr>
+     <tr>
+      <td class="ParameterName" nowrap="nowrap">Unit ID:</td>
+      <td class="ParameterDesc">The ID of the unit affected.  Use this condition to test specific units for changes in energy, health, mana, etc.</td>
+     </tr>
+     <tr>
+      <td class="ParameterName" nowrap="nowrap">Unit Reaction:</td>
+      <td class="ParameterDesc">The reaction of the unit affected by changes in energy, health, mana, etc.</td>
+     </tr>
+    </table>
    </div>
 
    <div class="SubsectionTitle"><a name="TriggerExceptions"></a>Trigger Exceptions:</div>
    <div class="SubsectionBody">
-    Documentation is not yet available this version of beta.
-<!--
     <table cellpacing="3">
      <tr>
       <td class="ParameterName" nowrap="nowrap">Buff Active:</td>
-      <td class="ParameterDesc">
-       This exception will be true if the specified buff is currently active on you.
-       <br /><br />
-       Conditions:
-       <ul>
-        <li>Skill name - The <b>case-sensitive</b> name of the buff to check.</li>
-        <li>Reverse Logic - Makes this exception check if a buff is currently INACTIVE on you.</li>
-       </ul>
-      </td>
+      <td class="ParameterDesc">Examines if the specified buff is currently active on you.</td>
      </tr>
      <tr>
-      <td class="ParameterName" nowrap="nowrap">Insufficient Power:</td>
-      <td class="ParameterDesc">
-       This exception will be true if you currently have less rage or energy than the specified amount.
-       <br /><br />
-       Conditions:
-       <ul>
-        <li>Amount - The amount of rage or energy to check.</li>
-        <li>Reverse Logic - Makes this exception true if you currently have MORE rage or energy than the specified amount.</li>
-       </ul>
-      </td>
+      <td class="ParameterName" nowrap="nowrap">Current Combo Points:</td>
+      <td class="ParameterDesc">The current number of combo points you have.</td>
      </tr>
      <tr>
-      <td class="ParameterName" nowrap="nowrap">Insufficient Combo Points:</td>
-      <td class="ParameterDesc">
-       This exception will be true if you currently have less combo points than the specified amount.
-       <br /><br />
-       Conditions:
-       <ul>
-        <li>Amount - The amount of combo points to check.</li>
-        <li>Reverse Logic - Makes this exception true if you currently have MORE combo points than the specified amount.</li>
-       </ul>
-      </td>
-     </tr>
-     <tr>
-      <td class="ParameterName" nowrap="nowrap">Not In Arena:</td>
-      <td class="ParameterDesc">
-       This exception will be true if you currently not in the arena.
-       <br /><br />
-       Conditions:
-       <ul>
-        <li>Amount - The amount of rage or energy to check.</li>
-        <li>Reverse Logic - Makes this exception true if you ARE currently in the arena.</li>
-       </ul>
-      </td>
-     </tr>
-     <tr>
-      <td class="ParameterName" nowrap="nowrap">Not In PvP Zone:</td>
-      <td class="ParameterDesc">
-       This exception will be true if you currently not in a PvP Zone which includes all battlegrounds and the arena.
-       <br /><br />
-       Conditions:
-       <ul>
-        <li>Amount - The amount of rage or energy to check.</li>
-        <li>Reverse Logic - Makes this exception true if you ARE currently in a PvP Zone.</li>
-       </ul>
-      </td>
+      <td class="ParameterName" nowrap="nowrap">Current Power:</td>
+      <td class="ParameterDesc">The current amount of power you have.</td>
      </tr>
      <tr>
       <td class="ParameterName" nowrap="nowrap">Trigger Recently Fired:</td>
-      <td class="ParameterDesc">
-       This exception will be true if the trigger has been fired within the last number of seconds specified.
-       <br /><br />
-       Conditions:
-       <ul>
-        <li>Amount - The number of seconds to test.</li>
-       </ul>
-      </td>
-     </tr>
-     <tr>
-      <td class="ParameterName" nowrap="nowrap">Skill Unavailable:</td>
-      <td class="ParameterDesc">
-       This exception will be true if the specified skill is not known or is on cooldown.  It does not cover other
-       facets such as necessary reagents, appropriate range, etc.
-       <br /><br />
-       Conditions:
-       <ul>
-        <li>Skill Name - The <b>case-sensitive</b> name of the skill to check.</li>
-        <li>Reverse Logic - Makes this exception true if the specified skill IS known or on cooldown.</li>
-       </ul>
-      </td>
+      <td class="ParameterDesc">The number of seconds since the last time the trigger fired.</td>
      </tr>
      <tr>
       <td class="ParameterName" nowrap="nowrap">Trivial Target:</td>
+      <td class="ParameterDesc">Examines if the current target is trivial (grey).</td>
+     </tr>
+     <tr>
+      <td class="ParameterName" nowrap="nowrap">Unavailable Skill:</td>
       <td class="ParameterDesc">
-       This exception will be true if the current target is trivial.  A trivial unit is a unit that a grey to you and does
-       not yield experience.
-       <br /><br />
-       Conditions:
-       <ul>
-        <li>Reverse Logic - Makes this exception true if the current target is NOT trivial.</li>
-       </ul>
+       Examines if the specified skill is unknown or on cooldown. It does not cover other facets such as necessary reagents,
+       appropriate range, etc.
       </td>
      </tr>
      <tr>
       <td class="ParameterName" nowrap="nowrap">Warrior Stance:</td>
-      <td class="ParameterDesc">
-       This exception will be true if you are playing a warrior and the current stance is the specified stance.
-       <br /><br />
-       Conditions:
-       <ul>
-        <li>Warrior Stance - The stance to check.</li>
-        <li>Reverse Logic - Makes this exception true if the current stance is NOT the selected stance.</li>
-       </ul>
-      </td>
+      <td class="ParameterDesc">The current stance your warrior is in.  Only works correctly if you are playing a warrior.</td>
+     </tr>
+     <tr>
+      <td class="ParameterName" nowrap="nowrap">Zone Name:</td>
+      <td class="ParameterDesc">The zone you are currently in.</td>
+     </tr>
+     <tr>
+      <td class="ParameterName" nowrap="nowrap">Zone Type:</td>
+      <td class="ParameterDesc">The type of zone you are currently in.</td>
      </tr>
     </table>
--->
    </div>
   </div>
 
@@ -710,7 +1010,7 @@
       <br /><br />
       <li>
        The second method is to open the file MSBTFonts.lua in the MikScrollingBattleText directory and find the
-       FONT_FILES entry.  Add your font with the appropriate name and path following the same pattern as the other
+       FONT_FILES entry.  Add your font with the appropriate name and path following the same pattern as the sample
        entries. One thing to keep in mind with this approach is that due to the way WoW loads its data, I would
        suggest you put the new fonts you want to add in the same place as the current fonts for the mod (MikScrollingBattleText\Fonts)
        to avoid problems with loading.
@@ -727,18 +1027,18 @@
     <li class="FAQListItem">
      <a name="FAQNewTrigger"></a><b>How do I create a new trigger?</b>
      <br /><br />
-     Documentation is not yet available this version of beta.
-<!--
-     The first step is to <b>read</b> the <a href="#TriggerGuide">Trigger Guide</a> section above.
-     Every event and exception is explained along with the conditions and available substitution codes.
+     The first step is to <b>read</b> the <a href="#TriggerGuide">Trigger Guide</a> and <a href="#TriggerReference">Trigger Reference</a> sections above.
      <br /><br />
-     Once you've read that section, we can continue on to the process for creating triggers.
+     Among other things, the guide explains how triggers work, what the various components of the trigger system are, and provides example triggers for
+     common categories.  The reference section provides specific information about the various components such as the available substitution codes, main
+     events, conditions, and exceptions.
+     <br /><br />
+     Once you've read those sections, we can continue on to the process for creating triggers.
      <br /><br />
      We will be creating a trigger that notifies us when Polymorph breaks from a hostile unit when we are playing on a mage in the arena.
      <br /><br />
      <ol type="a">
       <li>Since a new trigger is being created, click the Add New Trigger button, enter "Poly Broke - %r!" for the output message, and click Okay.</li>
-          
       <li>Click the trigger conditions icon button (the gear) next to the newly added trigger at the bottom of the list.</li>
       <li>
        Click the edit Trigger Classes icon button and uncheck "All" classes.  Check Mage for the class the trigger will apply to.
@@ -746,22 +1046,20 @@
        classes, the mod can completely ignore the trigger and save resources for the classes to which it does not apply.
       </li>
       <li>Click the Add Event button next to the Main Events label to add a new main event.</li>
-      <li>Select Debuff Fade for the Main Event.</li>
-      <li>Select Any for the Affected Unit.</li>
-      <li>Check the Hostile Only checkbox because we don't want to see when poly fades from our teammates.</li>
-      <li>Enter Polymorph for the Skill Name. It is case-sensitive, so make sure you use a capital P.</li>
+      <li>Select Aura Removal for the Main Event.</li>
+      <li>Modify the first condition to "Recipient Unit Reaction - Is Equal To - Hostile" because we don't want to see when poly fades from our teammates.</li>
+      <li>Modify the second condition to "Skill Name - Is Equal To - Polymorph".  It is case-sensitive, so make sure you use a capital P.</li>
       <li>Click the Save button to save the new main event and its conditions.</li>
       <li>Click the Add Exception button next to the Trigger Exceptions label to add a new exception.</li>
-      <li>Select Not In Arena for the Exception.  This makes it so the trigger will not fire when we aren't in the arena.</li>
+      <li>Select "Zone Type - Is Not Equal To - Arena" for the Exception.  This makes it so the trigger will not fire when we aren't in the arena.</li>
       <li>Click the Save button to save the new exception.</li>
       <li>Click the Save button on the trigger frame to save the trigger's new conditions.</li>
      </ol>
      <br /><br />
      The %r used in step a is a substitution code for the name of the unit that the debuff (polymorph in this case) faded from.
-     You already knew that though because you read the <a href="#TriggerGuide">Trigger Guide</a>!
+     You already knew that though because you read the <a href="#TriggerGuide">Trigger Guide</a> and <a href="#TriggerReference">Trigger Reference</a>!
      <br /><br />
      The color, font settings, sticky state, sound, and output scroll area for the trigger can be set like any other event.
--->
     </li>
 
     <li class="FAQListItem">
@@ -844,6 +1142,13 @@
     </li>
 
     <li class="FAQListItem">
+     <a name="FAQPvPTrinket"></a><b>Can I create a trigger to notify me when a player uses a PvP trinket?</b>
+     <br /><br />
+	 Unfortunately, there is no combat log event generated when a player uses a PvP trinket.  As a result, there is no event to drive a trigger
+     for it.  If Blizzard decides to add a combat log event for it, at that point a trigger would be possible.
+    </li>
+
+    <li class="FAQListItem">
      <a name="FAQEfficiency"></a><b>Is MSBT efficient?</b>
      <br /><br />
      Absolutely.  MSBT 5.0 was completely re-designed from the ground up using Blizzard's new mod statistics
@@ -892,6 +1197,9 @@
        </li>
        <br />
        <li>Full paths may now be entered for sounds.  This includes path to sound files internal to WoW.</li>
+       <li>Added Traditional Chinese localization.</li>
+       <li>Moved font definitions to localization files so they can be unique per language.  MSBTFonts.lua can still be used to add custom fonts.</li>
+       <li>Updated spell dispel/stolen events to the new values implemented by Blizzard in Patch 2.4.3.</li>
       </ul>
      </td>
     </tr>
@@ -1424,6 +1732,7 @@
     <li>Farook for the German localizations.</li>
     <li>Calthas for the French localizations.</li>
     <li>Hscui and Netcookies for the Simplified Chinese localizations.</li>
+    <li>Whitepaw for the Traditional Chinese localizations.</li>
    </ul>
   </div>
  </body>

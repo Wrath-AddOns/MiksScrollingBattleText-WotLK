@@ -345,6 +345,7 @@ local function CategorizeTrigger(triggerSettings)
    -- Skill cooldown events.
    elseif (mainEvent == "SKILL_COOLDOWN") then
     eventConditions[#eventConditions+1] = conditions;
+    MikSBT.Cooldowns.UpdateEnableState();
 
    -- Combat log event.
    elseif (captureFuncs[mainEvent]) then
@@ -388,6 +389,9 @@ local function UpdateTriggers()
  for mainEvent in pairs(categorizedTriggers) do
   EraseTable(categorizedTriggers[mainEvent]);
  end
+ 
+ -- Update the enable state of cooldowns.
+ MikSBT.Cooldowns.UpdateEnableState();
 
  -- Erase the trigger exceptions array.
  EraseTable(triggerExceptions);
@@ -417,7 +421,7 @@ end
 -- ****************************************************************************
 -- Displays the passed trigger settings.
 -- ****************************************************************************
-local function DisplayTrigger(triggerSettings, sourceName, recipientName, skillName, amount, effectTexture)
+local function DisplayTrigger(triggerSettings, sourceName, recipientName, skillName, extraSkillName, amount, effectTexture)
  -- Get the trigger message and icon skill.
  local message = triggerSettings.message;
  local iconSkill = triggerSettings.iconSkill;
@@ -429,6 +433,10 @@ local function DisplayTrigger(triggerSettings, sourceName, recipientName, skillN
   message = string_gsub(message, "%%s", skillName);
   if (iconSkill) then iconSkill = string_gsub(iconSkill, "%%s", skillName); end
  end
+ if (extraSkillName) then 
+  message = string_gsub(message, "%%e", extraSkillName);
+  if (iconSkill) then iconSkill = string_gsub(iconSkill, "%%e", extraSkillName); end
+ end 
  if (amount) then message = string_gsub(message, "%%a", amount); end
 
  -- Override the texture if there is an icon skill for the trigger.
@@ -517,7 +525,7 @@ local function HandleHealthAndPowerTriggers(unit, event, currentAmount, maxAmoun
   local recipientName = UnitName(unit);
   local amount = currentAmount;
   for triggerSettings in pairs(triggersToFire) do
-   if (not TestExceptions(triggerSettings)) then DisplayTrigger(triggerSettings, nil, recipientName, nil, amount); end
+   if (not TestExceptions(triggerSettings)) then DisplayTrigger(triggerSettings, nil, recipientName, nil, nil, amount); end
   end
  end -- Triggers to fire?
 
@@ -564,7 +572,7 @@ local function HandleCooldowns(skillName, effectTexture)
   -- Display the fired triggers if none of the exceptions are true.
   local recipientName = playerName;
   for triggerSettings in pairs(triggersToFire) do
-   if (not TestExceptions(triggerSettings)) then DisplayTrigger(triggerSettings, nil, recipientName, skillName, nil, effectTexture); end
+   if (not TestExceptions(triggerSettings)) then DisplayTrigger(triggerSettings, nil, recipientName, skillName, nil, nil, effectTexture); end
   end
  end -- Triggers to fire?
 end
@@ -626,15 +634,16 @@ local function HandleCombatLogTriggers(timestamp, event, sourceGUID, sourceName,
  -- Get the texture for the event and display triggers that aren't excepted.
  if (next(triggersToFire)) then
   local effectTexture;
-  if (parserEvent.skillID) then _, _, effectTexture = GetSpellInfo(parserEvent.skillID); end
+  if (parserEvent.skillID or parserEvent.extraSkillID) then _, _, effectTexture = GetSpellInfo(parserEvent.extraSkillID or parserEvent.skillID); end
 
   -- Display the fired triggers if none of the exceptions are true.
   local sourceName = parserEvent.sourceName;
   local recipientName = parserEvent.recipientName;
   local skillName = parserEvent.skillName;
+  local extraSkillName = parserEvent.extraSkillName;
   local amount = parserEvent.amount;
   for triggerSettings in pairs(triggersToFire) do
-   if (not TestExceptions(triggerSettings)) then DisplayTrigger(triggerSettings, sourceName, recipientName, skillName, amount, effectTexture); end
+   if (not TestExceptions(triggerSettings)) then DisplayTrigger(triggerSettings, sourceName, recipientName, skillName, extraSkillName, amount, effectTexture); end
   end
  end -- Triggers to fire?
 end
@@ -721,6 +730,7 @@ end
 
 -- Protected Variables.
 module.triggerSuppressions = triggerSuppressions;
+module.categorizedTriggers = categorizedTriggers;
 
 -- Protected Functions.
 module.HandleCooldowns		= HandleCooldowns;

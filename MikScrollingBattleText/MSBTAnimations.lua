@@ -70,6 +70,7 @@ local externalScrollAreas = {};
 
 -- Local references to certain MSBT modules for faster access.
 local MSBTProfiles = MikSBT.Profiles;
+local L = MikSBT.translations;
 
 -- Local references to certain functions for faster access.
 local table_remove = table.remove;
@@ -513,6 +514,9 @@ local function OnLoad()
  animationFrame:SetHeight(1);
  animationFrame:Hide();
  animationFrame:SetScript("OnUpdate", OnUpdateAnimationFrame);
+ 
+ -- Loop through all of the fonts defined in the localization files and register them.
+ for fontName, fontPath in pairs(L.FONT_FILES) do RegisterFont(fontName, fontPath); end
 end
 
 

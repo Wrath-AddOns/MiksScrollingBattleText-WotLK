@@ -2100,7 +2100,7 @@ local function CooldownsTab_Create()
  checkbox:SetClickHandler(
    function (this, isChecked)
     MSBTProfiles.SetOption("events.NOTIFICATION_COOLDOWN", "disabled", not isChecked);
-	if (isChecked) then MSBTCooldowns.Enable(); else MSBTCooldowns.Disable(); end
+	MSBTCooldowns.UpdateEnableState();
    end
  );
  controls.enableCheckbox = checkbox;

@@ -1335,7 +1335,9 @@ local function OnLoad()
  -- Create the power types lookup map. 
  powerTypes[0] = MANA;
  powerTypes[1] = RAGE;
+ powerTypes[2] = FOCUS;
  powerTypes[3] = ENERGY;
+ powerTypes[4] = HAPPINESS;
  
  -- Set the isEnglish flag correctly.
  if (string_find(GetLocale(), "en..")) then isEnglish = true; end

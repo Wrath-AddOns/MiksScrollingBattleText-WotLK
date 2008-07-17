@@ -25,6 +25,9 @@ local SPELL_READINESS	= GetSpellInfo(23989);
 -- Private variables.
 -------------------------------------------------------------------------------
 
+-- Enable state.
+local isEnabled;
+
 -- Dynamically created frame for receiving events.
 local eventFrame;
 
@@ -47,6 +50,7 @@ local lastUpdate = 0;
 
 -- Local references to certain MSBT modules for faster access.
 local MSBTProfiles = MikSBT.Profiles;
+local MSBTTriggers = MikSBT.Triggers;
 
 -- Local references to certain functions for faster access.
 local string_gsub = string.gsub;
@@ -54,7 +58,7 @@ local string_find = string.find;
 local string_format = string.format;
 local EraseTable = MikSBT.EraseTable;
 local DisplayEvent = MikSBT.Animations.DisplayEvent;
-local HandleCooldowns = MikSBT.Triggers.HandleCooldowns;
+local HandleCooldowns = MSBTTriggers.HandleCooldowns;
 
 
 -------------------------------------------------------------------------------
@@ -103,13 +107,14 @@ local function OnUpdate(this, elapsed)
 
    -- Cooldown completed.
    if (cooldownRemaining <= 0) then
+    local texture = GetSpellTexture(spellName);
+    HandleCooldowns(spellName, texture);
+
     local eventSettings = MSBTProfiles.currentProfile.events.NOTIFICATION_COOLDOWN;
-    if (eventSettings) then
+    if (eventSettings and not eventSettings.disabled) then
      local message = eventSettings.message;
-	 local texture = GetSpellTexture(spellName);
      message = string_gsub(message, "%%e", string_format("|cffff0000%s|r", string_gsub(spellName, "%(.+%)%(%)$", "")));
      DisplayEvent(eventSettings, message, texture);
-	 HandleCooldowns(spellName, texture);
     end
 
     -- Remove the cooldown from the active cooldowns list.
@@ -202,8 +207,10 @@ end
 -- Enables the module.
 -- ****************************************************************************
 local function Enable()
+ if (isEnabled) then return; end
  eventFrame:RegisterEvent("UNIT_SPELLCAST_SUCCEEDED");
  eventFrame:RegisterEvent("SPELL_UPDATE_COOLDOWN");
+ isEnabled = true;
 end
 
 
@@ -212,12 +219,30 @@ end
 -- ****************************************************************************
 local function Disable()
  -- Stop receiving updates.
+ if (not isEnabled) then return; end;
  eventFrame:Hide();
  eventFrame:UnregisterAllEvents();
 
  -- Clear the active and delayed cooldowns.
  EraseTable(activeCooldowns);
  EraseTable(delayedCooldowns);
+
+ isEnabled = nil;
+end
+
+
+-- ****************************************************************************
+-- Enables or disables the module depending on active options.
+-- ****************************************************************************
+local function UpdateEnableState()
+ -- Toggle the enable state depending on whether notifications are active or
+ -- there are skill cooldown triggers.
+ if (not MSBTProfiles.currentProfile.events.NOTIFICATION_COOLDOWN.disabled or
+     MSBTTriggers.categorizedTriggers["SKILL_COOLDOWN"]) then
+  Enable();
+ else
+  Disable();
+ end
 end
 
 
@@ -245,8 +270,9 @@ end
 -------------------------------------------------------------------------------
 
 -- Protected Functions.
-module.Enable			= Enable;
-module.Disable			= Disable;
+module.Enable				= Enable;
+module.Disable				= Disable;
+module.UpdateEnableState	= UpdateEnableState;
 
 -------------------------------------------------------------------------------
 -- Load.

@@ -3286,7 +3286,9 @@ local function CreateTriggerPopup()
  };
 
  -- Event condition data.
- local commonLogFields = "sourceName sourceAffiliation sourceReaction sourceControl sourceUnitType recipientName recipientAffiliation recipientReaction recipientControl recipientUnitType ";
+ local commonSourceFields = "sourceName sourceAffiliation sourceReaction sourceControl sourceUnitType ";
+ local commonRecipientFields = "recipientName recipientAffiliation recipientReaction recipientControl recipientUnitType ";
+ local commonLogFields = commonSourceFields .. commonRecipientFields;
  local commonSkillFields = "skillID skillName skillSchool ";
  local commonDamageFields = "amount damageType resistAmount blockAmount absorbAmount isCrit isGlancing isCrushing";
  local commonExtraSkillFields = "extraSkillID extraSkillName extraSkillSchool ";
@@ -3323,10 +3325,10 @@ local function CreateTriggerPopup()
   ENCHANT_APPLIED = {availableConditions = commonLogFields .. "skillName itemID itemName", defaultConditions="skillName;;eq;;" .. UNKNOWN},
   
   -- Dispel events.
-  SPELL_AURA_DISPELLED = {availableConditions = commonLogFields .. commonSkillFields .. commonExtraSkillFields .. " auraType", defaultConditions="recipientAffiliation;;eq;;" .. FLAG_YOU .. ";;skillName;;eq;;" .. UNKNOWN},
+  SPELL_DISPEL = {availableConditions = commonLogFields .. commonSkillFields .. commonExtraSkillFields .. " auraType", defaultConditions="recipientAffiliation;;eq;;" .. FLAG_YOU .. ";;skillName;;eq;;" .. UNKNOWN},
 
   -- Cast events.
-  SPELL_CAST_START = {availableConditions = commonLogFields .. commonSkillFields, defaultConditions="sourceReaction;;eq;;" .. MSBTParser.REACTION_HOSTILE .. ";;skillName;;eq;;" .. UNKNOWN},
+  SPELL_CAST_START = {availableConditions = commonSourceFields .. commonSkillFields, defaultConditions="sourceReaction;;eq;;" .. MSBTParser.REACTION_HOSTILE .. ";;skillName;;eq;;" .. UNKNOWN},
 
   -- Kill events.
   PARTY_KILL = {availableConditions = commonLogFields, defaultConditions="recipientName;;eq;;" .. UNKNOWN},
@@ -3355,7 +3357,7 @@ local function CreateTriggerPopup()
  eventConditionData["SPELL_LEECH"] = eventConditionData["SPELL_DRAIN"];
  eventConditionData["SPELL_PERIODIC_LEECH"] = eventConditionData["SPELL_DRAIN"];
  eventConditionData["SPELL_AURA_REMOVED"] = eventConditionData["SPELL_AURA_APPLIED"];
- eventConditionData["SPELL_AURA_STOLEN"] = eventConditionData["SPELL_AURA_DISPELLED"];
+ eventConditionData["SPELL_STOLEN"] = eventConditionData["SPELL_DISPEL"];
  eventConditionData["ENCHANT_REMOVED"] = eventConditionData["ENCHANT_APPLIED"];
  eventConditionData["SPELL_CAST_SUCCESS"] = eventConditionData["SPELL_CAST_START"];
  eventConditionData["SPELL_CAST_FAILED"] = eventConditionData["SPELL_CAST_START"]; -- Ignore failure reason.

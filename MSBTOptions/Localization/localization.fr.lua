@@ -440,8 +440,8 @@ obj = L.TRIGGER_DATA;
 --obj["SPELL_INTERRUPT"]			= "Skill Interrupt";
 --obj["SPELL_AURA_APPLIED"]		= "Aura Application";
 --obj["SPELL_AURA_REMOVED"]		= "Aura Removal";
---obj["SPELL_AURA_STOLEN"]		= "Aura Stolen";
---obj["SPELL_AURA_DISPELLED"]		= "Aura Dispel";
+--obj["SPELL_STOLEN"]				= "Aura Stolen";
+--obj["SPELL_DISPEL"]				= "Aura Dispel";
 --obj["ENCHANT_APPLIED"]			= "Enchant Application";
 --obj["ENCHANT_REMOVED"]			= "Enchant Removal";
 --obj["SPELL_CAST_START"]			= "Cast Start";
@@ -504,7 +504,7 @@ obj = L.TRIGGER_DATA;
 --obj["zoneName"]					= "Zone Name";
 --obj["zoneType"]					= "Zone Type";
  
--- Realationships.
+-- Relationships.
 --obj["eq"]						= "Is Equal To";
 --obj["ne"]						= "Is Not Equal To";
 --obj["like"]						= "Is Like";

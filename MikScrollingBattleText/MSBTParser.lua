@@ -638,7 +638,7 @@ local function CreateCaptureFuncs()
   ENCHANT_REMOVED = function (p, ...) p.eventType, p.isFade, p.skillName, p.itemID, p.itemName = "enchant", true, ...; end,
   
   -- Dispel events.
-  SPELL_AURA_DISPELLED = function (p, ...) p.eventType, p.skillID, p.skillName, p.skillSchool, p.extraSkillID, p.extraSkillName, p.extraSkillSchool, p.auraType = "dispel", ...; end,
+  SPELL_DISPEL = function (p, ...) p.eventType, p.skillID, p.skillName, p.skillSchool, p.extraSkillID, p.extraSkillName, p.extraSkillSchool, p.auraType = "dispel", ...; end,
 
   -- Cast events.
   SPELL_CAST_START = function (p, ...) p.eventType, p.skillID, p.skillName, p.skillSchool = "cast", ...; end,
@@ -655,7 +655,7 @@ local function CreateCaptureFuncs()
  captureFuncs["SPELL_PERIODIC_ENERGIZE"] = captureFuncs["SPELL_ENERGIZE"];
  captureFuncs["SPELL_PERIODIC_DRAIN"] = captureFuncs["SPELL_DRAIN"];
  captureFuncs["SPELL_PERIODIC_LEECH"] = captureFuncs["SPELL_LEECH"];
- captureFuncs["SPELL_AURA_STOLEN"] = captureFuncs["SPELL_AURA_DISPELLED"];
+ captureFuncs["SPELL_STOLEN"] = captureFuncs["SPELL_DISPEL"];
 
  -- Expose the capture functions.
  module.captureFuncs = captureFuncs;

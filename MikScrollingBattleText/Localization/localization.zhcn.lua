@@ -14,6 +14,19 @@ local L = MikSBT.translations;
 -- Simplified Chinese localization
 -------------------------------------------------------------------------------
 
+------------------------------
+-- Fonts
+------------------------------
+
+L.FONT_FILES = {
+ Default		= "Fonts\\ZYKAI.TTF",
+}
+
+
+------------------------------
+-- Commands
+------------------------------
+
 L.COMMAND_USAGE = {
  "使用方法: " .. MikSBT.COMMAND .. " <命令> [参数]",
  " 命令:",
@@ -22,7 +35,7 @@ L.COMMAND_USAGE = {
  "  " .. L.COMMAND_ENABLE .. " - 启用",
  "  " .. L.COMMAND_SHOWVER .. " - 显示当前版本",
  "  " .. L.COMMAND_HELP .. " - 帮助",
-};
+}
 
 
 ------------------------------
