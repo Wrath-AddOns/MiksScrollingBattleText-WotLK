@@ -183,6 +183,7 @@ obj["moveAll"]					= { label="Move All", tooltip="Moves all of the events in the
 obj["eventFontSettings"]		= { tooltip="Click to edit the font settings for the event."};
 obj["eventSettings"]			= { tooltip="Click to edit the event settings such as the output scroll area, output message, sound, etc."};
 obj["customSound"]				= { tooltip="Click to enter a custom sound file." };
+obj["playSound"]				= { label="Play", tooltip="Click to play the selected sound."};
 obj["addTrigger"]				= { label="Add New Trigger", tooltip="Add a new trigger."};
 obj["triggerSettings"]			= { tooltip="Click to configure the trigger conditions."};
 obj["deleteTrigger"]			= { tooltip="Click to delete the trigger."};

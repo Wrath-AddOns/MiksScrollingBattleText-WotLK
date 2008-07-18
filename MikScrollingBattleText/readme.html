@@ -344,7 +344,7 @@
     triggers attempt to choose an appropriate icon based on the <a href="#MainEvents">main event</a> that fired them.
     <br /><br />
 	The capability of using the same condition multiple times for a given <a href="#MainEvents">main event</a> with different relationships means that things such as ranges
-    and complex pattern matching can be implemented.  For example, imagine you are trying to create a trigger that will fire when an amount is betweeen two values.  The first
+    and complex pattern matching can be implemented.  For example, imagine you are trying to create a trigger that will fire when an amount is between two values.  The first
     <a href="#MainEventConditions">condition</a> could be "Amount - Is Greater Than - X" and the second could be "Amount - Is Less Than - Y".
 	<br /><br />
 	Another advanced capability is using skill IDs to detect when specific ranks, such as rank 1, are being used.  Most online databases can be used to ascertain
@@ -355,7 +355,7 @@
    <div class="SubsectionTitle"><a name="ExampleTriggers"></a>Example Triggers:</div>
    <div class="SubsectionBody">
     Since the point of the trigger system is to allow for custom events that are not already available, there is no way to cover all of the possibilities.
-    However, most commonly requested triggers fall within the following two categories.  An example trigger or two for each category is provided and can be
+    However, most commonly requested triggers fall within the following categories.  An example trigger or two for each category is provided and can be
     used as a guide to creating your desired trigger.
     <br /><br />
     Please note these examples don't make use of advanced capabilities in order to keep the examples easy
@@ -501,7 +501,7 @@
        <li>%s - The skill name associated with the event.</li>
       </ul>
       <br />
-      In addition, certain <a href="#MainEvents">main events</a> that invlove two different skill names like dispels (the name of skill performing the dispel and
+      In addition, certain <a href="#MainEvents">main events</a> that involve two different skill names like dispels (the name of skill performing the dispel and
       the name of the skill being dispelled) allow the following substitution code:
       <ul>
        <li>%e - The extra skill name associated with the event.</li>
@@ -531,7 +531,7 @@
      <td class="ParameterDesc">
       This allows you define <a href="#TriggerExceptions">exceptions</a> to prevent the trigger from firing. 
       <br /><br />
-      They are only checked if one of the <a href="#MainEvents">main events</a> has occured and all its <a href="#MainEventConditions">conditions</a> are true.
+      They are only checked if one of the <a href="#MainEvents">main events</a> has occurred and all its <a href="#MainEventConditions">conditions</a> are true.
       <br /><br />
       The <a href="#TriggerExceptions">trigger exceptions</a> reference table below details the purpose of each exception.
      </td>
@@ -595,7 +595,7 @@
      </tr>
      <tr>
       <td class="ParameterName" nowrap="nowrap">Environmental Damage:</td>
-      <td class="ParameterDesc">Fired when damage is done as the result of an enivronmental effect like falling and drowning.</td>
+      <td class="ParameterDesc">Fired when damage is done as the result of an environmental effect like falling and drowning.</td>
      </tr>
      <tr>
       <td class="ParameterName" nowrap="nowrap">Extra Attacks:</td>
@@ -695,7 +695,7 @@
      </tr>
      <tr>
       <td class="ParameterName" nowrap="nowrap">Swing Miss:</td>
-      <td class="ParameterDesc">Fired when damage from normal melee swings is dodged, absrobed, etc.</td>
+      <td class="ParameterDesc">Fired when damage from normal melee swings is dodged, absorbed, etc.</td>
      </tr>
      <tr>
       <td class="ParameterName" nowrap="nowrap">Swing/Range/Skill Miss:</td>
@@ -773,7 +773,7 @@
      </tr>
      <tr>
       <td class="ParameterName" nowrap="nowrap">Miss Type:</td>
-      <td class="ParameterDesc">The type of miss (block, dodge, parry, resist, etc) that occured.</td>
+      <td class="ParameterDesc">The type of miss (block, dodge, parry, resist, etc) that occurred.</td>
      </tr>
      <tr>
       <td class="ParameterName" nowrap="nowrap">Power Type:</td>
@@ -1181,6 +1181,16 @@
    <table cellspacing="3">
     <tr>
      <td class="ParameterName" nowrap="nowrap"><a name="WhatsNew"></a>Latest</td>
+     <td class="ParameterDesc">
+      <ul>
+       <li>Added a button to test the selected sound in the event settings dialog.</li>
+       <li>Dark Pact and other power leech events will now correctly display the amount of mana leeched.</li>
+       <li>Added missing Traditional Chinese localization files.</li>
+      </ul>
+     </td>
+    </tr>
+    <tr>
+     <td class="ParameterName" nowrap="nowrap">5.2.9</td>
      <td class="ParameterDesc">
       <ul>
        <li>Rewrote the core of the event parser to reduce its CPU usage by about 60%.</li>

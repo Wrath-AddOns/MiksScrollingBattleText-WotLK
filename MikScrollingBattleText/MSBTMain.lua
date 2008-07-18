@@ -828,7 +828,11 @@ end
 -- ****************************************************************************
 local function PowerHandler(parserEvent, currentProfile)
  -- Ignore the event if it isn't the player.
- if (parserEvent.recipientUnit ~= "player") then return; end
+ if (parserEvent.isLeech) then
+  if (parserEvent.sourceUnit ~= "player") then return; end
+ elseif (parserEvent.recipientUnit ~= "player") then
+  return;
+ end
 
  -- Ignore the event if all power gains are being shown.
  if (currentProfile.showAllPowerGains or currentBuffs[activeRegenAbility]) then return; end
@@ -837,7 +841,7 @@ local function PowerHandler(parserEvent, currentProfile)
  if (parserEvent.amount and parserEvent.amount < currentProfile.powerThreshold) then return; end
 
  -- Append gain or loss suffix. 
- local eventTypeString = "NOTIFICATION_POWER_" .. (parserEvent.isGain and "GAIN" or "LOSS");
+ local eventTypeString = "NOTIFICATION_POWER_" .. (parserEvent.isDrain and "LOSS" or "GAIN");
  
  return eventTypeString, true, parserEvent.skillName;
 end

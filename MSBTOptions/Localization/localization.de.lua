@@ -160,6 +160,7 @@ obj["scrollAreasPreview"]		= { label="Vorschau", tooltip="Eine Vorschau auf die 
 obj["eventFontSettings"]		= { tooltip="Klicken, um die Schrifteinstellungen f\195\188r das Event zu bearbeiten."};
 --obj["eventSettings"]			= { tooltip="Click to edit the event settings such as the output scroll area, output message, sound, etc."};
 --obj["customSound"]				= { tooltip="Click to enter a custom sound file." };
+--obj["playSound"]				= { label="Play", tooltip="Click to play the selected sound."};
 obj["addTrigger"]				= { label="Neuen Ausl\195\182ser hinzuf\195\188gen", tooltip="Einen neuen Ausl\195\182ser hinzuf\195\188gen."};
 obj["triggerSettings"]			= { tooltip="Klicken, um die Ausl\195\182ser-Einstellungen zu konfigurieren."};
 obj["deleteTrigger"]			= { tooltip="Klicken, um diesen Ausl\195\182ser zu l\195\182schen."};

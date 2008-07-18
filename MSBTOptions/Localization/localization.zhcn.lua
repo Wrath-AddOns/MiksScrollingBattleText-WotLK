@@ -158,6 +158,7 @@ obj["moveAll"]					= { label="移动所有事件", tooltip="移动所选事件�
 obj["eventFontSettings"]		= { tooltip="点击设置此事件字体"};
 obj["eventSettings"]			= { tooltip="点击设置事件效果比如输出区域，输出信息，播放声音等"};
 obj["customSound"]				= { tooltip="点击选择自定义声音文件" };
+--obj["playSound"]				= { label="Play", tooltip="Click to play the selected sound."};
 obj["addTrigger"]				= { label="增加新触发器", tooltip="增加新触发器"};
 obj["triggerSettings"]			= { tooltip="点击设置触发条件"};
 obj["deleteTrigger"]			= { tooltip="点击删除触发器"};

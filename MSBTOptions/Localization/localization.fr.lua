@@ -159,6 +159,7 @@ obj["scrollAreasPreview"]		= { label="Aper\195\167u", tooltip="Pr\195\169visuali
 obj["eventFontSettings"]		= { tooltip="Cliquer pour \195\169diter les param\195\168tres de police pour l'\195\169v\195\168nement."};
 obj["eventSettings"]			= { tooltip="Cliquer pour \195\169diter les param\195\168tres de l'\195\169v\195\168nement comme la zone de d\195\169filement, message, sonore, etc."};
 --obj["customSound"]				= { tooltip="Click to enter a custom sound file." };
+--obj["playSound"]				= { label="Play", tooltip="Click to play the selected sound."};
 obj["addTrigger"]				= { label="Ajouter un d\195\169clencheur", tooltip="Ajoute un nouveau d\195\169clencheur."};
 obj["triggerSettings"]			= { tooltip="Configurer les conditions de ce d\195\169clencheur."};
 obj["deleteTrigger"]			= { tooltip="Cliquer pour supprimer ce d\195\169clencheur."};

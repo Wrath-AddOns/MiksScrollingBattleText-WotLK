@@ -19,6 +19,7 @@ local DEFAULT_SCROLL_HEIGHT = 260;
 local DEFAULT_SCROLL_WIDTH = 40;
 local DEFAULT_ANIMATION_STYLE = "Straight";
 local DEFAULT_STICKY_ANIMATION_STYLE = "Pow";
+local DEFAULT_SOUND_PATH = "Interface\\AddOns\\MikScrollingBattleText\\Sounds\\";
 
 local FLAG_YOU = 0xF0000000;
 
@@ -1940,7 +1941,7 @@ local function CreateEvent()
  dropdown:SetPoint("TOPLEFT", controls.messageEditbox, "BOTTOMLEFT", 0, -20);
  controls.soundDropdown = dropdown;
 
- -- Edit trigger classes button.
+ -- Custom sound file button.
  local button = MSBTControls.CreateIconButton(frame, "Configure");
  local objLocale = L.BUTTONS["customSound"];
  button:SetTooltip(objLocale.tooltip);
@@ -1960,6 +1961,23 @@ local function CreateEvent()
    tempConfig.hideHandler = EnableEventControls;
    DisableControls(controls);
    ShowInput(tempConfig);
+  end
+ );
+ controls[#controls+1] = button;
+
+ -- Play sound button.
+ local button = MSBTControls.CreateOptionButton(frame);
+ local objLocale = L.BUTTONS["playSound"];
+ button:Configure(20, objLocale.label, objLocale.tooltip);
+ button:SetPoint("LEFT", controls[#controls], "RIGHT", 10, 0);
+ button:SetClickHandler(
+  function (this)
+   local soundFile = controls.soundDropdown:GetSelectedID();
+   for soundName, soundPath in MikSBT.IterateSounds() do
+    if (soundName == soundFile) then soundFile = soundPath; end
+   end
+   soundFile = string.find(soundFile, "\\", nil, 1) and soundFile or DEFAULT_SOUND_PATH .. soundFile;
+   PlaySoundFile(soundFile);
   end
  );
  controls[#controls+1] = button;
