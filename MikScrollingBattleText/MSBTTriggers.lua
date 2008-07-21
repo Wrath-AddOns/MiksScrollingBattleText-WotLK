@@ -330,7 +330,7 @@ local function CategorizeTrigger(triggerSettings)
      -- Expand the consolidated party unit id to individual ones.
      if (conditions[x] == "unitID") then
       if (conditionValue == "party") then
-       local unitID = "party" .. i;
+       local unitID = "party" .. x;
        if (not eventConditions[unitID]) then eventConditions[unitID] = {}; end
        eventConditions[unitID][#eventConditions[unitID]+1] = conditions;   
 
