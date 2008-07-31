@@ -76,6 +76,9 @@ local finisherShown;
 local emoteCleanupTime = 0;
 local recentEmotes = {};
 
+-- Holds the player's class.
+local playerClass;
+
 -- Regen ability info.
 local regenAbilities = {};
 local activeRegenAbility;
@@ -243,7 +246,7 @@ local function FormatEvent(message, amount, damageType, overhealAmount, powerTyp
    end
 
    -- Ignore physical damage coloring on outgoing events.
-   if (ignorePhysical and damageType == DAMAGETYPE_PHYSICAL) then damageColorCode = nil; end
+   if (ignorePhysical and damageType == DAMAGETYPE_PHYSICAL and playerClass ~= "HUNTER") then damageColorCode = nil; end
   end -- Damage type and damage coloring is enabled.
 
   -- Check if there is overheal information and displaying it is enabled.
@@ -1349,6 +1352,9 @@ local function OnLoad()
  -- Add the regen abilities. 
  regenAbilities[SPELL_SPIRIT_TAP] = true;
  regenAbilities[SPELL_INNERVATE] = true;
+ 
+ -- Get the player's class.
+ _, playerClass = UnitClass("player");
 
  -- Register events for when the mod is loaded and variables are loaded.
  eventFrame:RegisterEvent("ADDON_LOADED");

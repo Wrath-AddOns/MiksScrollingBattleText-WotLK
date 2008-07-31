@@ -4,14 +4,15 @@
 -- Russian Translation by: Eritnull
 -------------------------------------------------------------------------------
 
+-- Don't do anything if the locale isn't Russian.
 if (GetLocale() ~= "ruRU") then return; end
+
+-- Local reference for faster access.
+local L = MikSBT.translations;
 
 -------------------------------------------------------------------------------
 -- Russian localization
 -------------------------------------------------------------------------------
-
--- Local reference for faster access.
-local L = MikSBT.translations;
 
 ------------------------------
 -- Fonts
@@ -23,14 +24,10 @@ L.FONT_FILES = {
  Skurri			= "Fonts\\SKURRI.TTF",
 }
 
+
 ------------------------------
 -- Commands
 ------------------------------
-L.COMMAND_RESET		= "reset";
-L.COMMAND_DISABLE	= "disable";
-L.COMMAND_ENABLE	= "enable";
-L.COMMAND_SHOWVER	= "version";
-L.COMMAND_HELP		= "help";
 
 L.COMMAND_USAGE = {
  "Используйте: " .. MikSBT.COMMAND .. " <команда> [параметр]",
@@ -52,12 +49,12 @@ L.MSG_ICON_MODULE_WARNING		= "ПРЕДУПРЕЖДЕНИЕ: Модуль MSBTIco
 --L.MSG_SEARCH_DISABLE			= "Event search mode disabled.";
 L.MSG_DISABLE					= "Мод отключен.";
 L.MSG_ENABLE					= "Мод включен.";
-L.MSG_PROFILE_RESET			= "Сброс профиля";
+L.MSG_PROFILE_RESET				= "Сброс профиля";
 L.MSG_HITS						= "Попадания";
 L.MSG_CRIT						= "Крит";
-L.MSG_CRITS					= "Критов";
+L.MSG_CRITS						= "Критов";
 L.MSG_MULTIPLE_TARGETS			= "Multiple";
-L.MSG_READY_NOW				= "Готов";
+L.MSG_READY_NOW					= "Готов";
 
 
 ------------------------------
