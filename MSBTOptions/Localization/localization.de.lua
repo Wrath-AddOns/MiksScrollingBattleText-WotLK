@@ -47,15 +47,16 @@ L.MSG_NEW_TRIGGER					= "Neuer Ausl\195\182ser";
 ------------------------------
 
 local obj = L.CLASS_NAMES;
-obj["DRUID"]	= "Druide";
-obj["HUNTER"]	= "J\195\164ger";
-obj["MAGE"]		= "Magier";
-obj["PALADIN"]	= "Paladin";
-obj["PRIEST"]	= "Priester";
-obj["ROGUE"]	= "Schurke";
-obj["SHAMAN"]	= "Schamane";
-obj["WARLOCK"]	= "Hexenmeister";
-obj["WARRIOR"]	= "Krieger";
+obj["DEATHKNIGHT"]	= "Death Knight";
+obj["DRUID"]		= "Druide";
+obj["HUNTER"]		= "J\195\164ger";
+obj["MAGE"]			= "Magier";
+obj["PALADIN"]		= "Paladin";
+obj["PRIEST"]		= "Priester";
+obj["ROGUE"]		= "Schurke";
+obj["SHAMAN"]		= "Schamane";
+obj["WARLOCK"]		= "Hexenmeister";
+obj["WARRIOR"]		= "Krieger";
 
 
 ------------------------------
@@ -240,6 +241,7 @@ obj = L.EVENT_CODES;
 --obj["HEALING_TAKEN"]		= "%a - Amount of healing taken.\n";
 --obj["DAMAGE_DONE"]			= "%a - Amount of damage done.\n";
 --obj["HEALING_DONE"]			= "%a - Amount of healing done.\n";
+--obj["ABSORBED_AMOUNT"]		= "%a - Amount of damage absorbed.\n";
 --obj["ENERGY_AMOUNT"]		= "%a - Amount of energy.\n";
 --obj["CP_AMOUNT"]			= "%a - Amount of combo points you have.\n";
 --obj["HONOR_AMOUNT"]			= "%a - Amount of honor.\n";
@@ -460,6 +462,7 @@ obj = L.TRIGGER_DATA;
 --obj["UNIT_MANA"]				= "Mana Change";
 --obj["UNIT_ENERGY"]				= "Energy Change";
 --obj["UNIT_RAGE"]				= "Rage Change";
+--obj["UNIT_RUNIC_POWER"]			= "Runic Power Change";
 --obj["SKILL_COOLDOWN"]			= "Skill Cooldown Complete";
  
 -- Main event conditions.
@@ -577,9 +580,9 @@ obj[3] = "Rechts";
 ------------------------------
 
 obj = L.SOUNDS;
-obj["LowMana"]		= "Mana Niedrig";
-obj["LowHealth"]	= "Gesundheit Niedrig";
-
+obj["MSBT Low Mana"]	= "MSBT Mana Niedrig";
+obj["MSBT Low Health"]	= "MSBT Gesundheit Niedrig";
+--obj["MSBT Cooldown"]	= "MSBT Cooldown";
 
 ------------------------------
 -- Animation style info
@@ -587,6 +590,7 @@ obj["LowHealth"]	= "Gesundheit Niedrig";
 
 -- Animation styles
 obj = L.ANIMATION_STYLE_DATA;
+--obj["Angled"]		= "Angled";
 obj["Horizontal"]	= "Horizontale";
 obj["Parabola"]		= "Parabel";
 obj["Straight"]		= "Gerade";
@@ -601,6 +605,8 @@ obj["Up"]			= "Bis";
 obj["Down"]			= "Hinunter";
 
 -- Animation style behaviors.
+--obj["AngleUp"]			= "Angle Upwards";
+--obj["AngleDown"]		= "Angle Downwards";
 --obj["GrowUp"]			= "Grow Upwards";
 --obj["GrowDown"]			= "Grow Downwards";
 --obj["CurvedLeft"]		= "Curved Left";

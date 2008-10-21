@@ -1,4 +1,4 @@
-﻿-------------------------------------------------------------------------------
+-------------------------------------------------------------------------------
 -- Title: Mik's Scrolling Battle Text Russian Localization
 -- Author: Mik
 -- Russian Translation by: Eritnull
@@ -19,10 +19,12 @@ local L = MikSBT.translations;
 ------------------------------
 
 L.FONT_FILES = {
- Default		= "Fonts\\NIM_____.ttf",
- Morpheus		= "Fonts\\MORPHEUS.TTF",
- Skurri			= "Fonts\\SKURRI.TTF",
+ ["MSBT Morpheus"]		= "Fonts\\MORPHEUS.TTF",
+ ["MSBT Nim"]			= "Fonts\\NIM_____.ttf",
+ ["MSBT Skurri"]		= "Fonts\\SKURRI.TTF",
 }
+
+L.DEFAULT_FONT_NAME = "MSBT Nim";
 
 
 ------------------------------
@@ -45,8 +47,7 @@ L.COMMAND_USAGE = {
 ------------------------------
 
 L.MSG_ICON_MODULE_WARNING		= "ПРЕДУПРЕЖДЕНИЕ: Модуль MSBTIcons больше не требуется. Удалите его из папки AddOns во избежания загрузки ресурсов ЦПУ.";
---L.MSG_SEARCH_ENABLE			= "Event search mode enabled.  Searching for: ";
---L.MSG_SEARCH_DISABLE			= "Event search mode disabled.";
+--L.MSG_SM_MODULE_WARNING			= "WARNING: The MSBTSharedMedia module is no longer required.  Remove it from your AddOns folder.";
 L.MSG_DISABLE					= "Мод отключен.";
 L.MSG_ENABLE					= "Мод включен.";
 L.MSG_PROFILE_RESET				= "Сброс профиля";

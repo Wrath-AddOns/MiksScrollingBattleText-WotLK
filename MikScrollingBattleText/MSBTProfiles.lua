@@ -4,69 +4,104 @@
 -------------------------------------------------------------------------------
 
 -- Create module and set its name.
-local module = {};
-local moduleName = "Profiles";
-MikSBT[moduleName] = module;
+local module = {}
+local moduleName = "Profiles"
+MikSBT[moduleName] = module
+
+
+-------------------------------------------------------------------------------
+-- Imports.
+-------------------------------------------------------------------------------
+
+-- Local references to various modules for faster access.
+local L = MikSBT.translations
+
+-- Local references to various functions for faster access.
+local string_find = string.find
+local string_gsub = string.gsub
+local GetSpellInfo = GetSpellInfo
+local CopyTable = MikSBT.CopyTable
+local EraseTable = MikSBT.EraseTable
+local SplitString = MikSBT.SplitString
+local Print = MikSBT.Print
 
 
 -------------------------------------------------------------------------------
 -- Private constants.
 -------------------------------------------------------------------------------
 
-local DEFAULT_PROFILE_NAME = "Default";
+local DEFAULT_PROFILE_NAME = "Default"
 
 -- The .toc entries for saved variables.
-local SAVED_VARS_NAME			= "MSBTProfiles_SavedVars";
-local SAVED_VARS_PER_CHAR_NAME	= "MSBTProfiles_SavedVarsPerChar";
+local SAVED_VARS_NAME			= "MSBTProfiles_SavedVars"
+local SAVED_VARS_PER_CHAR_NAME	= "MSBTProfiles_SavedVarsPerChar"
+local SAVED_MEDIA_NAME			= "MSBT_SavedMedia"
 
 -- Localized pet name followed by a space.
-local PET_SPACE = PET .. " ";
+local PET_SPACE = PET .. " "
 
 -- Flags used by the combat log.
-local FLAG_YOU 			= 0xF0000000;
-local TARGET_TARGET		= 0x00010000;
-local REACTION_HOSTILE	= 0x00000040;
+local FLAG_YOU 			= 0xF0000000
+local TARGET_TARGET		= 0x00010000
+local REACTION_HOSTILE	= 0x00000040
 
 
 -- Spell IDs.
-local SPELLID_COUNTER_ATTACK	= 19306;
-local SPELLID_EXECUTE			= 5308;
-local SPELLID_FIRST_AID			= 3273;
-local SPELLID_HAMMER_OF_WRATH	= 24275;
-local SPELLID_KILL_COMMAND		= 34026;
-local SPELLID_MONGOOSE_BITE		= 1495;
-local SPELLID_RAMPAGE			= 29801;
-local SPELLID_REVENGE			= 6572;
-local SPELLID_RIPOSTE			= 14251;
-local SPELLID_OVERPOWER			= 7384;
+local SPELLID_COUNTER_ATTACK	= 19306
+local SPELLID_EXECUTE			= 5308
+local SPELLID_FIRST_AID			= 3273
+local SPELLID_HAMMER_OF_WRATH	= 24275
+local SPELLID_RAMPAGE			= 29801
+local SPELLID_REVENGE			= 6572
+local SPELLID_RIPOSTE			= 14251
+local SPELLID_OVERPOWER			= 7384
 local SPELLID_VICTORY_RUSH		= 34428
 
 -- Spell names.
-local SPELL_BACKLASH			= GetSpellInfo(34935);
-local SPELL_BLACKOUT			= GetSpellInfo(15268);
-local SPELL_CLEARCASTING		= GetSpellInfo(12536);
-local SPELL_COUNTER_ATTACK		= GetSpellInfo(SPELLID_COUNTER_ATTACK);
-local SPELL_EXECUTE				= GetSpellInfo(SPELLID_EXECUTE);
-local SPELL_FROSTBITE			= GetSpellInfo(11071);
-local SPELL_HAMMER_OF_WRATH		= GetSpellInfo(SPELLID_HAMMER_OF_WRATH);
-local SPELL_IMPACT				= GetSpellInfo(11103);
-local SPELL_KILL_COMMAND		= GetSpellInfo(SPELLID_KILL_COMMAND);
-local SPELL_MONGOOSE_BITE		= GetSpellInfo(SPELLID_MONGOOSE_BITE);
-local SPELL_NIGHTFALL			= GetSpellInfo(18094);
-local SPELL_SHADOW_TRANCE		= GetSpellInfo(17941);
-local SPELL_RAMPAGE				= GetSpellInfo(SPELLID_RAMPAGE);
-local SPELL_REVENGE				= GetSpellInfo(SPELLID_REVENGE);
-local SPELL_RIPOSTE				= GetSpellInfo(SPELLID_RIPOSTE);
-local SPELL_OVERPOWER			= GetSpellInfo(SPELLID_OVERPOWER);
-local SPELL_VICTORY_RUSH		= GetSpellInfo(SPELLID_VICTORY_RUSH);
-local SPELL_DRAIN_LIFE			= GetSpellInfo(689);
-local SPELL_MANA_SPRING			= GetSpellInfo(5677);
-local SPELL_SHADOWMEND			= GetSpellInfo(39373);
-local SPELL_SIPHON_LIFE			= GetSpellInfo(18265);
-local SPELL_REFLECTIVE_SHIELD	= GetSpellInfo(33201);
-local SPELL_VAMPIRIC_EMBRACE	= GetSpellInfo(15286);
-local SPELL_VAMPIRIC_TOUCH		= GetSpellInfo(34914);
-local SPELL_VIPER_STING			= GetSpellInfo(3034);
+local SPELL_BACKLASH			= GetSpellInfo(34935)
+local SPELL_BLACKOUT			= GetSpellInfo(15268)
+local SPELL_BLOODSURGE			= GetSpellInfo(46913)
+local SPELL_BLOODSURGE_SLAM		= GetSpellInfo(46916)
+local SPELL_BRAIN_FREEZE		= GetSpellInfo(44546)
+local SPELL_BF_FIREBALL			= GetSpellInfo(57761)
+local SPELL_CLEARCASTING		= GetSpellInfo(12536)
+local SPELL_COUNTER_ATTACK		= GetSpellInfo(SPELLID_COUNTER_ATTACK)
+local SPELL_DEATH_TRANCE		= GetSpellInfo(50466)
+local SPELL_ECLIPSE				= GetSpellInfo(48517)
+local SPELL_ERADICATION			= GetSpellInfo(47274)
+local SPELL_EXECUTE				= GetSpellInfo(SPELLID_EXECUTE)
+local SPELL_FINGERS_OF_FROST	= GetSpellInfo(44544)
+local SPELL_FROSTBITE			= GetSpellInfo(11071)
+local SPELL_HAMMER_OF_WRATH		= GetSpellInfo(SPELLID_HAMMER_OF_WRATH)
+local SPELL_HOT_STREAK			= GetSpellInfo(44445)
+local SPELL_IMPACT				= GetSpellInfo(11103)
+local SPELL_MAELSTROM_WEAPON	= GetSpellInfo(53817)
+local SPELL_MISSILE_BARRAGE		= GetSpellInfo(44401)
+local SPELL_MOLTEN_CORE			= GetSpellInfo(47383)
+local SPELL_NIGHTFALL			= GetSpellInfo(18094)
+local SPELL_OWLKIN_FRENZY		= GetSpellInfo(48391)
+local SPELL_RAMPAGE				= GetSpellInfo(SPELLID_RAMPAGE)
+local SPELL_REVENGE				= GetSpellInfo(SPELLID_REVENGE)
+local SPELL_RIPOSTE				= GetSpellInfo(SPELLID_RIPOSTE)
+local SPELL_OVERPOWER			= GetSpellInfo(SPELLID_OVERPOWER)
+local SPELL_SHADOW_TRANCE		= GetSpellInfo(17941)
+local SPELL_SHIELD_SLAM			= GetSpellInfo(23922)
+local SPELL_SUDDEN_DEATH		= GetSpellInfo(52437)
+local SPELL_SUDDEN_DOOM			= GetSpellInfo(49018)
+local SPELL_SWORD_AND_BOARD		= GetSpellInfo(50227)
+local SPELL_TASTE_FOR_BLOOD		= GetSpellInfo(60503)
+local SPELL_TIDAL_WAVES			= GetSpellInfo(53390)
+local SPELL_VICTORY_RUSH		= GetSpellInfo(SPELLID_VICTORY_RUSH)
+local SPELL_BLOOD_PRESENCE		= GetSpellInfo(48266)
+local SPELL_DRAIN_LIFE			= GetSpellInfo(689)
+local SPELL_MANA_SPRING			= GetSpellInfo(5677)
+local SPELL_SHADOWMEND			= GetSpellInfo(39373)
+local SPELL_SIPHON_LIFE			= GetSpellInfo(18265)
+local SPELL_REFLECTIVE_SHIELD	= GetSpellInfo(33201)
+local SPELL_UNDYING_RESOLVE		= GetSpellInfo(51915)
+local SPELL_VAMPIRIC_EMBRACE	= GetSpellInfo(15286)
+local SPELL_VAMPIRIC_TOUCH		= GetSpellInfo(34914)
+local SPELL_VIPER_STING			= GetSpellInfo(3034)
 
 
 -------------------------------------------------------------------------------
@@ -74,35 +109,21 @@ local SPELL_VIPER_STING			= GetSpellInfo(3034);
 -------------------------------------------------------------------------------
 
 -- Meta table for the differential profile tables.
-local differentialMap = {};
-local differential_mt = { __index = function(t,k) return differentialMap[t][k] end };
-local differentialCache = {};
+local differentialMap = {}
+local differential_mt = { __index = function(t,k) return differentialMap[t][k] end }
+local differentialCache = {}
 
 -- Holds variables to be saved between sessions.
-local savedVariables;
-local savedVariablesPerChar;
+local savedVariables
+local savedVariablesPerChar
+local savedMedia
+
 
 -- Currently selected profile.
-local currentProfile;
+local currentProfile
 
 -- Path information for setting differential options.
-local pathTable = {};
-
-
--------------------------------------------------------------------------------
--- Imports.
--------------------------------------------------------------------------------
-
--- Local references to certain MSBT modules for faster access.
-local L = MikSBT.translations;
-
--- Local references to certain functions for faster access.
-local string_find = string.find;
-local string_gsub = string.gsub;
-local CopyTable = MikSBT.CopyTable;
-local EraseTable = MikSBT.EraseTable;
-local SplitString = MikSBT.SplitString;
-local Print = MikSBT.Print;
+local pathTable = {}
 
 
 -------------------------------------------------------------------------------
@@ -147,8 +168,6 @@ local masterProfile = {
    scrollHeight			= 125,
    animationStyle		= "Static",
    direction			= "Down",
-   normalFontName		= "Yellowjacket",
-   normalFontSize		= 20,
   },
  },
 
@@ -193,7 +212,7 @@ local masterProfile = {
   },
   INCOMING_ABSORB = {
    colorB		= 0,
-   message		= ABSORB .. "!",
+   message		= ABSORB .. "! <%a>",
    scrollArea	= "Incoming",
   },
   INCOMING_IMMUNE = {
@@ -253,7 +272,7 @@ local masterProfile = {
   },
   INCOMING_SPELL_ABSORB = {
    colorB		= 0,
-   message		= "(%s) " .. ABSORB .. "!",
+   message		= "(%s) " .. ABSORB .. "! <%a>",
    scrollArea	= "Incoming",
   },
   INCOMING_SPELL_IMMUNE = {
@@ -328,7 +347,7 @@ local masterProfile = {
   },
   OUTGOING_ABSORB = {
    colorB		= 0,
-   message		= ABSORB .. "!",
+   message		= "<%a> " .. ABSORB .. "!",
    scrollArea	= "Outgoing",
   },
   OUTGOING_IMMUNE = {
@@ -384,7 +403,7 @@ local masterProfile = {
   },
   OUTGOING_SPELL_ABSORB = {
    colorB		= 0,
-   message		= ABSORB .. "! (%s)",
+   message		= "<%a> " .. ABSORB .. "! (%s)",
    scrollArea	= "Outgoing",
   },
   OUTGOING_SPELL_IMMUNE = {
@@ -475,7 +494,7 @@ local masterProfile = {
   },
   PET_INCOMING_ABSORB = {
    colorB		= 0.57,
-   message		= PET .. " " .. ABSORB .. "!",
+   message		= PET .. " " .. ABSORB .. "!  <%a>",
    scrollArea	= "Incoming",
   },
   PET_INCOMING_IMMUNE = {
@@ -535,7 +554,7 @@ local masterProfile = {
   },
   PET_INCOMING_SPELL_ABSORB = {
    colorB		= 0.57,
-   message		= "(%s) " .. PET .. " " .. ABSORB .. "!",
+   message		= "(%s) " .. PET .. " " .. ABSORB .. "!  <%a>",
    scrollArea	= "Incoming",
   },
   PET_INCOMING_SPELL_IMMUNE = {
@@ -604,7 +623,7 @@ local masterProfile = {
   PET_OUTGOING_ABSORB = {
    colorR		= 0.5,
    colorG		= 0.5,
-   message		= PET .. " " .. ABSORB,
+   message		= PET .. " <%a> " .. ABSORB,
    scrollArea	= "Outgoing",
   },
   PET_OUTGOING_IMMUNE = {
@@ -673,7 +692,7 @@ local masterProfile = {
   PET_OUTGOING_SPELL_ABSORB = {
    colorR		= 0.5,
    colorG		= 0.5,
-   message		= PET .. " " .. ABSORB .. "! (%s)",
+   message		= PET .. " <%a> " .. ABSORB .. "! (%s)",
    scrollArea	= "Outgoing",
   },
   PET_OUTGOING_SPELL_IMMUNE = {
@@ -837,6 +856,7 @@ local masterProfile = {
    message		= "%e " .. L.MSG_READY_NOW .. "!",
    scrollArea	= "Static",
    fontSize		= 22,
+   soundFile		= "MSBT Cooldown",
   },
  }, -- End events
 
@@ -862,12 +882,31 @@ local masterProfile = {
    classes			= "PRIEST",
    mainEvents		= "SPELL_AURA_APPLIED{skillName;;eq;;" .. SPELL_BLACKOUT .. ";;recipientAffiliation;;eq;;" .. TARGET_TARGET .. "}"
   },
+  MSBT_TRIGGER_BLOODSURGE = {
+   colorR			= 0.8,
+   colorG			= 0.5,
+   colorB			= 0.5,
+   message			= SPELL_BLOODSURGE .. "!",
+   alwaysSticky		= true,
+   fontSize			= 26,
+   classes			= "WARRIOR",
+   mainEvents		= "SPELL_AURA_APPLIED{skillName;;eq;;" .. SPELL_BLOODSURGE_SLAM .. ";;recipientAffiliation;;eq;;" .. FLAG_YOU .. "}"
+  },
+  MSBT_TRIGGER_BRAIN_FREEZE = {
+   colorG			= 0.627,
+   colorB			= 0.627,
+   message			= SPELL_BRAIN_FREEZE .. "!",
+   alwaysSticky		= true,
+   fontSize			= 26,
+   classes			= "MAGE",
+   mainEvents		= "SPELL_AURA_APPLIED{skillName;;eq;;" .. SPELL_BF_FIREBALL .. ";;recipientAffiliation;;eq;;" .. FLAG_YOU .. "}",
+  },
   MSBT_TRIGGER_CLEARCASTING = {
    colorB			= 0,
    message			= SPELL_CLEARCASTING .. "!",
    alwaysSticky		= true,
    fontSize			= 26,
-   classes			= "DRUID,MAGE,SHAMAN",
+   classes			= "DRUID,MAGE,PRIEST,SHAMAN",
    mainEvents		= "SPELL_AURA_APPLIED{skillName;;eq;;" .. SPELL_CLEARCASTING .. ";;recipientAffiliation;;eq;;" .. FLAG_YOU .. "}",
   },
   MSBT_TRIGGER_COUNTER_ATTACK = {
@@ -880,6 +919,25 @@ local masterProfile = {
    exceptions		= "unavailableSkill;;eq;;" .. SPELL_COUNTER_ATTACK,
    iconSkill		= SPELLID_COUNTER_ATTACK,
   },
+  MSBT_TRIGGER_ECLIPSE = {
+   colorR			= 0.709,
+   colorG			= 0,
+   colorB			= 0.709,
+   message			= SPELL_ECLIPSE .. "!",
+   alwaysSticky		= true,
+   fontSize			= 26,
+   classes			= "DRUID",
+   mainEvents		= "SPELL_AURA_APPLIED{skillName;;eq;;" .. SPELL_ECLIPSE .. ";;recipientAffiliation;;eq;;" .. FLAG_YOU .. "}",
+  },
+  MSBT_TRIGGER_ERADICATION = {
+   colorR			= 0.118,
+   colorG			= 0.882,
+   message			= SPELL_ERADICATION .. "!",
+   alwaysSticky		= true,
+   fontSize			= 26,
+   classes			= "WARLOCK",
+   mainEvents		= "SPELL_AURA_APPLIED{skillName;;eq;;" .. SPELL_ERADICATION .. ";;recipientAffiliation;;eq;;" .. FLAG_YOU .. "}",
+  },
   MSBT_TRIGGER_EXECUTE = {
    colorB			= 0,
    message			= SPELL_EXECUTE .. "!",
@@ -889,6 +947,15 @@ local masterProfile = {
    mainEvents		= "UNIT_HEALTH{unitID;;eq;;target;;threshold;;lt;;20;;unitReaction;;eq;;" .. REACTION_HOSTILE .. "}",
    exceptions		= "unavailableSkill;;eq;;" .. SPELL_EXECUTE,
    iconSkill		= SPELLID_EXECUTE,
+  },
+  MSBT_TRIGGER_FINGERS_OF_FROST = {
+   colorR			= 0.118,
+   colorG			= 0.882,
+   message			= SPELL_FINGERS_OF_FROST .. "!",
+   alwaysSticky		= true,
+   fontSize			= 26,
+   classes			= "MAGE",
+   mainEvents		= "SPELL_AURA_APPLIED{skillName;;eq;;" .. SPELL_FINGERS_OF_FROST .. ";;recipientAffiliation;;eq;;" .. FLAG_YOU .. "}",
   },
   MSBT_TRIGGER_FROSTBITE = {
    colorR			= 0,
@@ -909,6 +976,15 @@ local masterProfile = {
    exceptions		= "unavailableSkill;;eq;;" .. SPELL_HAMMER_OF_WRATH,
    iconSkill		= SPELLID_HAMMER_OF_WRATH,
   },
+  MSBT_TRIGGER_HOT_STREAK = {
+   colorG			= 0.627,
+   colorB			= 0.627,
+   message			= SPELL_HOT_STREAK .. "!",
+   alwaysSticky		= true,
+   fontSize			= 26,
+   classes			= "MAGE",
+   mainEvents		= "SPELL_AURA_APPLIED{skillName;;eq;;" .. SPELL_HOT_STREAK .. ";;recipientAffiliation;;eq;;" .. FLAG_YOU .. "}",
+  },
   MSBT_TRIGGER_IMPACT = {
    colorG			= 0.25,
    colorB			= 0.25,
@@ -918,23 +994,13 @@ local masterProfile = {
    classes			= "MAGE",
    mainEvents		= "SPELL_AURA_APPLIED{skillName;;eq;;" .. SPELL_IMPACT .. ";;recipientAffiliation;;eq;;" .. TARGET_TARGET .. "}"
   },
-  MSBT_TRIGGER_KILL_COMMAND = {
-   colorB			= 0,
-   message			= SPELL_KILL_COMMAND .. "!",
-   alwaysSticky		= true,
-   fontSize			= 26,
-   classes			= "HUNTER",
-   mainEvents		= "GENERIC_DAMAGE{sourceAffiliation;;eq;;" .. FLAG_YOU .. ";;isCrit;;eq;;true}",
-   exceptions		= "unavailableSkill;;eq;;" .. SPELL_KILL_COMMAND;
-   iconSkill		= SPELLID_KILL_COMMAND,
-  },
   MSBT_TRIGGER_LOW_HEALTH = {
    colorG			= 0.5,
    colorB			= 0.5,
    message			= L.MSG_TRIGGER_LOW_HEALTH .. "! (%a)",
    alwaysSticky		= true,
    fontSize			= 26,
-   soundFile		= "LowHealth",
+   soundFile		= "MSBT Low Health",
    mainEvents		= "UNIT_HEALTH{unitID;;eq;;player;;threshold;;lt;;35}",
    exceptions		= "recentlyFired;;lt;;5",
    iconSkill		= SPELLID_FIRST_AID,
@@ -945,7 +1011,7 @@ local masterProfile = {
    message			= L.MSG_TRIGGER_LOW_MANA .. "! (%a)",
    alwaysSticky		= true,
    fontSize			= 26,
-   soundFile		= "LowMana",
+   soundFile		= "MSBT Low Mana",
    classes			= "DRUID,HUNTER,MAGE,PALADIN,PRIEST,SHAMAN,WARLOCK",
    mainEvents		= "UNIT_MANA{unitID;;eq;;player;;threshold;;lt;;35}",
    exceptions		= "recentlyFired;;lt;;5",
@@ -959,15 +1025,31 @@ local masterProfile = {
    mainEvents		= "UNIT_HEALTH{unitID;;eq;;pet;;threshold;;lt;;40}",
    exceptions		= "recentlyFired;;lt;;5",
   },
-  MSBT_TRIGGER_MONGOOSE_BITE = {
-   colorB			= 0,
-   message			= SPELL_MONGOOSE_BITE .. "!",
+  MSBT_TRIGGER_MAELSTROM_WEAPON = {
+   colorR			= 0.5,
+   colorB			= 0.5,
+   message			= SPELL_MAELSTROM_WEAPON .. " x5!",
    alwaysSticky		= true,
    fontSize			= 26,
-   classes			= "HUNTER",
-   mainEvents		= "GENERIC_MISSED{recipientAffiliation;;eq;;" .. FLAG_YOU .. ";;missType;;eq;;DODGE}",
-   exceptions		= "unavailableSkill;;eq;;" .. SPELL_MONGOOSE_BITE,
-   iconSkill		= SPELLID_MONGOOSE_BITE,
+   classes			= "SHAMAN",
+   mainEvents		= "SPELL_AURA_APPLIED{skillName;;eq;;" .. SPELL_MAELSTROM_WEAPON .. ";;amount;;eq;;5;;recipientAffiliation;;eq;;" .. FLAG_YOU .. "}",
+  },
+  MSBT_TRIGGER_MISSILE_BARRAGE = {
+   colorG			= 0.725,
+   message			= SPELL_MISSILE_BARRAGE .. "!",
+   alwaysSticky		= true,
+   fontSize			= 26,
+   classes			= "MAGE",
+   mainEvents		= "SPELL_AURA_APPLIED{skillName;;eq;;" .. SPELL_MISSILE_BARRAGE .. ";;recipientAffiliation;;eq;;" .. FLAG_YOU .. "}",
+  },
+  MSBT_TRIGGER_MOLTEN_CORE = {
+   colorG			= 0.25,
+   colorB			= 0.25,
+   message			= SPELL_MOLTEN_CORE .. "!",
+   alwaysSticky		= true,
+   fontSize			= 26,
+   classes			= "WARLOCK",
+   mainEvents		= "SPELL_AURA_APPLIED{skillName;;eq;;" .. SPELL_MOLTEN_CORE .. ";;recipientAffiliation;;eq;;" .. FLAG_YOU .. "}",
   },
   MSBT_TRIGGER_NIGHTFALL = {
    colorR			= 0.709,
@@ -978,6 +1060,26 @@ local masterProfile = {
    fontSize			= 26,
    classes			= "WARLOCK",
    mainEvents		= "SPELL_AURA_APPLIED{skillName;;eq;;" .. SPELL_SHADOW_TRANCE .. ";;recipientAffiliation;;eq;;" .. FLAG_YOU .. "}",
+  },
+  MSBT_TRIGGER_OVERPOWER = {
+   colorB			= 0,
+   message			= SPELL_OVERPOWER .. "!",
+   alwaysSticky		= true,
+   fontSize			= 26,
+   classes			= "WARRIOR",
+   mainEvents		= "GENERIC_MISSED{sourceAffiliation;;eq;;" .. FLAG_YOU .. ";;missType;;eq;;DODGE}",
+   exceptions		= "unavailableSkill;;eq;;" .. SPELL_OVERPOWER,
+   iconSkill		= SPELLID_OVERPOWER,
+  },
+  MSBT_TRIGGER_OWLKIN_FRENZY = {
+   colorR			= 0.627,
+   colorG			= 0.5,
+   colorB			= 0,
+   message			= SPELL_OWLKIN_FRENZY .. "!",
+   alwaysSticky		= true,
+   fontSize			= 26,
+   classes			= "DRUID",
+   mainEvents		= "SPELL_AURA_APPLIED{skillName;;eq;;" .. SPELL_OWLKIN_FRENZY .. ";;recipientAffiliation;;eq;;" .. FLAG_YOU .. "}",
   },
   MSBT_TRIGGER_RAMPAGE = {
    colorG			= 0.25,
@@ -1010,15 +1112,53 @@ local masterProfile = {
    exceptions		= "unavailableSkill;;eq;;" .. SPELL_RIPOSTE,
    iconSkill		= SPELLID_RIPOSTE,
   },
-  MSBT_TRIGGER_OVERPOWER = {
+  MSBT_TRIGGER_SUDDEN_DEATH = {
+   colorG			= 0,
    colorB			= 0,
-   message			= SPELL_OVERPOWER .. "!",
+   message			= SPELL_SUDDEN_DEATH .. "!",
    alwaysSticky		= true,
    fontSize			= 26,
    classes			= "WARRIOR",
-   mainEvents		= "GENERIC_MISSED{sourceAffiliation;;eq;;" .. FLAG_YOU .. ";;missType;;eq;;DODGE}",
-   exceptions		= "unavailableSkill;;eq;;" .. SPELL_OVERPOWER,
-   iconSkill		= SPELLID_OVERPOWER,
+   mainEvents		= "SPELL_AURA_APPLIED{skillName;;eq;;" .. SPELL_SUDDEN_DEATH .. ";;recipientAffiliation;;eq;;" .. FLAG_YOU .. "}",
+  },
+  MSBT_TRIGGER_SUDDEN_DOOM = {
+   colorR			= 0.709,
+   colorG			= 0,
+   colorB			= 0.709,
+   message			= SPELL_SUDDEN_DOOM .. "!",
+   alwaysSticky		= true,
+   fontSize			= 26,
+   classes			= "DEATHKNIGHT",
+   mainEvents		= "SPELL_AURA_APPLIED{skillName;;eq;;" .. SPELL_DEATH_TRANCE .. ";;recipientAffiliation;;eq;;" .. FLAG_YOU .. "}",
+  },
+  MSBT_TRIGGER_SWORD_AND_BOARD = {
+   colorR			= 0,
+   colorG			= 0.5,
+   message			= SPELL_SWORD_AND_BOARD .. "!",
+   alwaysSticky		= true,
+   fontSize			= 26,
+   classes			= "WARRIOR",
+   mainEvents		= "SPELL_AURA_APPLIED{skillName;;eq;;" .. SPELL_SWORD_AND_BOARD .. ";;recipientAffiliation;;eq;;" .. FLAG_YOU .. "}",
+   exceptions		= "unavailableSkill;;eq;;" .. SPELL_SHIELD_SLAM,
+  },
+  MSBT_TRIGGER_TASTE_FOR_BLOOD = {
+   colorR			= 0.627,
+   colorG			= 0.5,
+   colorB			= 0,
+   message			= SPELL_TASTE_FOR_BLOOD .. "!",
+   alwaysSticky		= true,
+   fontSize			= 26,
+   classes			= "WARRIOR",
+   mainEvents		= "SPELL_AURA_APPLIED{skillName;;eq;;" .. SPELL_TASTE_FOR_BLOOD .. ";;recipientAffiliation;;eq;;" .. FLAG_YOU .. "}",
+  },
+  MSBT_TRIGGER_TIDAL_WAVES = {
+   colorR			= 0,
+   colorG			= 0.5,
+   message			= SPELL_TIDAL_WAVES .. "!",
+   alwaysSticky		= true,
+   fontSize			= 26,
+   classes			= "SHAMAN",
+   mainEvents		= "SPELL_AURA_APPLIED{skillName;;eq;;" .. SPELL_TIDAL_WAVES .. ";;recipientAffiliation;;eq;;" .. FLAG_YOU .. "}",
   },
   MSBT_TRIGGER_VICTORY_RUSH = {
    colorG			= 0.25,
@@ -1044,11 +1184,11 @@ local masterProfile = {
 
 
  -- Master font settings.
- normalFontName		= "Default",
+ normalFontName		= L.DEFAULT_FONT_NAME,
  normalOutlineIndex	= 2,
  normalFontSize		= 18,
  normalFontAlpha	= 100,
- critFontName		= "Default",
+ critFontName		= L.DEFAULT_FONT_NAME,
  critOutlineIndex	= 2,
  critFontSize		= 26,
  critFontAlpha		= 100,
@@ -1059,22 +1199,23 @@ local masterProfile = {
  
   
  -- Partial effect settings. 
- crushing		= { colorR = 0.5, colorG = 0, colorB = 0, trailer = CRUSHING_TRAILER },
- glancing		= { colorR = 1, colorG = 0, colorB = 0, trailer = GLANCING_TRAILER },
- absorb			= { colorR = 1, colorG = 1, colorB = 0, trailer = ABSORB_TRAILER },
- block			= { colorR = 0.5, colorG = 0, colorB = 1, trailer = BLOCK_TRAILER },
- resist			= { colorR = 0.5, colorG = 0, colorB = 0.5, trailer = RESIST_TRAILER },
+ crushing		= { colorR = 0.5, colorG = 0, colorB = 0, trailer = string_gsub(CRUSHING_TRAILER, "%((.+)%)", "<%1>") },
+ glancing		= { colorR = 1, colorG = 0, colorB = 0, trailer = string_gsub(GLANCING_TRAILER, "%((.+)%)", "<%1>") },
+ absorb			= { colorR = 1, colorG = 1, colorB = 0, trailer = string_gsub(ABSORB_TRAILER, "%((.+)%)", "<%1>") },
+ block			= { colorR = 0.5, colorG = 0, colorB = 1, trailer = string_gsub(BLOCK_TRAILER, "%((.+)%)", "<%1>") },
+ resist			= { colorR = 0.5, colorG = 0, colorB = 0.5, trailer = string_gsub(RESIST_TRAILER, "%((.+)%)", "<%1>") },
  overheal		= { colorR = 0, colorG = 0.705, colorB = 0.5, trailer = " <%d>" },
  
  
  -- Damage color settings.
- physical	= { colorR = 1, colorG = 1, colorB = 1 },
- holy		= { colorR = 1, colorG = 1, colorB = 0.627 },
- fire		= { colorR = 1, colorG = 0.5, colorB = 0.5 },
- nature		= { colorR = 0.5, colorG = 1, colorB = 0.5 },
- frost		= { colorR = 0.5, colorG = 0.5, colorB = 1 },
- shadow		= { colorR = 0.628, colorG = 0, colorB = 0.628 },
- arcane		= { colorR = 1, colorG = 0.725, colorB = 1 },
+ physical		= { colorR = 1, colorG = 1, colorB = 1 },
+ holy			= { colorR = 1, colorG = 1, colorB = 0.627 },
+ fire			= { colorR = 1, colorG = 0.5, colorB = 0.5 },
+ nature			= { colorR = 0.5, colorG = 1, colorB = 0.5 },
+ frost			= { colorR = 0.5, colorG = 0.5, colorB = 1 },
+ shadow			= { colorR = 0.628, colorG = 0, colorB = 0.628 },
+ arcane			= { colorR = 1, colorG = 0.725, colorB = 1 },
+ frostfire		= { colorR = 0.824, colorG = 0.314, colorB = 0.471 },
 
  
  -- Throttle settings.
@@ -1082,6 +1223,7 @@ local masterProfile = {
  hotThrottleDuration	= 3,
  powerThrottleDuration	= 0,
  throttleList = {
+  [SPELL_BLOOD_PRESENCE]	= 5,
   [SPELL_DRAIN_LIFE]		= 3,
   [SPELL_MANA_SPRING]		= 5,
   [SPELL_SHADOWMEND]		= 5,
@@ -1095,7 +1237,9 @@ local masterProfile = {
  -- Spam control settings.
  mergeExclusions		= {},
  abilitySubstitutions	= {},
- abilitySuppressions	= {},
+ abilitySuppressions	= {
+  [SPELL_UNDYING_RESOLVE] = true
+ },
  damageThreshold		= 0,
  healThreshold			= 0,
  powerThreshold			= 0,
@@ -1103,7 +1247,7 @@ local masterProfile = {
  -- Cooldown settings.
  cooldownExclusions		= {},
  cooldownThreshold		= 5,
-};
+}
 
 
 -------------------------------------------------------------------------------
@@ -1118,14 +1262,14 @@ local function RemoveEmptyDifferentials(currentTable)
  for fieldName, fieldValue in pairs(currentTable) do
   if (type(fieldValue) == "table") then
    -- Recursively clear empty tables in the nested table.
-   RemoveEmptyDifferentials(fieldValue);
+   RemoveEmptyDifferentials(fieldValue)
 
    -- Remove the table from the differential map and current table if it's
    -- empty.
    if (not next(fieldValue)) then
-    differentialMap[fieldValue] = nil;
-	differentialCache[#differentialCache+1] = fieldValue;
-    currentTable[fieldName] = nil;
+    differentialMap[fieldValue] = nil
+	differentialCache[#differentialCache+1] = fieldValue
+    currentTable[fieldName] = nil
    end
   end
  end
@@ -1138,14 +1282,14 @@ end
 -- ****************************************************************************
 local function AssociateDifferentialTables(savedTable, masterTable)
  -- Associate the saved table with the corresponding master entry.
- differentialMap[savedTable] = masterTable;
- setmetatable(savedTable, differential_mt);
+ differentialMap[savedTable] = masterTable
+ setmetatable(savedTable, differential_mt)
  
  -- Look for nested tables that have a corresponding master entry.
  for fieldName, fieldValue in pairs(savedTable) do
   if (type(fieldValue) == "table" and type(masterTable[fieldName]) == "table") then
    -- Recursively call the function to associate nested tables.
-   AssociateDifferentialTables(fieldValue, masterTable[fieldName]);
+   AssociateDifferentialTables(fieldValue, masterTable[fieldName])
   end
  end 
 end
@@ -1157,36 +1301,36 @@ end
 -- ****************************************************************************
 local function SetOption(optionPath, optionName, optionValue, optionDefault)
  -- Clear the path table.
- EraseTable(pathTable);
+ EraseTable(pathTable)
  
  -- Split the passed option path into the path table.
- if (optionPath) then SplitString(optionPath, "%.", pathTable); end
+ if (optionPath) then SplitString(optionPath, "%.", pathTable) end
 
  -- Attempt to go to the option path in the master profile.
- local masterOption = masterProfile;
+ local masterOption = masterProfile
  for _, fieldName in ipairs(pathTable) do
-  masterOption = masterOption[fieldName];
-  if (not masterOption) then break; end
+  masterOption = masterOption[fieldName]
+  if (not masterOption) then break end
  end
  
  -- Get the option name from the master profile.
- masterOption = masterOption and masterOption[optionName];
+ masterOption = masterOption and masterOption[optionName]
 
  -- Check if the option being set needs to be overridden.
- local needsOverride = false;
- if (optionValue ~= masterOption) then needsOverride = true; end
+ local needsOverride = false
+ if (optionValue ~= masterOption) then needsOverride = true end
 
  -- Treat a nil master option the same as false. 
  if ((optionValue == false or optionValue == optionDefault) and not masterOption) then
-  needsOverride = false;
+  needsOverride = false
  end
 
  -- Make the option value false if the option being set is nil and the master option set. 
- if (optionValue == nil and masterOption) then optionValue = false; end
+ if (optionValue == nil and masterOption) then optionValue = false end
   
  -- Start at the root of the current profile and master profile.
- local currentTable = currentProfile;
- local masterTable = masterProfile;
+ local currentTable = currentProfile
+ local masterTable = masterProfile
 
  -- Override needed.
  if (needsOverride and optionValue ~= nil) then
@@ -1195,33 +1339,33 @@ local function SetOption(optionPath, optionName, optionValue, optionDefault)
    -- Check if the field doesn't exist in the current profile.
    if (not rawget(currentTable, fieldName)) then
     -- Create a table for the field and setup the associated inheritance table.
-    currentTable[fieldName] = table.remove(differentialCache) or {};
+    currentTable[fieldName] = table.remove(differentialCache) or {}
     if (masterTable and masterTable[fieldName]) then
-     differentialMap[currentTable[fieldName]] = masterTable[fieldName];
-     setmetatable(currentTable[fieldName], differential_mt);
+     differentialMap[currentTable[fieldName]] = masterTable[fieldName]
+     setmetatable(currentTable[fieldName], differential_mt)
     end
    end
   
    -- Move to the next field in the option path.
-   currentTable = currentTable[fieldName];
-   masterTable = masterTable and masterTable[fieldName];
+   currentTable = currentTable[fieldName]
+   masterTable = masterTable and masterTable[fieldName]
   end
 
   -- Set the option's value.
-  currentTable[optionName] = optionValue;
+  currentTable[optionName] = optionValue
   
  -- Override NOT needed.
  else
  -- Attempt to go to the option path in the current profile.
   for _, fieldName in ipairs(pathTable) do
-   currentTable = rawget(currentTable, fieldName);
-   if (not currentTable) then return; end
+   currentTable = rawget(currentTable, fieldName)
+   if (not currentTable) then return end
   end
 
   -- Clear the option from the path and remove any empty differential tables.
   if (currentTable) then
-   currentTable[optionName] = nil;
-   RemoveEmptyDifferentials(currentProfile);
+   currentTable[optionName] = nil
+   RemoveEmptyDifferentials(currentProfile)
   end
  end
 end
@@ -1244,20 +1388,20 @@ local function DisableBlizzardCombatText(isDisabled)
  -- Check if the text should be disabled.
  if (isDisabled) then
   -- Turn off Blizzard's default combat text.
-  SetCVar("enableCombatText", 0);
-  SHOW_COMBAT_TEXT = "0";
+  SetCVar("enableCombatText", 0)
+  SHOW_COMBAT_TEXT = "0"
   if (CombatText_UpdateDisplayedMessages) then
-   CombatText_UpdateDisplayedMessages();
+   CombatText_UpdateDisplayedMessages()
   end
  else
   -- Turn on Blizzard's default combat text.
-  SetCVar("enableCombatText", 1);
-  SHOW_COMBAT_TEXT = "1";
+  SetCVar("enableCombatText", 1)
+  SHOW_COMBAT_TEXT = "1"
   if (not IsAddOnLoaded("Blizzard_CombatText")) then
-   UIParentLoadAddOn("Blizzard_CombatText");
+   UIParentLoadAddOn("Blizzard_CombatText")
   end
   if (CombatText_UpdateDisplayedMessages) then
-   CombatText_UpdateDisplayedMessages();
+   CombatText_UpdateDisplayedMessages()
   end
  end  
 end
@@ -1267,35 +1411,35 @@ end
 -- Set the user disabled option
 -- ****************************************************************************
 local function SetOptionUserDisabled(isDisabled)
- savedVariables.userDisabled = isDisabled or nil;
+ savedVariables.userDisabled = isDisabled or nil
 
  -- Check if the mod is being set to disabled.
  if (isDisabled) then
   -- Disable the cooldowns, triggers, event parser, and main modules.
-  MikSBT.Cooldowns.Disable();
-  MikSBT.Triggers.Disable();
-  MikSBT.Parser.Disable();
-  MikSBT.Main.Disable();
+  MikSBT.Cooldowns.Disable()
+  MikSBT.Triggers.Disable()
+  MikSBT.Parser.Disable()
+  MikSBT.Main.Disable()
 
   -- Turn on the game's display of outgoing damage.
-  SetCVar("CombatDamage", 1);
+  SetCVar("CombatDamage", 1)
   
   -- Turn on the game's display of outgoing heals.
-  SetCVar("CombatHealing", 1);
+  SetCVar("CombatHealing", 1)
 
  else 
   -- Enable the main, event parser, triggers, and cooldowns modules.
-  MikSBT.Main.Enable();
-  MikSBT.Parser.Enable(); 
-  MikSBT.Triggers.Enable();
-  MikSBT.Cooldowns.UpdateEnableState();
+  MikSBT.Main.Enable()
+  MikSBT.Parser.Enable() 
+  MikSBT.Triggers.Enable()
+  MikSBT.Cooldowns.UpdateEnableState()
 
   -- Disable or enable game damage and healing based on the settings.
-  UpdateGameOptions();
+  UpdateGameOptions()
  end
 
  -- Toggle the game's floating combat text depending on mod's disable state.
- DisableBlizzardCombatText(not isDisabled);
+ DisableBlizzardCombatText(not isDisabled)
 end
 
 
@@ -1303,7 +1447,7 @@ end
 -- Returns whether or not the mod is disabled.
 -- ****************************************************************************
 local function IsModDisabled()
- return savedVariables.userDisabled;
+ return savedVariables.userDisabled
 end
 
 
@@ -1318,12 +1462,12 @@ local function UpdateProfiles()
  -- Loop through all the profiles.
  for profileName, profile in pairs(savedVariables.profiles) do
   -- Get numeric creation version.
-  local creationVersion = tonumber(select(3, string_find(tostring(profile.creationVersion), "(%d+%.%d+)")));
+  local creationVersion = tonumber(select(3, string_find(tostring(profile.creationVersion), "(%d+%.%d+)")))
 
   -- Delete triggers if upgrading from a version prior to 5.2.
   if (creationVersion < 5.2) then
-   profile.triggers = nil;
-   profile.creationVersion = MikSBT.VERSION .. "." .. MikSBT.SVN_REVISION;
+   profile.triggers = nil
+   profile.creationVersion = MikSBT.VERSION .. "." .. MikSBT.SVN_REVISION
   end
  end
 end
@@ -1336,24 +1480,24 @@ local function SelectProfile(profileName)
  -- Make sure the profile exists.
  if (savedVariables.profiles[profileName]) then
   -- Set the current profile name for the character to the one being selected.
-  savedVariablesPerChar.currentProfileName = profileName;
+  savedVariablesPerChar.currentProfileName = profileName
 
   -- Set the current profile pointer.
-  currentProfile = savedVariables.profiles[profileName];
-  module.currentProfile = currentProfile;
+  currentProfile = savedVariables.profiles[profileName]
+  module.currentProfile = currentProfile
   
   -- Clear the differential table map.
-  EraseTable(differentialMap);
+  EraseTable(differentialMap)
  
   -- Associate the current profile tables with the corresponding master profile entries.
-  AssociateDifferentialTables(currentProfile, masterProfile);
+  AssociateDifferentialTables(currentProfile, masterProfile)
  
   -- Disable or enable game damage and healing based on the settings.
-  UpdateGameOptions();
+  UpdateGameOptions()
 
   -- Update the scroll areas and triggers with the current profile settings. 
-  MikSBT.Animations.UpdateScrollAreas();
-  MikSBT.Triggers.UpdateTriggers();
+  MikSBT.Animations.UpdateScrollAreas()
+  MikSBT.Triggers.UpdateTriggers()
  end
 end
 
@@ -1363,12 +1507,12 @@ end
 -- ****************************************************************************
 local function CopyProfile(srcProfileName, destProfileName)
  -- Leave the function if the the destination profile name is invalid.
- if (not destProfileName or destProfileName == "") then return; end
+ if (not destProfileName or destProfileName == "") then return end
 
  -- Make sure the source profile exists and the destination profile doesn't.
  if (savedVariables.profiles[srcProfileName] and not savedVariables.profiles[destProfileName]) then
   -- Copy the profile.
-  savedVariables.profiles[destProfileName] = CopyTable(savedVariables.profiles[srcProfileName]);
+  savedVariables.profiles[destProfileName] = CopyTable(savedVariables.profiles[srcProfileName])
  end
 end
 
@@ -1378,18 +1522,18 @@ end
 -- ****************************************************************************
 local function DeleteProfile(profileName)
  -- Ignore the delete if the passed profile is the default one.
- if (profileName == DEFAULT_PROFILE_NAME) then return; end
+ if (profileName == DEFAULT_PROFILE_NAME) then return end
 
  -- Make sure the profile exists.
  if (savedVariables.profiles[profileName]) then
   -- Check if the profile being deleted is the current one.
   if (profileName == savedVariablesPerChar.currentProfileName) then
    -- Select the default profile.
-   SelectProfile(DEFAULT_PROFILE_NAME);
+   SelectProfile(DEFAULT_PROFILE_NAME)
   end
 
   -- Delete the profile.
-  savedVariables.profiles[profileName] = nil;
+  savedVariables.profiles[profileName] = nil
  end
 end
 
@@ -1399,27 +1543,27 @@ end
 -- ****************************************************************************
 local function ResetProfile(profileName, showOutput)
  -- Set the profile name to the current profile is one wasn't passed.
- if (not profileName) then profileName = savedVariablesPerChar.currentProfileName; end
+ if (not profileName) then profileName = savedVariablesPerChar.currentProfileName end
  
  -- Make sure the profile exists.
  if (savedVariables.profiles[profileName]) then
   -- Reset the profile.
-  EraseTable(savedVariables.profiles[profileName]);
+  EraseTable(savedVariables.profiles[profileName])
 
   -- Reset the profile's creation version.
-  savedVariables.profiles[profileName].creationVersion = MikSBT.VERSION .. "." .. MikSBT.SVN_REVISION;
+  savedVariables.profiles[profileName].creationVersion = MikSBT.VERSION .. "." .. MikSBT.SVN_REVISION
   
   
   -- Check if it's the current profile being reset.
   if (profileName == savedVariablesPerChar.currentProfileName) then
    -- Reselect the profile to update everything.
-   SelectProfile(profileName);
+   SelectProfile(profileName)
   end
 
   -- Check if the output text is to be shown.
   if (showOutput) then
    -- Print the profile reset string.
-   Print(profileName .. " " .. L.MSG_PROFILE_RESET, 0, 1, 0);
+   Print(profileName .. " " .. L.MSG_PROFILE_RESET, 0, 1, 0)
   end
  end 
 end
@@ -1430,50 +1574,66 @@ end
 -- ****************************************************************************
 local function InitSavedVariables()
  -- Set the saved variables per character to the value specified in the .toc file.
- savedVariablesPerChar = _G[SAVED_VARS_PER_CHAR_NAME];
+ savedVariablesPerChar = _G[SAVED_VARS_PER_CHAR_NAME]
 
  -- Check if there are no saved variables per character.
  if (not savedVariablesPerChar) then
   -- Create a new table to hold the saved variables per character, and set the .toc entry to it.
-  savedVariablesPerChar = {};
-  _G[SAVED_VARS_PER_CHAR_NAME] = savedVariablesPerChar;
+  savedVariablesPerChar = {}
+  _G[SAVED_VARS_PER_CHAR_NAME] = savedVariablesPerChar
 
   -- Set the current profile for the character to the default profile.
-  savedVariablesPerChar.currentProfileName = DEFAULT_PROFILE_NAME;
+  savedVariablesPerChar.currentProfileName = DEFAULT_PROFILE_NAME
  end
 
 
  -- Set the saved variables to the value specified in the .toc file.
- savedVariables = _G[SAVED_VARS_NAME];
+ savedVariables = _G[SAVED_VARS_NAME]
 
  -- Check if there are no saved variables.
  if (not savedVariables) then
   -- Create a new table to hold the saved variables, and set the .toc entry to it.
-  savedVariables = {};
-  _G[SAVED_VARS_NAME] = savedVariables;
+  savedVariables = {}
+  _G[SAVED_VARS_NAME] = savedVariables
 
   -- Create the profiles table and default profile.
-  savedVariablesPerChar.currentProfileName = DEFAULT_PROFILE_NAME;
-  savedVariables.profiles = {};
-  savedVariables.profiles[DEFAULT_PROFILE_NAME] = {};
+  savedVariablesPerChar.currentProfileName = DEFAULT_PROFILE_NAME
+  savedVariables.profiles = {}
+  savedVariables.profiles[DEFAULT_PROFILE_NAME] = {}
 
-  savedVariables.profiles[DEFAULT_PROFILE_NAME].creationVersion = MikSBT.VERSION .. "." .. MikSBT.SVN_REVISION;
+  savedVariables.profiles[DEFAULT_PROFILE_NAME].creationVersion = MikSBT.VERSION .. "." .. MikSBT.SVN_REVISION
   
  -- There are saved variables.
  else
   -- Updates profiles created by older versions.
-  UpdateProfiles();
+  UpdateProfiles()
  end
 
  -- Select the current profile for the character if it exists, otherwise select the default profile.
  if (savedVariables.profiles[savedVariablesPerChar.currentProfileName]) then
-  SelectProfile(savedVariablesPerChar.currentProfileName);
+  SelectProfile(savedVariablesPerChar.currentProfileName)
  else
-  SelectProfile(DEFAULT_PROFILE_NAME);
+  SelectProfile(DEFAULT_PROFILE_NAME)
+ end
+ 
+
+ -- Set the saved media to the value specified in the .toc file.
+ savedMedia = _G[SAVED_MEDIA_NAME]
+
+ -- Check if there is no saved media.
+ if (not savedMedia) then
+  -- Create a new table to hold the saved media, and set the .toc entry to it.
+  savedMedia = {}
+  _G[SAVED_MEDIA_NAME] = savedMedia
+
+  -- Create custom font and sounds tables.
+  savedMedia.fonts = {}
+  savedMedia.sounds = {}
  end
  
  -- Allow public access to saved variables.
- module.savedVariables = savedVariables;
+ module.savedVariables = savedVariables
+ module.savedMedia = savedMedia
 end
 
 
@@ -1484,15 +1644,15 @@ end
 -------------------------------------------------------------------------------
 
 -- Protected Variables. 
-module.masterProfile = masterProfile;
+module.masterProfile = masterProfile
 
 -- Protected Functions.
-module.InitSavedVariables			= InitSavedVariables;
-module.CopyProfile					= CopyProfile;
-module.DeleteProfile				= DeleteProfile;
-module.ResetProfile					= ResetProfile;
-module.SelectProfile				= SelectProfile;
-module.UpdateGameOptions			= UpdateGameOptions;
-module.SetOption					= SetOption;
-module.SetOptionUserDisabled		= SetOptionUserDisabled;
-module.IsModDisabled				= IsModDisabled;
+module.InitSavedVariables			= InitSavedVariables
+module.CopyProfile					= CopyProfile
+module.DeleteProfile				= DeleteProfile
+module.ResetProfile					= ResetProfile
+module.SelectProfile				= SelectProfile
+module.UpdateGameOptions			= UpdateGameOptions
+module.SetOption					= SetOption
+module.SetOptionUserDisabled		= SetOptionUserDisabled
+module.IsModDisabled				= IsModDisabled

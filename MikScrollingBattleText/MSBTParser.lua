@@ -4,9 +4,24 @@
 -------------------------------------------------------------------------------
 
 -- Create module and set its name.
-local module = {};
-local moduleName = "Parser";
-MikSBT[moduleName] = module;
+local module = {}
+local moduleName = "Parser"
+MikSBT[moduleName] = module
+
+
+-------------------------------------------------------------------------------
+-- Imports.
+-------------------------------------------------------------------------------
+
+-- Local references to various functions for faster access.
+local string_find = string.find
+local string_gmatch = string.gmatch
+local string_gsub = string.gsub
+local string_len = string.len
+local bit_band = bit.band
+local bit_bor = bit.bor
+local Print = MikSBT.Print
+local EraseTable = MikSBT.EraseTable
 
 
 -------------------------------------------------------------------------------
@@ -14,43 +29,43 @@ MikSBT[moduleName] = module;
 -------------------------------------------------------------------------------
 
 -- Bit flags.
-local AFFILIATION_MINE		= 0x00000001;
-local AFFILIATION_PARTY		= 0X00000002;
-local AFFILIATION_RAID		= 0X00000004;
-local AFFILIATION_OUTSIDER	= 0X00000008;
-local REACTION_FRIENDLY		= 0x00000010;
-local REACTION_NEUTRAL		= 0x00000020;
-local REACTION_HOSTILE		= 0x00000040;
-local CONTROL_HUMAN			= 0x00000100;
-local CONTROL_SERVER		= 0x00000200;
-local UNITTYPE_PLAYER		= 0x00000400;
-local UNITTYPE_NPC			= 0x00000800;
-local UNITTYPE_PET			= 0x00001000;
-local UNITTYPE_GUARDIAN		= 0x00002000;
-local UNITTYPE_OBJECT		= 0x00004000;
-local TARGET_TARGET			= 0x00010000;
-local TARGET_FOCUS			= 0x00020000;
-local OBJECT_NONE			= 0x80000000;
+local AFFILIATION_MINE		= 0x00000001
+local AFFILIATION_PARTY		= 0X00000002
+local AFFILIATION_RAID		= 0X00000004
+local AFFILIATION_OUTSIDER	= 0X00000008
+local REACTION_FRIENDLY		= 0x00000010
+local REACTION_NEUTRAL		= 0x00000020
+local REACTION_HOSTILE		= 0x00000040
+local CONTROL_HUMAN			= 0x00000100
+local CONTROL_SERVER		= 0x00000200
+local UNITTYPE_PLAYER		= 0x00000400
+local UNITTYPE_NPC			= 0x00000800
+local UNITTYPE_PET			= 0x00001000
+local UNITTYPE_GUARDIAN		= 0x00002000
+local UNITTYPE_OBJECT		= 0x00004000
+local TARGET_TARGET			= 0x00010000
+local TARGET_FOCUS			= 0x00020000
+local OBJECT_NONE			= 0x80000000
 
 -- Value when there is no GUID.
-local GUID_NONE				= "0x0000000000000000";
+local GUID_NONE				= "0x0000000000000000"
 
 -- The maximum number of buffs and debuffs that can be on a unit.
-local MAX_BUFFS = 16;
-local MAX_DEBUFFS = 40;
+local MAX_BUFFS = 16
+local MAX_DEBUFFS = 40
 
 -- Aura types.
-local AURA_TYPE_BUFF = "BUFF";
-local AURA_TYPE_DEBUFF = "DEBUFF";
+local AURA_TYPE_BUFF = "BUFF"
+local AURA_TYPE_DEBUFF = "DEBUFF"
 
 -- Update timings.
-local UNIT_MAP_UPDATE_DELAY = 0.2;
-local PET_UPDATE_DELAY = 1;
-local REFLECT_HOLD_TIME = 3;
+local UNIT_MAP_UPDATE_DELAY = 0.2
+local PET_UPDATE_DELAY = 1
+local REFLECT_HOLD_TIME = 3
 
 -- Commonly used flag combinations.
-local FLAGS_ME			= bit.bor(AFFILIATION_MINE, REACTION_FRIENDLY, CONTROL_HUMAN, UNITTYPE_PLAYER);
-local FLAGS_MY_GUARDIAN	= bit.bor(AFFILIATION_MINE, REACTION_FRIENDLY, CONTROL_HUMAN, UNITTYPE_GUARDIAN);
+local FLAGS_ME			= bit_bor(AFFILIATION_MINE, REACTION_FRIENDLY, CONTROL_HUMAN, UNITTYPE_PLAYER)
+local FLAGS_MY_GUARDIAN	= bit_bor(AFFILIATION_MINE, REACTION_FRIENDLY, CONTROL_HUMAN, UNITTYPE_GUARDIAN)
 
 
 -------------------------------------------------------------------------------
@@ -58,67 +73,47 @@ local FLAGS_MY_GUARDIAN	= bit.bor(AFFILIATION_MINE, REACTION_FRIENDLY, CONTROL_H
 -------------------------------------------------------------------------------
 
 -- Dynamically created frames for receiving events and tooltip info.
-local eventFrame;
+local eventFrame
 
 -- Name and GUID of the player.
-local playerName;
-local playerGUID;
+local playerName
+local playerGUID
 
 -- Used for timing between updates.
-local lastUnitMapUpdate = 0;
-local lastPetMapUpdate = 0;
+local lastUnitMapUpdate = 0
+local lastPetMapUpdate = 0
 
 -- Whether or not values that need to be updated after a delay are stale.
-local isUnitMapStale;
-local isPetMapStale;
+local isUnitMapStale
+local isPetMapStale
 
 -- Map of names to unit ids.
-local unitMap = {};
-local petMap = {};
-
--- Information about buffs and debuffs.
-local recentAuras = {};
-local currentAuras = {buffs = {}, debuffs = {}};
-local savedAuras = {buffs = {}, debuffs = {}};
-local aurasInitialized;
+local unitMap = {}
+local petMap = {}
 
 -- Map of functions to call for supported combat log events.
-local captureFuncs;
+local captureFuncs
 
 -- Events to parse even if the source or recipient is not the player or pet.
-local fullParseEvents;
+local fullParseEvents
 
 -- Information about global strings for CHAT_MSG_X events.
-local searchMap;
-local searchCaptureFuncs;
-local rareWords = {};
-local searchPatterns = {};
-local captureOrders = {};
+local searchMap
+local searchCaptureFuncs
+local rareWords = {}
+local searchPatterns = {}
+local captureOrders = {}
 
 -- Captured and parsed event data.
-local captureTable = {};
-local parserEvent = {};
+local captureTable = {}
+local parserEvent = {}
 
 -- List of functions to call when an event occurs.
-local handlers = {};
+local handlers = {}
 
 -- Holds information about reflected skills to track how much was reflected.
-local reflectedSkills = {};
-local reflectedTimes = {};
-
-
--------------------------------------------------------------------------------
--- Imports.
--------------------------------------------------------------------------------
-
--- Local references to certain functions for faster access.
-local string_find = string.find;
-local string_gmatch = string.gmatch;
-local string_gsub = string.gsub;
-local string_len = string.len;
-local bit_band = bit.band;
-local Print = MikSBT.Print;
-local EraseTable = MikSBT.EraseTable;
+local reflectedSkills = {}
+local reflectedTimes = {}
 
 
 -------------------------------------------------------------------------------
@@ -129,14 +124,14 @@ local EraseTable = MikSBT.EraseTable;
 -- Registers a function to be called when an event occurs.
 -- ****************************************************************************
 local function RegisterHandler(handler)
- handlers[handler] = true;
+ handlers[handler] = true
 end
 
 -- ****************************************************************************
 -- Unregisters a previously registered function.
 -- ****************************************************************************
 local function UnregisterHandler(handler)
- handlers[handler] = nil;
+ handlers[handler] = nil
 end
 
 
@@ -144,7 +139,7 @@ end
 -- Tests if any of the bits in the passed testFlags are set in the unit flags.
 -- ****************************************************************************
 local function TestFlagsAny(unitFlags, testFlags)
- if (bit_band(unitFlags, testFlags) > 0) then return true; end 
+ if (bit_band(unitFlags, testFlags) > 0) then return true end 
 end
 
 
@@ -152,7 +147,7 @@ end
 -- Tests if all of the passed testFlags are set in the unit flags.
 -- ****************************************************************************
 local function TestFlagsAll(unitFlags, testFlags)
- if (bit_band(unitFlags, testFlags) == testFlags) then return true; end
+ if (bit_band(unitFlags, testFlags) == testFlags) then return true end
 end
 
 
@@ -161,8 +156,8 @@ end
 -- ****************************************************************************
 local function SendParserEvent()
  for handler in pairs(handlers) do
-  local success, ret = pcall(handler, parserEvent);
-  if (not success) then geterrorhandler()(ret); end
+  local success, ret = pcall(handler, parserEvent)
+  if (not success) then geterrorhandler()(ret) end
  end
 end
 
@@ -173,31 +168,31 @@ end
 -- ****************************************************************************
 local function GlobalStringCompareFunc(globalStringNameOne, globalStringNameTwo)
  -- Get the global string for the passed names.
- local globalStringOne = _G[globalStringNameOne];
- local globalStringTwo = _G[globalStringNameTwo];
+ local globalStringOne = _G[globalStringNameOne]
+ local globalStringTwo = _G[globalStringNameTwo]
 
- local gsOneStripped = string_gsub(globalStringOne, "%%%d?%$?[sd]", "");
- local gsTwoStripped = string_gsub(globalStringTwo, "%%%d?%$?[sd]", "");
+ local gsOneStripped = string_gsub(globalStringOne, "%%%d?%$?[sd]", "")
+ local gsTwoStripped = string_gsub(globalStringTwo, "%%%d?%$?[sd]", "")
 
  -- Check if the stripped global strings are the same length.
  if (string_len(gsOneStripped) == string_len(gsTwoStripped)) then
   -- Count the number of captures in each string.
-  local numCapturesOne = 0;
+  local numCapturesOne = 0
   for _ in string_gmatch(globalStringOne, "%%%d?%$?[sd]") do
-   numCapturesOne = numCapturesOne + 1;
+   numCapturesOne = numCapturesOne + 1
   end
 
-  local numCapturesTwo = 0;
+  local numCapturesTwo = 0
   for _ in string_gmatch(globalStringTwo, "%%%d?%$?[sd]") do
-   numCapturesTwo = numCapturesTwo + 1;
+   numCapturesTwo = numCapturesTwo + 1
   end
   
   -- Return the global string with the least captures.
-  return numCapturesOne < numCapturesTwo;
+  return numCapturesOne < numCapturesTwo
 
  else
   -- Return the longest global string.
-  return string_len(gsOneStripped) > string_len(gsTwoStripped);
+  return string_len(gsOneStripped) > string_len(gsTwoStripped)
  end
 end
 
@@ -209,41 +204,41 @@ end
 -- ****************************************************************************
 local function ConvertGlobalString(globalStringName)
  -- Don't do anything if the passed global string does not exist.
- local globalString = _G[globalStringName];
- if (globalString == nil) then return; end
+ local globalString = _G[globalStringName]
+ if (globalString == nil) then return end
 
  -- Return the cached conversion if it has already been converted.
  if (searchPatterns[globalStringName]) then
-  return searchPatterns[globalStringName], captureOrders[globalStringName];
+  return searchPatterns[globalStringName], captureOrders[globalStringName]
  end
 
  -- Hold the capture order.
- local captureOrder;
- local numCaptures = 0;
+ local captureOrder
+ local numCaptures = 0
 
  -- Escape lua magic chars.
- local searchPattern = string.gsub(globalString, "([%^%(%)%.%[%]%*%+%-%?])", "%%%1");
+ local searchPattern = string.gsub(globalString, "([%^%(%)%.%[%]%*%+%-%?])", "%%%1")
 
  -- Loop through each capture and setup the capture order.
  for captureIndex in string_gmatch(searchPattern, "%%(%d)%$[sd]") do
-  if (not captureOrder) then captureOrder = {}; end
-  numCaptures = numCaptures + 1;
-  captureOrder[tonumber(captureIndex)] = numCaptures;
+  if (not captureOrder) then captureOrder = {} end
+  numCaptures = numCaptures + 1
+  captureOrder[tonumber(captureIndex)] = numCaptures
  end
  
  -- Convert %1$s / %s to (.+) and %1$d / %d to (%d+).
- searchPattern = string.gsub(searchPattern, "%%%d?%$?s", "(.+)");
- searchPattern = string.gsub(searchPattern, "%%%d?%$?d", "(%%d+)");
+ searchPattern = string.gsub(searchPattern, "%%%d?%$?s", "(.+)")
+ searchPattern = string.gsub(searchPattern, "%%%d?%$?d", "(%%d+)")
 
  -- Escape any remaining $ chars.
- searchPattern = string.gsub(searchPattern, "%$", "%%$");
+ searchPattern = string.gsub(searchPattern, "%$", "%%$")
  
  -- Cache the converted pattern and capture order.
- searchPatterns[globalStringName] = searchPattern;
- captureOrders[globalStringName] = captureOrder;
+ searchPatterns[globalStringName] = searchPattern
+ captureOrders[globalStringName] = captureOrder
 
  -- Return the converted global string.
- return searchPattern, captureOrder;
+ return searchPattern, captureOrder
 end
 
 
@@ -253,22 +248,22 @@ end
 local function CaptureData(matchStart, matchEnd, c1, c2, c3, c4, c5, c6, c7, c8, c9)
  -- Check if a match was found.
  if (matchStart) then
-  captureTable[1] = c1;
-  captureTable[2] = c2;
-  captureTable[3] = c3;
-  captureTable[4] = c4;
-  captureTable[5] = c5;
-  captureTable[6] = c6;
-  captureTable[7] = c7;
-  captureTable[8] = c8;
-  captureTable[9] = c9;
+  captureTable[1] = c1
+  captureTable[2] = c2
+  captureTable[3] = c3
+  captureTable[4] = c4
+  captureTable[5] = c5
+  captureTable[6] = c6
+  captureTable[7] = c7
+  captureTable[8] = c8
+  captureTable[9] = c9
 
   -- Return the last position of the match.
-  return matchEnd;
+  return matchEnd
  end
 
  -- Don't return anything since no match was found.
- return nil;
+ return nil
 end
 
 
@@ -276,11 +271,11 @@ end
 -- Reorders the capture table according to the passed capture order.
 -- ****************************************************************************
 local function ReorderCaptures(capOrder)
- local t = captureTable;
+ local t = captureTable
  
  t[1], t[2], t[3], t[4], t[5], t[6], t[7], t[8], t[9] = 
  t[capOrder[1]], t[capOrder[2]], t[capOrder[3]], t[capOrder[4]], t[capOrder[5]], t[capOrder[6]],
- t[capOrder[7]], t[capOrder[8]], t[capOrder[9]];
+ t[capOrder[7]], t[capOrder[8]], t[capOrder[9]]
 end
 
 
@@ -289,42 +284,42 @@ end
 -- ****************************************************************************
 local function ParseSearchMessage(event, combatMessage)
  -- Leave if there is no map of global strings to search for the event.
- if (not searchMap[event]) then return; end
+ if (not searchMap[event]) then return end
 
  -- Loop through all of the global strings to search for the event.
  for _, globalStringName in pairs(searchMap[event]) do
   -- Make sure the capture func for the global string exists.
-  local captureFunc = searchCaptureFuncs[globalStringName];
+  local captureFunc = searchCaptureFuncs[globalStringName]
   if (captureFunc) then
    -- First, check if there is a rare word for the global string and it is in the combat
    -- message since a plain text search is faster than doing a full regular expression search.
    if (not rareWords[globalStringName] or string_find(combatMessage, rareWords[globalStringName], 1, true)) then
     -- Get capture data.
-    local matchEnd = CaptureData(string_find(combatMessage, searchPatterns[globalStringName]));
+    local matchEnd = CaptureData(string_find(combatMessage, searchPatterns[globalStringName]))
   
 
     -- Check if a match was found. 
     if (matchEnd) then
      -- Check if there is a capture order for the global string and reorder the data accordingly.
-     if (captureOrders[globalStringName]) then ReorderCaptures(captureOrders[globalStringName]); end
+     if (captureOrders[globalStringName]) then ReorderCaptures(captureOrders[globalStringName]) end
 
      -- Erase the parser event table..
-     for key in pairs(parserEvent) do parserEvent[key] = nil; end
+     for key in pairs(parserEvent) do parserEvent[key] = nil end
 
      -- Populate fields that exist for all events.
-     parserEvent.sourceGUID = GUID_NONE;
-     parserEvent.sourceFlags = OBJECT_NONE;
-     parserEvent.recipientGUID = playerGUID;
-     parserEvent.recipientName = playerName;
-     parserEvent.recipientFlags = FLAGS_ME;
-     parserEvent.recipientUnit = "player";
+     parserEvent.sourceGUID = GUID_NONE
+     parserEvent.sourceFlags = OBJECT_NONE
+     parserEvent.recipientGUID = playerGUID
+     parserEvent.recipientName = playerName
+     parserEvent.recipientFlags = FLAGS_ME
+     parserEvent.recipientUnit = "player"
 	 
      -- Map the captured arguments into the parser event table.
-     captureFunc(parserEvent, captureTable);
+     captureFunc(parserEvent, captureTable)
 
      -- Send the event.
-     SendParserEvent();
-     return;
+     SendParserEvent()
+     return
     end -- Match found.
    end -- Fast plain search.
   end -- Capture func is valid.
@@ -337,89 +332,73 @@ end
 -- ****************************************************************************
 local function ParseLogMessage(timestamp, event, sourceGUID, sourceName, sourceFlags, recipientGUID, recipientName, recipientFlags, ...)
  -- Make sure the capture function for the event exists.
- local captureFunc = captureFuncs[event];
- if (not captureFunc) then return; end
+ local captureFunc = captureFuncs[event]
+ if (not captureFunc) then return end
 
  -- Look for spells the player reflected and make the damage belong to the player.
  if (sourceGUID == recipientGUID and reflectedTimes[recipientGUID] and event == "SPELL_DAMAGE") then
-  local skillID = ...;
+  local skillID = ...
   if (skillID == reflectedSkills[recipientGUID]) then
    -- Clear the reflected skill entries.
-   reflectedTimes[recipientGUID] = nil;
-   reflectedSkills[recipientGUID] = nil;
+   reflectedTimes[recipientGUID] = nil
+   reflectedSkills[recipientGUID] = nil
 
    -- Change the source to the player.
-   sourceGUID = playerGUID;
-   sourceName = playerName;
-   sourceFlags = FLAGS_ME;
+   sourceGUID = playerGUID
+   sourceName = playerName
+   sourceFlags = FLAGS_ME
   end
  end
 
  -- Attempt to figure out the source and recipient unitIDs.
- local sourceUnit = unitMap[sourceGUID] or petMap[sourceGUID];
- local recipientUnit = unitMap[recipientGUID] or petMap[recipientGUID];
+ local sourceUnit = unitMap[sourceGUID] or petMap[sourceGUID]
+ local recipientUnit = unitMap[recipientGUID] or petMap[recipientGUID]
 
  -- Treat player guardians like pets. 
- if (not sourceUnit and TestFlagsAll(sourceFlags, FLAGS_MY_GUARDIAN)) then sourceUnit = "pet"; end
- if (not recipientUnit and TestFlagsAll(recipientFlags, FLAGS_MY_GUARDIAN)) then recipientUnit = "pet"; end
+ if (not sourceUnit and TestFlagsAll(sourceFlags, FLAGS_MY_GUARDIAN)) then sourceUnit = "pet" end
+ if (not recipientUnit and TestFlagsAll(recipientFlags, FLAGS_MY_GUARDIAN)) then recipientUnit = "pet" end
 
  -- Ignore the event if it is not one that should be fully parsed and it doesn't pertain to the player
  -- or pet.  This is done to avoid wasting time parsing events that won't be used like damage that other
  -- players are doing.
  if (not fullParseEvents[event] and sourceUnit ~= "player" and sourceUnit ~= "pet" and
      recipientUnit ~= "player" and recipientUnit ~= "pet") then
-  return;
+  return
  end
 
  -- Erase the parser event table.
- for k in pairs(parserEvent) do parserEvent[k] = nil; end
+ for k in pairs(parserEvent) do parserEvent[k] = nil end
 
  -- Populate fields that exist for all events.
- parserEvent.sourceGUID = sourceGUID;
- parserEvent.sourceName = sourceName;
- parserEvent.sourceFlags = sourceFlags;
- parserEvent.recipientGUID = recipientGUID;
- parserEvent.recipientName = recipientName;
- parserEvent.recipientFlags = recipientFlags; 
- parserEvent.sourceUnit = sourceUnit;
- parserEvent.recipientUnit = recipientUnit;
+ parserEvent.sourceGUID = sourceGUID
+ parserEvent.sourceName = sourceName
+ parserEvent.sourceFlags = sourceFlags
+ parserEvent.recipientGUID = recipientGUID
+ parserEvent.recipientName = recipientName
+ parserEvent.recipientFlags = recipientFlags 
+ parserEvent.sourceUnit = sourceUnit
+ parserEvent.recipientUnit = recipientUnit
  
  -- Map the local arguments into the parser event table.
- captureFunc(parserEvent, ...);
-
- -- Add new auras parsed from the combat log to a list of recent auras so they are not
- -- duplicated by the aura change event.
- local eventType = parserEvent.eventType;
- if (eventType == "aura" and recipientUnit == "player") then
-  local skillName = parserEvent.skillName;
-  if (skillName) then recentAuras[skillName] = true; end
-
- -- Calculate the overhealing on the healed unit if unit is in the party/raid.
- elseif (eventType == "heal" and recipientUnit) then
-  -- Get the unit ID of the recipient.
-  local healthMissing = UnitHealthMax(recipientUnit) - UnitHealth(recipientUnit);
-  local overhealAmount = parserEvent.amount - healthMissing;
-
-  -- Populate the overheal amount if any occurred.
-  if (overhealAmount > 0) then parserEvent.overhealAmount = overhealAmount; end 
+ captureFunc(parserEvent, ...)
 
  -- Track reflected skills.
- elseif (eventType == "miss" and parserEvent.missType == "REFLECT" and recipientUnit == "player") then
+ if (parserEvent.eventType == "miss" and parserEvent.missType == "REFLECT" and recipientUnit == "player") then
   -- Clean up old entries.
   for guid, reflectTime in pairs(reflectedTimes) do
    if (timestamp - reflectTime > REFLECT_HOLD_TIME) then
-    reflectedTimes[guid] = nil;
-    reflectedSkills[guid] = nil;
+    reflectedTimes[guid] = nil
+    reflectedSkills[guid] = nil
    end
   end
 
   -- Save the time of the reflect and the reflected skillID.
-  reflectedTimes[sourceGUID] = timestamp;
-  reflectedSkills[sourceGUID] = parserEvent.skillID;
+  reflectedTimes[sourceGUID] = timestamp
+  reflectedSkills[sourceGUID] = parserEvent.skillID
  end
 
  -- Send the event.
- SendParserEvent();
+ SendParserEvent()
 end
 
 
@@ -438,7 +417,7 @@ local function CreateFullParseList()
   SPELL_AURA_APPLIED_DOSE = true,
   SPELL_AURA_REMOVED_DOSE = true,
   SPELL_CAST_START = true,
- };
+ }
 end
 
 
@@ -467,18 +446,18 @@ local function CreateSearchMap()
   
   -- Money.
   CHAT_MSG_MONEY = {"YOU_LOOT_MONEY", "LOOT_MONEY_SPLIT"},
- };
+ }
 
 
  -- Loop through each of the events.
  for event, map in pairs(searchMap) do
   -- Remove invalid global strings.
   for i = #map, 1, -1 do
-   if (not _G[map[i]]) then table.remove(map, i); end
+   if (not _G[map[i]]) then table.remove(map, i) end
   end
 
   -- Sort the global strings from most to least specific.
-  table.sort(map, GlobalStringCompareFunc);
+  table.sort(map, GlobalStringCompareFunc)
  end
 end
 
@@ -489,37 +468,37 @@ end
 local function CreateSearchCaptureFuncs()
  searchCaptureFuncs = {
   -- Honor events.
-  COMBATLOG_HONORAWARD = function (p, c) p.eventType, p.amount = "honor", c[1]; end,
-  COMBATLOG_HONORGAIN = function (p, c) p.eventType, p.sourceName, p.sourceRank, p.amount = "honor", c[1], c[2], c[3]; end,
+  COMBATLOG_HONORAWARD = function (p, c) p.eventType, p.amount = "honor", c[1] end,
+  COMBATLOG_HONORGAIN = function (p, c) p.eventType, p.sourceName, p.sourceRank, p.amount = "honor", c[1], c[2], c[3] end,
 
   -- Experience events.
-  COMBATLOG_XPGAIN_FIRSTPERSON = function (p, c) p.eventType, p.sourceName, p.amount = "experience", c[1], c[2]; end,
-  COMBATLOG_XPGAIN_FIRSTPERSON_UNNAMED = function (p, c) p.eventType, p.amount = "experience", c[1]; end,
+  COMBATLOG_XPGAIN_FIRSTPERSON = function (p, c) p.eventType, p.sourceName, p.amount = "experience", c[1], c[2] end,
+  COMBATLOG_XPGAIN_FIRSTPERSON_UNNAMED = function (p, c) p.eventType, p.amount = "experience", c[1] end,
 
   -- Reputation events.
-  FACTION_STANDING_DECREASED = function (p, c) p.eventType, p.isLoss, p.factionName, p.amount = "reputation", true, c[1], c[2]; end,
-  FACTION_STANDING_INCREASED = function (p, c) p.eventType, p.factionName, p.amount = "reputation", c[1], c[2]; end,
+  FACTION_STANDING_DECREASED = function (p, c) p.eventType, p.isLoss, p.factionName, p.amount = "reputation", true, c[1], c[2] end,
+  FACTION_STANDING_INCREASED = function (p, c) p.eventType, p.factionName, p.amount = "reputation", c[1], c[2] end,
 
   -- Proficiency events.
-  SKILL_RANK_UP = function (p, c) p.eventType, p.skillName, p.amount = "proficiency", c[1], c[2]; end,
+  SKILL_RANK_UP = function (p, c) p.eventType, p.skillName, p.amount = "proficiency", c[1], c[2] end,
 
   -- Loot events.
-  LOOT_ITEM_CREATED_SELF = function (p, c) p.eventType, p.itemLink, p.amount = "loot", c[1], c[2]; end,
-  LOOT_MONEY_SPLIT = function (p, c) p.eventType, p.isMoney, p.moneyString = "loot", true, c[1]; end,
- };
+  LOOT_ITEM_CREATED_SELF = function (p, c) p.eventType, p.itemLink, p.amount = "loot", c[1], c[2] end,
+  LOOT_MONEY_SPLIT = function (p, c) p.eventType, p.isMoney, p.moneyString = "loot", true, c[1] end,
+ }
 
- searchCaptureFuncs["LOOT_ITEM_CREATED_SELF_MULTIPLE"] = searchCaptureFuncs["LOOT_ITEM_CREATED_SELF"];
- searchCaptureFuncs["LOOT_ITEM_PUSHED_SELF"] = searchCaptureFuncs["LOOT_ITEM_CREATED_SELF"];
- searchCaptureFuncs["LOOT_ITEM_PUSHED_SELF_MULTIPLE"] = searchCaptureFuncs["LOOT_ITEM_CREATED_SELF"];
- searchCaptureFuncs["LOOT_ITEM_SELF"] = searchCaptureFuncs["LOOT_ITEM_CREATED_SELF"];
- searchCaptureFuncs["LOOT_ITEM_SELF_MULTIPLE"] = searchCaptureFuncs["LOOT_ITEM_CREATED_SELF"];
- searchCaptureFuncs["YOU_LOOT_MONEY"] = searchCaptureFuncs["LOOT_MONEY_SPLIT"];
+ searchCaptureFuncs["LOOT_ITEM_CREATED_SELF_MULTIPLE"] = searchCaptureFuncs["LOOT_ITEM_CREATED_SELF"]
+ searchCaptureFuncs["LOOT_ITEM_PUSHED_SELF"] = searchCaptureFuncs["LOOT_ITEM_CREATED_SELF"]
+ searchCaptureFuncs["LOOT_ITEM_PUSHED_SELF_MULTIPLE"] = searchCaptureFuncs["LOOT_ITEM_CREATED_SELF"]
+ searchCaptureFuncs["LOOT_ITEM_SELF"] = searchCaptureFuncs["LOOT_ITEM_CREATED_SELF"]
+ searchCaptureFuncs["LOOT_ITEM_SELF_MULTIPLE"] = searchCaptureFuncs["LOOT_ITEM_CREATED_SELF"]
+ searchCaptureFuncs["YOU_LOOT_MONEY"] = searchCaptureFuncs["LOOT_MONEY_SPLIT"]
 
  -- Print an error message for each global string that isn't found and remove it from the map.
  for globalStringName in pairs(searchCaptureFuncs) do
   if (not _G[globalStringName]) then
-   Print("Unable to find global string: " .. globalStringName, 1, 0, 0);
-   searchCaptureFuncs[globalStringName] = nil;
+   Print("Unable to find global string: " .. globalStringName, 1, 0, 0)
+   searchCaptureFuncs[globalStringName] = nil
   end
  end
 end
@@ -530,37 +509,37 @@ end
 -- ****************************************************************************
 local function FindRareWords()
  -- Hold the number of times each word appears in all the global strings.
- local wordCounts = {};
+ local wordCounts = {}
 
  -- Loop through all of the supported global strings.
  for globalStringName in pairs(searchCaptureFuncs) do
   -- Strip out all of the formatting codes.
-  local strippedGS = string.gsub(_G[globalStringName], "%%%d?%$?[sd]", "");
+  local strippedGS = string.gsub(_G[globalStringName], "%%%d?%$?[sd]", "")
 
   -- Count how many times each word appears in the global string.
   for word in string_gmatch(strippedGS, "%w+") do
-   wordCounts[word] = (wordCounts[word] or 0) + 1;
+   wordCounts[word] = (wordCounts[word] or 0) + 1
   end
  end
 
 
  -- Loop through all of the supported global strings.
  for globalStringName in pairs(searchCaptureFuncs) do
-  local leastSeen, rarestWord;
+  local leastSeen, rarestWord
 
   -- Strip out all of the formatting codes.
-  local strippedGS = string.gsub(_G[globalStringName], "%%%d?%$?[sd]", "");
+  local strippedGS = string.gsub(_G[globalStringName], "%%%d?%$?[sd]", "")
 
   -- Find the rarest word in the global string.
   for word in string_gmatch(strippedGS, "%w+") do
    if (not leastSeen or wordCounts[word] < leastSeen) then
-    leastSeen = wordCounts[word];
-    rarestWord = word;
+    leastSeen = wordCounts[word]
+    rarestWord = word
    end
   end
 
   -- Set the rarest word.
-  rareWords[globalStringName] = rarestWord;
+  rareWords[globalStringName] = rarestWord
  end
 end
 
@@ -574,7 +553,7 @@ local function ValidateRareWords()
  for globalStringName, rareWord in pairs(rareWords) do
   -- Remove the entry if the rare word isn't found in the associated global string.
   if (not string_find(_G[globalStringName], rareWord, 1, true)) then
-   rareWords[globalStringName] = nil;
+   rareWords[globalStringName] = nil
   end
  end
 end
@@ -588,7 +567,7 @@ local function ConvertGlobalStrings()
  for globalStringName in pairs(searchCaptureFuncs) do
   -- Get the global string converted to a lua search pattern and prepend an anchor to
   -- speed up searching.
-  searchPatterns[globalStringName] = "^" .. ConvertGlobalString(globalStringName);
+  searchPatterns[globalStringName] = "^" .. ConvertGlobalString(globalStringName)
  end
 end
 
@@ -599,164 +578,66 @@ end
 local function CreateCaptureFuncs()
  captureFuncs = {
   -- Damage events.
-  SWING_DAMAGE = function (p, ...) p.eventType, p.amount, p.damageType, p.resistAmount, p.blockAmount, p.absorbAmount, p.isCrit, p.isGlancing, p.isCrushing = "damage", ...; end,
-  RANGE_DAMAGE = function (p, ...) p.eventType, p.isRange, p.skillID, p.skillName, p.skillSchool, p.amount, p.damageType, p.resistAmount, p.blockAmount, p.absorbAmount, p.isCrit, p.isGlancing, p.isCrushing = "damage", true, ...; end,
-  SPELL_DAMAGE = function (p, ...) p.eventType, p.skillID, p.skillName, p.skillSchool, p.amount, p.damageType, p.resistAmount, p.blockAmount, p.absorbAmount, p.isCrit, p.isGlancing, p.isCrushing = "damage", ...; end,
-  SPELL_PERIODIC_DAMAGE = function (p, ...) p.eventType, p.isDoT, p.skillID, p.skillName, p.skillSchool, p.amount, p.damageType, p.resistAmount, p.blockAmount, p.absorbAmount, p.isCrit, p.isGlancing, p.isCrushing = "damage", true, ...; end,
-  DAMAGE_SHIELD = function (p, ...) p.eventType, p.isDamageShield, p.skillID, p.skillName, p.skillSchool, p.amount, p.damageType, p.resistAmount, p.blockAmount, p.absorbAmount, p.isCrit, p.isGlancing, p.isCrushing = "damage", true, ...; end,
+  SWING_DAMAGE = function (p, ...) p.eventType, p.amount, p.overkillAmount, p.damageType, p.resistAmount, p.blockAmount, p.absorbAmount, p.isCrit, p.isGlancing, p.isCrushing = "damage", ... end,
+  RANGE_DAMAGE = function (p, ...) p.eventType, p.isRange, p.skillID, p.skillName, p.skillSchool, p.amount, p.overkillAmount, p.damageType, p.resistAmount, p.blockAmount, p.absorbAmount, p.isCrit, p.isGlancing, p.isCrushing = "damage", true, ... end,
+  SPELL_DAMAGE = function (p, ...) p.eventType, p.skillID, p.skillName, p.skillSchool, p.amount, p.overkillAmount, p.damageType, p.resistAmount, p.blockAmount, p.absorbAmount, p.isCrit, p.isGlancing, p.isCrushing = "damage", ... end,
+  SPELL_PERIODIC_DAMAGE = function (p, ...) p.eventType, p.isDoT, p.skillID, p.skillName, p.skillSchool, p.amount, p.overkillAmount, p.damageType, p.resistAmount, p.blockAmount, p.absorbAmount, p.isCrit, p.isGlancing, p.isCrushing = "damage", true, ... end,
+  DAMAGE_SHIELD = function (p, ...) p.eventType, p.isDamageShield, p.skillID, p.skillName, p.skillSchool, p.amount, p.overkillAmount, p.damageType, p.resistAmount, p.blockAmount, p.absorbAmount, p.isCrit, p.isGlancing, p.isCrushing = "damage", true, ... end,
 
   -- Miss events.
-  SWING_MISSED = function (p, ...) p.eventType, p.missType = "miss", ...; end,
-  RANGE_MISSED = function (p, ...) p.eventType, p.isRange, p.skillID, p.skillName, p.skillSchool, p.missType = "miss", true, ...; end,
-  SPELL_MISSED = function (p, ...) p.eventType, p.skillID, p.skillName, p.skillSchool, p.missType = "miss", ...; end,
-  SPELL_DISPEL_FAILED = function (p, ...) p.eventType, p.missType, p.skillID, p.skillName, p.skillSchool, p.extraSkillID, p.extraSkillName, p.extraSkillSchool = "miss", "RESIST", ...; end,
-  DAMAGE_SHIELD_MISSED = function (p, ...) p.eventType, p.isDamageShield, p.skillID, p.skillName, p.skillSchool, p.missType = "miss", true, ...; end,
+  SWING_MISSED = function (p, ...) p.eventType, p.missType, p.amount = "miss", ... end,
+  RANGE_MISSED = function (p, ...) p.eventType, p.isRange, p.skillID, p.skillName, p.skillSchool, p.missType, p.amount = "miss", true, ... end,
+  SPELL_MISSED = function (p, ...) p.eventType, p.skillID, p.skillName, p.skillSchool, p.missType, p.amount = "miss", ... end,
+  DAMAGE_SHIELD_MISSED = function (p, ...) p.eventType, p.isDamageShield, p.skillID, p.skillName, p.skillSchool, p.missType, p.amount = "miss", true, ... end,
+  SPELL_DISPEL_FAILED = function (p, ...) p.eventType, p.missType, p.skillID, p.skillName, p.skillSchool, p.extraSkillID, p.extraSkillName, p.extraSkillSchool = "miss", "RESIST", ... end,
 
   -- Heal events.
-  SPELL_HEAL = function (p, ...) p.eventType, p.skillID, p.skillName, p.skillSchool, p.amount, p.isCrit = "heal", ...; end,
-  SPELL_PERIODIC_HEAL = function (p, ...) p.eventType, p.isHoT, p.skillID, p.skillName, p.skillSchool, p.amount, p.isCrit = "heal", true, ...; end,
+  SPELL_HEAL = function (p, ...) p.eventType, p.skillID, p.skillName, p.skillSchool, p.amount, p.overhealAmount, p.isCrit = "heal", ... end,
+  SPELL_PERIODIC_HEAL = function (p, ...) p.eventType, p.isHoT, p.skillID, p.skillName, p.skillSchool, p.amount, p.overhealAmount, p.isCrit = "heal", true, ... end,
   
   -- Environmental events.
-  ENVIRONMENTAL_DAMAGE = function (p, ...) p.eventType, p.hazardType, p.amount, p.damageType, p.resistAmount, p.blockAmount, p.absorbAmount, p.isCrit, p.isGlancing, p.isCrushing = "environmental", ...; end,
+  ENVIRONMENTAL_DAMAGE = function (p, ...) p.eventType, p.hazardType, p.amount, p.overkillAmount, p.damageType, p.resistAmount, p.blockAmount, p.absorbAmount, p.isCrit, p.isGlancing, p.isCrushing = "environmental", ... end,
 
   -- Power events.
-  SPELL_ENERGIZE = function (p, ...) p.eventType, p.isGain, p.skillID, p.skillName, p.skillSchool, p.amount, p.powerType = "power", true, ...; end,
-  SPELL_DRAIN = function (p, ...) p.eventType, p.isDrain, p.skillID, p.skillName, p.skillSchool, p.amount, p.powerType, p.extraAmount = "power", true, ...; end,
-  SPELL_LEECH = function (p, ...) p.eventType, p.isLeech, p.skillID, p.skillName, p.skillSchool, p.amount, p.powerType, p.extraAmount = "power", true, ...; end,
+  SPELL_ENERGIZE = function (p, ...) p.eventType, p.isGain, p.skillID, p.skillName, p.skillSchool, p.amount, p.powerType = "power", true, ... end,
+  SPELL_DRAIN = function (p, ...) p.eventType, p.isDrain, p.skillID, p.skillName, p.skillSchool, p.amount, p.powerType, p.extraAmount = "power", true, ... end,
+  SPELL_LEECH = function (p, ...) p.eventType, p.isLeech, p.skillID, p.skillName, p.skillSchool, p.amount, p.powerType, p.extraAmount = "power", true, ... end,
 
   -- Interrupt events.
-  SPELL_INTERRUPT = function (p, ...) p.eventType, p.skillID, p.skillName, p.skillSchool, p.extraSkillID, p.extraSkillName, p.extraSkillSchool = "interrupt", ...; end,
+  SPELL_INTERRUPT = function (p, ...) p.eventType, p.skillID, p.skillName, p.skillSchool, p.extraSkillID, p.extraSkillName, p.extraSkillSchool = "interrupt", ... end,
   
   -- Aura events.
-  SPELL_AURA_APPLIED = function (p, ...) p.eventType, p.amount, p.skillID, p.skillName, p.skillSchool, p.auraType = "aura", 1, ...; end,
-  SPELL_AURA_APPLIED_DOSE = function (p, ...) p.eventType, p.skillID, p.skillName, p.skillSchool, p.auraType, p.amount = "aura", ...; end,
-  SPELL_AURA_REMOVED = function (p, ...) p.eventType, p.isFade, p.amount, p.skillID, p.skillName, p.skillSchool, p.auraType = "aura", true, 1, ...; end,
-  SPELL_AURA_REMOVED_DOSE = function (p, ...) p.eventType, p.isFade, p.skillID, p.skillName, p.skillSchool, p.auraType, p.amount = "aura", true, ...; end,
+  SPELL_AURA_APPLIED = function (p, ...) p.eventType, p.amount, p.skillID, p.skillName, p.skillSchool, p.auraType = "aura", 1, ... end,
+  SPELL_AURA_APPLIED_DOSE = function (p, ...) p.eventType, p.skillID, p.skillName, p.skillSchool, p.auraType, p.amount = "aura", ... end,
+  SPELL_AURA_REMOVED = function (p, ...) p.eventType, p.isFade, p.amount, p.skillID, p.skillName, p.skillSchool, p.auraType = "aura", true, 1, ... end,
+  SPELL_AURA_REMOVED_DOSE = function (p, ...) p.eventType, p.isFade, p.skillID, p.skillName, p.skillSchool, p.auraType, p.amount = "aura", true, ... end,
 
   -- Enchant events.
-  ENCHANT_APPLIED = function (p, ...) p.eventType, p.skillName, p.itemID, p.itemName = "enchant", ...; end,
-  ENCHANT_REMOVED = function (p, ...) p.eventType, p.isFade, p.skillName, p.itemID, p.itemName = "enchant", true, ...; end,
+  ENCHANT_APPLIED = function (p, ...) p.eventType, p.skillName, p.itemID, p.itemName = "enchant", ... end,
+  ENCHANT_REMOVED = function (p, ...) p.eventType, p.isFade, p.skillName, p.itemID, p.itemName = "enchant", true, ... end,
   
   -- Dispel events.
-  SPELL_DISPEL = function (p, ...) p.eventType, p.skillID, p.skillName, p.skillSchool, p.extraSkillID, p.extraSkillName, p.extraSkillSchool, p.auraType = "dispel", ...; end,
+  SPELL_DISPEL = function (p, ...) p.eventType, p.skillID, p.skillName, p.skillSchool, p.extraSkillID, p.extraSkillName, p.extraSkillSchool, p.auraType = "dispel", ... end,
 
   -- Cast events.
-  SPELL_CAST_START = function (p, ...) p.eventType, p.skillID, p.skillName, p.skillSchool = "cast", ...; end,
+  SPELL_CAST_START = function (p, ...) p.eventType, p.skillID, p.skillName, p.skillSchool = "cast", ... end,
 
   -- Kill events.
-  PARTY_KILL = function (p, ...) p.eventType = "kill"; end,
+  PARTY_KILL = function (p, ...) p.eventType = "kill" end,
   
   -- Extra Attack events.
-  SPELL_EXTRA_ATTACKS = function (p, ...) p.eventType, p.skillID, p.skillName, p.skillSchool, p.amount = "extraattacks", ...; end,
- };
+  SPELL_EXTRA_ATTACKS = function (p, ...) p.eventType, p.skillID, p.skillName, p.skillSchool, p.amount = "extraattacks", ... end,
+ }
 
  captureFuncs["DAMAGE_SPLIT"] = captureFuncs["SPELL_DAMAGE"]
- captureFuncs["SPELL_PERIODIC_MISSED"] = captureFuncs["SPELL_MISSED"];
- captureFuncs["SPELL_PERIODIC_ENERGIZE"] = captureFuncs["SPELL_ENERGIZE"];
- captureFuncs["SPELL_PERIODIC_DRAIN"] = captureFuncs["SPELL_DRAIN"];
- captureFuncs["SPELL_PERIODIC_LEECH"] = captureFuncs["SPELL_LEECH"];
- captureFuncs["SPELL_STOLEN"] = captureFuncs["SPELL_DISPEL"];
+ captureFuncs["SPELL_PERIODIC_MISSED"] = captureFuncs["SPELL_MISSED"]
+ captureFuncs["SPELL_PERIODIC_ENERGIZE"] = captureFuncs["SPELL_ENERGIZE"]
+ captureFuncs["SPELL_PERIODIC_DRAIN"] = captureFuncs["SPELL_DRAIN"]
+ captureFuncs["SPELL_PERIODIC_LEECH"] = captureFuncs["SPELL_LEECH"]
+ captureFuncs["SPELL_STOLEN"] = captureFuncs["SPELL_DISPEL"]
 
  -- Expose the capture functions.
- module.captureFuncs = captureFuncs;
-end
-
-
--------------------------------------------------------------------------------
--- Aura functions.
--------------------------------------------------------------------------------
-
--- ****************************************************************************
--- Populates the current auras table with current buff and debuff information.
--- ****************************************************************************
-local function PopulateCurrentBuffsAndDebuffs()
- -- Erase the old current aura buffs and debuffs.
- EraseTable(currentAuras.buffs);
- EraseTable(currentAuras.debuffs);
-
- -- Loop through all of the buffs and add the name to the buffs table.
- local buffName, buffTexture;
- for buffIndex = 1, MAX_BUFFS do
-  buffName, _, buffTexture = UnitBuff("player", buffIndex);
-  if (not buffName) then break; end
-  currentAuras.buffs[buffName] = buffTexture;
- end
-
- -- Loop through all of the debuffs and add the name to the debuffs table.
- for buffIndex = 1, MAX_DEBUFFS do
-  buffName, _, buffTexture = UnitDebuff("player", buffIndex);
-  if (not buffName) then break; end
-  currentAuras.debuffs[buffName] = buffTexture;
- end
-end
-
-
--- ****************************************************************************
--- Populates the parser event data table for an aura change or the passed type.
--- ****************************************************************************
-local function DoAuraChange(tableName, auraType)
- -- Loop through all of the saved auras for the passed buff table to check for those that have faded.
- for buffName, buffTexture in pairs(savedAuras[tableName]) do
-  if (not currentAuras[tableName][buffName]) then
-   savedAuras[tableName][buffName] = nil;
-   -- Ignore the fade if it was already seen via the combat log.
-   if (not recentAuras[buffName]) then
-    EraseTable(parserEvent);
-    parserEvent.sourceGUID = GUID_NONE;
-    parserEvent.sourceFlags = OBJECT_NONE;
-    parserEvent.recipientName = playerName;
-    parserEvent.recipientFlags = FLAGS_ME;
-    parserEvent.recipientUnit = "player";
-    parserEvent.eventType = "aura";
-    parserEvent.isFade = true;
-    parserEvent.auraType = auraType;
-    parserEvent.skillName = buffName;
-	parserEvent.skillTexture = buffTexture;
-    SendParserEvent();
-   end
-   recentAuras[buffName] = nil;
-  end
- end
-
- -- Loop through all of the current auras for the passed buff table to check for those that have been gained.
- for buffName, buffTexture in pairs(currentAuras[tableName]) do
-  if (not savedAuras[tableName][buffName]) then
-   savedAuras[tableName][buffName] = buffTexture;
-   -- Ignore the gain if it was already seen via the combat log.
-   if (not recentAuras[buffName]) then 
-    EraseTable(parserEvent);
-    parserEvent.sourceGUID = GUID_NONE;
-    parserEvent.sourceFlags = OBJECT_NONE;
-    parserEvent.recipientName = playerName;
-    parserEvent.recipientFlags = FLAGS_ME;
-    parserEvent.recipientUnit = "player";
-    parserEvent.eventType = "aura";
-    parserEvent.auraType = auraType;
-    parserEvent.skillName = buffName;
-	parserEvent.skillTexture = buffTexture;
-    SendParserEvent();
-   end
-  end
- end
-end
-
-
--- ****************************************************************************
--- Initializes the current auras.
--- ****************************************************************************
-local function InitAuras()
- -- Populate the current buffs and debuffs.
- PopulateCurrentBuffsAndDebuffs();
-
- -- Save the current auras as the initial state.
- for tableName in pairs(currentAuras) do
-  for buffName, buffTexture in pairs(currentAuras[tableName]) do
-   savedAuras[tableName][buffName] = buffTexture;
-  end
- end
- 
- -- Set the auras initialized flag.
- aurasInitialized = true;
+ module.captureFuncs = captureFuncs
 end
 
 
@@ -771,87 +652,87 @@ local function OnUpdateDelayedInfo(this, elapsed)
  -- Check if the unit map needs to be updated after a delay.
  if (isUnitMapStale) then
   -- Increment the amount of time passed since the last update.
-  lastUnitMapUpdate = lastUnitMapUpdate + elapsed;
+  lastUnitMapUpdate = lastUnitMapUpdate + elapsed
 
   -- Check if it's time for an update.
   if (lastUnitMapUpdate >= UNIT_MAP_UPDATE_DELAY) then
    -- Update the player GUID if it isn't known yet and verify it's now known.
-   if (not playerGUID) then playerGUID = UnitGUID("player"); end
+   if (not playerGUID) then playerGUID = UnitGUID("player") end
    if (playerGUID) then
     -- Erase the unit map table.
-    for key in pairs(unitMap) do unitMap[key] = nil; end
+    for key in pairs(unitMap) do unitMap[key] = nil end
 
     -- Check if there are raid members.
-    local numRaidMembers = GetNumRaidMembers();
+    local numRaidMembers = GetNumRaidMembers()
     if (numRaidMembers > 0) then
      -- Loop through all of the raid members and add them.
      for i = 1, numRaidMembers do
-      local unitID = "raid" .. i;
-      unitMap[UnitGUID(unitID)] = unitID;
+      local unitID = "raid" .. i
+      unitMap[UnitGUID(unitID)] = unitID
      end
     else
      -- Loop through all of the party members and add them.
      for i = 1, GetNumPartyMembers() do
-      local unitID = "party" .. i;
-	  unitMap[UnitGUID(unitID)] = unitID;
+      local unitID = "party" .. i
+	  unitMap[UnitGUID(unitID)] = unitID
      end
     end
 
     -- Add the player.
-    unitMap[playerGUID] = "player";
+    unitMap[playerGUID] = "player"
    
     -- Clear the unit map stale flag.
-    isUnitMapStale = false;
+    isUnitMapStale = false
    end
 
    -- Reset the time since last update.
-   lastUnitMapUpdate = 0;
+   lastUnitMapUpdate = 0
   end
  end -- Unit map is stale.
 
  -- Check if the pet map needs to be updated after a delay.
  if (isPetMapStale) then
   -- Increment the amount of time passed since the last update.
-  lastPetMapUpdate = lastPetMapUpdate + elapsed;
+  lastPetMapUpdate = lastPetMapUpdate + elapsed
   
   -- Check if it's time for an update.
   if (lastPetMapUpdate >= PET_UPDATE_DELAY) then
    -- Verify the player's pet is not in an unknown state if there is one.
-   local petName = UnitName("pet");
+   local petName = UnitName("pet")
    if (not petName or petName ~= UNKNOWN) then
     -- Erase the pet map table.
-    for key in pairs(petMap) do petMap[key] = nil; end
+    for key in pairs(petMap) do petMap[key] = nil end
 
     -- Check if there are raid members.
-    local numRaidMembers = GetNumRaidMembers();
+    local numRaidMembers = GetNumRaidMembers()
      if (numRaidMembers > 0) then
       -- Loop through all of the raid members and add their pets.
       for i = 1, numRaidMembers do
-      local unitID = "raidpet" .. i;
-	  if (UnitExists(unitID)) then petMap[UnitGUID(unitID)] = unitID; end
+      local unitID = "raidpet" .. i
+	  if (UnitExists(unitID)) then petMap[UnitGUID(unitID)] = unitID end
      end
     else
      -- Loop through all of the party members and add them.
      for i = 1, GetNumPartyMembers() do
-      local unitID = "partypet" .. i;
-	  if (UnitExists(unitID)) then petMap[UnitGUID(unitID)] = unitID; end
+      local unitID = "partypet" .. i
+	  if (UnitExists(unitID)) then petMap[UnitGUID(unitID)] = unitID end
      end
     end
 
     -- Add the player's pet if there is one.
-	if (petName) then petMap[UnitGUID("pet")] = "pet"; end
+	if (petName) then petMap[UnitGUID("pet")] = "pet" end
 
     -- Clear the pet map stale flag.
-    isPetMapStale = false;
+    isPetMapStale = false
    end -- Pet in known state.
 
    -- Reset the time since last update.
-   lastPetMapUpdate = 0;
+   lastPetMapUpdate = 0
   end
  end -- Pet map is stale.
 
  -- Stop receiving updates if no more data needs to be updated.
- if (not isUnitMapStale and not isPetMapStale) then this:Hide(); end
+ if (not isUnitMapStale and not isPetMapStale) then this:Hide() end
 end
 
 
@@ -859,36 +740,24 @@ end
 -- Called when the events the parser registered for occur.
 -- ****************************************************************************
 local function OnEvent(this, event, arg1, arg2, ...)
+ -- Combat log events.
  if (event == "COMBAT_LOG_EVENT_UNFILTERED") then
-  ParseLogMessage(arg1, arg2, ...);
- elseif (event == "PLAYER_AURAS_CHANGED") then
-  -- Initialize the auras if they haven't already been.
-  if (not aurasInitialized) then
-   InitAuras();
-   return;
-  end
+  ParseLogMessage(arg1, arg2, ...)
 
-  -- Populate the current buffs and debuffs.
-  PopulateCurrentBuffsAndDebuffs();
-
-  -- Send events for buff and debuff changes.
-  DoAuraChange("buffs", AURA_TYPE_BUFF);
-  DoAuraChange("debuffs", AURA_TYPE_DEBUFF);
-
- -- Party/Raid changes
+ -- Party/Raid changes.
  elseif (event == "PARTY_MEMBERS_CHANGED" or event == "RAID_ROSTER_UPDATE") then
   -- Set the unit map stale flag and schedule the unit map to be updated after a short delay.
-  isUnitMapStale = true;
-  eventFrame:Show();
+  isUnitMapStale = true
+  eventFrame:Show()
 
- -- Pet changes
+ -- Pet changes.
  elseif (event == "UNIT_PET") then
-  isPetMapStale = true;
-  eventFrame:Show();
+  isPetMapStale = true
+  eventFrame:Show()
 
  -- Chat message combat events.
  else
-  ParseSearchMessage(event, arg1);
+  ParseSearchMessage(event, arg1)
  end
 end
 
@@ -898,25 +767,24 @@ end
 -- ****************************************************************************
 local function Enable()
  -- Register for parameter style events going to the combat log.
- eventFrame:RegisterEvent("COMBAT_LOG_EVENT_UNFILTERED");
+ eventFrame:RegisterEvent("COMBAT_LOG_EVENT_UNFILTERED")
  
  -- Register CHAT_MSG_X search style events.
  for event in pairs(searchMap) do
-  eventFrame:RegisterEvent(event);
+  eventFrame:RegisterEvent(event)
  end
 
  -- Register additional events for aura and overheal processing.
- eventFrame:RegisterEvent("PLAYER_AURAS_CHANGED");
- eventFrame:RegisterEvent("PARTY_MEMBERS_CHANGED");
- eventFrame:RegisterEvent("RAID_ROSTER_UPDATE");
- eventFrame:RegisterEvent("UNIT_PET"); 
+ eventFrame:RegisterEvent("PARTY_MEMBERS_CHANGED")
+ eventFrame:RegisterEvent("RAID_ROSTER_UPDATE")
+ eventFrame:RegisterEvent("UNIT_PET") 
 
  -- Update the unit map and current pet information.
- isUnitMapStale = true;
- isPetNameStale = true;
+ isUnitMapStale = true
+ isPetNameStale = true
 
  -- Start receiving updates.
- eventFrame:Show();
+ eventFrame:Show()
 end
 
 
@@ -925,18 +793,12 @@ end
 -- ****************************************************************************
 local function Disable()
  -- Stop receiving updates.
- eventFrame:Hide();
- eventFrame:UnregisterAllEvents();
- 
- -- Erase the saved and recent aura tables.
- EraseTable(recentAuras);
- EraseTable(savedAuras.buffs);
- EraseTable(savedAuras.debuffs)
- aurasInitialized = nil;
+ eventFrame:Hide()
+ eventFrame:UnregisterAllEvents()
  
  -- Erase the reflected skill tables.
- EraseTable(reflectedTimes);
- EraseTable(reflectedSkills);
+ EraseTable(reflectedTimes)
+ EraseTable(reflectedSkills)
 end
 
 
@@ -945,29 +807,29 @@ end
 -- ****************************************************************************
 local function OnLoad()
  -- Create a frame to receive events.
- eventFrame = CreateFrame("Frame");
- eventFrame:Hide();
- eventFrame:SetScript("OnEvent", OnEvent);
- eventFrame:SetScript("OnUpdate", OnUpdateDelayedInfo);
+ eventFrame = CreateFrame("Frame")
+ eventFrame:Hide()
+ eventFrame:SetScript("OnEvent", OnEvent)
+ eventFrame:SetScript("OnUpdate", OnUpdateDelayedInfo)
 
  -- Get the name and GUID of the player.
- playerName = UnitName("player");
- playerGUID = UnitGUID("player");
+ playerName = UnitName("player")
+ playerGUID = UnitGUID("player")
  
  -- Create various maps.
- CreateSearchMap();
- CreateSearchCaptureFuncs();
- CreateCaptureFuncs();
+ CreateSearchMap()
+ CreateSearchCaptureFuncs()
+ CreateCaptureFuncs()
  
  -- Create the list of events that should be fully parsed.
- CreateFullParseList();
+ CreateFullParseList()
 
  -- Find the rarest word for each supported global string.
- FindRareWords();
- ValidateRareWords();
+ FindRareWords()
+ ValidateRareWords()
 
  -- Convert the supported global strings into lua search patterns.
- ConvertGlobalStrings();
+ ConvertGlobalStrings()
 end
 
 
@@ -978,39 +840,38 @@ end
 -------------------------------------------------------------------------------
 
 -- Protected Constants.
-module.AFFILIATION_MINE		= AFFILIATION_MINE;
-module.AFFILIATION_PARTY	= AFFILIATION_PARTY;
-module.AFFILIATION_RAID		= AFFILIATION_RAID;
-module.AFFILIATION_OUTSIDER	= AFFILIATION_OUTSIDER;
-module.REACTION_FRIENDLY	= REACTION_FRIENDLY;
-module.REACTION_NEUTRAL		= REACTION_NEUTRAL;
-module.REACTION_HOSTILE		= REACTION_HOSTILE;
-module.CONTROL_HUMAN		= CONTROL_HUMAN;
-module.CONTROL_SERVER		= CONTROL_SERVER;
-module.UNITTYPE_PLAYER		= UNITTYPE_PLAYER;
-module.UNITTYPE_NPC			= UNITTYPE_NPC;
-module.UNITTYPE_PET			= UNITTYPE_PET;
-module.UNITTYPE_GUARDIAN	= UNITTYPE_GUARDIAN;
-module.UNITTYPE_OBJECT		= UNITTYPE_OBJECT;
-module.TARGET_TARGET		= TARGET_TARGET;
-module.TARGET_FOCUS			= TARGET_FOCUS;
-module.OBJECT_NONE			= OBJECT_NONE;
+module.AFFILIATION_MINE		= AFFILIATION_MINE
+module.AFFILIATION_PARTY	= AFFILIATION_PARTY
+module.AFFILIATION_RAID		= AFFILIATION_RAID
+module.AFFILIATION_OUTSIDER	= AFFILIATION_OUTSIDER
+module.REACTION_FRIENDLY	= REACTION_FRIENDLY
+module.REACTION_NEUTRAL		= REACTION_NEUTRAL
+module.REACTION_HOSTILE		= REACTION_HOSTILE
+module.CONTROL_HUMAN		= CONTROL_HUMAN
+module.CONTROL_SERVER		= CONTROL_SERVER
+module.UNITTYPE_PLAYER		= UNITTYPE_PLAYER
+module.UNITTYPE_NPC			= UNITTYPE_NPC
+module.UNITTYPE_PET			= UNITTYPE_PET
+module.UNITTYPE_GUARDIAN	= UNITTYPE_GUARDIAN
+module.UNITTYPE_OBJECT		= UNITTYPE_OBJECT
+module.TARGET_TARGET		= TARGET_TARGET
+module.TARGET_FOCUS			= TARGET_FOCUS
+module.OBJECT_NONE			= OBJECT_NONE
 
 -- Protected Variables.
-module.currentAuras = currentAuras;
-module.unitMap = unitMap;
+module.unitMap = unitMap
 
 -- Protected Functions.
-module.RegisterHandler				= RegisterHandler;
-module.UnregisterHandler			= UnregisterHandler;
-module.TestFlagsAny					= TestFlagsAny;
-module.TestFlagsAll					= TestFlagsAll;
-module.Enable						= Enable;
-module.Disable						= Disable;
+module.RegisterHandler				= RegisterHandler
+module.UnregisterHandler			= UnregisterHandler
+module.TestFlagsAny					= TestFlagsAny
+module.TestFlagsAll					= TestFlagsAll
+module.Enable						= Enable
+module.Disable						= Disable
 
 
 -------------------------------------------------------------------------------
 -- Load.
 -------------------------------------------------------------------------------
 
-OnLoad();
+OnLoad()

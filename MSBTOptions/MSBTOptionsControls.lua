@@ -863,7 +863,7 @@ local function CreateOptionButton(parent)
  local fontString = button:CreateFontString(nil, "OVERLAY");
  fontString:SetPoint("CENTER");
  button:SetFontString(fontString); 
- button:SetTextFontObject(GameFontNormalSmall);
+ button:SetNormalFontObject(GameFontNormalSmall);
  button:SetHighlightFontObject(GameFontHighlightSmall);
  button:SetDisabledFontObject(GameFontDisableSmall); 
  button:SetNormalTexture("Interface\\Buttons\\UI-Panel-Button-Up");

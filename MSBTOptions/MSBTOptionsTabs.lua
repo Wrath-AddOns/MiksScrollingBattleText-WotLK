@@ -10,11 +10,34 @@ MSBTOptions[moduleName] = module;
 
 
 -------------------------------------------------------------------------------
+-- Imports.
+-------------------------------------------------------------------------------
+
+-- Local references to various modules for faster access.
+local MSBTOptMain = MSBTOptions.Main;
+local MSBTControls = MSBTOptions.Controls;
+local MSBTPopups = MSBTOptions.Popups;
+local MSBTProfiles = MikSBT.Profiles;
+local MSBTAnimations = MikSBT.Animations;
+local MSBTTriggers = MikSBT.Triggers;
+local MSBTCooldowns = MikSBT.Cooldowns;
+local MSBTMedia = MikSBT.Media;
+local L = MikSBT.translations;
+
+-- Local references to various functions for faster access.
+local EraseTable = MikSBT.EraseTable;
+local DisableControls = MSBTPopups.DisableControls;
+
+-- Local references to various variables for faster access.
+local fonts = MSBTMedia.fonts;
+
+
+-------------------------------------------------------------------------------
 -- Private constants.
 -------------------------------------------------------------------------------
 
 local DEFAULT_PROFILE_NAME = "Default";
-local DEFAULT_FONT_NAME = "Default";
+local DEFAULT_FONT_NAME = L.DEFAULT_FONT_NAME;
 local DEFAULT_SCROLL_AREA = "Notification";
 
 local EVENT_CATEGORY_MAP = {
@@ -36,25 +59,6 @@ local configTable = {};
 
 -- Reusable table for skill lists.
 local skillsTable = {};
-
--------------------------------------------------------------------------------
--- Imports.
--------------------------------------------------------------------------------
-
--- Local references to certain modules for faster access.
-local MSBTOptMain = MSBTOptions.Main;
-local MSBTControls = MSBTOptions.Controls;
-local MSBTPopups = MSBTOptions.Popups;
-local MSBTProfiles = MikSBT.Profiles;
-local MSBTAnimations = MikSBT.Animations;
-local MSBTTriggers = MikSBT.Triggers;
-local MSBTCooldowns = MikSBT.Cooldowns;
-local L = MikSBT.translations;
-
--- Local references to certain functions for faster access.
-local EraseTable = MikSBT.EraseTable;
-local DisableControls = MSBTPopups.DisableControls;
-
 
 -------------------------------------------------------------------------------
 -- Utility functions.
@@ -460,14 +464,14 @@ local function GeneralTab_Create()
     configTable.title = objLocale.label;
 
     local fontName = MSBTProfiles.currentProfile.normalFontName;
-    if (not MSBTAnimations.fonts[fontName]) then fontName = DEFAULT_FONT_NAME; end
+    if (not fonts[fontName]) then fontName = DEFAULT_FONT_NAME; end
     configTable.normalFontName = fontName;
     configTable.normalOutlineIndex = MSBTProfiles.currentProfile.normalOutlineIndex;
     configTable.normalFontSize = MSBTProfiles.currentProfile.normalFontSize;
     configTable.normalFontAlpha = MSBTProfiles.currentProfile.normalFontAlpha;
 
     fontName = MSBTProfiles.currentProfile.critFontName;
-    if (not MSBTAnimations.fonts[fontName]) then fontName = DEFAULT_FONT_NAME; end
+    if (not fonts[fontName]) then fontName = DEFAULT_FONT_NAME; end
     configTable.critFontName = fontName;
     configTable.critOutlineIndex = MSBTProfiles.currentProfile.critOutlineIndex;
     configTable.critFontSize = MSBTProfiles.currentProfile.critFontSize;
@@ -656,19 +660,18 @@ end
 local function ScrollAreasTab_FontButtonOnClick(this)
  local saKey = this:GetParent().scrollAreaKey;
  local saSettings = MSBTProfiles.currentProfile.scrollAreas[saKey];
- local fonts = MSBTAnimations.fonts;
  
  EraseTable(configTable);
  configTable.title = saSettings.name;
  local fontName = MSBTProfiles.currentProfile.normalFontName;
- if (not MSBTAnimations.fonts[fontName]) then fontName = DEFAULT_FONT_NAME; end
+ if (not fonts[fontName]) then fontName = DEFAULT_FONT_NAME; end
  configTable.inheritedNormalFontName = fontName;
  configTable.inheritedNormalOutlineIndex = MSBTProfiles.currentProfile.normalOutlineIndex;
  configTable.inheritedNormalFontSize = MSBTProfiles.currentProfile.normalFontSize;
  configTable.inheritedNormalFontAlpha = MSBTProfiles.currentProfile.normalFontAlpha;
 
  fontName = MSBTProfiles.currentProfile.critFontName;
- if (not MSBTAnimations.fonts[fontName]) then fontName = DEFAULT_FONT_NAME; end
+ if (not fonts[fontName]) then fontName = DEFAULT_FONT_NAME; end
  configTable.inheritedCritFontName = fontName;
  configTable.inheritedCritFontName = MSBTProfiles.currentProfile.critFontName;
  configTable.inheritedCritOutlineIndex = MSBTProfiles.currentProfile.critOutlineIndex;
@@ -676,14 +679,14 @@ local function ScrollAreasTab_FontButtonOnClick(this)
  configTable.inheritedCritFontAlpha = MSBTProfiles.currentProfile.critFontAlpha;
 
  fontName = saSettings.normalFontName;
- if (not MSBTAnimations.fonts[fontName]) then fontName = nil; end
+ if (not fonts[fontName]) then fontName = nil; end
  configTable.normalFontName = fontName;
  configTable.normalOutlineIndex = saSettings.normalOutlineIndex;
  configTable.normalFontSize = saSettings.normalFontSize;
  configTable.normalFontAlpha = saSettings.normalFontAlpha;
 
  fontName = saSettings.critFontName;
- if (not MSBTAnimations.fonts[fontName]) then fontName = nil; end
+ if (not fonts[fontName]) then fontName = nil; end
  configTable.critFontName = fontName;
  configTable.critOutlineIndex = saSettings.critOutlineIndex;
  configTable.critFontSize = saSettings.critFontSize;
@@ -885,7 +888,7 @@ local function EventsTab_SetupEvents()
  EventsTab_SetupEvent(obj[4], "INCOMING_DODGE", c.ATTACKER_NAME);
  EventsTab_SetupEvent(obj[5], "INCOMING_PARRY", c.ATTACKER_NAME);
  EventsTab_SetupEvent(obj[6], "INCOMING_BLOCK", c.ATTACKER_NAME);
- EventsTab_SetupEvent(obj[7], "INCOMING_ABSORB", c.ATTACKER_NAME);
+ EventsTab_SetupEvent(obj[7], "INCOMING_ABSORB", c.ABSORBED_AMOUNT .. c.ATTACKER_NAME);
  EventsTab_SetupEvent(obj[8], "INCOMING_IMMUNE", c.ATTACKER_NAME);
  EventsTab_SetupEvent(obj[9], "INCOMING_SPELL_DAMAGE", c.DAMAGE_TAKEN .. c.ATTACKER_NAME .. c.SKILL_NAME .. c.SKILL_LONG .. c.DAMAGE_TYPE_TAKEN);
  EventsTab_SetupEvent(obj[10], "INCOMING_SPELL_DAMAGE_CRIT", c.DAMAGE_TAKEN .. c.ATTACKER_NAME .. c.SKILL_NAME .. c.SKILL_LONG .. c.DAMAGE_TYPE_TAKEN);
@@ -895,7 +898,7 @@ local function EventsTab_SetupEvents()
  EventsTab_SetupEvent(obj[14], "INCOMING_SPELL_PARRY", c.ATTACKER_NAME .. c.SKILL_NAME .. c.SKILL_LONG);
  EventsTab_SetupEvent(obj[15], "INCOMING_SPELL_BLOCK", c.ATTACKER_NAME .. c.SKILL_NAME .. c.SKILL_LONG);
  EventsTab_SetupEvent(obj[16], "INCOMING_SPELL_RESIST", c.ATTACKER_NAME .. c.SPELL_NAME .. c.SKILL_LONG);
- EventsTab_SetupEvent(obj[17], "INCOMING_SPELL_ABSORB", c.ATTACKER_NAME .. c.SKILL_NAME .. c.SKILL_LONG);
+ EventsTab_SetupEvent(obj[17], "INCOMING_SPELL_ABSORB", c.ABSORBED_AMOUNT .. c.ATTACKER_NAME .. c.SKILL_NAME .. c.SKILL_LONG);
  EventsTab_SetupEvent(obj[18], "INCOMING_SPELL_IMMUNE", c.ATTACKER_NAME .. c.SKILL_NAME .. c.SKILL_LONG);
  EventsTab_SetupEvent(obj[19], "INCOMING_SPELL_REFLECT", c.ATTACKER_NAME .. c.SKILL_NAME .. c.SKILL_LONG);
  EventsTab_SetupEvent(obj[20], "INCOMING_SPELL_INTERRUPT", c.ATTACKER_NAME .. c.SPELL_NAME);
@@ -911,7 +914,7 @@ local function EventsTab_SetupEvents()
  EventsTab_SetupEvent(obj[4], "PET_INCOMING_DODGE", c.ATTACKER_NAME);
  EventsTab_SetupEvent(obj[5], "PET_INCOMING_PARRY", c.ATTACKER_NAME);
  EventsTab_SetupEvent(obj[6], "PET_INCOMING_BLOCK", c.ATTACKER_NAME);
- EventsTab_SetupEvent(obj[7], "PET_INCOMING_ABSORB", c.ATTACKER_NAME);
+ EventsTab_SetupEvent(obj[7], "PET_INCOMING_ABSORB", c.ABSORBED_AMOUNT .. c.ATTACKER_NAME);
  EventsTab_SetupEvent(obj[8], "PET_INCOMING_IMMUNE", c.ATTACKER_NAME);
  EventsTab_SetupEvent(obj[9], "PET_INCOMING_SPELL_DAMAGE", c.DAMAGE_TAKEN .. c.ATTACKER_NAME .. c.SKILL_NAME .. c.SKILL_LONG .. c.DAMAGE_TYPE_TAKEN);
  EventsTab_SetupEvent(obj[10], "PET_INCOMING_SPELL_DAMAGE_CRIT", c.DAMAGE_TAKEN .. c.ATTACKER_NAME .. c.SKILL_NAME .. c.SKILL_LONG .. c.DAMAGE_TYPE_TAKEN);
@@ -921,7 +924,7 @@ local function EventsTab_SetupEvents()
  EventsTab_SetupEvent(obj[14], "PET_INCOMING_SPELL_PARRY", c.ATTACKER_NAME .. c.SKILL_NAME .. c.SKILL_LONG);
  EventsTab_SetupEvent(obj[15], "PET_INCOMING_SPELL_BLOCK", c.ATTACKER_NAME .. c.SKILL_NAME .. c.SKILL_LONG);
  EventsTab_SetupEvent(obj[16], "PET_INCOMING_SPELL_RESIST", c.ATTACKER_NAME .. c.SPELL_NAME .. c.SKILL_LONG);
- EventsTab_SetupEvent(obj[17], "PET_INCOMING_SPELL_ABSORB", c.ATTACKER_NAME .. c.SKILL_NAME .. c.SKILL_LONG);
+ EventsTab_SetupEvent(obj[17], "PET_INCOMING_SPELL_ABSORB", c.ABSORBED_AMOUNT .. c.ATTACKER_NAME .. c.SKILL_NAME .. c.SKILL_LONG);
  EventsTab_SetupEvent(obj[18], "PET_INCOMING_SPELL_IMMUNE", c.ATTACKER_NAME .. c.SKILL_NAME .. c.SKILL_LONG);
  EventsTab_SetupEvent(obj[19], "PET_INCOMING_HEAL", c.HEALING_TAKEN .. c.HEALER_NAME .. c.SPELL_NAME .. c.SKILL_LONG);
  EventsTab_SetupEvent(obj[20], "PET_INCOMING_HEAL_CRIT", c.HEALING_TAKEN .. c.HEALER_NAME .. c.SPELL_NAME .. c.SKILL_LONG);
@@ -934,7 +937,7 @@ local function EventsTab_SetupEvents()
  EventsTab_SetupEvent(obj[4], "OUTGOING_DODGE", c.ATTACKED_NAME);
  EventsTab_SetupEvent(obj[5], "OUTGOING_PARRY", c.ATTACKED_NAME);
  EventsTab_SetupEvent(obj[6], "OUTGOING_BLOCK", c.ATTACKED_NAME);
- EventsTab_SetupEvent(obj[7], "OUTGOING_ABSORB", c.ATTACKED_NAME);
+ EventsTab_SetupEvent(obj[7], "OUTGOING_ABSORB", c.ABSORBED_AMOUNT .. c.ATTACKED_NAME);
  EventsTab_SetupEvent(obj[8], "OUTGOING_IMMUNE", c.ATTACKED_NAME);
  EventsTab_SetupEvent(obj[9], "OUTGOING_EVADE", c.ATTACKED_NAME);
  EventsTab_SetupEvent(obj[10], "OUTGOING_SPELL_DAMAGE", c.DAMAGE_DONE .. c.ATTACKED_NAME .. c.SKILL_NAME .. c.SKILL_LONG .. c.DAMAGE_TYPE_DONE);
@@ -945,7 +948,7 @@ local function EventsTab_SetupEvents()
  EventsTab_SetupEvent(obj[15], "OUTGOING_SPELL_PARRY", c.ATTACKED_NAME .. c.SKILL_NAME .. c.SKILL_LONG);
  EventsTab_SetupEvent(obj[16], "OUTGOING_SPELL_BLOCK", c.ATTACKED_NAME .. c.SKILL_NAME .. c.SKILL_LONG);
  EventsTab_SetupEvent(obj[17], "OUTGOING_SPELL_RESIST", c.ATTACKED_NAME .. c.SPELL_NAME .. c.SKILL_LONG);
- EventsTab_SetupEvent(obj[18], "OUTGOING_SPELL_ABSORB", c.ATTACKED_NAME .. c.SKILL_NAME .. c.SKILL_LONG);
+ EventsTab_SetupEvent(obj[18], "OUTGOING_SPELL_ABSORB", c.ABSORBED_AMOUNT .. c.ATTACKED_NAME .. c.SKILL_NAME .. c.SKILL_LONG);
  EventsTab_SetupEvent(obj[19], "OUTGOING_SPELL_IMMUNE", c.ATTACKED_NAME .. c.SKILL_NAME .. c.SKILL_LONG);
  EventsTab_SetupEvent(obj[20], "OUTGOING_SPELL_REFLECT", c.ATTACKED_NAME .. c.SKILL_NAME .. c.SKILL_LONG);
  EventsTab_SetupEvent(obj[21], "OUTGOING_SPELL_INTERRUPT", c.ATTACKED_NAME .. c.SKILL_NAME .. c.SKILL_LONG);
@@ -962,7 +965,7 @@ local function EventsTab_SetupEvents()
  EventsTab_SetupEvent(obj[4], "PET_OUTGOING_DODGE", c.ATTACKED_NAME);
  EventsTab_SetupEvent(obj[5], "PET_OUTGOING_PARRY", c.ATTACKED_NAME);
  EventsTab_SetupEvent(obj[6], "PET_OUTGOING_BLOCK", c.ATTACKED_NAME);
- EventsTab_SetupEvent(obj[7], "PET_OUTGOING_ABSORB", c.ATTACKED_NAME);
+ EventsTab_SetupEvent(obj[7], "PET_OUTGOING_ABSORB", c.ABSORBED_AMOUNT .. c.ATTACKED_NAME);
  EventsTab_SetupEvent(obj[8], "PET_OUTGOING_IMMUNE", c.ATTACKED_NAME);
  EventsTab_SetupEvent(obj[9], "PET_OUTGOING_EVADE", c.ATTACKED_NAME);
  EventsTab_SetupEvent(obj[10], "PET_OUTGOING_SPELL_DAMAGE", c.DAMAGE_DONE .. c.ATTACKED_NAME .. c.SKILL_NAME .. c.SKILL_LONG .. c.DAMAGE_TYPE_DONE);
@@ -973,7 +976,7 @@ local function EventsTab_SetupEvents()
  EventsTab_SetupEvent(obj[15], "PET_OUTGOING_SPELL_PARRY", c.ATTACKED_NAME .. c.SKILL_NAME .. c.SKILL_LONG);
  EventsTab_SetupEvent(obj[16], "PET_OUTGOING_SPELL_BLOCK", c.ATTACKED_NAME .. c.SKILL_NAME .. c.SKILL_LONG);
  EventsTab_SetupEvent(obj[17], "PET_OUTGOING_SPELL_RESIST", c.ATTACKED_NAME .. c.SPELL_NAME .. c.SKILL_LONG);
- EventsTab_SetupEvent(obj[18], "PET_OUTGOING_SPELL_ABSORB", c.ATTACKED_NAME .. c.SKILL_NAME .. c.SKILL_LONG);
+ EventsTab_SetupEvent(obj[18], "PET_OUTGOING_SPELL_ABSORB", c.ABSORBED_AMOUNT .. c.ATTACKED_NAME .. c.SKILL_NAME .. c.SKILL_LONG);
  EventsTab_SetupEvent(obj[19], "PET_OUTGOING_SPELL_IMMUNE", c.ATTACKED_NAME .. c.SKILL_NAME .. c.SKILL_LONG);
  EventsTab_SetupEvent(obj[20], "PET_OUTGOING_SPELL_EVADE", c.ATTACKED_NAME .. c.SKILL_NAME .. c.SKILL_LONG);
  EventsTab_SetupEvent(obj[21], "PET_OUTGOING_DISPEL", c.BUFF_NAME .. c.SKILL_LONG);
@@ -1124,7 +1127,6 @@ local function EventsTab_FontButtonOnClick(this)
  local saKey = eventSettings.scrollArea;
  local saSettings = MSBTProfiles.currentProfile.scrollAreas[saKey];
  if (not saSettings) then saSettings = MSBTProfiles.currentProfile.scrollAreas[DEFAULT_SCROLL_AREA]; end
- local fonts = MSBTAnimations.fonts;
  
  EraseTable(configTable);
  configTable.title = categoryText .. " - " .. this:GetParent().enableCheckbox.fontString:GetText();
@@ -1133,15 +1135,15 @@ local function EventsTab_FontButtonOnClick(this)
  if (not eventSettings.isCrit) then
   -- Inherit from the correct scroll area.
   fontName = saSettings.normalFontName;
-  if (not MSBTAnimations.fonts[fontName]) then fontName = MSBTProfiles.currentProfile.normalFontName; end
-  if (not MSBTAnimations.fonts[fontName]) then fontName = DEFAULT_FONT_NAME; end
+  if (not fonts[fontName]) then fontName = MSBTProfiles.currentProfile.normalFontName; end
+  if (not fonts[fontName]) then fontName = DEFAULT_FONT_NAME; end
   configTable.inheritedNormalFontName = fontName;
   configTable.inheritedNormalOutlineIndex = saSettings.normalOutlineIndex or MSBTProfiles.currentProfile.normalOutlineIndex;
   configTable.inheritedNormalFontSize = saSettings.normalFontSize or MSBTProfiles.currentProfile.normalFontSize;
   configTable.inheritedNormalFontAlpha = saSettings.normalFontAlpha or MSBTProfiles.currentProfile.normalFontAlpha;
 
   fontName = eventSettings.fontName;
-  if (not MSBTAnimations.fonts[fontName]) then fontName = nil; end
+  if (not fonts[fontName]) then fontName = nil; end
   configTable.normalFontName = fontName;
   configTable.normalOutlineIndex = eventSettings.outlineIndex;
   configTable.normalFontSize = eventSettings.fontSize;
@@ -1151,15 +1153,15 @@ local function EventsTab_FontButtonOnClick(this)
  else
   -- Inherit from the correct scroll area.
   fontName = saSettings.critFontName;
-  if (not MSBTAnimations.fonts[fontName]) then fontName = MSBTProfiles.currentProfile.critFontName; end
-  if (not MSBTAnimations.fonts[fontName]) then fontName = DEFAULT_FONT_NAME; end
+  if (not fonts[fontName]) then fontName = MSBTProfiles.currentProfile.critFontName; end
+  if (not fonts[fontName]) then fontName = DEFAULT_FONT_NAME; end
   configTable.inheritedCritFontName = fontName;
   configTable.inheritedCritOutlineIndex = saSettings.critOutlineIndex or MSBTProfiles.currentProfile.critOutlineIndex;
   configTable.inheritedCritFontSize = saSettings.critFontSize or MSBTProfiles.currentProfile.critFontSize;
   configTable.inheritedCritFontAlpha = saSettings.critFontAlpha or MSBTProfiles.currentProfile.critFontAlpha;
 
   fontName = eventSettings.fontName;
-  if (not MSBTAnimations.fonts[fontName]) then fontName = nil; end
+  if (not fonts[fontName]) then fontName = nil; end
   configTable.critFontName = fontName;
   configTable.critOutlineIndex = eventSettings.outlineIndex;
   configTable.critFontSize = eventSettings.fontSize;
@@ -1460,22 +1462,21 @@ local function TriggersTab_FontButtonOnClick(this)
  local saKey = triggerSettings.scrollArea;
  local saSettings = MSBTProfiles.currentProfile.scrollAreas[saKey];
  if (not saSettings) then saSettings = MSBTProfiles.currentProfile.scrollAreas[DEFAULT_SCROLL_AREA]; end
- local fonts = MSBTAnimations.fonts;
  
  EraseTable(configTable);
  configTable.title = this:GetParent().enableCheckbox.fontString:GetText();
  
  local fontName;
  fontName = saSettings.normalFontName;
- if (not MSBTAnimations.fonts[fontName]) then fontName = MSBTProfiles.currentProfile.normalFontName; end
- if (not MSBTAnimations.fonts[fontName]) then fontName = DEFAULT_FONT_NAME; end
+ if (not fonts[fontName]) then fontName = MSBTProfiles.currentProfile.normalFontName; end
+ if (not fonts[fontName]) then fontName = DEFAULT_FONT_NAME; end
  configTable.inheritedNormalFontName = fontName;
  configTable.inheritedNormalOutlineIndex = saSettings.normalOutlineIndex or MSBTProfiles.currentProfile.normalOutlineIndex;
  configTable.inheritedNormalFontSize = saSettings.normalFontSize or MSBTProfiles.currentProfile.normalFontSize;
  configTable.inheritedNormalFontAlpha = saSettings.normalFontAlpha or MSBTProfiles.currentProfile.normalFontAlpha;
 
  fontName = triggerSettings.fontName;
- if (not MSBTAnimations.fonts[fontName]) then fontName = nil; end
+ if (not fonts[fontName]) then fontName = nil; end
  configTable.normalFontName = fontName;
  configTable.normalOutlineIndex = triggerSettings.outlineIndex;
  configTable.normalFontSize = triggerSettings.fontSize;
@@ -2143,22 +2144,21 @@ local function CooldownsTab_Create()
     local eventSettings = MSBTProfiles.currentProfile.events.NOTIFICATION_COOLDOWN;
     local saSettings = MSBTProfiles.currentProfile.scrollAreas[eventSettings.scrollArea];
     if (not saSettings) then saSettings = MSBTProfiles.currentProfile.scrollAreas[DEFAULT_SCROLL_AREA]; end
-    local fonts = MSBTAnimations.fonts;
  
     EraseTable(configTable);
     configTable.title = L.TABS[6].label;
  
     -- Inherit from the correct scroll area.
     local fontName = saSettings.normalFontName;
-    if (not MSBTAnimations.fonts[fontName]) then fontName = MSBTProfiles.currentProfile.normalFontName; end
-    if (not MSBTAnimations.fonts[fontName]) then fontName = DEFAULT_FONT_NAME; end
+    if (not fonts[fontName]) then fontName = MSBTProfiles.currentProfile.normalFontName; end
+    if (not fonts[fontName]) then fontName = DEFAULT_FONT_NAME; end
     configTable.inheritedNormalFontName = fontName;
     configTable.inheritedNormalOutlineIndex = saSettings.normalOutlineIndex or MSBTProfiles.currentProfile.normalOutlineIndex;
     configTable.inheritedNormalFontSize = saSettings.normalFontSize or MSBTProfiles.currentProfile.normalFontSize;
     configTable.inheritedNormalFontAlpha = saSettings.normalFontAlpha or MSBTProfiles.currentProfile.normalFontAlpha;
 
     fontName = eventSettings.fontName;
-    if (not MSBTAnimations.fonts[fontName]) then fontName = nil; end
+    if (not fonts[fontName]) then fontName = nil; end
     configTable.normalFontName = fontName;
     configTable.normalOutlineIndex = eventSettings.outlineIndex;
     configTable.normalFontSize = eventSettings.fontSize;

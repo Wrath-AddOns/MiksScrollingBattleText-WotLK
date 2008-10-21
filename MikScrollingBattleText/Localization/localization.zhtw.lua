@@ -1,4 +1,4 @@
-﻿-------------------------------------------------------------------------------
+-------------------------------------------------------------------------------
 -- Title: Mik's Scrolling Battle Text Traditional Chinese Localization
 -- Author: Mik
 -- Traditional Chinese Translation by: 世界之樹-Myth
@@ -19,8 +19,10 @@ local L = MikSBT.translations;
 ------------------------------
 
 L.FONT_FILES = {
- Default		= "Fonts\\bLEI00D.TTF",
+ ["MSBT bLEI00D"]		= "Fonts\\bLEI00D.TTF",
 }
+
+L.DEFAULT_FONT_NAME = "MSBT bLEI00D";
 
 
 ------------------------------
@@ -42,8 +44,8 @@ L.COMMAND_USAGE = {
 -- Output messages
 ------------------------------
 
---L.MSG_SEARCH_ENABLE		= "訊息搜索模式開啟.  搜索: ";
---L.MSG_SEARCH_DISABLE		= "訊息搜索模式關閉.";
+--L.MSG_ICON_MODULE_WARNING	= "WARNING: The MSBTIcons module is no longer required. Remove it from your AddOns folder to avoid wasting memory.";
+--L.MSG_SM_MODULE_WARNING		= "WARNING: The MSBTSharedMedia module is no longer required.  Remove it from your AddOns folder.";
 L.MSG_DISABLE			= "停用插件.";
 L.MSG_ENABLE			= "啟用插件.";
 L.MSG_PROFILE_RESET		= "重置設定";

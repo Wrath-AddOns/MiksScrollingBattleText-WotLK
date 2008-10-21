@@ -1,4 +1,4 @@
-﻿-------------------------------------------------------------------------------
+-------------------------------------------------------------------------------
 -- Title: Mik's Scrolling Battle Text Simplified Chinese Localization
 -- Author: Mik
 -- Simplified Chinese Translation by: elafor,hscui
@@ -19,8 +19,10 @@ local L = MikSBT.translations;
 ------------------------------
 
 L.FONT_FILES = {
- Default		= "Fonts\\ZYKAI.TTF",
+ ["MSBT Zykai"]		= "Fonts\\ZYKAI.TTF",
 }
+
+L.DEFAULT_FONT_NAME = "MSBT Zykai";
 
 
 ------------------------------
@@ -42,8 +44,8 @@ L.COMMAND_USAGE = {
 -- Output messages
 ------------------------------
 
---L.MSG_SEARCH_ENABLE			= "事件搜索模式开启.  搜索: ";
---L.MSG_SEARCH_DISABLE		= "事件搜索模式关闭.";
+--L.MSG_ICON_MODULE_WARNING	= "WARNING: The MSBTIcons module is no longer required. Remove it from your AddOns folder to avoid wasting memory.";
+--L.MSG_SM_MODULE_WARNING		= "WARNING: The MSBTSharedMedia module is no longer required.  Remove it from your AddOns folder.";
 L.MSG_DISABLE				= "禁用插件.";
 L.MSG_ENABLE				= "启用插件.";
 L.MSG_PROFILE_RESET			= "重置配置";

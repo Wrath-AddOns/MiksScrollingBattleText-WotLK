@@ -9,8 +9,8 @@
 
 -- The sound files to use.
 local SOUND_FILES = {
- LowHealth		= "Interface\\Addons\\MikScrollingBattleText\\Sounds\\LowHealth.mp3",
- LowMana		= "Interface\\Addons\\MikScrollingBattleText\\Sounds\\LowMana.mp3",
+-- UniqueSoundName		= "Interface\\Addons\\MikScrollingBattleText\\Sounds\\sound_name.mp3",
+-- DifferentSoundName	= "Interface\\Addons\\MikScrollingBattleText\\Sounds\\different_sound_name.wav",
 }
 
 
@@ -20,5 +20,5 @@ local SOUND_FILES = {
 
 -- Loop through all of the sounds and register them.
 for soundName, soundPath in pairs(SOUND_FILES) do
- MikSBT.RegisterSound(soundName, soundPath);
+ MikSBT.RegisterSound(soundName, soundPath)
 end

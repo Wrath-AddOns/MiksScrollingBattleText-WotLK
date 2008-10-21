@@ -20,5 +20,5 @@ local FONT_FILES = {
 
 -- Loop through all of the fonts defined above and register them.
 for fontName, fontPath in pairs(FONT_FILES) do
- MikSBT.RegisterFont(fontName, fontPath);
+ MikSBT.RegisterFont(fontName, fontPath)
 end

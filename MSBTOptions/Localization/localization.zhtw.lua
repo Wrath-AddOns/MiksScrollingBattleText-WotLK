@@ -49,15 +49,16 @@ L.MSG_ANY							= "任何";
 ------------------------------
 
 local obj = L.CLASS_NAMES;
-obj["DRUID"]	= "德魯伊";
-obj["HUNTER"]	= "獵人";
-obj["MAGE"]		= "法師";
-obj["PALADIN"]	= "聖騎士";
-obj["PRIEST"]	= "牧師";
-obj["ROGUE"]	= "盜賊";
-obj["SHAMAN"]	= "薩滿";
-obj["WARLOCK"]	= "術士";
-obj["WARRIOR"]	= "戰士";
+--obj["DEATHKNIGHT"]	= "Death Knight";
+obj["DRUID"]		= "德魯伊";
+obj["HUNTER"]		= "獵人";
+obj["MAGE"]			= "法師";
+obj["PALADIN"]		= "聖騎士";
+obj["PRIEST"]		= "牧師";
+obj["ROGUE"]		= "盜賊";
+obj["SHAMAN"]		= "薩滿";
+obj["WARLOCK"]		= "術士";
+obj["WARRIOR"]		= "戰士";
 
 
 ------------------------------
@@ -240,6 +241,7 @@ obj = L.EVENT_CODES;
 --obj["HEALING_TAKEN"]		= "%a - Amount of healing taken.\n";
 --obj["DAMAGE_DONE"]			= "%a - Amount of damage done.\n";
 --obj["HEALING_DONE"]			= "%a - Amount of healing done.\n";
+--obj["ABSORBED_AMOUNT"]		= "%a - Amount of damage absorbed.\n";
 --obj["ENERGY_AMOUNT"]		= "%a - Amount of energy.\n";
 --obj["CP_AMOUNT"]			= "%a - Amount of combo points you have.\n";
 --obj["HONOR_AMOUNT"]			= "%a - Amount of honor.\n";
@@ -460,6 +462,7 @@ obj["PARTY_KILL"]				= "擊殺音效";
 --obj["UNIT_MANA"]				= "Mana Change";
 --obj["UNIT_ENERGY"]				= "Energy Change";
 --obj["UNIT_RAGE"]				= "Rage Change";
+--obj["UNIT_RUNIC_POWER"]			= "Runic Power Change";
 --obj["SKILL_COOLDOWN"]			= "Skill Cooldown Complete";
  
 -- Main event conditions.
@@ -577,8 +580,9 @@ obj[3] = "右邊";
 ------------------------------
 
 obj = L.SOUNDS;
-obj["LowMana"]		= "法力過低";
-obj["LowHealth"]	= "生命過低";
+obj["MSBT Low Mana"]	= "MSBT 法力過低";
+obj["MSBT Low Health"]	= "MSBT 生命過低";
+--obj["MSBT Cooldown"]	= "MSBT Cooldown";
 
 
 ------------------------------
@@ -587,6 +591,7 @@ obj["LowHealth"]	= "生命過低";
 
 -- Animation styles
 obj = L.ANIMATION_STYLE_DATA;
+--obj["Angled"]		= "Angled";
 obj["Horizontal"]	= "水平";
 obj["Parabola"]		= "拋物線";
 obj["Straight"]		= "直線";
@@ -601,6 +606,8 @@ obj["Up"]			= "上";
 obj["Down"]			= "下";
 
 -- Animation style behaviors.
+--obj["AngleUp"]			= "Angle Upwards";
+--obj["AngleDown"]		= "Angle Downwards";
 obj["GrowUp"]			= "漸漸向上";
 obj["GrowDown"]			= "漸漸向下";
 obj["CurvedLeft"]		= "弧形向左";

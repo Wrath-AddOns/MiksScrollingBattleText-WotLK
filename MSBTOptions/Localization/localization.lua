@@ -72,15 +72,16 @@ L.MSG_CONDITIONS					= "Conditions";
 ------------------------------
 
 local obj = L.CLASS_NAMES;
-obj["DRUID"]	= "Druid";
-obj["HUNTER"]	= "Hunter";
-obj["MAGE"]		= "Mage";
-obj["PALADIN"]	= "Paladin";
-obj["PRIEST"]	= "Priest";
-obj["ROGUE"]	= "Rogue";
-obj["SHAMAN"]	= "Shaman";
-obj["WARLOCK"]	= "Warlock";
-obj["WARRIOR"]	= "Warrior";
+obj["DEATHKNIGHT"]	= "Death Knight";
+obj["DRUID"]		= "Druid";
+obj["HUNTER"]		= "Hunter";
+obj["MAGE"]			= "Mage";
+obj["PALADIN"]		= "Paladin";
+obj["PRIEST"]		= "Priest";
+obj["ROGUE"]		= "Rogue";
+obj["SHAMAN"]		= "Shaman";
+obj["WARLOCK"]		= "Warlock";
+obj["WARRIOR"]		= "Warrior";
 
 
 ------------------------------
@@ -263,6 +264,7 @@ obj["DAMAGE_TAKEN"]			= "%a - Amount of damage taken.\n";
 obj["HEALING_TAKEN"]		= "%a - Amount of healing taken.\n";
 obj["DAMAGE_DONE"]			= "%a - Amount of damage done.\n";
 obj["HEALING_DONE"]			= "%a - Amount of healing done.\n";
+obj["ABSORBED_AMOUNT"]		= "%a - Amount of damage absorbed.\n";
 obj["ENERGY_AMOUNT"]		= "%a - Amount of energy.\n";
 obj["CP_AMOUNT"]			= "%a - Amount of combo points you have.\n";
 obj["HONOR_AMOUNT"]			= "%a - Amount of honor.\n";
@@ -483,6 +485,7 @@ obj["UNIT_HEALTH"]				= "Health Change";
 obj["UNIT_MANA"]				= "Mana Change";
 obj["UNIT_ENERGY"]				= "Energy Change";
 obj["UNIT_RAGE"]				= "Rage Change";
+obj["UNIT_RUNIC_POWER"]			= "Runic Power Change";
 obj["SKILL_COOLDOWN"]			= "Skill Cooldown Complete";
  
 -- Main event conditions.
@@ -600,8 +603,9 @@ obj[3] = "Right";
 ------------------------------
 
 obj = L.SOUNDS;
-obj["LowMana"]		= "Low Mana";
-obj["LowHealth"]	= "Low Health";
+obj["MSBT Low Mana"]	= "MSBT Low Mana";
+obj["MSBT Low Health"]	= "MSBT Low Health";
+obj["MSBT Cooldown"]	= "MSBT Cooldown";
 
 
 ------------------------------
@@ -610,6 +614,7 @@ obj["LowHealth"]	= "Low Health";
 
 -- Animation styles
 obj = L.ANIMATION_STYLE_DATA;
+obj["Angled"]		= "Angled";
 obj["Horizontal"]	= "Horizontal";
 obj["Parabola"]		= "Parabola";
 obj["Straight"]		= "Straight";
@@ -624,6 +629,8 @@ obj["Up"]			= "Up";
 obj["Down"]			= "Down";
 
 -- Animation style behaviors.
+obj["AngleUp"]			= "Angle Upwards";
+obj["AngleDown"]		= "Angle Downwards";
 obj["GrowUp"]			= "Grow Upwards";
 obj["GrowDown"]			= "Grow Downwards";
 obj["CurvedLeft"]		= "Curved Left";

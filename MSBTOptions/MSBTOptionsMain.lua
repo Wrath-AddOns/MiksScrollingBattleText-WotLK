@@ -10,6 +10,15 @@ MSBTOptions[moduleName] = module;
 
 
 -------------------------------------------------------------------------------
+-- Imports.
+-------------------------------------------------------------------------------
+
+-- Local references to various modules for faster access.
+local MSBTControls = MSBTOptions.Controls;
+local L = MikSBT.translations;
+
+
+-------------------------------------------------------------------------------
 -- Constants.
 -------------------------------------------------------------------------------
 
@@ -29,15 +38,6 @@ local popupFrames = {};
 -- Tab info.
 local tabData = {};
 local tabListbox;
-
-
--------------------------------------------------------------------------------
--- Imports.
--------------------------------------------------------------------------------
-
--- Local references to certain modules for faster access.
-local MSBTControls = MSBTOptions.Controls;
-local L = MikSBT.translations;
 
 
 -------------------------------------------------------------------------------

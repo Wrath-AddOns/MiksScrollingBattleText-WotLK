@@ -1,4 +1,4 @@
-﻿----------------------------------------------------------------------------
+----------------------------------------------------------------------------
 -- Title: MSBT Options Simplified Chinese Localization
 -- Author: Mik
 -- Simplified Chinese Translation by: elafor, hscui
@@ -47,15 +47,16 @@ L.MSG_INVALID_SKILL_NAME			= "无效的技能名字";
 ------------------------------
 
 local obj = L.CLASS_NAMES;
-obj["DRUID"]	= "德鲁伊";
-obj["HUNTER"]	= "猎人";
-obj["MAGE"]		= "法师";
-obj["PALADIN"]	= "圣骑士";
-obj["PRIEST"]	= "牧师";
-obj["ROGUE"]	= "潜行者";
-obj["SHAMAN"]	= "萨满祭司";
-obj["WARLOCK"]	= "术士";
-obj["WARRIOR"]	= "战士";
+--obj["DEATHKNIGHT"]	= "Death Knight";
+obj["DRUID"]		= "德鲁伊";
+obj["HUNTER"]		= "猎人";
+obj["MAGE"]			= "法师";
+obj["PALADIN"]		= "圣骑士";
+obj["PRIEST"]		= "牧师";
+obj["ROGUE"]		= "潜行者";
+obj["SHAMAN"]		= "萨满祭司";
+obj["WARLOCK"]		= "术士";
+obj["WARRIOR"]		= "战士";
 
 
 ------------------------------
@@ -234,38 +235,39 @@ obj[5] = "通告";
 ------------------------------
 
 obj = L.EVENT_CODES;
-obj["DAMAGE_TAKEN"]			= "%a - Amount of damage taken.\n";
-obj["HEALING_TAKEN"]		= "%a - Amount of healing taken.\n";
-obj["DAMAGE_DONE"]			= "%a - Amount of damage done.\n";
-obj["HEALING_DONE"]			= "%a - Amount of healing done.\n";
-obj["ENERGY_AMOUNT"]		= "%a - Amount of energy.\n";
-obj["CP_AMOUNT"]			= "%a - Amount of combo points you have.\n";
-obj["HONOR_AMOUNT"]			= "%a - Amount of honor.\n";
-obj["REP_AMOUNT"]			= "%a - Amount of reputation.\n";
-obj["SKILL_AMOUNT"]			= "%a - Amount of points you have in the skill.\n";
-obj["EXPERIENCE_AMOUNT"]	= "%a - Amount of experience you gained.\n";
-obj["ATTACKER_NAME"]		= "%n - Name of the attacker.\n";
-obj["HEALER_NAME"]			= "%n - Name of the healer.\n";
-obj["ATTACKED_NAME"]		= "%n - Name of the attacked unit.\n";
-obj["HEALED_NAME"]			= "%n - Name of the healed unit.\n";
-obj["BUFFED_NAME"]			= "%n - Name of the buffed unit.\n";
-obj["SKILL_NAME"]			= "%s - Name of the skill.\n";
-obj["SPELL_NAME"]			= "%s - Name of the spell.\n";
-obj["DEBUFF_NAME"]			= "%s - Name of the debuff.\n";
-obj["BUFF_NAME"]			= "%s - Name of the buff.\n";
-obj["ITEM_BUFF_NAME"]		= "%s - Name of the item buff.\n";
-obj["EXTRA_ATTACKS"]		= "%s - Name of skill granting the extra attacks.\n";
-obj["SKILL_LONG"]			= "%sl - Long form of %s. Used to override abbreviation for the event.\n";
-obj["DAMAGE_TYPE_TAKEN"]	= "%t - Type of damage taken.\n";
-obj["DAMAGE_TYPE_DONE"]		= "%t - Type of damage done.\n";
-obj["ENVIRONMENTAL_DAMAGE"]	= "%e - Name of the source of the damage (falling, drowning, lava, etc...)\n";
-obj["FACTION_NAME"]			= "%e - Name of the faction.\n";
-obj["UNIT_KILLED"]			= "%e - Name of the unit killed.\n";
-obj["SHARD_NAME"]			= "%e - Localized name of the soul shard.\n";
-obj["EMOTE_TEXT"]			= "%e - The text of the emote.\n";
-obj["MONEY_TEXT"]			= "%e - The money gained text.\n";
-obj["COOLDOWN_NAME"]		= "%e - The name of skill that is ready.\n"
-obj["POWER_TYPE"]			= "%p - Type of power (energy, rage, mana).\n";
+--obj["DAMAGE_TAKEN"]			= "%a - Amount of damage taken.\n";
+--obj["HEALING_TAKEN"]		= "%a - Amount of healing taken.\n";
+--obj["DAMAGE_DONE"]			= "%a - Amount of damage done.\n";
+--obj["HEALING_DONE"]			= "%a - Amount of healing done.\n";
+--obj["ABSORBED_AMOUNT"]		= "%a - Amount of damage absorbed.\n";
+--obj["ENERGY_AMOUNT"]		= "%a - Amount of energy.\n";
+--obj["CP_AMOUNT"]			= "%a - Amount of combo points you have.\n";
+--obj["HONOR_AMOUNT"]			= "%a - Amount of honor.\n";
+--obj["REP_AMOUNT"]			= "%a - Amount of reputation.\n";
+--obj["SKILL_AMOUNT"]			= "%a - Amount of points you have in the skill.\n";
+--obj["EXPERIENCE_AMOUNT"]	= "%a - Amount of experience you gained.\n";
+--obj["ATTACKER_NAME"]		= "%n - Name of the attacker.\n";
+--obj["HEALER_NAME"]			= "%n - Name of the healer.\n";
+--obj["ATTACKED_NAME"]		= "%n - Name of the attacked unit.\n";
+--obj["HEALED_NAME"]			= "%n - Name of the healed unit.\n";
+--obj["BUFFED_NAME"]			= "%n - Name of the buffed unit.\n";
+--obj["SKILL_NAME"]			= "%s - Name of the skill.\n";
+--obj["SPELL_NAME"]			= "%s - Name of the spell.\n";
+--obj["DEBUFF_NAME"]			= "%s - Name of the debuff.\n";
+--obj["BUFF_NAME"]			= "%s - Name of the buff.\n";
+--obj["ITEM_BUFF_NAME"]		= "%s - Name of the item buff.\n";
+--obj["EXTRA_ATTACKS"]		= "%s - Name of skill granting the extra attacks.\n";
+--obj["SKILL_LONG"]			= "%sl - Long form of %s. Used to override abbreviation for the event.\n";
+--obj["DAMAGE_TYPE_TAKEN"]	= "%t - Type of damage taken.\n";
+--obj["DAMAGE_TYPE_DONE"]		= "%t - Type of damage done.\n";
+--obj["ENVIRONMENTAL_DAMAGE"]	= "%e - Name of the source of the damage (falling, drowning, lava, etc...)\n";
+--obj["FACTION_NAME"]			= "%e - Name of the faction.\n";
+--obj["UNIT_KILLED"]			= "%e - Name of the unit killed.\n";
+--obj["SHARD_NAME"]			= "%e - Localized name of the soul shard.\n";
+--obj["EMOTE_TEXT"]			= "%e - The text of the emote.\n";
+--obj["MONEY_TEXT"]			= "%e - The money gained text.\n";
+--obj["COOLDOWN_NAME"]		= "%e - The name of skill that is ready.\n"
+--obj["POWER_TYPE"]			= "%p - Type of power (energy, rage, mana).\n";
 
 
 ------------------------------
@@ -458,6 +460,7 @@ obj = L.TRIGGER_DATA;
 --obj["UNIT_MANA"]				= "Mana Change";
 --obj["UNIT_ENERGY"]				= "Energy Change";
 --obj["UNIT_RAGE"]				= "Rage Change";
+--obj["UNIT_RUNIC_POWER"]			= "Runic Power Change";
 --obj["SKILL_COOLDOWN"]			= "Skill Cooldown Complete";
  
 -- Main event conditions.
@@ -575,8 +578,9 @@ obj[3] = "右边";
 ------------------------------
 
 obj = L.SOUNDS;
-obj["LowMana"]		= "能量不足";
-obj["LowHealth"]	= "血量不足";
+obj["MSBT Low Mana"]	= "MSBT 能量不足";
+obj["MSBT Low Health"]	= "MSBT 血量不足";
+--obj["MSBT Cooldown"]	= "MSBT Cooldown";
 
 
 ------------------------------
@@ -585,6 +589,7 @@ obj["LowHealth"]	= "血量不足";
 
 -- Animation styles
 obj = L.ANIMATION_STYLE_DATA;
+--obj["Angled"]		= "Angled";
 obj["Horizontal"]	= "水平";
 obj["Parabola"]		= "抛物线";
 obj["Straight"]		= "直线";
@@ -599,6 +604,8 @@ obj["Up"]			= "上";
 obj["Down"]			= "下";
 
 -- Animation style behaviors.
+--obj["AngleUp"]			= "Angle Upwards";
+--obj["AngleDown"]		= "Angle Downwards";
 obj["GrowUp"]			= "向上增长";
 obj["GrowDown"]			= "向下增长";
 obj["CurvedLeft"]		= "向左抛出";

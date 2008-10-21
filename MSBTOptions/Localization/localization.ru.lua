@@ -1,4 +1,4 @@
-﻿-------------------------------------------------------------------------------
+-------------------------------------------------------------------------------
 -- Title: MSBT Options Russian Localization
 -- Author: Mik
 -- Russain Translation by: Eritnull (Шептун)
@@ -47,15 +47,16 @@ L.MSG_CONDITIONS					= "Условия";
 ------------------------------
 
 local obj = L.CLASS_NAMES;
-obj["DRUID"]	= "Друид";
-obj["HUNTER"]	= "Охотник";
-obj["MAGE"]		= "Маг";
-obj["PALADIN"]	= "паладин";
-obj["PRIEST"]	= "Жрец";
-obj["ROGUE"]	= "Разбойник";
-obj["SHAMAN"]	= "Шаман";
-obj["WARLOCK"]	= "Чернокнижник";
-obj["WARRIOR"]	= "Воин";
+--obj["DEATHKNIGHT"]	= "Death Knight";
+obj["DRUID"]		= "Друид";
+obj["HUNTER"]		= "Охотник";
+obj["MAGE"]			= "Маг";
+obj["PALADIN"]		= "паладин";
+obj["PRIEST"]		= "Жрец";
+obj["ROGUE"]		= "Разбойник";
+obj["SHAMAN"]		= "Шаман";
+obj["WARLOCK"]		= "Чернокнижник";
+obj["WARRIOR"]		= "Воин";
 
 
 ------------------------------
@@ -238,6 +239,7 @@ obj["DAMAGE_TAKEN"]			= "%a - Значение получаемого урона
 obj["HEALING_TAKEN"]		= "%a - Значение получаемого лечения.\n";
 obj["DAMAGE_DONE"]			= "%a - Значение нанесённого урона.\n";
 obj["HEALING_DONE"]			= "%a - Значение нанесённого лечения.\n";
+--obj["ABSORBED_AMOUNT"]		= "%a - Amount of damage absorbed.\n";
 obj["ENERGY_AMOUNT"]		= "%a - Значение энергии.\n";
 obj["CP_AMOUNT"]			= "%a - Значение сколько приёмов в серии.\n";
 obj["HONOR_AMOUNT"]			= "%a - Значение чести.\n";
@@ -458,6 +460,7 @@ obj["UNIT_HEALTH"]				= "Изменение здоровья";
 obj["UNIT_MANA"]				= "Изменение маны";
 obj["UNIT_ENERGY"]				= "Изменение энергии";
 obj["UNIT_RAGE"]				= "Изменение ярости";
+--obj["UNIT_RUNIC_POWER"]			= "Runic Power Change";
 obj["SKILL_COOLDOWN"]			= "Завершение перезарядки заклинания";
  
 -- Main event conditions.
@@ -575,8 +578,9 @@ obj[3] = "Вправо";
 ------------------------------
 
 obj = L.SOUNDS;
-obj["LowMana"]		= "Малый запас маны";
-obj["LowHealth"]	= "Малый запас здоровья";
+obj["MSBT Low Mana"]	= "MSBT Малый запас маны";
+obj["MSBT Low Health"]	= "MSBT Малый запас здоровья";
+--obj["MSBT Cooldown"]	= "MSBT Cooldown";
 
 
 ------------------------------
@@ -585,6 +589,7 @@ obj["LowHealth"]	= "Малый запас здоровья";
 
 -- Animation styles
 obj = L.ANIMATION_STYLE_DATA;
+--obj["Angled"]		= "Angled";
 obj["Horizontal"]	= "Горизонтальный";
 obj["Parabola"]		= "Парабола";
 obj["Straight"]		= "Прямой";
@@ -599,6 +604,8 @@ obj["Up"]			= "Вверх";
 obj["Down"]			= "Вниз";
 
 -- Animation style behaviors.
+--obj["AngleUp"]			= "Angle Upwards";
+--obj["AngleDown"]		= "Angle Downwards";
 obj["GrowUp"]			= "Увеличиваться";
 obj["GrowDown"]			= "Уменьшаться";
 obj["CurvedLeft"]		= "Изогнутый влево";

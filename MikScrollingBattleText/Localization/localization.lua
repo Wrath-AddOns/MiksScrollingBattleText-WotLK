@@ -15,19 +15,19 @@ local L = MikSBT.translations;
 ------------------------------
 
 L.FONT_FILES = {
- Adventure		= "Interface\\Addons\\MikScrollingBattleText\\Fonts\\adventure.ttf",
- Bazooka		= "Interface\\Addons\\MikScrollingBattleText\\Fonts\\bazooka.ttf",
- Cooline		= "Interface\\Addons\\MikScrollingBattleText\\Fonts\\cooline.ttf",
- Default		= "Interface\\Addons\\MikScrollingBattleText\\Fonts\\porky.ttf",
- Diogenes		= "Interface\\Addons\\MikScrollingBattleText\\Fonts\\diogenes.ttf",
- Friz			= "Fonts\\FRIZQT__.TTF",
- Ginko			= "Interface\\Addons\\MikScrollingBattleText\\Fonts\\ginko.ttf",
- Heroic			= "Interface\\Addons\\MikScrollingBattleText\\Fonts\\heroic.ttf",
- Talisman		= "Interface\\Addons\\MikScrollingBattleText\\Fonts\\talisman.ttf",
- Transformers	= "Interface\\Addons\\MikScrollingBattleText\\Fonts\\transformers.ttf",
- Yellowjacket	= "Interface\\Addons\\MikScrollingBattleText\\Fonts\\yellowjacket.ttf",
- Zephyr			= "Interface\\Addons\\MikScrollingBattleText\\Fonts\\zephyr.ttf",
+ ["MSBT Adventure"]		= "Interface\\Addons\\MikScrollingBattleText\\Fonts\\adventure.ttf",
+ ["MSBT Bazooka"]		= "Interface\\Addons\\MikScrollingBattleText\\Fonts\\bazooka.ttf",
+ ["MSBT Cooline"]		= "Interface\\Addons\\MikScrollingBattleText\\Fonts\\cooline.ttf",
+ ["MSBT Diogenes"]		= "Interface\\Addons\\MikScrollingBattleText\\Fonts\\diogenes.ttf",
+ ["MSBT Ginko"]			= "Interface\\Addons\\MikScrollingBattleText\\Fonts\\ginko.ttf",
+ ["MSBT Heroic"]		= "Interface\\Addons\\MikScrollingBattleText\\Fonts\\heroic.ttf",
+ ["MSBT Porky"]			= "Interface\\Addons\\MikScrollingBattleText\\Fonts\\porky.ttf",
+ ["MSBT Talisman"]		= "Interface\\Addons\\MikScrollingBattleText\\Fonts\\talisman.ttf",
+ ["MSBT Transformers"]	= "Interface\\Addons\\MikScrollingBattleText\\Fonts\\transformers.ttf",
+ ["MSBT Yellowjacket"]	= "Interface\\Addons\\MikScrollingBattleText\\Fonts\\yellowjacket.ttf",
 }
+
+L.DEFAULT_FONT_NAME = "MSBT Porky";
 
 
 ------------------------------
@@ -56,8 +56,7 @@ L.COMMAND_USAGE = {
 ------------------------------
 
 L.MSG_ICON_MODULE_WARNING	= "WARNING: The MSBTIcons module is no longer required. Remove it from your AddOns folder to avoid wasting memory.";
---L.MSG_SEARCH_ENABLE			= "Event search mode enabled.  Searching for: ";
---L.MSG_SEARCH_DISABLE		= "Event search mode disabled.";
+L.MSG_SM_MODULE_WARNING		= "WARNING: The MSBTSharedMedia module is no longer required.  Remove it from your AddOns folder.";
 L.MSG_DISABLE				= "Mod disabled.";
 L.MSG_ENABLE				= "Mod enabled.";
 L.MSG_PROFILE_RESET			= "Profile Reset";

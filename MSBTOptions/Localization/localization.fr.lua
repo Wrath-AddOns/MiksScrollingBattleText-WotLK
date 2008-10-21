@@ -47,15 +47,16 @@ L.MSG_INVALID_SKILL_NAME			= "Nom de comp\195\169tence invalide.";
 ------------------------------
 
 local obj = L.CLASS_NAMES;
-obj["DRUID"]	= "Druide";
-obj["HUNTER"]	= "Chasseur";
-obj["MAGE"]		= "Mage";
-obj["PALADIN"]	= "Paladin";
-obj["PRIEST"]	= "Pr\195\170tre";
-obj["ROGUE"]	= "Voleur";
-obj["SHAMAN"]	= "Chaman";
-obj["WARLOCK"]	= "D\195\169moniste";
-obj["WARRIOR"]	= "Guerrier";
+--obj["DEATHKNIGHT"]	= "Death Knight";
+obj["DRUID"]		= "Druide";
+obj["HUNTER"]		= "Chasseur";
+obj["MAGE"]			= "Mage";
+obj["PALADIN"]		= "Paladin";
+obj["PRIEST"]		= "Pr\195\170tre";
+obj["ROGUE"]		= "Voleur";
+obj["SHAMAN"]		= "Chaman";
+obj["WARLOCK"]		= "D\195\169moniste";
+obj["WARRIOR"]		= "Guerrier";
 
 
 ------------------------------
@@ -238,6 +239,7 @@ obj["DAMAGE_TAKEN"]			= "%a - Quantit\195\169 de dommages.\n";
 obj["HEALING_TAKEN"]		= "%a - Quantit\195\169 de soins re\195\167us.\n";
 obj["DAMAGE_DONE"]			= "%a - Dommages inflig\195\169s.\n";
 obj["HEALING_DONE"]			= "%a - Quantit\195\169 de soins.\n";
+--obj["ABSORBED_AMOUNT"]		= "%a - Amount of damage absorbed.\n";
 obj["ENERGY_AMOUNT"]		= "%a - Quantit\195\169 de pouvoir.\n";
 obj["CP_AMOUNT"]			= "%a - Nombre de points de combo.\n";
 obj["HONOR_AMOUNT"]			= "%a - Quantit\195\169 de honneur.\n";
@@ -458,6 +460,7 @@ obj = L.TRIGGER_DATA;
 --obj["UNIT_MANA"]				= "Mana Change";
 --obj["UNIT_ENERGY"]				= "Energy Change";
 --obj["UNIT_RAGE"]				= "Rage Change";
+--obj["UNIT_RUNIC_POWER"]			= "Runic Power Change";
 --obj["SKILL_COOLDOWN"]			= "Skill Cooldown Complete";
  
 -- Main event conditions.
@@ -575,8 +578,9 @@ obj[3] = "Droite";
 ------------------------------
 
 obj = L.SOUNDS;
-obj["LowMana"]		= "Mana Faible";
-obj["LowHealth"]	= "Vie Faible";
+obj["MSBT Low Mana"]	= "MSBT Mana Faible";
+obj["MSBT Low Health"]	= "MSBT Vie Faible";
+--obj["MSBT Cooldown"]	= "MSBT Cooldown";
 
 
 ------------------------------
@@ -585,6 +589,7 @@ obj["LowHealth"]	= "Vie Faible";
 
 -- Animation styles
 obj = L.ANIMATION_STYLE_DATA;
+--obj["Angled"]		= "Angled";
 --obj["Horizontal"]	= "Horizontal";
 obj["Parabola"]		= "Parabole";
 obj["Straight"]		= "Directement";
@@ -599,6 +604,8 @@ obj["Right"]		= "Droite";
 --obj["Down"]			= "Down";
 
 -- Animation style behaviors.
+--obj["AngleUp"]			= "Angle Upwards";
+--obj["AngleDown"]		= "Angle Downwards";
 --obj["GrowUp"]			= "Grow Upwards";
 --obj["GrowDown"]			= "Grow Downwards";
 --obj["CurvedLeft"]		= "Curved Left";

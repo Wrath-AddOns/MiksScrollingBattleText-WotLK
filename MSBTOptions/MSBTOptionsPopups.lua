@@ -10,6 +10,29 @@ MSBTOptions[moduleName] = module;
 
 
 -------------------------------------------------------------------------------
+-- Imports.
+-------------------------------------------------------------------------------
+
+-- Local references to various modules for faster access.
+local MSBTControls = MSBTOptions.Controls;
+local MSBTProfiles = MikSBT.Profiles;
+local MSBTAnimations = MikSBT.Animations;
+local MSBTTriggers = MikSBT.Triggers;
+local MSBTParser = MikSBT.Parser;
+local MSBTMain = MikSBT.Main;
+local MSBTMedia = MikSBT.Media;
+local L = MikSBT.translations;
+
+-- Local references to various functions for faster access.
+local EraseTable = MikSBT.EraseTable;
+local ConvertType = MSBTTriggers.ConvertType;
+
+-- Local references to various variables for faster access.
+local fonts = MSBTMedia.fonts;
+local sounds = MSBTMedia.sounds;
+
+
+-------------------------------------------------------------------------------
 -- Private constants.
 -------------------------------------------------------------------------------
 
@@ -46,24 +69,6 @@ local returnSettings = {};
 
 -- Reusable table to configure popup frames.
 local tempConfig = {};
-
-
--------------------------------------------------------------------------------
--- Imports.
--------------------------------------------------------------------------------
-
--- Local references to certain modules for faster access.
-local MSBTControls = MSBTOptions.Controls;
-local MSBTProfiles = MikSBT.Profiles;
-local MSBTAnimations = MikSBT.Animations;
-local MSBTTriggers = MikSBT.Triggers;
-local MSBTParser = MikSBT.Parser;
-local MSBTMain = MikSBT.Main;
-local L = MikSBT.translations;
-
--- Local references to certain functions for faster access.
-local EraseTable = MikSBT.EraseTable;
-local ConvertType = MSBTTriggers.ConvertType;
 
 
 -------------------------------------------------------------------------------
@@ -437,7 +442,6 @@ end
 -- ****************************************************************************
 local function UpdateFontPreviews()
  local frame = popupFrames.fontFrame;
- local fonts = MSBTAnimations.fonts;
 
  local fontPath, fontSize, outline;
 
@@ -819,7 +823,7 @@ local function ShowFont(configTable)
   -- Normal font name.
   dropdown = frame.normalFontDropdown;
   dropdown:Clear();
-  for fontName in pairs(MSBTAnimations.fonts) do
+  for fontName in pairs(fonts) do
    dropdown:AddItem(fontName, fontName);
   end
   dropdown:Sort();
@@ -855,7 +859,7 @@ local function ShowFont(configTable)
   -- Crit font name.
   dropdown = frame.critFontDropdown;
   dropdown:Clear();
-  for fontName in pairs(MSBTAnimations.fonts) do
+  for fontName in pairs(fonts) do
    dropdown:AddItem(fontName, fontName);
   end
   dropdown:Sort();
@@ -1866,7 +1870,7 @@ local function PopulateEventSounds(selectedSound)
  
  local isCustomSound = selectedSound and true;
  controls.soundDropdown:Clear();
- for soundName in pairs(MSBTAnimations.sounds) do
+ for soundName in pairs(sounds) do
   if (soundName ~= NONE) then controls.soundDropdown:AddItem(L.SOUNDS[soundName] or soundName, soundName); end
   if (soundName == selectedSound) then isCustomSound = nil; end
  end
@@ -2100,7 +2104,7 @@ end
 local function CreateClasses()
  local frame = CreatePopup();
  frame:SetWidth(270);
- frame:SetHeight(320);
+ frame:SetHeight(340);
  frame.classCheckboxes = {};
  local classCheckboxes = frame.classCheckboxes;
 
@@ -2133,7 +2137,7 @@ local function CreateClasses()
  frame.allClassesCheckbox = checkbox; 
 
  local anchor = checkbox;
- for class in string.gmatch("DRUID HUNTER MAGE PALADIN PRIEST ROGUE SHAMAN WARLOCK WARRIOR", "[^ ]+") do
+ for class in string.gmatch("DEATHKNIGHT DRUID HUNTER MAGE PALADIN PRIEST ROGUE SHAMAN WARLOCK WARRIOR", "[^ ]+") do
   checkbox = MSBTControls.CreateCheckbox(frame);
   checkbox:Configure(24, L.CLASS_NAMES[class], nil);
   checkbox:SetPoint("TOPLEFT", anchor, "BOTTOMLEFT", anchor == frame.allClassesCheckbox and 20 or 0, anchor == frame.allClassesCheckbox and -10 or 0);
@@ -3386,6 +3390,7 @@ local function CreateTriggerPopup()
  eventConditionData["UNIT_MANA"] = eventConditionData["UNIT_HEALTH"];
  eventConditionData["UNIT_ENERGY"] = eventConditionData["UNIT_HEALTH"];
  eventConditionData["UNIT_RAGE"] = eventConditionData["UNIT_HEALTH"];
+ eventConditionData["UNIT_RUNIC_POWER"] = eventConditionData["UNIT_HEALTH"];
 
  frame.eventConditionData = eventConditionData;
 

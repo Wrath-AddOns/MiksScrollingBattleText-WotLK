@@ -37,9 +37,9 @@
  <body>
   <h1>Mik's Scrolling Battle Text</h1>
   <div id="HeaderBlock">
-   Version: 5.2<br />
+   Version: 5.3<br />
    Author: Mik<br />
-   Released: July 17, 2008<br />
+   Updated: Oct 4, 2008<br />
    Official Site: <a href="http://mikord.wowinterface.com">http://mikord.wowinterface.com</a><br /><br />
    <a href="#Credits">See Credits</a>
   </div>
@@ -198,21 +198,33 @@
      <ul>
       <li>Backlash</li>
       <li>Blackout</li>
+      <li>Bloodsurge</li>
+      <li>Brain Freeze</li>
       <li>Clearcasting</li>
       <li>Counter Attack</li>
+      <li>Eclipse</li>
+      <li>Eradication</li>
       <li>Execute / Hammer of Wrath</li>
+      <li>Fingers of Frost</li>
       <li>Frostbite</li>
+      <li>Hot Streak</li>
       <li>Impact</li>
       <li>Kill Command</li>
       <li>Low Health</li>
       <li>Low Mana</li>
       <li>Low Pet Health</li>
+      <li>Maelstrom Weapon x5</li>
+      <li>Missile Barrage</li>
+      <li>Molten Core</li>
       <li>Mongoose Bite</li>
       <li>Nightfall</li>
       <li>Overpower</li>
+      <li>Owlkin Frenzy</li>
       <li>Rampage</li>
       <li>Revenge</li>
       <li>Riposte</li>
+      <li>Sudden Doom</li>
+      <li>Tidal Waves</li>
       <li>Victory Rush</li>
       <li>Viper Sting</li>
      </ul>
@@ -1181,6 +1193,57 @@
    <table cellspacing="3">
     <tr>
      <td class="ParameterName" nowrap="nowrap"><a name="WhatsNew"></a>Latest</td>
+     <td class="ParameterDesc">
+      <ul>
+       <li>Modified the internal media handling to avoid issues induced by other mods via LibSharedMedia.</li>
+       <li>Reworked the animation system to help alleviate some "jerkiness" due to rounding.</li>
+       <li>Added an angled animation style with customizable directions and behaviors.</li>
+       <li>Made some minor optimizations in substitution code handling.</li>
+       <li>Removed Mongoose Bite and Kill Command triggers since they no longer apply.</li>
+       <li>Added default triggers for Sudden Death and Taste for Blood.</li>
+      </ul>
+     </td>
+    </tr>
+    <tr>
+     <td class="ParameterName" nowrap="nowrap">5.3.24</td>
+     <td class="ParameterDesc">
+      <ul>
+       <li>
+        Updated for Patch 3.0.1 / Wrath of the Lich King Beta.
+        <ul>
+         <li>Added several default triggers for new abliities of various classes.</li>
+         <li>Updated supported power types to include runes and runic power.</li>
+         <li>Added support for new damage types.</li>
+         <li>Added coloring for frostfire damage.</li>
+         <li>Death Knight is now an available class for triggers.</li>
+         <li>Runic Power Change and Rune Cooldown are now available main events for triggers.</li>
+         <li>Added throttling for heals from Blood Presence.</li>
+         <li>Added the amount absorbed for fully absorbed events with damage color capability.</li>
+         <li>Modified all partial effects to use the same bracket style as overheals.</li>
+         <li>Updated combo point handling to work with WotLK.</li>
+         <li>Modified power gains from leeches to show the correct amount gained instead of the amount leeched.</li>
+        </ul>
+       </li>
+       <br />
+       <li>
+        Performance enhancements:
+        <ul>
+         <li>Removed delays from the animation system that should make the animations a little smoother on fast systems.</li>
+         <li>Events that are capable of being merged will now appear more quickly than previously.</li>
+         <li>Made some minor optimizations in substitution code handling.</li>
+        </ul>
+       </li>
+       <br />
+       <li>Realm names are no longer shown as a part of name based substitutions for cross-realm players.</li>
+       <li>Rewrote media handling system to provide native Shared Media support.</li>
+       <li>Physical damage coloring is now ignored for outgoing skills that are not "auto attacks."</li>
+       <li>The temporary icon (the little face) will no longer be shown.</li>
+       <li>Zephyr font removed since it doesn't support some glyphs.</li>
+      </ul>
+     </td>
+    </tr>
+    <tr>
+     <td class="ParameterName" nowrap="nowrap">5.2.14</td>
      <td class="ParameterDesc">
       <ul>
        <li>The hostile condition check for health and power changes will now function properly.</li>

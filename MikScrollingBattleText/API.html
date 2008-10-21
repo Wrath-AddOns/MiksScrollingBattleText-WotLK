@@ -41,8 +41,8 @@
     <a href="#MikSBT.DisplayMessage">MikSBT.DisplayMessage</a><br />
     <a href="#MikSBT.IterateFonts">MikSBT.IterateFonts</a><br />
     <a href="#MikSBT.IterateScrollAreas">MikSBT.IterateScrollAreas</a><br />
-	<span style="color: red;">MikSBT.GetRegisteredFontList - DEPRECATED</span><br />
-	<span style="color: red;">MikSBT.GetScrollAreaList - DEPRECATED</span><br />
+	<span style="color: red;">MikSBT.GetRegisteredFontList - REMOVED</span><br />
+	<span style="color: red;">MikSBT.GetScrollAreaList - REMOVED</span><br />
 
    </div>
    <b>Sounds:</b>
@@ -125,7 +125,7 @@
   <div class="SectionTitle"><a name="MikSBT.RegisterFont"></a>MikSBT.RegisterFont</div>
   <a href="#TOC">Return to TOC</a><br /><br />
   <div class="SectionDesc">
-   Registers a font with MSBT.<br /><br />
+   Registers a font with MSBT and Shared Media.<br /><br />
    Font registration is not permanent.  It must be done each load.  In this manner if the user were to remove
    a mod that registers custom fonts, the fonts would simply no longer be available.  If anything in MSBT has a
    custom font selected that is no longer registered, MSBT will recognize that an invalid font is specified and
@@ -288,7 +288,7 @@
 
     -- Displays "Enemy begins to flee in fear" in the notification scroll area in green with the<br />
     -- scroll area's font size, the font set to Yellowjacket, no outline, and the icon for fear.<br />
-    MikSBT.DisplayMessage("Enemy begins to flee in fear", nil, false, 0, 255, 0, nil, "Yellowjacket", 1, "Interface\\Icons\\Spell_Shadow_Possession");
+    MikSBT.DisplayMessage("Enemy begins to flee in fear", nil, false, 0, 255, 0, nil, "MSBT Yellowjacket", 1, "Interface\\Icons\\Spell_Shadow_Possession");
    </div>
   </div>
 
@@ -402,7 +402,7 @@
   <div class="SectionTitle"><a name="MikSBT.RegisterSound"></a>MikSBT.RegisterSound</div>
   <a href="#TOC">Return to TOC</a><br /><br />
   <div class="SectionDesc">
-   Registers a sound with MSBT.<br /><br />
+   Registers a sound with MSBT and Shared Media.<br /><br />
    Sound registration is not permanent.  It must be done each load.  In this manner if the user were to remove
    a mod that registers custom sounds, the sounds would simply no longer be available.
   </div>
@@ -501,8 +501,7 @@
    <br /><br />
 
    The callback handlers receive recycled <a href="#DisplayEventTable">DisplayEvent</a> tables that contain information about an animating event
-   such as its x and y position, its alpha (opacity), the height of the scroll area it's animating in, how long it's been animating, and the user
-   specified animation speed.
+   such as its x and y position, its alpha (opacity), the height of the scroll area it's animating in, and the animation completion percentage.
    <br /><br />
 
    There are two callback handlers:
@@ -526,10 +525,7 @@
      <td class="ParameterName" nowrap="nowrap"><a href="#AnimationCallback">Animation</a></td>
      <td class="ParameterDesc">
       This function moves the <a href="#DisplayEventTable">DisplayEvent</a> at each update interval by modifying the <i>.positionX</i> and <i>.positionY</i> fields.
-      The opacity is controlled by modifying the <i>.alpha</i> field.
-      <br /><br />
-      Once the animation has completed the function <b>MUST</b> return true so that the objects in use for the
-      animation may be reused and the mod stops calling the function.
+      The opacity can also be controlled by modifying the <i>.alpha</i> field.
      </td>
     </tr>
    </table>
@@ -687,8 +683,9 @@
    The most important thing for this function to do is set the <i>.animationHandler</i> field for the new <a href="#DisplayEventTable">DisplayEvent</a>
    to an appropriate <a href="#AnimationCallback">Animation</a> callback handler.
    <br /><br />
-   The other purpose of this function is to initialize the starting position, alpha, and any other information you need for the new
-   <a href="#DisplayEventTable">DisplayEvent</a>, and to move any other <a href="#DisplayEventTable">DisplayEvent</a>s that are now colliding due to the new event.
+   The other purpose of this function is to initialize the starting position and any additional information you need for the new
+   <a href="#DisplayEventTable">DisplayEvent</a>, and to move any other <a href="#DisplayEventTable">DisplayEvent</a>s that are now colliding due
+   to the new event.
    <br /><br />
    <b>This function MUST set the <i>.animationHandler</i> field of the <i>newDisplayEvent</i> parameter to a valid <a href="#AnimationCallback">Animation</a> callback handler.</b>
   </div>
@@ -753,22 +750,18 @@
   <a href="#TOC">Return to TOC</a><br /><br />
   <div class="SectionDesc">
    This function is called continously (typically every 15 or so milliseconds) for every active <a href="#DisplayEventTable">DisplayEvent</a> that is animating
-   until the function returns true to indicate the animation is complete.
+   for the duration of the animation time.
    <br /><br />
-   The <a href="#DisplayEventTable">DisplayEvent</a> is positioned by setting its <i>.positionX</i> and <i>.positionY</i> fields, and its opacity is controlled by setting its <i>.alpha</i> field.
+   The <a href="#DisplayEventTable">DisplayEvent</a> is positioned by setting its <i>.positionX</i> and <i>.positionY</i> fields, and its opacity can be controlled by setting its <i>.alpha</i> field.
    <br /><br />
-   The x and y positions should be calculated based upon how much time it has been animating, which is available in the <i>.elapsedTime</i> field, and the height and width of the scroll area available
-   in the <i>.scrollHeight</i> and <i>.scrollWidth</i> fields.
-   Additionally, the <i>.animationSpeed</i> field should be used to scale the speed of the animation.
-   <br /><br />
-   By basing your calculations on the elapsed time, the animation will remain consistent under diverse performance situations.  If you were to base it simply on moving a set number of pixels
-   each update then the actual scroll speed would vary greatly.  These fields are further described in the <a href="#DisplayEventTable">DisplayEvent</a> Table section.
-   <br /><br />
-   <b>This function MUST return true when the animation is complete.</b>
+   The x and y positions should be calculated based upon the completed animation percentage and the height and width of the scroll area available
+   in the <i>.scrollHeight</i> and <i>.scrollWidth</i> fields.   By basing your calculations on the completed animation percentage, the animation
+   will remain consistent under diverse performance situations.  If you were to base it simply on moving a set number of pixels each update then
+   the actual scroll speed would vary greatly.  These fields are further described in the <a href="#DisplayEventTable">DisplayEvent</a> Table section.
   </div>
   <div class="SubsectionTitle">Syntax</div>
   <div class="SubsectionBody">
-   <div class="Syntax"><i>animationComplete</i><b> = function myAnimationHandler(</b><i>displayEvent</i><b>)</b></div>
+   <div class="Syntax"><b>function myAnimationHandler(</b><i>displayEvent</i>, <i>percentDone</i><b>)</b></div>
   </div>
 
   <div class="SubsectionTitle">Parameters</div>
@@ -780,26 +773,23 @@
       A <a href="#DisplayEventTable">DisplayEvent</a> table that represents the animating event.
      </td>
     </tr>
-   </table>
-  </div>
-
-  <div class="SubsectionTitle">Return Values</div>
-  <div class="SubsectionBody">
-   <table cellspacing="3">
     <tr>
-     <td class="ParameterName" nowrap="nowrap"><i>animationComplete</i> (Required)</td>
+     <td class="ParameterName" nowrap="nowrap"><i>percentDone</i> (Required)</td>
      <td class="ParameterDesc">
-      Return true if the animation is complete and false if it is not.
+      A decimal representation of a percentage that indicates how far along the animation has progressed.
      </td>
     </tr>
    </table>
   </div>
 
+  <div class="SubsectionTitle">Return Values</div>
+  <div class="SubsectionBody">None.</div>
+
   <div class="SubsectionTitle">Examples</div>
   <div class="SubsectionBody">
    <div class="Syntax">
     -- Create an Animation callback handler.<br />
-    local function myAnimationHandler(displayEvent)<br />
+    local function myAnimationHandler(displayEvent, percentDone)<br />
      &nbsp;-- Do stuff in here to animate the displayEvent.<br />
     end<br />
    </div>
@@ -840,6 +830,13 @@
      </td>
     </tr>
     <tr>
+     <td class="ParameterName" nowrap="nowrap"><i>.frame</i> (Read-Only)</td>
+     <td class="ParameterDesc">
+      This field contains the &lt;Frame&gt; object the event is using.<br /><br />
+      A dynamic pool of frames is maintained and reused by MSBT.
+     </td>
+    </tr>
+    <tr>
      <td class="ParameterName" nowrap="nowrap"><i>.fontString</i> (Read-Only)</td>
      <td class="ParameterDesc">
       This field contains the &lt;FontString&gt; object that the event is using to display the text.<br /><br />
@@ -849,7 +846,7 @@
     <tr>
      <td class="ParameterName" nowrap="nowrap"><i>.anchorPoint</i> (Read-Only)</td>
      <td class="ParameterDesc">
-      This field contains anchor point for &lt;FontString&gt; that the event is using to display the text.<br /><br />
+      This field contains anchor point for &lt;Frame&gt; object the event is using.<br /><br />
       It will be "BOTTOMLEFT", "BOTTOM", or "BOTTOMRIGHT", corresponding to left, center, and right text alignment.
      </td>
     </tr>
@@ -860,6 +857,8 @@
       <br /><br />
       For example, 0.5 means that the animation should animate at 50% of the normal speed,
       1.0 means it should animate at normal speed, and 2.5 means it should animate at 250% of normal speed.
+      <br /><br />
+      MSBT automatically scales the scroll time based upon the animation speed, but depending on your animation
      </td>
     </tr>
     <tr>
@@ -867,8 +866,8 @@
      <td class="ParameterDesc">
       The x position of the event to be set once the function returns.
       <br /><br />
-      MSBT handles all scroll area offsetting. x = 0 refers to the text's attachment point (left, right, or center).
-      Negative values for x move the text to the left, and positive values moves the text to the right.
+      MSBT handles all scroll area offsetting. x = 0 refers to the frame's attachment point (left, right, or center).
+      Negative values for x move the frame to the left, and positive values moves the frame to the right.
      </td>
     </tr>
     <tr>
@@ -882,9 +881,12 @@
     <tr>
      <td class="ParameterName" nowrap="nowrap"><i>.alpha</i> (Read-Write)</td>
      <td class="ParameterDesc">
-      The opacity of the event to be set once the function returns.
+      The opacity of the frame to be set once the function returns.
       <br /><br />
       The value range is from 0 (invisible) to 1 (fully visible).
+      <br /><br />
+      MSBT automatically fades the animating frame out near the end of the animation.  This field can be used for altering the opacity
+      during the remainder of the animation.
      </td>
     </tr>
     <tr>
