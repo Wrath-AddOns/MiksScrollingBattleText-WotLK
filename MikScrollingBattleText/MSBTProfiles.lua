@@ -90,6 +90,7 @@ local SPELL_SUDDEN_DEATH		= GetSpellInfo(52437)
 local SPELL_SUDDEN_DOOM			= GetSpellInfo(49018)
 local SPELL_SWORD_AND_BOARD		= GetSpellInfo(50227)
 local SPELL_TASTE_FOR_BLOOD		= GetSpellInfo(60503)
+local SPELL_THE_ART_OF_WAR		= GetSpellInfo(53489)
 local SPELL_TIDAL_WAVES			= GetSpellInfo(53390)
 local SPELL_VICTORY_RUSH		= GetSpellInfo(SPELLID_VICTORY_RUSH)
 local SPELL_BLOOD_PRESENCE		= GetSpellInfo(48266)
@@ -284,7 +285,7 @@ local masterProfile = {
    colorR		= 0.5,
    colorG		= 0,
    colorB		= 0.5,
-   message		= "(%s - %a) " .. REFLECT .. "!",
+   message		= "(%s) " .. REFLECT .. "!",
    scrollArea	= "Incoming",
   },
   INCOMING_SPELL_INTERRUPT = {
@@ -1150,6 +1151,15 @@ local masterProfile = {
    fontSize			= 26,
    classes			= "WARRIOR",
    mainEvents		= "SPELL_AURA_APPLIED{skillName;;eq;;" .. SPELL_TASTE_FOR_BLOOD .. ";;recipientAffiliation;;eq;;" .. FLAG_YOU .. "}",
+  },
+  MSBT_TRIGGER_THE_ART_OF_WAR = {
+   colorR			= 0.5,
+   colorB			= 0.5,
+   message			= SPELL_THE_ART_OF_WAR .. "!",
+   alwaysSticky		= true,
+   fontSize			= 26,
+   classes			= "PALADIN",
+   mainEvents		= "SPELL_AURA_APPLIED{skillName;;eq;;" .. SPELL_THE_ART_OF_WAR .. ";;recipientAffiliation;;eq;;" .. FLAG_YOU .. "}",
   },
   MSBT_TRIGGER_TIDAL_WAVES = {
    colorR			= 0,

@@ -21,8 +21,9 @@ local math_sqrt = math.sqrt
 -------------------------------------------------------------------------------
 
 -- Sticky animation style constants.
-local POW_FADE_IN_PERCENT = 0.08
-local POW_FADE_OUT_PERCENT = 0.80
+local POW_FADE_IN_TIME = 0.17
+local POW_DISPLAY_TIME = 1.5
+local POW_FADE_OUT_TIME = 0.5
 local POW_TEXT_DELTA = 0.7
 local JIGGLE_DELAY_TIME = 0.05
 
@@ -30,8 +31,8 @@ local JIGGLE_DELAY_TIME = 0.05
 local STATIC_DISPLAY_TIME = 3.15
 
 -- Angled animation style constants.
-local ANGLED_LINE_PHASE_PERCENT = 0.30
-local ANGLED_HORIZONTAL_PHASE_PERCENT = 0.60
+local ANGLED_HORIZONTAL_PHASE_TIME = 1
+local ANGLED_FADE_OUT_TIME = 0.5
 local ANGLED_WIDTH_PERCENT = 0.85
 
 
@@ -63,9 +64,11 @@ local lastHorizontalDirection = {}
 -- Animates the passed display event using using the normal pow style.
 -- ****************************************************************************
 local function AnimatePowNormal(displayEvent, animationProgress)
+ local fadeInPercent = POW_FADE_IN_TIME / displayEvent.scrollTime
+ 
  -- Scale the text height.
- if (animationProgress <= POW_FADE_IN_PERCENT) then
-  displayEvent.fontString:SetTextHeight(displayEvent.fontSize * (1 + ((1 - animationProgress / POW_FADE_IN_PERCENT) * POW_TEXT_DELTA)))
+ if (animationProgress <= fadeInPercent) then
+  displayEvent.fontString:SetTextHeight(displayEvent.fontSize * (1 + ((1 - animationProgress / fadeInPercent) * POW_TEXT_DELTA)))
 
  -- Reset the font properties to normal.
  else
@@ -79,13 +82,15 @@ end
 -- Animates the passed display event using using the jiggle pow style.
 -- ****************************************************************************
 local function AnimatePowJiggle(displayEvent, animationProgress)
+ local fadeInPercent = POW_FADE_IN_TIME / displayEvent.scrollTime
+
  -- Scale the text height.
- if (animationProgress <= POW_FADE_IN_PERCENT) then
-  displayEvent.fontString:SetTextHeight(displayEvent.fontSize * (1 + ((1 - animationProgress / POW_FADE_IN_PERCENT) * POW_TEXT_DELTA)))
+ if (animationProgress <= fadeInPercent) then
+  displayEvent.fontString:SetTextHeight(displayEvent.fontSize * (1 + ((1 - animationProgress / fadeInPercent) * POW_TEXT_DELTA)))
   return
 
  -- Jiggle the text around and reset the font properties to normal.
- elseif (animationProgress <= POW_FADE_OUT_PERCENT) then
+ elseif (animationProgress <= displayEvent.fadePercent) then
   local elapsedTime = displayEvent.elapsedTime
   if (elapsedTime - displayEvent.timeLastJiggled > JIGGLE_DELAY_TIME) then
    displayEvent.positionX = displayEvent.originalPositionX + math_random(-1, 1)
@@ -104,9 +109,17 @@ end
 -- currently animating in the scroll area to prevent overlaps.
 -- ****************************************************************************
 local function InitPow(newDisplayEvent, activeDisplayEvents, direction, behavior)
+ -- Calculate how long the animation should take by only scaling the display period and
+ -- set the percent to start the fade out.
+ local animationSpeed = newDisplayEvent.animationSpeed
+ local scrollTime = POW_FADE_IN_TIME + (POW_DISPLAY_TIME / animationSpeed) + POW_FADE_OUT_TIME
+ newDisplayEvent.scrollTime = scrollTime * animationSpeed
+ newDisplayEvent.fadePercent = (POW_FADE_IN_TIME + (POW_DISPLAY_TIME / animationSpeed)) / scrollTime
+ 
+
  -- Choose the correct animation function.
  newDisplayEvent.animationHandler = (behavior == "Jiggle") and AnimatePowJiggle or AnimatePowNormal
-
+ 
  -- Set the new event's starting position.
  local anchorPoint = newDisplayEvent.anchorPoint
  if (anchorPoint == "BOTTOMLEFT") then
@@ -191,22 +204,25 @@ end
 -- Scrolls the passed display event angled to the left and upwards.
 -- ****************************************************************************
 local function ScrollLeftAngledUp(displayEvent, animationProgress)
+ local linePhasePercent = displayEvent.linePhasePercent
+ local horizontalPhasePercent = displayEvent.horizontalPhasePercent
+
  -- Move the event in an angled line.
- if (animationProgress <= ANGLED_LINE_PHASE_PERCENT) then
+ if (animationProgress <= linePhasePercent) then
   -- Calculate how far along the current phase is and set the x and y positions accordingly.
-  local phaseProgress = animationProgress / ANGLED_LINE_PHASE_PERCENT
+  local phaseProgress = animationProgress / linePhasePercent
   displayEvent.positionX = displayEvent.scrollWidth - (displayEvent.startPositionX + (displayEvent.finishPositionX - displayEvent.startPositionX) * phaseProgress)
   displayEvent.positionY = displayEvent.finishPositionY * phaseProgress
 
  -- Wait a bit at the finish position.
- elseif (animationProgress <= ANGLED_HORIZONTAL_PHASE_PERCENT) then
+ elseif (animationProgress <= horizontalPhasePercent) then
   displayEvent.positionX = displayEvent.scrollWidth - displayEvent.finishPositionX
   displayEvent.positionY = displayEvent.finishPositionY
 
  -- Move the event horizontally to outer edge.
  else
   -- Calculate how far along the current phase is and set the x and y positions accordingly.
-  local phaseProgress = (animationProgress - ANGLED_HORIZONTAL_PHASE_PERCENT)  / (1 - ANGLED_HORIZONTAL_PHASE_PERCENT)
+  local phaseProgress = (animationProgress - horizontalPhasePercent)  / (1 - horizontalPhasePercent)
   displayEvent.positionX = displayEvent.scrollWidth - (displayEvent.finishPositionX + ((displayEvent.scrollWidth - displayEvent.finishPositionX) * phaseProgress))
  end
 end
@@ -216,22 +232,25 @@ end
 -- Scrolls the passed display event angled to the left and downwards.
 -- ****************************************************************************
 local function ScrollLeftAngledDown(displayEvent, animationProgress)
+ local linePhasePercent = displayEvent.linePhasePercent
+ local horizontalPhasePercent = displayEvent.horizontalPhasePercent
+
  -- Move the event in an angled line.
- if (animationProgress <= ANGLED_LINE_PHASE_PERCENT) then
+ if (animationProgress <= linePhasePercent) then
   -- Calculate how far along the current phase is and set the x and y positions accordingly.
-  local phaseProgress = animationProgress / ANGLED_LINE_PHASE_PERCENT
+  local phaseProgress = animationProgress / linePhasePercent
   displayEvent.positionX = displayEvent.scrollWidth - (displayEvent.startPositionX + (displayEvent.finishPositionX - displayEvent.startPositionX) * phaseProgress)
   displayEvent.positionY = displayEvent.scrollHeight - displayEvent.finishPositionY * phaseProgress
 
  -- Wait a bit at the finish position.
- elseif (animationProgress <= ANGLED_HORIZONTAL_PHASE_PERCENT) then
+ elseif (animationProgress <= horizontalPhasePercent) then
   displayEvent.positionX = displayEvent.scrollWidth - displayEvent.finishPositionX
   displayEvent.positionY = displayEvent.scrollHeight - displayEvent.finishPositionY
 
  -- Move the event horizontally to outer edge.
  else
   -- Calculate how far along the current phase is and set the x and y positions accordingly.
-  local phaseProgress = (animationProgress - ANGLED_HORIZONTAL_PHASE_PERCENT)  / (1 - ANGLED_HORIZONTAL_PHASE_PERCENT)
+  local phaseProgress = (animationProgress - horizontalPhasePercent)  / (1 - horizontalPhasePercent)
   displayEvent.positionX = displayEvent.scrollWidth - (displayEvent.finishPositionX + ((displayEvent.scrollWidth - displayEvent.finishPositionX) * phaseProgress))
  end
 end
@@ -241,22 +260,25 @@ end
 -- Scrolls the passed display event angled to the right and upwards.
 -- ****************************************************************************
 local function ScrollRightAngledUp(displayEvent, animationProgress)
+ local linePhasePercent = displayEvent.linePhasePercent
+ local horizontalPhasePercent = displayEvent.horizontalPhasePercent
+
  -- Move the event in an angled line.
- if (animationProgress <= ANGLED_LINE_PHASE_PERCENT) then
+ if (animationProgress <= linePhasePercent) then
   -- Calculate how far along the current phase is and set the x and y positions accordingly.
-  local phaseProgress = animationProgress / ANGLED_LINE_PHASE_PERCENT
+  local phaseProgress = animationProgress / linePhasePercent
   displayEvent.positionX = displayEvent.startPositionX + (displayEvent.finishPositionX - displayEvent.startPositionX) * phaseProgress
   displayEvent.positionY = displayEvent.finishPositionY * phaseProgress
 
  -- Wait a bit at the finish position.
- elseif (animationProgress <= ANGLED_HORIZONTAL_PHASE_PERCENT) then
+ elseif (animationProgress <= horizontalPhasePercent) then
   displayEvent.positionX = displayEvent.finishPositionX
   displayEvent.positionY = displayEvent.finishPositionY
 
  -- Move the event horizontally to outer edge.
  else
   -- Calculate how far along the current phase is and set the x and y positions accordingly.
-  local phaseProgress = (animationProgress - ANGLED_HORIZONTAL_PHASE_PERCENT)  / (1 - ANGLED_HORIZONTAL_PHASE_PERCENT)
+  local phaseProgress = (animationProgress - horizontalPhasePercent)  / (1 - horizontalPhasePercent)
   displayEvent.positionX = displayEvent.finishPositionX + ((displayEvent.scrollWidth - displayEvent.finishPositionX) * phaseProgress)
  end
 end
@@ -266,22 +288,25 @@ end
 -- Scrolls the passed display event angled to the right and downwards.
 -- ****************************************************************************
 local function ScrollRightAngledDown(displayEvent, animationProgress)
+ local linePhasePercent = displayEvent.linePhasePercent
+ local horizontalPhasePercent = displayEvent.horizontalPhasePercent
+
  -- Move the event in an angled line.
- if (animationProgress <= ANGLED_LINE_PHASE_PERCENT) then
+ if (animationProgress <= linePhasePercent) then
   -- Calculate how far along the current phase is and set the x and y positions accordingly.
-  local phaseProgress = animationProgress / ANGLED_LINE_PHASE_PERCENT
+  local phaseProgress = animationProgress / linePhasePercent
   displayEvent.positionX = displayEvent.startPositionX + (displayEvent.finishPositionX - displayEvent.startPositionX) * phaseProgress
   displayEvent.positionY = displayEvent.scrollHeight - displayEvent.finishPositionY * phaseProgress
 
  -- Wait a bit at the finish position.
- elseif (animationProgress <= ANGLED_HORIZONTAL_PHASE_PERCENT) then
+ elseif (animationProgress <= horizontalPhasePercent) then
   displayEvent.positionX = displayEvent.finishPositionX
   displayEvent.positionY = displayEvent.scrollHeight - displayEvent.finishPositionY
 
  -- Move the event horizontally to outer edge.
  else
   -- Calculate how far along the current phase is and set the x and y positions accordingly.
-  local phaseProgress = (animationProgress - ANGLED_HORIZONTAL_PHASE_PERCENT)  / (1 - ANGLED_HORIZONTAL_PHASE_PERCENT)
+  local phaseProgress = (animationProgress - horizontalPhasePercent)  / (1 - horizontalPhasePercent)
   displayEvent.positionX = displayEvent.finishPositionX + ((displayEvent.scrollWidth - displayEvent.finishPositionX) * phaseProgress)
  end
 end
@@ -319,6 +344,16 @@ local function InitAngled(newDisplayEvent, activeDisplayEvents, direction, behav
  finishPositionY = finishPositionY - newDisplayEvent.fontSize - MIN_VERTICAL_SPACING
  if (finishPositionY < 0) then finishPositionY = newDisplayEvent.scrollHeight end
 
+ -- Calculate how long the animation should take based on the distance the text has to travel.
+ local animationSpeed = newDisplayEvent.animationSpeed
+ local finishPositionX = newDisplayEvent.scrollWidth * ANGLED_WIDTH_PERCENT
+ local linePhaseTime = math_sqrt((finishPositionX - startPositionX) * (finishPositionX - startPositionX) + finishPositionY * finishPositionY) * MOVEMENT_SPEED
+ local scrollTime = ((linePhaseTime + ANGLED_HORIZONTAL_PHASE_TIME) / animationSpeed) + ANGLED_FADE_OUT_TIME
+ newDisplayEvent.scrollTime = scrollTime * animationSpeed
+ newDisplayEvent.linePhasePercent = linePhaseTime / animationSpeed / scrollTime
+ newDisplayEvent.horizontalPhasePercent = ((linePhaseTime + ANGLED_HORIZONTAL_PHASE_TIME) / animationSpeed) / scrollTime
+ newDisplayEvent.fadePercent = 1 - (ANGLED_FADE_OUT_TIME / scrollTime)
+ 
  -- Initialize the new event's x and y positions.
  newDisplayEvent.positionX = startPositionX
  newDisplayEvent.positionY = 0
@@ -382,7 +417,7 @@ local function InitStraight(newDisplayEvent, activeDisplayEvents, direction, beh
   if (numActiveAnimations == 0) then return end
 
   -- Scale the per pixel time based on the animation speed.
-  local perPixelTime = MOVEMENT_SPEED * (1/newDisplayEvent.animationSpeed)
+  local perPixelTime = MOVEMENT_SPEED / newDisplayEvent.animationSpeed
   local currentDisplayEvent = newDisplayEvent
   local prevDisplayEvent, topTimeCurrent
 
@@ -413,7 +448,7 @@ local function InitStraight(newDisplayEvent, activeDisplayEvents, direction, beh
   if (numActiveAnimations == 0) then return end
 
   -- Scale the per pixel time based on the animation speed.
-  local perPixelTime = MOVEMENT_SPEED * (1/newDisplayEvent.animationSpeed)
+  local perPixelTime = MOVEMENT_SPEED / newDisplayEvent.animationSpeed
   local currentDisplayEvent = newDisplayEvent
   local prevDisplayEvent, topTimePrev
 
@@ -550,7 +585,7 @@ end
 -- ****************************************************************************
 local function RepositionHorizontalRight(currentDisplayEvent, activeDisplayEvents, startEvent)
  -- Scale the per pixel time based on the animation speed.
- local perPixelTime = MOVEMENT_SPEED * (1/currentDisplayEvent.animationSpeed)
+ local perPixelTime = MOVEMENT_SPEED / currentDisplayEvent.animationSpeed
 
  -- Get the top and bottom points of the current display events.
  local topCurrent = currentDisplayEvent.positionY + currentDisplayEvent.fontSize
@@ -587,7 +622,7 @@ end
 -- ****************************************************************************
 local function RepositionHorizontalLeft(currentDisplayEvent, activeDisplayEvents, startEvent)
  -- Scale the per pixel time based on the animation speed.
- local perPixelTime = MOVEMENT_SPEED * (1/currentDisplayEvent.animationSpeed)
+ local perPixelTime = MOVEMENT_SPEED / currentDisplayEvent.animationSpeed
 
  -- Get the top and bottom points of the current display events.
  local topCurrent = currentDisplayEvent.positionY + currentDisplayEvent.fontSize

@@ -33,9 +33,10 @@ local sounds = MSBTMedia.sounds
 -- Constants.
 -------------------------------------------------------------------------------
 
--- Max number of animations to show in a scroll area and default animation time.
+-- Max number of animations to show in a scroll area and animation defaults.
 local MAX_ANIMATIONS_PER_AREA = 15
 local DEFAULT_SCROLL_TIME = 3
+local DEFAULT_FADE_PERCENT = 0.8
 
 -- Left, Center, Right Text Aligns.
 local TEXT_ALIGN_MAP = {"BOTTOMLEFT", "BOTTOM", "BOTTOMRIGHT"}
@@ -265,15 +266,16 @@ local function Display(message, saSettings, isSticky, colorR, colorG, colorB, fo
   displayEvent.texture = texture
  end
 
- -- Initialize elapsed time.
+ -- Initialize timing properties.
  displayEvent.elapsedTime = 0
-
+ displayEvent.scrollTime = DEFAULT_SCROLL_TIME
+ displayEvent.fadePercent = DEFAULT_FADE_PERCENT
 
  -- Call the initialize function, set the text position accordingly, and scale the scroll time
  -- by the animation speed.
  animStyleSettings.initHandler(displayEvent, animationArray, direction, behavior)
  fontString:SetPoint(displayEvent.anchorPoint, displayEvent.offsetX + displayEvent.positionX, displayEvent.offsetY + displayEvent.positionY)
- displayEvent.scrollTime = (displayEvent.scrollTime or DEFAULT_SCROLL_TIME) * (1 / displayEvent.animationSpeed)
+ displayEvent.scrollTime = displayEvent.scrollTime / displayEvent.animationSpeed
 
  -- Add the display event to the appropriate scroll area array.
  animationArray[#animationArray+1] = displayEvent
@@ -399,7 +401,8 @@ local function AnimateEvent(displayEvent)
   displayEvent.animationHandler(displayEvent, percentDone)
      
   -- Smoothly fade the text out as the animation completes.
-  if (percentDone >= 0.8) then displayEvent.alpha = 5 * (1 - percentDone) end
+  local fadePercent = displayEvent.fadePercent
+  if (percentDone >= fadePercent) then displayEvent.alpha = (1 - percentDone) / (1 - fadePercent) end
 
   -- Move the text and set its alpha.
   fontString:SetPoint(displayEvent.anchorPoint, displayEvent.offsetX + displayEvent.positionX, displayEvent.offsetY + displayEvent.positionY)
