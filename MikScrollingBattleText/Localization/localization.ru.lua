@@ -47,7 +47,7 @@ L.COMMAND_USAGE = {
 ------------------------------
 
 L.MSG_ICON_MODULE_WARNING		= "ПРЕДУПРЕЖДЕНИЕ: Модуль MSBTIcons больше не требуется. Удалите его из папки AddOns во избежания загрузки ресурсов ЦПУ.";
---L.MSG_SM_MODULE_WARNING			= "WARNING: The MSBTSharedMedia module is no longer required.  Remove it from your AddOns folder.";
+L.MSG_SM_MODULE_WARNING			= "ПРЕДУПРЕЖДЕНИЕ: Модуль MSBTSharedMedia больше не требуется. Удалите его из папки аддонов.";
 L.MSG_DISABLE					= "Мод отключен.";
 L.MSG_ENABLE					= "Мод включен.";
 L.MSG_PROFILE_RESET				= "Сброс профиля";
