@@ -1093,7 +1093,7 @@ local function ParserEventsHandler(parserEvent)
   if (not effectTexture and skillID) then _, _, effectTexture = GetSpellInfo(skillID) end
  
   -- Override texture for dispels and interrupts.
-  if ((eventType == "dispel" or eventType == "interrupt") and parserEvent.extraSkillID) then
+  if ((eventType == "dispel" or eventType == "interrupt" or (eventType == "miss" and parserEvent.missType == "RESIST")) and parserEvent.extraSkillID) then
    _, _, effectTexture = GetSpellInfo(parserEvent.extraSkillID)
   end
  end

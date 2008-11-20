@@ -58,10 +58,11 @@ local sounds = {}
 -- See the included API.html file for usage info.
 -- ****************************************************************************
 local function RegisterFont(fontName, fontPath)
- -- Don't do anything if the font name is invalid.
+ -- Don't do anything if the font name is invalid and ensure name is a string.
  if (not fontName or fontName == "" or not fontPath) then return end
+ if (type(fontName) ~= "string") then fontName = tostring(fontName) end
 
- -- Reigster with MSBT and shared media.
+ -- Register with MSBT and shared media.
  fonts[fontName] = fontPath
  SML:Register("font", fontName, fontPath, SML_LANG_MASK_ALL)
 end
@@ -85,8 +86,9 @@ end
 -- See the included API.html file for usage info.
 -- ****************************************************************************
 local function RegisterSound(soundName, soundPath)
- -- Don't do anything if the sound name is invalid.
+ -- Don't do anything if the sound name is invalid and ensure name is a string.
  if (not soundName or soundName == "" or not soundPath) then return end
+ if (type(soundName) ~= "string") then soundName = tostring(soundName) end
 
  -- Register with MSBT.
  sounds[soundName] = soundPath
