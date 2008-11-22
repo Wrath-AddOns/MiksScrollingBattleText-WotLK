@@ -1138,7 +1138,7 @@ local masterProfile = {
    alwaysSticky		= true,
    fontSize			= 26,
    classes			= "DEATHKNIGHT",
-   mainEvents		= "GENERIC_MISSED{sourceAffiliation;;eq;;" .. FLAG_YOU .. ";;missType;;eq;;DODGE}&&GENERIC_MISSED{sourceAffiliation;;eq;;" .. FLAG_YOU .. ";;missType;;eq;;PARRY}",
+   mainEvents		= "GENERIC_MISSED{recipientAffiliation;;eq;;" .. FLAG_YOU .. ";;missType;;eq;;DODGE}&&GENERIC_MISSED{recipientAffiliation;;eq;;" .. FLAG_YOU .. ";;missType;;eq;;PARRY}",
    exceptions		= "unavailableSkill;;eq;;" .. SPELL_RUNE_STRIKE,
    iconSkill		= SPELLID_RUNE_STRIKE,
   },
