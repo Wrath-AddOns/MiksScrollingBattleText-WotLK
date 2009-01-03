@@ -37,6 +37,9 @@ local sounds = MSBTMedia.sounds
 local MAX_ANIMATIONS_PER_AREA = 15
 local DEFAULT_SCROLL_TIME = 3
 local DEFAULT_FADE_PERCENT = 0.8
+ 
+-- The amount of time to delay between updating an animating object.
+local ANIMATION_DELAY = 0.015
 
 -- Left, Center, Right Text Aligns.
 local TEXT_ALIGN_MAP = {"BOTTOMLEFT", "BOTTOM", "BOTTOMRIGHT"}
@@ -268,6 +271,7 @@ local function Display(message, saSettings, isSticky, colorR, colorG, colorB, fo
 
  -- Initialize timing properties.
  displayEvent.elapsedTime = 0
+ displayEvent.timeSinceLastUpdate = 0
  displayEvent.scrollTime = DEFAULT_SCROLL_TIME
  displayEvent.fadePercent = DEFAULT_FADE_PERCENT
 
@@ -437,7 +441,13 @@ local function OnUpdateAnimationFrame(this, elapsed)
    for i = 1, numEvents do
     displayEvent = displayEvents[i]
     displayEvent.elapsedTime = displayEvent.elapsedTime + elapsed
-    AnimateEvent(displayEvent)
+    displayEvent.timeSinceLastUpdate = displayEvent.timeSinceLastUpdate + elapsed
+    
+    -- Animate the event if enough time has passed and reset the last updated time.
+    if (displayEvent.timeSinceLastUpdate >= ANIMATION_DELAY) then
+     AnimateEvent(displayEvent)
+     displayEvent.timeSinceLastUpdate = 0
+    end
 
     -- Clear the all inactive flag
     allInactive = false

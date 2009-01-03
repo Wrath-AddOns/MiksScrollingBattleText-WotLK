@@ -1,14 +1,14 @@
 -------------------------------------------------------------------------------
 -- Title: Mik's Scrolling Battle Text Simplified Chinese Localization
 -- Author: Mik
--- Simplified Chinese Translation by: elafor,hscui
+-- Simplified Chinese Translation by: elafor, hscui, yleaf(yaroot@gmail.com)
 -------------------------------------------------------------------------------
 
 -- Don't do anything if the locale isn't Simplified Chinese.
-if (GetLocale() ~= "zhCN") then return; end
+if (GetLocale() ~= "zhCN") then return end
 
 -- Local reference for faster access.
-local L = MikSBT.translations;
+local L = MikSBT.translations
 
 -------------------------------------------------------------------------------
 -- Simplified Chinese localization
@@ -19,10 +19,10 @@ local L = MikSBT.translations;
 ------------------------------
 
 L.FONT_FILES = {
- ["MSBT Zykai"]		= "Fonts\\ZYKAI.TTF",
+ ["MSBT ZYKai_C"]		= "Fonts\\ZYKai_C.TTF",
 }
 
-L.DEFAULT_FONT_NAME = "MSBT Zykai";
+L.DEFAULT_FONT_NAME = "MSBT ZYKai_C"
 
 
 ------------------------------
@@ -44,37 +44,37 @@ L.COMMAND_USAGE = {
 -- Output messages
 ------------------------------
 
---L.MSG_ICON_MODULE_WARNING	= "WARNING: The MSBTIcons module is no longer required. Remove it from your AddOns folder to avoid wasting memory.";
---L.MSG_SM_MODULE_WARNING		= "WARNING: The MSBTSharedMedia module is no longer required.  Remove it from your AddOns folder.";
-L.MSG_DISABLE				= "禁用插件.";
-L.MSG_ENABLE				= "启用插件.";
-L.MSG_PROFILE_RESET			= "重置配置";
-L.MSG_HITS					= "击中";
-L.MSG_CRIT				    = "爆击";
-L.MSG_CRITS					= "爆击";
-L.MSG_MULTIPLE_TARGETS		= "多个目标";
-L.MSG_READY_NOW				= "准备完毕";
+L.MSG_ICON_MODULE_WARNING	= "*警告*: 不在需要MSBTIcons模块. 请删除此文件夹避免浪费内存."
+L.MSG_SM_MODULE_WARNING		= "*警告*: 不再需要MSBTSharedMedia模块. 请删除此文件夹以免浪费内存."
+L.MSG_DISABLE				= "禁用插件."
+L.MSG_ENABLE				= "启用插件."
+L.MSG_PROFILE_RESET			= "重置配置"
+L.MSG_HITS					= "击中"
+L.MSG_CRIT				    = "爆击"
+L.MSG_CRITS					= "爆击"
+L.MSG_MULTIPLE_TARGETS		= "多个目标"
+L.MSG_READY_NOW				= "准备完毕"
 
 
 ------------------------------
--- Scroll area messages
+-- Scroll area names
 ------------------------------
 
-L.MSG_INCOMING			= "承受伤害";
-L.MSG_OUTGOING			= "输出伤害";
-L.MSG_NOTIFICATION		= "通告信息";
-L.MSG_STATIC			= "静态信息";
+L.MSG_INCOMING			= "承受伤害"
+L.MSG_OUTGOING			= "输出伤害"
+L.MSG_NOTIFICATION		= "通告信息"
+L.MSG_STATIC			= "静态信息"
 
 
 ---------------------------------------
 -- Master profile event output messages
 ---------------------------------------
 
-L.MSG_COMBAT					= "战斗";
---L.MSG_DISPEL					= "Dispel";
-L.MSG_CP						= "连击点";
-L.MSG_FINISH_IT					= "终结技";
-L.MSG_KILLING_BLOW				= "击杀";
-L.MSG_TRIGGER_LOW_HEALTH		= "生命值低";
-L.MSG_TRIGGER_LOW_MANA			= "魔法值低";
-L.MSG_TRIGGER_LOW_PET_HEALTH	= "宠物生命值低";
+L.MSG_COMBAT					= "战斗"
+L.MSG_DISPEL					= "驱散"
+L.MSG_CP						= "连击点"
+L.MSG_CP_FULL					= "终结技"
+L.MSG_KILLING_BLOW				= "击杀"
+L.MSG_TRIGGER_LOW_HEALTH		= "生命值低"
+L.MSG_TRIGGER_LOW_MANA			= "魔法值低"
+L.MSG_TRIGGER_LOW_PET_HEALTH	= "宠物生命值低"

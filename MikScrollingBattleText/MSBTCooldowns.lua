@@ -36,9 +36,14 @@ local HandleCooldowns = MSBTTriggers.HandleCooldowns
 local MIN_COOLDOWN_UPDATE_INTERVAL = 0.1
 
 -- Spell names.
-local SPELL_COLD_SNAP	= GetSpellInfo(11958)
-local SPELL_PREPARATION	= GetSpellInfo(14185)
-local SPELL_READINESS	= GetSpellInfo(23989)
+local SPELL_COLD_SNAP		= GetSpellInfo(11958)
+local SPELL_MIND_FREEZE		= GetSpellInfo(47528)
+local SPELL_PESTILENCE		= GetSpellInfo(50842)
+local SPELL_PREPARATION		= GetSpellInfo(14185)
+local SPELL_READINESS		= GetSpellInfo(23989)
+
+-- Death knight rune cooldown.
+local RUNE_COOLDOWN = 10
 
 
 -------------------------------------------------------------------------------
@@ -51,10 +56,14 @@ local isEnabled
 -- Dynamically created frame for receiving events.
 local eventFrame
 
+-- Player's class.
+local playerClass
+
 -- Cooldown information.
 local activeCooldowns = {}
 local delayedCooldowns = {}
 local resetAbilities = {}
+local runeCooldownAbilities = {}
 local cooldownSpellName
 
 -- Holds the shortest remaining cooldown time.
@@ -126,6 +135,10 @@ local function OnSpellUpdateCooldown()
   -- Make sure the spell cooldown is enabled.
   local _, duration, enabled = GetSpellCooldown(cooldownSpellName)
   if (enabled == 1) then
+   -- XXX This is a hack to compensate for Blizzard's API reporting incorrect cooldown information for death knights.
+   -- XXX Ignore cooldowns that are the same duration as a rune cooldown except for the abilities that truly have the same cooldown.
+   if (playerClass == "DEATHKNIGHT" and duration == RUNE_COOLDOWN and not runeCooldownAbilities[cooldownSpellName]) then duration = -1 end
+
    -- Add the spell to the active cooldowns list if the cooldown is longer than the cooldown threshold.
    if (duration >= MSBTProfiles.currentProfile.cooldownThreshold) then
     activeCooldowns[cooldownSpellName] = duration + lastUpdate
@@ -266,11 +279,18 @@ local function OnLoad()
  eventFrame:Hide()
  eventFrame:SetScript("OnEvent", OnEvent)
  eventFrame:SetScript("OnUpdate", OnUpdate)
- 
+
+ -- Get the player's class.
+ _, playerClass = UnitClass("player")
+
  -- Specify the abilities that reset cooldowns.
  resetAbilities[SPELL_COLD_SNAP] = true
  resetAbilities[SPELL_PREPARATION] = true
  resetAbilities[SPELL_READINESS] = true
+ 
+ -- Set the death knight abilities that are the same as the rune cooldown.
+ runeCooldownAbilities[SPELL_MIND_FREEZE] = true
+ runeCooldownAbilities[SPELL_PESTILENCE] = true
 end
 
 

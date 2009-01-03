@@ -167,6 +167,7 @@ local function CreateConditionFuncs()
 
   -- Damage/heal.
   amount = function (f, t, v) return f(t.amount, v) end,
+  overkillAmount = function (f, t, v) return f(t.overkillAmount, v) end,
   damageType = function (f, t, v) return f(t.damageType, v) end,
   resistAmount = function (f, t, v) return f(t.resistAmount, v) end,
   blockAmount = function (f, t, v) return f(t.blockAmount, v) end,
@@ -198,8 +199,10 @@ local function CreateConditionFuncs()
  -- Exception conditions.
  exceptionConditionFuncs = {
   buffActive = function (f, t, v) return UnitBuff("player", v) and true or false end,
+  buffInactive = function (f, t, v) return not UnitBuff("player", v) and true or false end,
   currentCP = function (f, t, v) return f(GetComboPoints("player"), v) end,
   currentPower = function (f, t, v) return f(UnitMana("player"), v) end,
+  inCombat = function (f, t, v) return f(UnitAffectingCombat("player") == 1 and true or false, v) end,
   recentlyFired = function (f, t, v) return f(GetTime() - firedTimes[t], v) end,
   trivialTarget = function (f, t, v) return f(UnitIsTrivial("target") == 1 and true or false, v) end,
   unavailableSkill = function (f, t, v) return IsSkillUnavailable(v) and true or false end,

@@ -58,9 +58,9 @@ local sounds = {}
 -- See the included API.html file for usage info.
 -- ****************************************************************************
 local function RegisterFont(fontName, fontPath)
- -- Don't do anything if the font name is invalid and ensure name is a string.
- if (not fontName or fontName == "" or not fontPath) then return end
- if (type(fontName) ~= "string") then fontName = tostring(fontName) end
+ -- Don't do anything if the font name or font path is invalid.
+ if (type(fontName) ~= "string" or type(fontPath) ~= "string") then return end
+ if (fontName == "" or fontPath == "") then return end
 
  -- Register with MSBT and shared media.
  fonts[fontName] = fontPath
@@ -86,9 +86,9 @@ end
 -- See the included API.html file for usage info.
 -- ****************************************************************************
 local function RegisterSound(soundName, soundPath)
- -- Don't do anything if the sound name is invalid and ensure name is a string.
- if (not soundName or soundName == "" or not soundPath) then return end
- if (type(soundName) ~= "string") then soundName = tostring(soundName) end
+ -- Don't do anything if the sound name or sound path is invalid.
+ if (type(soundName) ~= "string" or type(soundPath) ~= "string") then return end
+ if (soundName == "" or soundPath == "") then return end
 
  -- Register with MSBT.
  sounds[soundName] = soundPath
@@ -157,7 +157,6 @@ end
 -------------------------------------------------------------------------------
 
 -- Protected Variables.
-module.SML = SML
 module.fonts = fonts
 module.sounds = sounds
 

@@ -1175,6 +1175,27 @@
      <td class="ParameterName" nowrap="nowrap"><a name="WhatsNew"></a>Latest</td>
      <td class="ParameterDesc">
       <ul>
+       <li>
+         Implemented a work around for Blizzard's cooldown bug with Death Knights and runes.  Only abilities
+         with actual cooldowns should now be shown.
+       </li>
+       <li>Created a default suppression for Ferocious Inspiration to remove the spam it causes.</li>
+       <li>Added logic to ignore buff gain and loss events created by channeled AoE skills (Blizzard, Volley, etc)</li>
+       <li>Added new events for incoming and outgoing damage shields (thorns, retribution aura, etc).</li>
+       <li>Added overkill amount as an available condition to damage based triggers.</li>
+       <li>Added Buff Inactive and In Combat as available trigger exceptions.</li>
+       <li>Killing Blows should no longer be shown for Death Knight ghoul sacrifices.</li>
+       <li>Modified media registration routines to ignore erroneous parameters to prevent issues with other mods.</li>
+       <li>Tweaked internal merging and animation delays to help performance in heavy AoE situations.</li>
+       <li>Updated French translations from Devfool.</li>
+       <li>Updated Simplified and Traditional Chinese translations from yleaf.</li>
+      </ul>
+     </td>
+    </tr>
+    <tr>
+     <td class="ParameterName" nowrap="nowrap">5.3.32</td>
+     <td class="ParameterDesc">
+      <ul>
        <li>Fixed Rune Strike trigger.</li>
       </ul>
      </td>

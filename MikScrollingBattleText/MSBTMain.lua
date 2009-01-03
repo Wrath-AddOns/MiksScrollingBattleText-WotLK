@@ -44,7 +44,7 @@ local triggerSuppressions = MSBTTriggers.triggerSuppressions
 -------------------------------------------------------------------------------
 
 -- How long to wait before showing events so that merges may happen.
-local MERGE_DELAY_TIME = 0.1
+local MERGE_DELAY_TIME = 0.3
 
 -- How long to wait between throttle window checking.
 local THROTTLE_UPDATE_TIME = 0.5
@@ -96,8 +96,13 @@ local DAMAGETYPE_CHAOS = DAMAGETYPE_PHYSICAL + DAMAGETYPE_HOLY + DAMAGETYPE_FIRE
 local SPELLID_AUTOSHOT = 75
 
 -- Spell names.
-local SPELL_INNERVATE	= GetSpellInfo(29166)
-local SPELL_SPIRIT_TAP	= GetSpellInfo(15270)
+local SPELL_BLIZZARD        = GetSpellInfo(10)
+local SPELL_HELLFIRE        = GetSpellInfo(1949)
+local SPELL_HURRICANE       = GetSpellInfo(16914)
+local SPELL_INNERVATE       = GetSpellInfo(29166)
+local SPELL_SPIRIT_TAP      = GetSpellInfo(15270)
+local SPELL_RAIN_OF_FIRE    = GetSpellInfo(5740)
+local SPELL_VOLLEY          = GetSpellInfo(1510)
 
 -- Money strings.
 local GOLD = string_gsub(GOLD_AMOUNT, "%%d ", "")
@@ -140,6 +145,7 @@ local lastPowerAmount = 65535
 local finisherShown
 local emoteCleanupTime = 0
 local recentEmotes = {}
+local ignoreAuras = {}
 
 -- Regen ability info.
 local regenAbilities = {}
@@ -739,8 +745,8 @@ local function DamageHandler(parserEvent, currentProfile)
  -- Append the spell prefix if there is a skill.
  if (parserEvent.skillID) then eventTypeString = eventTypeString .. "_SPELL" end
 
- -- Append dot suffix if it's a dot.
- eventTypeString = eventTypeString .. (parserEvent.isDoT and "_DOT" or "_DAMAGE")
+ -- Append correct damage suffix.
+ eventTypeString = eventTypeString .. (parserEvent.isDoT and "_DOT" or parserEvent.isDamageShield and "_DAMAGE_SHIELD" or "_DAMAGE")
  
  return eventTypeString, true, parserEvent.skillName, affectedUnitName
 end
@@ -823,6 +829,9 @@ local function AuraHandler(parserEvent, currentProfile)
   
  -- Aura is pertaining to the player.
  if (parserEvent.recipientUnit == "player") then
+  -- Ignore auras that don't provide useful information.
+  if (ignoreAuras[parserEvent.skillName]) then return end
+  
   -- Buff gain/fade.
   if (parserEvent.auraType == "BUFF") then
    -- Buff gain.
@@ -939,6 +948,9 @@ local function KillHandler(parserEvent, currentProfile)
  
  -- Ignore the event if it is a player guardian (Hunter snakes, etc).
  if (TestFlagsAll(parserEvent.recipientFlags, bit_bor(MSBTParser.UNITTYPE_GUARDIAN, MSBTParser.CONTROL_HUMAN))) then return end
+ 
+ -- Ignore the event if it is the player's pet to prevent killing blow events due to sacrifices (Death Knight ghoul, etc).
+ if (parserEvent.recipientUnit == "pet") then return end
 
  -- Figure out the event type depending on whether a player or the server
  -- controlled the unit that was killed.
@@ -1437,6 +1449,14 @@ local function OnLoad()
  
  -- Set the isEnglish flag correctly.
  if (string_find(GetLocale(), "en..")) then isEnglish = true end
+ 
+ -- Add auras to always ignore.
+ ignoreAuras[SPELL_BLIZZARD] = true
+ ignoreAuras[SPELL_HELLFIRE] = true
+ ignoreAuras[SPELL_HURRICANE] = true
+ ignoreAuras[SPELL_RAIN_OF_FIRE] = true
+ ignoreAuras[SPELL_VOLLEY] = true
+ 
 
  -- Add the regen abilities. 
  regenAbilities[SPELL_SPIRIT_TAP] = true

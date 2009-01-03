@@ -59,7 +59,7 @@ local SPELLID_RUNE_STRIKE		= 56815
 local SPELLID_OVERPOWER			= 7384
 local SPELLID_VICTORY_RUSH		= 34428
 
--- Spell names.
+-- Trigger spell names.
 local SPELL_BACKLASH			= GetSpellInfo(34935)
 local SPELL_BLACKOUT			= GetSpellInfo(15268)
 local SPELL_BLOODSURGE			= GetSpellInfo(46913)
@@ -73,7 +73,7 @@ local SPELL_ECLIPSE				= GetSpellInfo(48517)
 local SPELL_ERADICATION			= GetSpellInfo(47274)
 local SPELL_EXECUTE				= GetSpellInfo(SPELLID_EXECUTE)
 local SPELL_FINGERS_OF_FROST	= GetSpellInfo(44544)
-local SPELL_FREEZING_FOG        = GetSpellInfo(59052)
+local SPELL_FREEZING_FOG       	= GetSpellInfo(59052)
 local SPELL_FROSTBITE			= GetSpellInfo(11071)
 local SPELL_HAMMER_OF_WRATH		= GetSpellInfo(SPELLID_HAMMER_OF_WRATH)
 local SPELL_HOT_STREAK			= GetSpellInfo(44445)
@@ -100,16 +100,20 @@ local SPELL_TASTE_FOR_BLOOD		= GetSpellInfo(60503)
 local SPELL_THE_ART_OF_WAR		= GetSpellInfo(53489)
 local SPELL_TIDAL_WAVES			= GetSpellInfo(53390)
 local SPELL_VICTORY_RUSH		= GetSpellInfo(SPELLID_VICTORY_RUSH)
-local SPELL_BLOOD_PRESENCE		= GetSpellInfo(48266)
-local SPELL_DRAIN_LIFE			= GetSpellInfo(689)
-local SPELL_MANA_SPRING			= GetSpellInfo(5677)
-local SPELL_SHADOWMEND			= GetSpellInfo(39373)
-local SPELL_SIPHON_LIFE			= GetSpellInfo(18265)
-local SPELL_REFLECTIVE_SHIELD	= GetSpellInfo(33201)
-local SPELL_UNDYING_RESOLVE		= GetSpellInfo(51915)
-local SPELL_VAMPIRIC_EMBRACE	= GetSpellInfo(15286)
-local SPELL_VAMPIRIC_TOUCH		= GetSpellInfo(34914)
 local SPELL_VIPER_STING			= GetSpellInfo(3034)
+
+-- Throttle, suppression, and other spell names.
+local SPELL_BLOOD_PRESENCE			= GetSpellInfo(48266)
+local SPELL_DRAIN_LIFE				= GetSpellInfo(689)
+local SPELL_FEROCIOUS_INSPIRATION	= GetSpellInfo(34455)
+local SPELL_MANA_SPRING				= GetSpellInfo(5677)
+local SPELL_SHADOWMEND				= GetSpellInfo(39373)
+local SPELL_SIPHON_LIFE				= GetSpellInfo(18265)
+local SPELL_REFLECTIVE_SHIELD		= GetSpellInfo(33201)
+local SPELL_UNDYING_RESOLVE			= GetSpellInfo(51915)
+local SPELL_VAMPIRIC_EMBRACE		= GetSpellInfo(15286)
+local SPELL_VAMPIRIC_TOUCH			= GetSpellInfo(34914)
+
 
 
 -------------------------------------------------------------------------------
@@ -235,6 +239,19 @@ local masterProfile = {
    scrollArea	= "Incoming",
   },
   INCOMING_SPELL_DAMAGE_CRIT = {
+   colorG		= 0,
+   colorB		= 0,
+   message		= "(%s) -%a",
+   scrollArea	= "Incoming",
+   isCrit		= true,
+  },
+  INCOMING_SPELL_DAMAGE_SHIELD = {
+   colorG		= 0,
+   colorB		= 0,
+   message		= "(%s) -%a",
+   scrollArea	= "Incoming",
+  },
+  INCOMING_SPELL_DAMAGE_SHIELD_CRIT = {
    colorG		= 0,
    colorB		= 0,
    message		= "(%s) -%a",
@@ -376,6 +393,17 @@ local masterProfile = {
    scrollArea	= "Outgoing",
   },
   OUTGOING_SPELL_DAMAGE_CRIT = {
+   colorB		= 0,
+   message		= "%a (%s)",
+   scrollArea	= "Outgoing",
+   isCrit		= true,
+  },
+  OUTGOING_SPELL_DAMAGE_SHIELD = {
+   colorB		= 0,
+   message		= "%a (%s)",
+   scrollArea	= "Outgoing",
+  },
+  OUTGOING_SPELL_DAMAGE_SHIELD_CRIT = {
    colorB		= 0,
    message		= "%a (%s)",
    scrollArea	= "Outgoing",
@@ -523,6 +551,19 @@ local masterProfile = {
    scrollArea	= "Incoming",
    isCrit		= true,
   },
+  PET_INCOMING_SPELL_DAMAGE_SHIELD = {
+   colorG		= 0.41,
+   colorB		= 0.41,
+   message		= "(%s) " .. PET .. " -%a",
+   scrollArea	= "Incoming",
+  },
+  PET_INCOMING_SPELL_DAMAGE_SHIELD_CRIT = {
+   colorG		= 0.41,
+   colorB		= 0.41,
+   message		= "(%s) " .. PET .. " -%a",
+   scrollArea	= "Incoming",
+   isCrit		= true,
+  },
   PET_INCOMING_SPELL_DOT = {
    colorG		= 0.41,
    colorB		= 0.41,
@@ -654,6 +695,19 @@ local masterProfile = {
    scrollArea	= "Outgoing",
   },
   PET_OUTGOING_SPELL_DAMAGE_CRIT = {
+   colorR		= 0.33,
+   colorG		= 0.33,
+   message		= PET .. " %a (%s)",
+   scrollArea	= "Outgoing",
+   isCrit		= true,
+  },
+  PET_OUTGOING_SPELL_DAMAGE_SHIELD = {
+   colorR		= 0.33,
+   colorG		= 0.33,
+   message		= PET .. " %a (%s)",
+   scrollArea	= "Outgoing",
+  },
+  PET_OUTGOING_SPELL_DAMAGE_SHIELD_CRIT = {
    colorR		= 0.33,
    colorG		= 0.33,
    message		= PET .. " %a (%s)",
@@ -1296,7 +1350,8 @@ local masterProfile = {
  mergeExclusions		= {},
  abilitySubstitutions	= {},
  abilitySuppressions	= {
-  [SPELL_UNDYING_RESOLVE] = true
+  [SPELL_UNDYING_RESOLVE]		= true,
+  [SPELL_FEROCIOUS_INSPIRATION]	= true,
  },
  damageThreshold		= 0,
  healThreshold			= 0,

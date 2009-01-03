@@ -3273,6 +3273,7 @@ local function CreateTriggerPopup()
 
   -- Damage/heal.
   amount = {controlType = "editbox", relations = numberRelations},
+  overkillAmount = {controlType = "editbox", relations = numberRelations},
   damageType = {controlType = "dropdown", items = MSBTMain.damageTypeMap, default=0x1, relations = booleanRelations},
   resistAmount = {controlType = "editbox", relations = numberRelations},
   blockAmount = {controlType = "editbox", relations = numberRelations},
@@ -3297,8 +3298,10 @@ local function CreateTriggerPopup()
 
   -- Exception conditions.
   buffActive = {controlType = "editbox", relations = equalityRelations},
+  buffInactive = {controlType = "editbox", relations = equalityRelations},
   currentCP = {controlType = "slider", minValue = 1, maxValue = 5, step = 1, default = 5, relations = numberRelations, defaultRelation = "lt"},
   currentPower = {controlType = "slider", minValue = 1, maxValue = 100, step = 1, default = 20, relations = numberRelations, defaultRelation = "lt"},
+  inCombat = {controlType = "dropdown", items = booleanItems, default = "false", relations = booleanRelations},
   recentlyFired = {controlType = "slider", minValue = 1, maxValue = 30, step = 1, default = 5, relations = lessThanRelations, defaultRelation = "lt"},
   trivialTarget = {controlType = "dropdown", items = booleanItems, default = "false", relations = booleanRelations},
   unavailableSkill = {controlType = "editbox", relations = equalityRelations},
@@ -3312,7 +3315,7 @@ local function CreateTriggerPopup()
  local commonRecipientFields = "recipientName recipientAffiliation recipientReaction recipientControl recipientUnitType ";
  local commonLogFields = commonSourceFields .. commonRecipientFields;
  local commonSkillFields = "skillID skillName skillSchool ";
- local commonDamageFields = "amount damageType resistAmount blockAmount absorbAmount isCrit isGlancing isCrushing";
+ local commonDamageFields = "amount overkillAmount damageType resistAmount blockAmount absorbAmount isCrit isGlancing isCrushing";
  local commonExtraSkillFields = "extraSkillID extraSkillName extraSkillSchool ";
  local commonHealFields = "amount isCrit";
  local commonPowerFields = "amount powerType";
@@ -3395,7 +3398,7 @@ local function CreateTriggerPopup()
  frame.eventConditionData = eventConditionData;
 
  -- Available exceptions.
- frame.availableExceptions = "buffActive currentCP currentPower recentlyFired trivialTarget unavailableSkill warriorStance zoneName zoneType";
+ frame.availableExceptions = "buffActive buffInactive currentCP currentPower inCombat recentlyFired trivialTarget unavailableSkill warriorStance zoneName zoneType";
 
  return frame;
 end
