@@ -530,7 +530,7 @@ obj["gt"]						= "多于"
 -- Affiliations.
 obj["affiliationMine"]			= "我的"
 obj["affiliationParty"]			= "队友"
-obj["affiliationRaid"]			= "团队成员r"
+obj["affiliationRaid"]			= "团队成员"
 obj["affiliationOutsider"]		= "其他"
 obj["affiliationTarget"]		= TARGET
 obj["affiliationFocus"]			= FOCUS
