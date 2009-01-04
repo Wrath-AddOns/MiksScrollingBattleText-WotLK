@@ -286,8 +286,8 @@ obj[8]	= { label="近战免疫", tooltip="显示免疫近战伤害"}
 obj[9]	= { label="技能伤害", tooltip="显示被技能伤害"}
 obj[10]	= { label="技能爆击", tooltip="显示被技能爆击"}
 obj[11]	= { label="技能持续伤害", tooltip="显示被技能持续伤害"}
---obj[12]	= { label="Damage Shield Hits", tooltip="Enable incoming damage done by damage shields."}
---obj[13]	= { label="Damage Shield Crits", tooltip="Enable incoming crits done by damage shields."}
+obj[12]	= { label="伤害护盾伤害", tooltip="显示被伤害护盾伤害."}
+obj[13]	= { label="伤害护盾爆击", tooltip="显示伤被害护盾爆击."}
 obj[14]	= { label="技能未命中", tooltip="显示未被技能命中"}
 obj[15]	= { label="技能闪躲", tooltip="显示闪躲技能攻击"}
 obj[16]	= { label="技能招架", tooltip="显示招架技能攻击"}
@@ -314,8 +314,8 @@ obj[8]	= { label="近战免疫", tooltip="显示宠物免疫近战伤害"}
 obj[9]	= { label="技能伤害", tooltip="显示宠物被技能伤害"}
 obj[10]	= { label="技能爆击", tooltip="显示宠物被技能爆击"}
 obj[11]	= { label="技能持续伤害", tooltip="显示宠物被技能持续伤害"}
---obj[12]	= { label="Damage Shield Hits", tooltip="Enable incoming damage done to your pet by damage shields."}
---obj[13]	= { label="Damage Shield Crits", tooltip="Enable incoming crits done to your pet by damage shields."}
+obj[12]	= { label="伤害护盾伤害", tooltip="显示宠物被伤害护盾的伤害."}
+obj[13]	= { label="伤害护盾爆击", tooltip="显示宠物被伤害护盾的爆击."}
 obj[14]	= { label="技能未命中", tooltip="显示宠物未被技能命中"}
 obj[15]	= { label="技能闪躲", tooltip="显示宠物闪躲技能攻击"}
 obj[16]	= { label="技能招架", tooltip="显示宠物招架技能攻击"}
@@ -345,8 +345,8 @@ obj[9]	= { label="近战闪避", tooltip="显示敌人闪避近战攻击"}
 obj[10]	= { label="技能伤害", tooltip="显示技能伤害敌人"}
 obj[11]	= { label="技能爆击", tooltip="显示技能爆击敌人"}
 obj[12]	= { label="技能持续伤害", tooltip="显示技能持续伤害敌人"}
---obj[13]	= { label="Damage Shield Hits", tooltip="Enable outgoing damage done by damage shields."}
---obj[14]	= { label="Damage Shield Crits", tooltip="Enable outgoing crits done by damage shields."}
+obj[13]	= { label="伤害护盾伤害", tooltip="显示伤害护盾的伤害."}
+obj[14]	= { label="伤害护盾爆击", tooltip="显示伤害护盾的爆击."}
 obj[15]	= { label="技能未命中", tooltip="显示技能未命中敌人"}
 obj[16]	= { label="技能闪躲", tooltip="显示敌人闪躲技能攻击"}
 obj[17]	= { label="技能招架", tooltip="显示敌人招架技能攻击"}
@@ -375,8 +375,8 @@ obj[9]	= { label="近战闪避", tooltip="显示宠物的近战攻击被闪避"}
 obj[10]	= { label="技能伤害", tooltip="显示宠物的技能伤害"}
 obj[11]	= { label="技能爆击", tooltip="显示宠物的技能爆击"}
 obj[12]	= { label="技能持续伤害", tooltip="显示宠物技能的持续伤害"}
---obj[13]	= { label="Damage Shield Hits", tooltip="Enable outgoing damage done by your pet's damage shields."}
---obj[14]	= { label="Damage Shield Crits", tooltip="Enable outgoing crits done by your pet's damage shields."}
+obj[13]	= { label="伤害护盾伤害", tooltip="显示宠物的伤害护盾的伤害."}
+obj[14]	= { label="伤害护盾爆击", tooltip="显示宠物的伤害护盾的爆击."}
 obj[15]	= { label="技能未命中", tooltip="显示宠物技能攻击未命中敌人"}
 obj[16]	= { label="技能闪躲", tooltip="显示宠物的技能攻击被闪躲"}
 obj[17]	= { label="技能招架", tooltip="显示宠物的技能攻击被招架"}
@@ -489,11 +489,12 @@ obj["extraSkillID"]				= "额外技能 ID"
 obj["extraSkillName"]			= "额外技能名字"
 obj["extraSkillSchool"]			= "额外技能类型"
 obj["amount"]					= "总数"
+obj["overkillAmount"]			= "灭绝总数"
 obj["damageType"]				= "伤害类型"
 obj["resistAmount"]				= "抵抗总数"
 obj["blockAmount"]				= "格挡总数"
 obj["absorbAmount"]				= "吸收总数"
-obj["isCrit"]					= "暴击"
+obj["isCrit"]					= "爆击"
 obj["isGlancing"]				= "偏斜"
 obj["isCrushing"]				= "致命攻击"
 obj["extraAmount"]				= "额外总数"
@@ -507,10 +508,10 @@ obj["unitReaction"]				= "玩家反应"
 
 -- Exception conditions.
 obj["buffActive"]				= "BUFF生效"
---obj["buffInactive"]				= "Buff Inactive"
+--obj["buffInactive"]				= "Buff失效"
 obj["currentCP"]				= "当前连击点"
 obj["currentPower"]				= "当前能量"
---obj["inCombat"]				= "In Combat"
+obj["inCombat"]				= "战斗中"
 obj["recentlyFired"]			= "触发器最近被触发"
 obj["trivialTarget"]			= "无效目标"
 obj["unavailableSkill"]			= "不可用技能"
