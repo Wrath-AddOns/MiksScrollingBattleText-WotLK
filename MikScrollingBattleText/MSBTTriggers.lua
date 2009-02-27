@@ -21,6 +21,7 @@ local MSBTParser = MikSBT.Parser
 local string_find = string.find
 local string_gsub = string.gsub
 local string_gmatch = string.gmatch
+local GetSpellInfo = GetSpellInfo
 local Print = MikSBT.Print
 local EraseTable = MikSBT.EraseTable
 local DisplayEvent = MikSBT.Animations.DisplayEvent

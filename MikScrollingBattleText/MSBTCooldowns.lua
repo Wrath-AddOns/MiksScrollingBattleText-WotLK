@@ -21,9 +21,9 @@ local MSBTTriggers = MikSBT.Triggers
 local string_gsub = string.gsub
 local string_find = string.find
 local string_format = string.format
-local GetSpellInfo = GetSpellInfo
 local GetSpellCooldown = GetSpellCooldown
 local EraseTable = MikSBT.EraseTable
+local GetSkillName = MikSBT.GetSkillName
 local DisplayEvent = MikSBT.Animations.DisplayEvent
 local HandleCooldowns = MSBTTriggers.HandleCooldowns
 
@@ -36,11 +36,11 @@ local HandleCooldowns = MSBTTriggers.HandleCooldowns
 local MIN_COOLDOWN_UPDATE_INTERVAL = 0.1
 
 -- Spell names.
-local SPELL_COLD_SNAP		= GetSpellInfo(11958)
-local SPELL_MIND_FREEZE		= GetSpellInfo(47528)
-local SPELL_PESTILENCE		= GetSpellInfo(50842)
-local SPELL_PREPARATION		= GetSpellInfo(14185)
-local SPELL_READINESS		= GetSpellInfo(23989)
+local SPELL_COLD_SNAP		= GetSkillName(11958)
+local SPELL_MIND_FREEZE		= GetSkillName(47528)
+local SPELL_PESTILENCE		= GetSkillName(50842)
+local SPELL_PREPARATION		= GetSkillName(14185)
+local SPELL_READINESS		= GetSkillName(23989)
 
 -- Death knight rune cooldown.
 local RUNE_COOLDOWN = 10

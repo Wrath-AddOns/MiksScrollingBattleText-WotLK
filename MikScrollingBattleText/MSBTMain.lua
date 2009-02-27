@@ -29,8 +29,10 @@ local string_gsub = string.gsub
 local string_format = string.format
 local bit_bor = bit.bor
 local GetTime = GetTime
+local GetSpellInfo = GetSpellInfo
 local EraseTable = MikSBT.EraseTable
 local Print = MikSBT.Print
+local GetSkillName = MikSBT.GetSkillName
 local DisplayEvent = MSBTAnimations.DisplayEvent
 local IsScrollAreaActive = MSBTAnimations.IsScrollAreaActive
 local TestFlagsAll = MSBTParser.TestFlagsAll
@@ -96,13 +98,13 @@ local DAMAGETYPE_CHAOS = DAMAGETYPE_PHYSICAL + DAMAGETYPE_HOLY + DAMAGETYPE_FIRE
 local SPELLID_AUTOSHOT = 75
 
 -- Spell names.
-local SPELL_BLIZZARD        = GetSpellInfo(10)
-local SPELL_HELLFIRE        = GetSpellInfo(1949)
-local SPELL_HURRICANE       = GetSpellInfo(16914)
-local SPELL_INNERVATE       = GetSpellInfo(29166)
-local SPELL_SPIRIT_TAP      = GetSpellInfo(15270)
-local SPELL_RAIN_OF_FIRE    = GetSpellInfo(5740)
-local SPELL_VOLLEY          = GetSpellInfo(1510)
+local SPELL_BLIZZARD        = GetSkillName(10)
+local SPELL_HELLFIRE        = GetSkillName(1949)
+local SPELL_HURRICANE       = GetSkillName(16914)
+local SPELL_INNERVATE       = GetSkillName(29166)
+local SPELL_SPIRIT_TAP      = GetSkillName(15270)
+local SPELL_RAIN_OF_FIRE    = GetSkillName(5740)
+local SPELL_VOLLEY          = GetSkillName(1510)
 
 -- Money strings.
 local GOLD = string_gsub(GOLD_AMOUNT, "%%d ", "")
@@ -830,7 +832,7 @@ local function AuraHandler(parserEvent, currentProfile)
  -- Aura is pertaining to the player.
  if (parserEvent.recipientUnit == "player") then
   -- Ignore auras that don't provide useful information.
-  if (ignoreAuras[parserEvent.skillName]) then return end
+  if (ignoreAuras[parserEvent.skillName] and parserEvent.sourceUnit == "player") then return end
   
   -- Buff gain/fade.
   if (parserEvent.auraType == "BUFF") then

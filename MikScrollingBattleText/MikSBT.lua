@@ -10,13 +10,24 @@ _G[modName] = mod
 
 
 -------------------------------------------------------------------------------
+-- Imports.
+-------------------------------------------------------------------------------
+
+-- Local references to various functions for faster access.
+local string_find = string.find
+local string_sub = string.sub
+local string_gsub = string.gsub
+local GetSpellInfo = GetSpellInfo
+
+
+-------------------------------------------------------------------------------
 -- Mod constants
 -------------------------------------------------------------------------------
 
-local TOC_VERSION = string.gsub(GetAddOnMetadata("MikScrollingBattleText", "Version"), "wowi:revision", 0)
-mod.VERSION = tonumber(select(3, string.find(TOC_VERSION, "(%d+%.%d+)")))
+local TOC_VERSION = string_gsub(GetAddOnMetadata("MikScrollingBattleText", "Version"), "wowi:revision", 0)
+mod.VERSION = tonumber(select(3, string_find(TOC_VERSION, "(%d+%.%d+)")))
 mod.VERSION_STRING = "v" .. TOC_VERSION
-mod.SVN_REVISION = tonumber(select(3, string.find(TOC_VERSION, "%d+%.%d+.(%d+)")))
+mod.SVN_REVISION = tonumber(select(3, string_find(TOC_VERSION, "%d+%.%d+.(%d+)")))
 
 mod.COMMAND = "/msbt"
 
@@ -70,13 +81,13 @@ end
 -- ****************************************************************************
 local function SplitString(text, delimeter, splitTable)
  local start = 1
- local splitStart, splitEnd = string.find(text, delimeter, start)  
+ local splitStart, splitEnd = string_find(text, delimeter, start)  
  while splitStart do
-  splitTable[#splitTable+1] = string.sub(text, start, splitStart - 1)
+  splitTable[#splitTable+1] = string_sub(text, start, splitStart - 1)
   start = splitEnd + 1
-  splitStart, splitEnd = string.find(text, delimeter, start)  
+  splitStart, splitEnd = string_find(text, delimeter, start)  
  end
- splitTable[#splitTable+1] = string.sub(text, start)
+ splitTable[#splitTable+1] = string_sub(text, start)
 end
 
 
@@ -86,6 +97,16 @@ end
 local function Print(msg, r, g, b)
  -- Add the message to the default chat frame.
  DEFAULT_CHAT_FRAME:AddMessage("MSBT: " .. tostring(msg), r, g, b)
+end
+
+
+-- ****************************************************************************
+-- Returns a skill name for the passed id or unknown if the id invalid.
+-- ****************************************************************************
+local function GetSkillName(skillID)
+ local skillName = GetSpellInfo(skillID)
+ if (not skillName) then Print("Skill ID " .. tostring(skillID) .. " has been removed by Blizzard.") end
+ return skillName or UNKNOWN
 end
 
 
@@ -99,7 +120,8 @@ end
 mod.translations = translations
 
 -- Protected Functions.
-mod.CopyTable	= CopyTable
-mod.EraseTable	= EraseTable
-mod.SplitString	= SplitString
-mod.Print		= Print
+mod.CopyTable		= CopyTable
+mod.EraseTable		= EraseTable
+mod.SplitString		= SplitString
+mod.Print			= Print
+mod.GetSkillName	= GetSkillName
