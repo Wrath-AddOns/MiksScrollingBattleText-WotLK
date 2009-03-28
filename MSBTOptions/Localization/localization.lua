@@ -150,6 +150,7 @@ obj["stickyAnimationStyle"]	= { label="Sticky Style:", tooltip="The animation st
 obj["direction"]			= { label="Direction:", tooltip="The direction of the animation."}
 obj["behavior"]				= { label="Behavior:", tooltip="The behavior of the animation."}
 obj["textAlign"]			= { label="Text Align:", tooltip="The alignment of the text for the animation."}
+obj["iconAlign"]			= { label="Icon Align:", tooltip="The alignment of skill icons relative to the text."}
 obj["eventCategory"]		= { label="Event Category:", tooltip="The category of events to configure."}
 obj["outputScrollArea"]		= { label="Output Scroll Area:", tooltip="Selects the scroll area to use for output."}
 obj["mainEvent"]			= { label="Main Event:"}
@@ -309,7 +310,7 @@ obj[6]	= { label="Melee Blocks", tooltip="Enable incoming melee blocks."}
 obj[7]	= { label="Melee Absorbs", tooltip="Enable absorbed incoming melee damage."}
 obj[8]	= { label="Melee Immunes", tooltip="Enable incoming melee damage you are immune to."}
 obj[9]	= { label="Skill Hits", tooltip="Enable incoming skill hits."}
-obj[10]	= { label="Skill Crits", tooltip="Enable incoming skill damage."}
+obj[10]	= { label="Skill Crits", tooltip="Enable incoming skill crits."}
 obj[11]	= { label="Skill DoTs", tooltip="Enable incoming skill damage over time."}
 obj[12]	= { label="Damage Shield Hits", tooltip="Enable incoming damage done by damage shields."}
 obj[13]	= { label="Damage Shield Crits", tooltip="Enable incoming crits done by damage shields."}

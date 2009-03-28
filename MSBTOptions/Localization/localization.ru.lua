@@ -125,6 +125,7 @@ obj["stickyAnimationStyle"]	= { label="Стиль закрепления:", tool
 obj["direction"]			= { label="Направление:", tooltip="Направление анимации."}
 obj["behavior"]				= { label="Поведение:", tooltip="Поведение анимации."}
 obj["textAlign"]			= { label="Выравнивание текста:", tooltip="Выравнивание текста анимации."}
+--obj["iconAlign"]			= { label="Icon Align:", tooltip="The alignment of skill icons relative to the text."}
 obj["eventCategory"]		= { label="Категория события:", tooltip="Для настройки событий выберите желаемую категорию."}
 obj["outputScrollArea"]		= { label="Область вывода:", tooltip="Выберите область прокрутки для вывода информации."}
 obj["mainEvent"]			= { label="Главные события:"}

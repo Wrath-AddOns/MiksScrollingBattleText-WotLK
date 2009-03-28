@@ -70,7 +70,7 @@ local SPELL_CLEARCASTING		= GetSkillName(12536)
 local SPELL_COUNTER_ATTACK		= GetSkillName(SPELLID_COUNTER_ATTACK)
 local SPELL_DEATH_TRANCE		= GetSkillName(50466) -- TODO: Remove when patch 3.1 goes live.
 local SPELL_ECLIPSE				= GetSkillName(48517)
-local SPELL_ERADICATION			= GetSkillName(47274)
+local SPELL_ERADICATION			= GetSkillName(47274) -- TODO: Remove when patch 3.1 goes live.
 local SPELL_EXECUTE				= GetSkillName(SPELLID_EXECUTE)
 local SPELL_FINGERS_OF_FROST	= GetSkillName(44544)
 local SPELL_FREEZING_FOG       	= GetSkillName(59052)
@@ -165,6 +165,7 @@ local masterProfile = {
    stickyBehavior		= "Jiggle",
    textAlignIndex		= 1,
    stickyTextAlignIndex	= 1,
+   iconAlign			= "Right",
   },
   Notification = {
    name					= L.MSG_NOTIFICATION,
@@ -934,7 +935,7 @@ local masterProfile = {
    classes			= "WARLOCK",
    mainEvents		= "SPELL_AURA_APPLIED{skillName;;eq;;" .. SPELL_BACKLASH .. ";;recipientAffiliation;;eq;;" .. FLAG_YOU .. "}",
   },
-  MSBT_TRIGGER_BLACKOUT = {
+  MSBT_TRIGGER_BLACKOUT = { -- TODO: Remove when patch 3.1 goes live.
    colorR			= 0.709,
    colorG			= 0,
    colorB			= 0.709,
@@ -991,7 +992,7 @@ local masterProfile = {
    classes			= "DRUID",
    mainEvents		= "SPELL_AURA_APPLIED{skillName;;eq;;" .. SPELL_ECLIPSE .. ";;recipientAffiliation;;eq;;" .. FLAG_YOU .. "}",
   },
-  MSBT_TRIGGER_ERADICATION = {
+  MSBT_TRIGGER_ERADICATION = { -- TODO: Remove when patch 3.1 goes live.
    colorR			= 0.118,
    colorG			= 0.882,
    message			= SPELL_ERADICATION .. "!",
@@ -1224,7 +1225,7 @@ local masterProfile = {
    classes			= "WARRIOR",
    mainEvents		= "SPELL_AURA_APPLIED{skillName;;eq;;" .. SPELL_SUDDEN_DEATH .. ";;recipientAffiliation;;eq;;" .. FLAG_YOU .. "}",
   },
-  MSBT_TRIGGER_SUDDEN_DOOM = {
+  MSBT_TRIGGER_SUDDEN_DOOM = { -- TODO: Remove when patch 3.1 goes live.
    colorR			= 0.709,
    colorG			= 0,
    colorB			= 0.709,
@@ -1297,11 +1298,11 @@ local masterProfile = {
 
  -- Master font settings.
  normalFontName		= L.DEFAULT_FONT_NAME,
- normalOutlineIndex	= 2,
+ normalOutlineIndex	= 1,
  normalFontSize		= 18,
  normalFontAlpha	= 100,
  critFontName		= L.DEFAULT_FONT_NAME,
- critOutlineIndex	= 2,
+ critOutlineIndex	= 1,
  critFontSize		= 26,
  critFontAlpha		= 100,
 
@@ -1333,13 +1334,13 @@ local masterProfile = {
  -- Throttle settings.
  dotThrottleDuration	= 3,
  hotThrottleDuration	= 3,
- powerThrottleDuration	= 0,
+ powerThrottleDuration	= 3,
  throttleList = {
   [SPELL_BLOOD_PRESENCE]	= 5,
   [SPELL_DRAIN_LIFE]		= 3,
   [SPELL_MANA_SPRING]		= 5,
   [SPELL_SHADOWMEND]		= 5,
-  [SPELL_SIPHON_LIFE]		= 3,
+  [SPELL_SIPHON_LIFE]		= 3, -- TODO: Remove when patch 3.1 goes live.
   [SPELL_REFLECTIVE_SHIELD]	= 5,
   [SPELL_VAMPIRIC_EMBRACE]	= 5,
   [SPELL_VAMPIRIC_TOUCH]	= 5,

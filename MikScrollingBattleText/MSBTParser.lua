@@ -271,11 +271,11 @@ end
 -- Reorders the capture table according to the passed capture order.
 -- ****************************************************************************
 local function ReorderCaptures(capOrder)
- local t = captureTable
+ local t, o = captureTable, capOrder
  
  t[1], t[2], t[3], t[4], t[5], t[6], t[7], t[8], t[9] = 
- t[capOrder[1]], t[capOrder[2]], t[capOrder[3]], t[capOrder[4]], t[capOrder[5]], t[capOrder[6]],
- t[capOrder[7]], t[capOrder[8]], t[capOrder[9]]
+ t[o[1] or 1], t[o[2] or 2], t[o[3] or 3], t[o[4] or 4], t[o[5] or 5],
+ t[o[6] or 6], t[o[7] or 7], t[o[8] or 8], t[o[9] or 9]
 end
 
 

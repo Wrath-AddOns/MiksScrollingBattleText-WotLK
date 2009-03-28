@@ -46,14 +46,14 @@ L.COMMAND_USAGE = {
 
 L.MSG_ICON_MODULE_WARNING	= "*警告*: 不在需要MSBTIcons模塊. 請刪除此文件夾避免浪費內存."
 L.MSG_SM_MODULE_WARNING		= "*警告*: 不再需要MSBTSharedMedia模塊. 請刪除此文件夾以免浪費內存."
-L.MSG_DISABLE			= "停用插件."
-L.MSG_ENABLE			= "啟用插件."
-L.MSG_PROFILE_RESET		= "重置設定"
-L.MSG_HITS			= "擊中"
-L.MSG_CRIT			= "爆擊"
-L.MSG_CRITS			= "爆擊"
+L.MSG_DISABLE				= "停用插件."
+L.MSG_ENABLE				= "啟用插件."
+L.MSG_PROFILE_RESET			= "重置設定"
+L.MSG_HITS					= "擊中"
+L.MSG_CRIT					= "爆擊"
+L.MSG_CRITS					= "爆擊"
 L.MSG_MULTIPLE_TARGETS		= "多數目標"
-L.MSG_READY_NOW		= "準備完畢"
+L.MSG_READY_NOW				= "準備完畢"
 
 
 ------------------------------

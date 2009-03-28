@@ -43,6 +43,7 @@ local DEFAULT_SCROLL_HEIGHT = 260
 local DEFAULT_SCROLL_WIDTH = 40
 local DEFAULT_ANIMATION_STYLE = "Straight"
 local DEFAULT_STICKY_ANIMATION_STYLE = "Pow"
+local DEFAULT_ICON_ALIGN = "Left"
 local DEFAULT_SOUND_PATH = "Interface\\AddOns\\MikScrollingBattleText\\Sounds\\"
 
 local FLAG_YOU = 0xF0000000
@@ -1144,6 +1145,9 @@ local function CopyTempScrollAreaSettings(settingsTable)
   -- Speed.
   tempSettings.inheritedAnimationSpeed = MSBTProfiles.currentProfile.animationSpeed
   tempSettings.animationSpeed = saSettings.animationSpeed
+  
+  -- Icon align.
+  tempSettings.iconAlign = saSettings.iconAlign or DEFAULT_ICON_ALIGN
  end
 end
 
@@ -1288,6 +1292,9 @@ local function ChangeConfigScrollArea(scrollArea)
  frame.xOffsetEditbox:SetText(saSettings.offsetX)
  frame.yOffsetEditbox:SetText(saSettings.offsetY)
  
+ -- Icon align.
+ frame.iconAlignDropdown:SetSelectedID(saSettings.iconAlign)
+ 
  -- Reset the backdrop color of all the scroll area mover frames to grey.
  for _, moverFrame in pairs(frame.moverFrames) do
   moverFrame:SetBackdropColor(0.8, 0.8, 0.8, 1.0)
@@ -1422,6 +1429,9 @@ local function SaveScrollAreaSettings(settingsTable)
   -- Animation speed.
   local animationSpeed = saSettings.animationSpeed
   MSBTProfiles.SetOption("scrollAreas." .. saKey, "animationSpeed", animationSpeed, saSettings.inheritedAnimationSpeed)
+  
+  -- Icon align.
+  MSBTProfiles.SetOption("scrollAreas." .. saKey, "iconAlign", saSettings.iconAlign, DEFAULT_ICON_ALIGN)
  end
  MSBTAnimations.UpdateScrollAreas()
 end
@@ -1433,7 +1443,7 @@ end
 local function CreateScrollAreaConfig()
  local frame = CreatePopup()
  frame:SetWidth(320)
- frame:SetHeight(535)
+ frame:SetHeight(575)
  frame:SetPoint("RIGHT")
  frame:SetScript("OnHide",
   function (this)
@@ -1673,6 +1683,21 @@ local function CreateScrollAreaConfig()
  )
  frame.yOffsetEditbox = editbox
 
+
+ -- Icon align dropdown.
+ dropdown =  MSBTControls.CreateDropdown(frame)
+ objLocale = L.DROPDOWNS["iconAlign"]
+ dropdown:Configure(135, objLocale.label, objLocale.tooltip)
+ dropdown:SetPoint("TOPLEFT", frame.xOffsetEditbox, "BOTTOMLEFT", 0, -10)
+ dropdown:SetChangeHandler(
+  function (this, id)
+   frame.previewSettings[frame.currentScrollArea].iconAlign = id
+  end
+ )
+ dropdown:AddItem(L.TEXT_ALIGNS[1], "Left")
+ dropdown:AddItem(L.TEXT_ALIGNS[3], "Right")
+ frame.iconAlignDropdown = dropdown
+ 
  
  -- Bottom horizontal bar.
  texture = frame:CreateTexture(nil, "ARTWORK")
@@ -3155,13 +3180,6 @@ local function CreateTriggerPopup()
  local booleanRelations = {eq = objLocale["eq"], ne = objLocale["ne"]}
  local lessThanRelations = {lt = objLocale["lt"]}
  
- -- Localized warrior stances.
- local warriorStances = {
-  [1] = GetSkillName(2457),
-  [2] = GetSkillName(71),
-  [3] = GetSkillName(2458),
- }
-
  -- Localized affiliations.
  local affiliationTypes = {
   [MSBTParser.AFFILIATION_MINE] = objLocale["affiliationMine"],
@@ -3239,6 +3257,13 @@ local function CreateTriggerPopup()
  
  -- Localized booleans.
  local booleanItems = {["true"] = objLocale["booleanTrue"], ["false"] = objLocale["booleanFalse"]}
+
+ -- Localized warrior stances.
+ local warriorStances = {
+  [1] = GetSkillName(2457),
+  [2] = GetSkillName(71),
+  [3] = GetSkillName(2458),
+ }
 
  -- Localized zone types.
  local zoneTypes = {arena = objLocale["zoneTypeArena"], pvp = objLocale["zoneTypePvP"], party = objLocale["zoneTypeParty"], raid = objLocale["zoneTypeRaid"]}

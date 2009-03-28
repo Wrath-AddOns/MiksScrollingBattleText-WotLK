@@ -4,7 +4,7 @@
 -------------------------------------------------------------------------------
 
 -- Local reference for faster access.
-local L = MikSBT.translations;
+local L = MikSBT.translations
 
 -------------------------------------------------------------------------------
 -- English localization (Default)
@@ -27,18 +27,18 @@ L.FONT_FILES = {
  ["MSBT Yellowjacket"]	= "Interface\\Addons\\MikScrollingBattleText\\Fonts\\yellowjacket.ttf",
 }
 
-L.DEFAULT_FONT_NAME = "MSBT Porky";
+L.DEFAULT_FONT_NAME = "MSBT Porky"
 
 
 ------------------------------
 -- Commands
 ------------------------------
 
-L.COMMAND_RESET		= "reset";
-L.COMMAND_DISABLE	= "disable";
-L.COMMAND_ENABLE	= "enable";
-L.COMMAND_SHOWVER	= "version";
-L.COMMAND_HELP		= "help";
+L.COMMAND_RESET		= "reset"
+L.COMMAND_DISABLE	= "disable"
+L.COMMAND_ENABLE	= "enable"
+L.COMMAND_SHOWVER	= "version"
+L.COMMAND_HELP		= "help"
 
 L.COMMAND_USAGE = {
  "Usage: " .. MikSBT.COMMAND .. " <command> [params]",
@@ -55,37 +55,37 @@ L.COMMAND_USAGE = {
 -- Output messages
 ------------------------------
 
-L.MSG_ICON_MODULE_WARNING	= "WARNING: The MSBTIcons module is no longer required. Remove it from your AddOns folder to avoid wasting memory.";
-L.MSG_SM_MODULE_WARNING		= "WARNING: The MSBTSharedMedia module is no longer required.  Remove it from your AddOns folder.";
-L.MSG_DISABLE				= "Mod disabled.";
-L.MSG_ENABLE				= "Mod enabled.";
-L.MSG_PROFILE_RESET			= "Profile Reset";
-L.MSG_HITS					= "Hits";
-L.MSG_CRIT					= "Crit";
-L.MSG_CRITS					= "Crits";
-L.MSG_MULTIPLE_TARGETS		= "Multiple";
-L.MSG_READY_NOW				= "Ready Now";
+L.MSG_ICON_MODULE_WARNING	= "WARNING: The MSBTIcons module is no longer required. Remove it from your AddOns folder to avoid wasting memory."
+L.MSG_SM_MODULE_WARNING		= "WARNING: The MSBTSharedMedia module is no longer required.  Remove it from your AddOns folder."
+L.MSG_DISABLE				= "Mod disabled."
+L.MSG_ENABLE				= "Mod enabled."
+L.MSG_PROFILE_RESET			= "Profile Reset"
+L.MSG_HITS					= "Hits"
+L.MSG_CRIT					= "Crit"
+L.MSG_CRITS					= "Crits"
+L.MSG_MULTIPLE_TARGETS		= "Multiple"
+L.MSG_READY_NOW				= "Ready Now"
 
 
 ------------------------------
 -- Scroll area names
 ------------------------------
 
-L.MSG_INCOMING			= "Incoming";
-L.MSG_OUTGOING			= "Outgoing";
-L.MSG_NOTIFICATION		= "Notification";
-L.MSG_STATIC			= "Static";
+L.MSG_INCOMING			= "Incoming"
+L.MSG_OUTGOING			= "Outgoing"
+L.MSG_NOTIFICATION		= "Notification"
+L.MSG_STATIC			= "Static"
 
 
 ----------------------------------------
 -- Master profile event output messages
 ----------------------------------------
 
-L.MSG_COMBAT					= "Combat";
-L.MSG_DISPEL					= "Dispel";
-L.MSG_CP						= "CP";
-L.MSG_CP_FULL					= "Finish It";
-L.MSG_KILLING_BLOW				= "Killing Blow";
-L.MSG_TRIGGER_LOW_HEALTH		= "Low Health";
-L.MSG_TRIGGER_LOW_MANA			= "Low Mana";
-L.MSG_TRIGGER_LOW_PET_HEALTH	= "Low Pet Health";
+L.MSG_COMBAT					= "Combat"
+L.MSG_DISPEL					= "Dispel"
+L.MSG_CP						= "CP"
+L.MSG_CP_FULL					= "Finish It"
+L.MSG_KILLING_BLOW				= "Killing Blow"
+L.MSG_TRIGGER_LOW_HEALTH		= "Low Health"
+L.MSG_TRIGGER_LOW_MANA			= "Low Mana"
+L.MSG_TRIGGER_LOW_PET_HEALTH	= "Low Pet Health"

@@ -1,4 +1,4 @@
-﻿-------------------------------------------------------------------------------
+-------------------------------------------------------------------------------
 -- Title: MSBT Options French Localization
 -- Author: Mik
 -- French Translation by: Calthas, Devfool
@@ -79,33 +79,33 @@ obj[7] = { label="Icônes des Compétences", tooltip="Affiche les options des ic
 
 obj = L.CHECKBOXES
 obj["enableMSBT"]			= { label="Activer Mik's Scrolling Battle Text", tooltip="Activer MSBT."}
-obj["stickyCrits"]				= { label="Coups critiques persistants", tooltip="Utiliser le style persistant pour les coups critiques."}
-obj["gameDamage"]				= { label="Dommages du jeu", tooltip="Afficher les dommages par défaut du jeu au dessus de la tête des ennemis."}
-obj["gameHealing"]				= { label="Soins du jeu", tooltip="Afficher les soins par déaut du jeu au dessus de la tête des cibles."}
-obj["enableSounds"]				= { label="Activer les sons", tooltip="Jouer les sons associés aux évènements et déclencheurs."}
-obj["colorPartialEffects"]  = { label="Coloriser les effets partiels", tooltip="Assigner des couleurs aux effets partiels."}
-obj["crushing"]					= { label="Ecrasements", tooltip="Afficher les écrasements."}
-obj["glancing"]					= { label="Eraflures", tooltip="Afficher les éraflures."}
-obj["absorb"]					= { label="Absorptions partielles", tooltip="Afficher la valeur des absorptions partielles."}
-obj["block"]					= { label="Bloquages partiels", tooltip="Afficher la valeur des bloquages partiels."}
-obj["resist"]					= { label="Résistances partielles", tooltip="Afficher la valeur des résistances partielles."}
-obj["vulnerability"]			= { label="Bonus de vulnérabilité", tooltip="Afficher la valeur des bonus de vulnérabilité."}
-obj["overheal"]					= { label="Overheals", tooltip="Afficher la valeur d'overheal."}
-obj["colorDamageAmounts"]		= { label="Valeurs des dommages en couleur", tooltip="Utiliser des couleurs pour la valeur des dommages."}
-obj["colorDamageEntry"]			= { tooltip="Activer la colorisation pour ce type de dommage."}
-obj["enableScrollArea"]			= { tooltip="Activer la zone de défilement."}
-obj["inheritField"]				= { label="Hérité", tooltip="Hériter de la valeur par défaut.  Désélectionner pour modifier cette valeur."}
-obj["stickyEvent"]				= { label="Toujours Persistant", tooltip="Utiliser le style persistant pour l'évènement."}
-obj["enableTrigger"]			= { tooltip="Activer le déclencheur."}
-obj["allPowerGains"]			= { label="TOUS les gains d'énergie", tooltip="Affiche tous les gains d'énergie même ceux qui ne sont pas affichés dans le journal ce combat.\n\nATTENTION: Cette option est source de spam et ignorera les réglages de seuil de spam et de son contrôle.\n\nNON RECOMMANDE."}
-obj["hyperRegen"]				= { label="Hyper Regen", tooltip="Affiche les gains d'énergie durant les phases de regen rapide de certaines capacités comme Innervation ou Connexion spirituelle.\n\nNOTE: Les gains affichés ne seront pas contrôlés."}
-obj["abbreviateSkills"]			= { label="Compétences abrégées", tooltip="Nom des compétences abrégées (Client anglais seulement).\n\nCela peut être contourné pour chaque évènement en utilisant le code %sl."}
-obj["hideSkills"]				= { label="Cacher les noms des Compétences", tooltip="Ne pas afficher les noms de compétences pour les évènements entrants et sortants.\n\nVous abandonnerez quelques possibilités de personnalisation de l'évènement si vous utilisez cette option car le code %s sera ignoré."}
-obj["hideNames"]				= { label="Cacher les noms des Unités", tooltip="Ne pas afficher les noms des unités pour les évènements entrants et sortants.\n\nVous abandonnerez quelques possibilités de personnalisation de l'évènement si vous utilisez cette option car le code %n sera ignoré."}
-obj["allClasses"]				= { label="Toutes les classes"}
-obj["enableCooldowns"]			= { label="Activer les Cooldowns", tooltip="Affiche une notification quand un cooldown est terminé."}
-obj["enableIcons"]				= { label="Activer les icônes de compténce", tooltip="Affiche les icônes des compétences pour les évènements quand c'est possible."}
-obj["exclusiveSkills"]			= { label="Noms exclusifs de compétence", tooltip="Montre seulement les noms de compténce quand une icône n'est pas disponible."}
+obj["stickyCrits"]			= { label="Coups critiques persistants", tooltip="Utiliser le style persistant pour les coups critiques."}
+obj["gameDamage"]			= { label="Dommages du jeu", tooltip="Afficher les dommages par défaut du jeu au dessus de la tête des ennemis."}
+obj["gameHealing"]			= { label="Soins du jeu", tooltip="Afficher les soins par déaut du jeu au dessus de la tête des cibles."}
+obj["enableSounds"]			= { label="Activer les sons", tooltip="Jouer les sons associés aux évènements et déclencheurs."}
+obj["colorPartialEffects"]	= { label="Coloriser les effets partiels", tooltip="Assigner des couleurs aux effets partiels."}
+obj["crushing"]				= { label="Ecrasements", tooltip="Afficher les écrasements."}
+obj["glancing"]				= { label="Eraflures", tooltip="Afficher les éraflures."}
+obj["absorb"]				= { label="Absorptions partielles", tooltip="Afficher la valeur des absorptions partielles."}
+obj["block"]				= { label="Bloquages partiels", tooltip="Afficher la valeur des bloquages partiels."}
+obj["resist"]				= { label="Résistances partielles", tooltip="Afficher la valeur des résistances partielles."}
+obj["vulnerability"]		= { label="Bonus de vulnérabilité", tooltip="Afficher la valeur des bonus de vulnérabilité."}
+obj["overheal"]				= { label="Overheals", tooltip="Afficher la valeur d'overheal."}
+obj["colorDamageAmounts"]	= { label="Valeurs des dommages en couleur", tooltip="Utiliser des couleurs pour la valeur des dommages."}
+obj["colorDamageEntry"]		= { tooltip="Activer la colorisation pour ce type de dommage."}
+obj["enableScrollArea"]		= { tooltip="Activer la zone de défilement."}
+obj["inheritField"]			= { label="Hérité", tooltip="Hériter de la valeur par défaut.  Désélectionner pour modifier cette valeur."}
+obj["stickyEvent"]			= { label="Toujours Persistant", tooltip="Utiliser le style persistant pour l'évènement."}
+obj["enableTrigger"]		= { tooltip="Activer le déclencheur."}
+obj["allPowerGains"]		= { label="TOUS les gains d'énergie", tooltip="Affiche tous les gains d'énergie même ceux qui ne sont pas affichés dans le journal ce combat.\n\nATTENTION: Cette option est source de spam et ignorera les réglages de seuil de spam et de son contrôle.\n\nNON RECOMMANDE."}
+obj["hyperRegen"]			= { label="Hyper Regen", tooltip="Affiche les gains d'énergie durant les phases de regen rapide de certaines capacités comme Innervation ou Connexion spirituelle.\n\nNOTE: Les gains affichés ne seront pas contrôlés."}
+obj["abbreviateSkills"]		= { label="Compétences abrégées", tooltip="Nom des compétences abrégées (Client anglais seulement).\n\nCela peut être contourné pour chaque évènement en utilisant le code %sl."}
+obj["hideSkills"]			= { label="Cacher les noms des Compétences", tooltip="Ne pas afficher les noms de compétences pour les évènements entrants et sortants.\n\nVous abandonnerez quelques possibilités de personnalisation de l'évènement si vous utilisez cette option car le code %s sera ignoré."}
+obj["hideNames"]			= { label="Cacher les noms des Unités", tooltip="Ne pas afficher les noms des unités pour les évènements entrants et sortants.\n\nVous abandonnerez quelques possibilités de personnalisation de l'évènement si vous utilisez cette option car le code %n sera ignoré."}
+obj["allClasses"]			= { label="Toutes les classes"}
+obj["enableCooldowns"]		= { label="Activer les Cooldowns", tooltip="Affiche une notification quand un cooldown est terminé."}
+obj["enableIcons"]			= { label="Activer les icônes de compténce", tooltip="Affiche les icônes des compétences pour les évènements quand c'est possible."}
+obj["exclusiveSkills"]		= { label="Noms exclusifs de compétence", tooltip="Montre seulement les noms de compténce quand une icône n'est pas disponible."}
 
 
 ------------------------------
@@ -125,6 +125,7 @@ obj["stickyAnimationStyle"]	= { label="Animations persistante:", tooltip="Style 
 obj["direction"]			= { label="Direction:", tooltip="La direction de l'animation."}
 obj["behavior"]				= { label="Comportement:", tooltip="Le comportement de l'animation."}
 obj["textAlign"]			= { label="Alignement du texte:", tooltip="Alignement du texte pour l'animation."}
+--obj["iconAlign"]			= { label="Icon Align:", tooltip="The alignment of skill icons relative to the text."}
 obj["eventCategory"]		= { label="Catégorie d'évènement:", tooltip="La catégorie de l'évènement à configurer."}
 obj["outputScrollArea"]		= { label="Zone de défilement de sortie:", tooltip="Sélectionne la zone de défilement à utiliser."}
 obj["mainEvent"]			= { label="Evènement principal:"}
@@ -325,7 +326,6 @@ obj[20]	= { label="Immunités aux compétences", tooltip="Afficher les compéten
 obj[21]	= { label="Soins", tooltip="Afficher les soins reçus par votre familier."}
 obj[22]	= { label="Soins critiques", tooltip="Afficher les soins critiques reçus par votre familier."}
 obj[23]	= { label="Soins sur le temps (HoT)", tooltip="Afficher les soins des soins sur le temps (HoT) reçus par votre familier."}
-
 
 ------------------------------
 -- Outgoing events

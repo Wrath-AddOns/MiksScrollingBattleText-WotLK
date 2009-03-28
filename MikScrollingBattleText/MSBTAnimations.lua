@@ -247,6 +247,8 @@ local function Display(message, saSettings, isSticky, colorR, colorG, colorB, fo
  fontString:ClearAllPoints()
  fontString:SetFont(fontPath, fontSize, OUTLINE_MAP[outlineIndex] or DEFAULT_OUTLINE)
  fontString:SetTextColor(colorR, colorG, colorB)
+ fontString:SetShadowColor(0, 0, 0, 1)
+ fontString:SetShadowOffset(1, -1)
  fontString:SetDrawLayer(isSticky and "OVERLAY" or "ARTWORK")
  fontString:SetText(message)
 
@@ -264,7 +266,7 @@ local function Display(message, saSettings, isSticky, colorR, colorG, colorB, fo
   texture:SetWidth(fontSize)
   texture:SetHeight(fontSize)
   texture:SetTexCoord(0.125, 0.875, 0.125, 0.875)
-  texture:SetPoint("RIGHT", fontString, "LEFT", -4, 0)
+  if (saSettings.iconAlign == "Right") then texture:SetPoint("LEFT", fontString, "RIGHT", 4, 0) else texture:SetPoint("RIGHT", fontString, "LEFT", -4, 0) end
   texture:SetDrawLayer(isSticky and "OVERLAY" or "ARTWORK")
   displayEvent.texture = texture
  end

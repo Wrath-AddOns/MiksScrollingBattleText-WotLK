@@ -127,6 +127,7 @@ obj["scrollArea"]			= { label="Scrollbereich:", tooltip="W\195\164hlt den zu kon
 --obj["direction"]			= { label="Direction:", tooltip="The direction of the animation."}
 --obj["behavior"]				= { label="Behavior:", tooltip="The behavior of the animation."}
 obj["textAlign"]			= { label="Text ausrichten:", tooltip="Die Ausrichtung des Textes f\195\188r den Animation."}
+--obj["iconAlign"]			= { label="Icon Align:", tooltip="The alignment of skill icons relative to the text."}
 obj["eventCategory"]		= { label="Ereignis-Kategorie:", tooltip="Die Kategorie der zu konfigurienden Ereignisse."}
 obj["outputScrollArea"]		= { label="Scrollbereich:", tooltip="Den Scrollbereich f\195\188r die Textausgabe ausw\195\164hlen."}
 --obj["mainEvent"]			= { label="Main Event:"}

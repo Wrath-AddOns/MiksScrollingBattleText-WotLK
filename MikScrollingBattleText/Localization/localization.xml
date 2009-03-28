@@ -5,4 +5,5 @@
  <Script file="localization.zhcn.lua" />
  <Script file="localization.zhtw.lua" />
  <Script file="localization.ru.lua" />
+ <Script file="localization.kr.lua" />
 </Ui>
