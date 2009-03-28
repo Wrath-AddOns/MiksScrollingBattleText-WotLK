@@ -127,7 +127,7 @@ obj["stickyAnimationStyle"]	= { label="爆擊特效：", tooltip="滾動區域�
 obj["direction"]			= { label="方向：", tooltip="動畫的方向"}
 obj["behavior"]				= { label="效果：", tooltip="動畫的效果"}
 obj["textAlign"]			= { label="對齊：", tooltip="動畫文字的對齊方式"}
---obj["iconAlign"]			= { label="Icon Align:", tooltip="The alignment of skill icons relative to the text."}
+obj["iconAlign"]			= { label="圖標排列:", tooltip="圖標相對于文本的位置."}
 obj["eventCategory"]		= { label="事件種類：", tooltip="設定事件種類"}
 obj["outputScrollArea"]		= { label="輸出滾動區域：", tooltip="選擇輸出傷害滾動區域"}
 obj["mainEvent"]			= { label="主要事件:"}
@@ -511,7 +511,7 @@ obj["unitReaction"]				= "玩家反應"
 
 -- Exception conditions.
 obj["buffActive"]				= "BUFF生效"
---obj["buffInactive"]				= "Buff失效"
+obj["buffInactive"]				= "Buff失效"
 obj["currentCP"]				= "當前連擊點"
 obj["currentPower"]				= "當前能量"
 obj["inCombat"]				= "戰斗中"
