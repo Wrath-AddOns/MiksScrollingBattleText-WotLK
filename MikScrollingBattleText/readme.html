@@ -37,7 +37,7 @@
  <body>
   <h1>Mik's Scrolling Battle Text</h1>
   <div id="HeaderBlock">
-   Version: 5.3<br />
+   Version: 5.4<br />
    Author: Mik<br />
    Updated: Nov 20, 2008<br />
    Official Site: <a href="http://mikord.wowinterface.com">http://mikord.wowinterface.com</a><br /><br />
@@ -78,14 +78,12 @@
      <div class="TOCSection">
       <ul>
        <li><a href="#FAQFonts">I don't like any of the fonts supplied with MSBT.  How do I use my own fonts?</a></li>
-       <li><a href="#FAQNewTrigger">How do I create a new trigger?</a></li>
        <li><a href="#FAQSounds">How do I add my own custom sounds?</a></li>
+       <li><a href="#FAQNewTrigger">How do I create a new trigger?</a></li>
        <li><a href="#FAQMutilate">Is it possible to prevent Mutilate from being merged?</a></li>
        <li><a href="#FAQVE">How do I suppress Vampiric Embrace?</a></li>
        <li><a href="#FAQExclusiveIcons">I want to see skill names even when there is an icon.  Is that possible?</a></li>	 
-       <li><a href="#FAQSharedMedia">Does MSBT support fonts and sounds from Shared Media?</a></li>
        <li><a href="#FAQGameDamage">Is there a way to show the damage above the target's heads like the default damage text?</a></li>
-       <li><a href="#FAQPvPTrinket">Can I create a trigger to notify me when a player uses a PvP trinket?</a></li>
        <li><a href="#FAQEfficiency">Is MSBT efficient?</a></li>
       </ul>
      </div>
@@ -116,6 +114,8 @@
     <ul>
      <li>Lightweight and efficient design.</li>
      <li>Scroll incoming damage/heals, outgoing damage/heals, and notifications in separate configurable scroll areas on the playing field.</li>
+     <li>Display cooldown completion alerts.</li>
+     <li>Display loot alerts with a total of how many are now in inventory.</li>
      <li>Add triggers that will allow you to show notifications based on a variety of conditions.</li>
      <li>Assign a sound file to play for events/triggers.</li>
      <li>Dynamically create new scroll areas and assign any event/trigger to them.</li>
@@ -189,23 +189,29 @@
       <li>Soul Shard Creation</li>
       <li>Enemy Buff Gains</li>
       <li>Monster Emotes</li>
-      <li>Money Gains</li>
       <li>Cooldown Completions</li>
+     </ul>
+
+     <br />
+     <li>Loot:</li>
+     <ul>
+      <li>Looted Items</li>
+      <li>Money Gains</li>
      </ul>
 
      <br />
      <li>Default Triggers:</li>
      <ul>
       <li>All Relevant Classes - Low Health, Low Mana, Low Pet Health, Viper Sting</li>
-      <li>Death Knight - Rime, Rune Strike, Sudden Doom</li>
+      <li>Death Knight - Rime, Rune Strike</li>
       <li>Druid - Clearcasting, Eclipse, Owlkin Frenzy</li> 
       <li>Hunter - Counterattack, Kill Shot</li>
       <li>Mage - Brain Freeze, Clearcasting, Fingers of Frost, Frostbite, Hot Streak, Impact, Missile Barrage</li>
       <li>Paladin - Hammer of Wrath, The Art of War</li>
-      <li>Priest - Blackout, Clearcasting</li>
+      <li>Priest - Clearcasting</li>
       <li>Rogue - Riposte</li>
       <li>Shaman - Clearcasting, Maelstrom Weapon x5, Tidal Waves</li>
-      <li>Warlock - Backlash, Eradication, Molten Core, Nightfall</li>
+      <li>Warlock - Backlash, Molten Core, Nightfall</li>
       <li>Warrior - Bloodsurge, Execute, Overpower, Rampage, Revenge, Sudden Death, Taste for Blood, Victory Rush</li>
      </ul>
     </ul>
@@ -846,6 +852,10 @@
    <div class="SubsectionBody">
     <table cellpacing="3">
      <tr>
+      <td class="ParameterName" nowrap="nowrap">Active Talents:</td>
+      <td class="ParameterDesc">Examines if the specified talent group is currently active.</td>
+     </tr>
+     <tr>
       <td class="ParameterName" nowrap="nowrap">Buff Active:</td>
       <td class="ParameterDesc">Examines if the specified buff is currently active on you.</td>
      </tr>
@@ -974,48 +984,85 @@
      <a name="FAQFonts"></a><b>I don't like any of the fonts supplied with MSBT.  How do I use my own fonts?</b>
      <br /><br />
 
-     <span style="color: red;">WARNING: ALL FONT MODIFICATION WILL REQUIRE THAT YOU COMPLETELY QUIT THE GAME AND RESTART IT.
-     RELOADING THE CONSOLE ALONE WILL NOT WORK.</span>
+     <div style="color: red;">
+      WARNING: FONT FILES MUST EXIST IN THE TARGET LOCATION <b>BEFORE</b> WORLD OF WARCRAFT IS STARTED.<br />
+      IT IS HIGHLY RECOMMENDED THAT YOU PLACE YOUR CUSTOM FONT FILES IN THE MikScrollingBattleText\Fonts DIRECTORY TO AVOID ISSUES.
+     </div>
      <br /><br />
      
      NOTE: Keep in mind that if you use your own font files that you need to make sure the font
      supports the characters that will be displayed.  For example the typical way to display buff
      gains is [BuffName].  If the font you use does not have a character glyph for the [ or ]
-     characters you will likely see a big ugly block (or nothing at all) instead of the intended characters.  This is
-     especially important with non-English clients since a lot of characters aren't supported by
-     English fonts.
+     characters you will not be able to see the unsupported characters.  This is especially important
+     with non-English clients since a lot of characters aren't supported by English fonts.
      <br /><br />
 
-     There are a few ways to use custom fonts:
+     There are a couple of ways to use custom fonts:
      <br /><br />
      <ul>
       <li>
-       The first, and easiest, method is to simply replace one of the font files in the
-       MikScrollingBattleText\Fonts directory with the truetype font (.ttf) that you want.  The drawback
-       to this approach is that the mod's option screen will still reference the font with the old font's name.
+       The first, and preferred method, is to use MSBT's new in-game media editor available under the custom media tab.  If you follow
+       the recommended guideline of placing your custom font files in the MikScrollingBattleText\Fonts directory, all you need to enter
+       for the font path in the in-game media editor is the name of the font file.
        <br /><br />
 
-       For example, if you had a truetype font file "MyUberFont.ttf" you wanted to use.  Rename MyUberFont.ttf to Adventure.ttf
-       and replace the Adventure.ttf font file in the MikScrollingBattleText\Fonts directory.  In the MSBT options interface
-       it would still be called "Adventure," but it would actually be using the new font.
+       For example, assume you have a truetype font file "MyUberFont.ttf" you want to use.
+       <br /><br />
+       <ol type="a">
+        <li>Copy the "MyUberFont.ttf" font file into the MikScrollingBattleText\Fonts directory before you start the game.</li>
+        <li>Load the game and access MSBT's custom media tab.</li>
+        <li>Click the Add Font button.</li>
+        <li>Enter the name you want the font to be called in game such as "My Custom Font" without the quotes.</li>
+        <li>Enter "MyUberFont.ttf" without the quotes for the font path.</li>
+        <li>Click the Okay button and the new font will be available.</li>
+       </ol>
       </li>
       <br /><br />
       <li>
-       The second method is to open the file MSBTFonts.lua in the MikScrollingBattleText directory and find the
-       FONT_FILES entry.  Add your font with the appropriate name and path following the same pattern as the sample
-       entries. One thing to keep in mind with this approach is that due to the way WoW loads its data, I would
-       suggest you put the new fonts you want to add in the same place as the current fonts for the mod (MikScrollingBattleText\Fonts)
-       to avoid problems with loading.
-      </li>
-      <br /><br />
-      <li>
-       The third method is aimed more at mod developers that want to display information using MSBT.  You can call the MikSBT.RegisterFont
+       The second method is aimed more at mod developers that want to display information using MSBT.  You can call the MikSBT.RegisterFont
        function to register a custom font that you may then specify in your call to MikSBT.DisplayMessage.  See the included API.html file
        for reference information.
       </li>
      </ul>
     </li>
     
+    <li class="FAQListItem">
+     <a name="FAQSounds"></a><b>How do I add my own custom sounds?</b>
+     <br /><br />
+
+     <div style="color: red;">
+      WARNING: SOUND FILES MUST EXIST IN THE TARGET LOCATION <b>BEFORE</b> WORLD OF WARCRAFT IS STARTED.<br />
+      IT IS HIGHLY RECOMMENDED THAT YOU PLACE YOUR CUSTOM SOUND FILES IN THE MikScrollingBattleText\Sounds DIRECTORY TO AVOID ISSUES.
+     </div>
+     <br /><br />
+
+     There are a couple of methods that can be used to add custom sounds.
+     <ul>
+      <li>
+       The first, and preferred method, is to use MSBT's new in-game media editor available under the custom media tab.  If you follow
+       the recommended guideline of placing your custom sound files in the MikScrollingBattleText\Sounds directory, all you need to enter
+       for the sound path in the in-game media editor is the name of the sound file.  The acceptable sound file types are .mp3 and .wav.
+       <br /><br />
+
+       For example, assume you have an mp3 sound file "MyUberSound.mp3" you want to use.
+       <br /><br />
+       <ol type="a">
+        <li>Copy the "MyUberSound.mp3" sound file into the MikScrollingBattleText\Sounds directory before you start the game.</li>
+        <li>Load the game and access MSBT's custom media tab.</li>
+        <li>Click the Add Sound button.</li>
+        <li>Enter the name you want the sound to be called in game such as "My Custom Sound" without the quotes.</li>
+        <li>Enter "MyUberSound.mp3" without the quotes for the sound path.</li>
+        <li>Click the Okay button and the new sound will be available.</li>
+       </ol>
+      </li>
+      <br /><br />
+      <li>
+       The second method is aimed more at mod developers. You can call the MikSBT.RegisterSound function to register a custom
+       sound. See the included API.html file for reference information.
+      </li>
+     </ul>
+    </li>
+
     <li class="FAQListItem">
      <a name="FAQNewTrigger"></a><b>How do I create a new trigger?</b>
      <br /><br />
@@ -1055,35 +1102,6 @@
     </li>
 
     <li class="FAQListItem">
-     <a name="FAQSounds"></a><b>How do I add my own custom sounds?</b>
-     <br /><br />
-     <span style="color: red;">WARNING: NEW SOUND FILES WILL REQUIRE THAT YOU COMPLETELY QUIT THE GAME AND RESTART IT BEFORE
-     THEY WILL BE PLAYED.  RELOADING THE CONSOLE ALONE WILL NOT WORK.</span>
-     <br /><br />
-
-     There are a few methods that can be used to add custom sounds.
-     <ul>
-      <li>
-       The first, and easiest, method is to simply place a .wav file or .mp3 file in the MikScrollingBattleText\Sounds folder
-       <b>before</b> you start World of Warcraft.  You may now click the event settings icon for any event/trigger and then click
-       the icon next to the sound dropdown.  Enter the name of the file you placed in the folder.
-      </li>
-      <br /><br />
-      <li>
-       The second method is to open the file MSBTSounds.lua in the MikScrollingBattleText directory and find the SOUND_FILES entry.
-       Add your sound with the appropriate name and path following the same pattern as the other entries. One thing to keep in
-       mind with this approach is that due to the way WoW loads its data, I would suggest you put the new sounds you want to add in
-       the same place as the current sounds for the mod (MikScrollingBattleText\Sounds) to avoid problems with loading. 
-      </li>
-      <br /><br />
-      <li>
-       The third method is aimed more at mod developers. You can call the MikSBT.RegisterSound function to register a custom
-       sound. See the included API.html file for reference information.
-      </li>
-     </ul>
-    </li>
-
-    <li class="FAQListItem">
      <a name="FAQMutilate"></a><b>Is it possible to prevent Mutilate from being merged?</b>
      <br /><br />
      Yes. Add it to the merge exclusions list under the Spam Controls tab in the options interface.
@@ -1113,12 +1131,6 @@
     </li>
 
     <li class="FAQListItem">
-     <a name="FAQSharedMedia"></a><b>Does MSBT support fonts and sounds from Shared Media?</b>
-     <br /><br />
-     Not directly, but you can download MSBTSharedMedia to add support for it.
-    </li>
-
-    <li class="FAQListItem">
      <a name="FAQGameDamage"></a><b>Is there a way to show the damage above the target's heads like the default damage text?</b>
      <br /><br />
      The only way this is possible is using the built-in game damage.  The "Game Damage" option on the General tab will reenable
@@ -1131,13 +1143,6 @@
      there are many other benefits such as being able to see the damage and healing being done to targets that are not in your viewport, merging
      of AoE with cumulative amounts, throttling of DoT spam, damage thresholds, per skill suppressions for things you don't care about, icons
      annotating which skill caused the damage or healing, and more.
-    </li>
-
-    <li class="FAQListItem">
-     <a name="FAQPvPTrinket"></a><b>Can I create a trigger to notify me when a player uses a PvP trinket?</b>
-     <br /><br />
-	 Unfortunately, there is no combat log event generated when a player uses a PvP trinket.  As a result, there is no event to drive a trigger
-     for it.  If Blizzard decides to add a combat log event for it, at that point a trigger would be possible.
     </li>
 
     <li class="FAQListItem">
@@ -1173,6 +1178,45 @@
    <table cellspacing="3">
     <tr>
      <td class="ParameterName" nowrap="nowrap"><a name="WhatsNew"></a>Latest</td>
+     <td class="ParameterDesc">
+      <ul>
+       <li>Created an in-game editor for managing custom media:</li>
+        <ul>
+         <li>Entries will persist between game sessions and version upgrades.</li>
+         <li>Entries are not tied to profiles meaning they will persist through profile resets.</li>
+         <li>Font entries appear in the font they reference to provide a quick preview of the custom fonts that have been added.</li>
+         <li>Sound entries provide a play button to preview/test them.</li>
+         <li>Modified font handling to ensure invalid paths do not throw errors.</li>
+         <li>The old MSBTFonts.lua and MSBTSounds.lua files have been removed in favor of this new system.</li>
+         <li>Remember that the media files must already exist <b>before</b> WoW is started or they can't be used.</li>
+        </ul>
+       </li>
+       <br />
+       <li>Added a new loot alerting system with several options:</li>
+        <ul>
+         <li>Provides a total count of how many of the looted item are now in inventory and, optionally, how many items were looted (via %a event code).</li>
+         <li>Looted items are colored according to their quality (grey, green, etc)</li>
+         <li>Only display items of selected qualities.</li>
+         <li>Always display specific items by name.</li>
+         <li>Always suppress specific items by name.</li>
+         <li>Always show quest items regardless of exclusions.(subject to Blizzard having the item marked as a quest item).</li>
+        </ul>
+       </li>
+       <br />
+       <li>Created new events for incoming and outgoing periodic damage (DoT) crits.</li>
+       <li>Added an option to control whether or not the text shadowing effect introduced in version 5.3.37 is applied.</li>
+       <li>Outgoing dispels will now display debuffs cleansed from friendly units as well as buffs from enemy units.</li>
+       <li>Aura gains now show how many are stacked by default.  You can remove the %a event code from the respective events if you don't want to see this information.</li>
+       <li>Added Active Talents as an available trigger exception.</li>
+       <li>The blink buff gain and loss events are now ignored.</li>
+       <li>Disabling a scroll area will now ensure all events destined for it are suppressed regardless of their source.</li>
+       <li>Removed references to skills and triggers that are not available as of Patch 3.1.</li>
+       <li>Updated TOC for Patch 3.1.</li>
+      </ul>
+     </td>
+    </tr>
+    <tr>
+     <td class="ParameterName" nowrap="nowrap">5.3.41</td>
      <td class="ParameterDesc">
       <ul>
        <li>Added missing Korean localization files.</li>

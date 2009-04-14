@@ -98,18 +98,14 @@ local DAMAGETYPE_CHAOS = DAMAGETYPE_PHYSICAL + DAMAGETYPE_HOLY + DAMAGETYPE_FIRE
 local SPELLID_AUTOSHOT = 75
 
 -- Spell names.
-local SPELL_BLIZZARD        = GetSkillName(10)
-local SPELL_HELLFIRE        = GetSkillName(1949)
-local SPELL_HURRICANE       = GetSkillName(16914)
-local SPELL_INNERVATE       = GetSkillName(29166)
-local SPELL_SPIRIT_TAP      = GetSkillName(15270)
-local SPELL_RAIN_OF_FIRE    = GetSkillName(5740)
-local SPELL_VOLLEY          = GetSkillName(1510)
-
--- Money strings.
-local GOLD = string_gsub(GOLD_AMOUNT, "%%d ", "")
-local SILVER = string_gsub(SILVER_AMOUNT, "%%d ", "")
-local COPPER = string_gsub(COPPER_AMOUNT, "%%d ", "")
+local SPELL_BLINK			= GetSkillName(1953)
+local SPELL_BLIZZARD		= GetSkillName(10)
+local SPELL_HELLFIRE		= GetSkillName(1949)
+local SPELL_HURRICANE		= GetSkillName(16914)
+local SPELL_INNERVATE		= GetSkillName(29166)
+local SPELL_SPIRIT_TAP		= GetSkillName(15270)
+local SPELL_RAIN_OF_FIRE	= GetSkillName(5740)
+local SPELL_VOLLEY			= GetSkillName(1510)
 
 
 -------------------------------------------------------------------------------
@@ -896,9 +892,6 @@ end
 -- Handles dispel parser events.
 -- ****************************************************************************
 local function DispelHandler(parserEvent, currentProfile)
- -- Ignore the event if it isn't a buff.
- if (parserEvent.auraType ~= "BUFF") then return end
- 
  -- Get the correct dispel event.
  local eventTypeString
  if (parserEvent.sourceUnit == "player") then
@@ -1028,19 +1021,10 @@ local function LootHandler(parserEvent, currentProfile)
  -- Ignore the event if it isn't for the player.
  if (parserEvent.recipientUnit ~= "player") then return end
 
- -- Money gain.
- if (parserEvent.isMoney) then
-  local moneyString = parserEvent.moneyString
-  moneyString = string_gsub(moneyString, GOLD, "|cffffd700%1|r")
-  moneyString = string_gsub(moneyString, SILVER, "|cff808080%1|r")
-  moneyString = string_gsub(moneyString, COPPER, "|cffeda55f%1|r")
-  
-  return "NOTIFICATION_MONEY", nil, moneyString
- end
-
  -- Ignore the event if there is no item link.
  local itemLink = parserEvent.itemLink
  if (not itemLink) then return end
+
  -- Ignore the event if the item is not a soul shard.
  local matchStart, _, itemID, itemName = string_find(itemLink, "item:(%d+):[%-%d:]+|h%[(.+)%]")
  if (itemID ~= "6265") then return end
@@ -1453,6 +1437,7 @@ local function OnLoad()
  if (string_find(GetLocale(), "en..")) then isEnglish = true end
  
  -- Add auras to always ignore.
+ ignoreAuras[SPELL_BLINK] = true
  ignoreAuras[SPELL_BLIZZARD] = true
  ignoreAuras[SPELL_HELLFIRE] = true
  ignoreAuras[SPELL_HURRICANE] = true

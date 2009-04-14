@@ -195,13 +195,15 @@ end
 -- ****************************************************************************
 local function ValidateInput(this)
  local frame = popupFrames.inputFrame
- 
+
  -- Clear validation message and enable okay button.
  frame.validateFontString:SetText("")
  frame.okayButton:Enable()
 
  if (frame.validateHandler) then
-  local message = frame.validateHandler(this:GetText())
+  local firstText = frame.inputEditbox:GetText()
+  local secondText = frame.secondInputEditbox:GetText()
+  local message = frame.validateHandler(firstText, frame.showSecondEditbox and secondText)
 
   -- Disable the save button and display the validation message if validation failed.
   if (message) then
@@ -259,6 +261,7 @@ local function CreateInput()
   end
  )
  editbox:SetEnterHandler(SaveInput)
+ editbox:SetTextChangedHandler(ValidateInput)
  frame.secondInputEditbox = editbox
  
  
@@ -3258,6 +3261,12 @@ local function CreateTriggerPopup()
  -- Localized booleans.
  local booleanItems = {["true"] = objLocale["booleanTrue"], ["false"] = objLocale["booleanFalse"]}
 
+ -- Localized talent specs.
+ local talentSpecs = {
+  [1] = TALENT_SPEC_PRIMARY,
+  [2] = TALENT_SPEC_SECONDARY,
+ }
+
  -- Localized warrior stances.
  local warriorStances = {
   [1] = GetSkillName(2457),
@@ -3323,6 +3332,7 @@ local function CreateTriggerPopup()
   unitReaction = {controlType = "dropdown", items = reactionTypes, default=MSBTParser.REACTION_HOSTILE, relations = booleanRelations},
 
   -- Exception conditions.
+  activeTalents = {controlType = "dropdown", items = talentSpecs, default = 1, relations = booleanRelations},
   buffActive = {controlType = "editbox", relations = equalityRelations},
   buffInactive = {controlType = "editbox", relations = equalityRelations},
   currentCP = {controlType = "slider", minValue = 1, maxValue = 5, step = 1, default = 5, relations = numberRelations, defaultRelation = "lt"},
@@ -3424,7 +3434,7 @@ local function CreateTriggerPopup()
  frame.eventConditionData = eventConditionData
 
  -- Available exceptions.
- frame.availableExceptions = "buffActive buffInactive currentCP currentPower inCombat recentlyFired trivialTarget unavailableSkill warriorStance zoneName zoneType"
+ frame.availableExceptions = "activeTalents buffActive buffInactive currentCP currentPower inCombat recentlyFired trivialTarget unavailableSkill warriorStance zoneName zoneType"
 
  return frame
 end
@@ -3487,6 +3497,213 @@ local function ShowTrigger(configTable)
   end
  end
  UpdateExceptions()
+
+ -- Configure the frame.
+ frame.saveHandler = configTable.saveHandler
+ frame.saveArg1 = configTable.saveArg1
+ frame.hideHandler = configTable.hideHandler
+ frame:ClearAllPoints()
+ frame:SetPoint(configTable.anchorPoint or "TOPLEFT", configTable.anchorFrame, configTable.relativePoint or "BOTTOMLEFT")
+ frame:Show()
+ frame:Raise()
+end
+
+
+-------------------------------------------------------------------------------
+-- Item list frame functions.
+-------------------------------------------------------------------------------
+
+-- ****************************************************************************
+-- Enables the controls on the item list popup.
+-- ****************************************************************************
+local function EnableItemListControls()
+ for name, frame in pairs(popupFrames.itemListFrame.controls) do
+  if (frame.Enable) then frame:Enable() end
+ end
+end
+
+
+-- ****************************************************************************
+-- Validates if the passed item name does not already exist and is valid.
+-- ****************************************************************************
+local function ValidateItemListName(itemName)
+ if (not itemName or itemName == "") then
+  return L.MSG_INVALID_ITEM_NAME
+ end
+
+ if (popupFrames.itemListFrame.items[itemName]) then
+  return L.MSG_ITEM_ALREADY_EXISTS
+ end
+end
+
+
+-- ****************************************************************************
+-- Adds the passed item name to the list of items.
+-- ****************************************************************************
+local function SaveItemListName(settings)
+ local itemName = settings.inputText
+ local frame = popupFrames.itemListFrame
+ frame.items[itemName] = true
+
+ frame.itemsListbox:AddItem(itemName, true)
+end
+
+
+-- ****************************************************************************
+-- Called when one of the delete item buttons is pressed.
+-- ****************************************************************************
+local function DeleteItemButtonOnClick(this)
+ local line = this:GetParent()
+ popupFrames.itemListFrame.items[line.itemName] = false
+ popupFrames.itemListFrame.itemsListbox:RemoveItem(line.itemNumber)
+end
+
+
+-- ****************************************************************************
+-- Called by listbox to create a line for item list popup.
+-- ****************************************************************************
+local function CreateItemListLine(this)
+ local controls = popupFrames.itemListFrame.controls
+ local frame = CreateFrame("Button", nil, this)
+ frame:EnableMouse(false)
+
+ -- Delete item button.
+ local button = MSBTControls.CreateIconButton(frame, "Delete")
+ objLocale = L.BUTTONS["deleteItem"]
+ button:SetTooltip(objLocale.tooltip)
+ button:SetPoint("RIGHT", frame, "RIGHT", -10, 0)
+ button:SetClickHandler(DeleteItemButtonOnClick)
+ frame.deleteButton = button
+ controls[#controls+1] = button
+
+ -- Item name text.
+ local fontString = frame:CreateFontString(nil, "OVERLAY", "GameFontNormalSmall")
+ fontString:SetPoint("LEFT", frame, "LEFT", 5, 0)
+ fontString:SetPoint("RIGHT", frame.deleteButton, "LEFT", -10, 0)
+ fontString:SetJustifyH("LEFT")
+ fontString:SetTextColor(1, 1, 1)
+ frame.itemFontString = fontString
+
+ return frame
+end
+
+
+-- ****************************************************************************
+-- Called by listbox to display a line.
+-- ****************************************************************************
+local function DisplayItemListLine(this, line, key, isSelected)
+ local frame = popupFrames.itemListFrame
+ line.itemName = key
+ line.itemFontString:SetText(key)
+end
+
+
+
+-- ****************************************************************************
+-- Creates the popup item list frame.
+-- ****************************************************************************
+local function CreateItemList()
+ local frame = CreatePopup()
+ frame:SetWidth(400)
+ frame:SetHeight(300)
+ frame.controls = {}
+ local controls = frame.controls
+
+ -- Title text.
+ local fontString = frame:CreateFontString(nil, "OVERLAY", "GameFontNormalSmall")
+ fontString:SetPoint("TOP", frame, "TOP", 0, -20)
+ frame.titleFontString = fontString
+ 
+ fontString = frame:CreateFontString(nil, "OVERLAY", "GameFontNormalSmall")
+ fontString:SetPoint("TOPLEFT", frame, "TOPLEFT", 20, -50)
+ fontString:SetText(L.MSG_ITEMS .. ":")
+ frame.itemsFontString = fontString
+ 
+ -- Add item button.
+ local button = MSBTControls.CreateOptionButton(frame)
+ objLocale = L.BUTTONS["addItem"]
+ button:Configure(20, objLocale.label, objLocale.tooltip)
+ button:SetPoint("LEFT", frame.itemsFontString, "RIGHT", 10, 0)
+ button:SetClickHandler(
+  function (this)
+   local objLocale = L.EDITBOXES["itemName"]
+   EraseTable(tempConfig)
+   tempConfig.editboxLabel = objLocale.label
+   tempConfig.editboxTooltip = objLocale.tooltip
+   tempConfig.parentFrame = frame
+   tempConfig.anchorFrame = this
+   tempConfig.validateHandler = ValidateItemListName
+   tempConfig.saveHandler = SaveItemListName
+   tempConfig.hideHandler = EnableItemListControls
+   DisableControls(controls)
+   ShowInput(tempConfig)
+  end
+ )
+ frame.addItemButton = button
+ controls[#controls+1] = button
+ 
+ -- Items listbox.
+ local listbox = MSBTControls.CreateListbox(frame)
+ listbox:Configure(355, 180, 30)
+ listbox:SetPoint("TOPLEFT", frame.itemsFontString, "BOTTOMLEFT", 10, -10)
+ listbox:SetCreateLineHandler(CreateItemListLine)
+ listbox:SetDisplayHandler(DisplayItemListLine)
+ frame.itemsListbox = listbox
+ controls[#controls+1] = listbox
+ 
+ -- Save button.
+ button = MSBTControls.CreateOptionButton(frame)
+ objLocale = L.BUTTONS["genericSave"]
+ button:Configure(20, objLocale.label, objLocale.tooltip)
+ button:SetPoint("BOTTOMRIGHT", frame, "BOTTOM", -10, 20)
+ button:SetClickHandler(
+  function (this)
+   if (frame.saveHandler) then frame.saveHandler(frame.saveArg1) end
+   frame:Hide()
+  end
+ )
+ controls[#controls+1] = button
+
+ -- Cancel button.
+ button = MSBTControls.CreateOptionButton(frame)
+ objLocale = L.BUTTONS["genericCancel"]
+ button:Configure(20, objLocale.label, objLocale.tooltip)
+ button:SetPoint("BOTTOMLEFT", frame, "BOTTOM", 10, 20)
+ button:SetClickHandler(
+  function (this)
+   frame:Hide()
+  end
+ )
+ controls[#controls+1] = button
+ 
+ return frame 
+end
+
+
+-- ****************************************************************************
+-- Shows the popup skill list frame using the passed config.
+-- ****************************************************************************
+local function ShowItemList(configTable)
+ -- Don't do anything if required parameters weren't passed.
+ if (not configTable or not configTable.anchorFrame or not configTable.parentFrame or not configTable.items) then return end
+
+ -- Create the frame if it hasn't already been.
+ if (not popupFrames.itemListFrame) then popupFrames.itemListFrame = CreateItemList() end
+
+ -- Set parent.
+ local frame = popupFrames.itemListFrame
+ ChangePopupParent(frame, configTable.parentFrame)
+
+ 
+ -- Populate data.
+ frame.titleFontString:SetText(configTable.title) 
+ 
+ -- Items.
+ frame.items = configTable.items
+ frame.itemsListbox:Clear()
+ for itemName, value in pairs(configTable.items) do
+  if (value) then frame.itemsListbox:AddItem(itemName) end
+ end
 
  -- Configure the frame.
  frame.saveHandler = configTable.saveHandler
@@ -3768,5 +3985,5 @@ module.ShowScrollAreaConfig			= ShowScrollAreaConfig
 module.ShowScrollAreaSelection		= ShowScrollAreaSelection
 module.ShowEvent					= ShowEvent
 module.ShowTrigger					= ShowTrigger
+module.ShowItemList					= ShowItemList
 module.ShowSkillList				= ShowSkillList
-module.ShowSubstitutionList			= ShowSubstitutionList

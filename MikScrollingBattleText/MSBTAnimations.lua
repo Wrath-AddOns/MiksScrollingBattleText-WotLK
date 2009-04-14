@@ -244,12 +244,17 @@ local function Display(message, saSettings, isSticky, colorR, colorG, colorB, fo
  
  -- Set font string properties.
  local fontString = displayEvent.fontString
+ local fontOutline = OUTLINE_MAP[outlineIndex] or DEFAULT_OUTLINE
+ fontPath = fontPath or DEFAULT_FONT_PATH
  fontString:ClearAllPoints()
- fontString:SetFont(fontPath, fontSize, OUTLINE_MAP[outlineIndex] or DEFAULT_OUTLINE)
+ fontString:SetFont(fontPath, fontSize, fontOutline)
+ if (fontPath ~= fontString:GetFont()) then fontString:SetFont(DEFAULT_FONT_PATH, fontSize, fontOutline) end
  fontString:SetTextColor(colorR, colorG, colorB)
- fontString:SetShadowColor(0, 0, 0, 1)
- fontString:SetShadowOffset(1, -1)
  fontString:SetDrawLayer(isSticky and "OVERLAY" or "ARTWORK")
+ if (not currentProfile.textShadowingDisabled) then
+  fontString:SetShadowColor(0, 0, 0, 1)
+  fontString:SetShadowOffset(1, -1)
+ end
  fontString:SetText(message)
 
  -- Set texture properties if there is a texture path that isn't the temp texture and icons are enabled.
@@ -302,8 +307,8 @@ local function DisplayEvent(eventSettings, message, texturePath)
  -- Get the scroll area settings for the event. 
  local saSettings = scrollAreas[eventSettings.scrollArea] or scrollAreas[DEFAULT_SCROLL_AREA]
 
- -- Leave the function if the scroll area is invalid. 
- if (not saSettings) then return end
+ -- Leave the function if the scroll area is invalid or disabled. 
+ if (not saSettings or saSettings.disabled) then return end
 
  
  -- Get the inherited font values.
@@ -323,7 +328,6 @@ local function DisplayEvent(eventSettings, message, texturePath)
   fontAlpha = eventSettings.fontAlpha or saSettings.normalFontAlpha or currentProfile.normalFontAlpha
  end
 
- local fontPath = fonts[fontName] or DEFAULT_FONT_PATH
  isSticky = isSticky or eventSettings.alwaysSticky
  
  -- Play the event's sound file if there is one and sounds are enabled.
@@ -333,7 +337,7 @@ local function DisplayEvent(eventSettings, message, texturePath)
   PlaySoundFile(soundFile)
  end
 
- Display(message, saSettings, isSticky, eventSettings.colorR or 1, eventSettings.colorG or 1, eventSettings.colorB or 1, fontSize, fontPath, outlineIndex, fontAlpha, texturePath)
+ Display(message, saSettings, isSticky, eventSettings.colorR or 1, eventSettings.colorG or 1, eventSettings.colorB or 1, fontSize, fonts[fontName], outlineIndex, fontAlpha, texturePath)
 end
 
 
@@ -377,10 +381,7 @@ local function DisplayMessage(message, scrollArea, isSticky, colorR, colorG, col
  end
 
  -- Inherit the font if the passed value is invalid.
- local fontPath = fonts[fontName]
- if (not fontPath) then
-  fontPath = fonts[saSettings.normalFontName or currentProfile.normalFontName] or DEFAULT_FONT_PATH
- end
+ local fontPath = fonts[fontName] or fonts[saSettings.normalFontName or currentProfile.normalFontName]
 
  -- Inherit the font outline if the passed value is invalid.
  if (not OUTLINE_MAP[outlineIndex]) then

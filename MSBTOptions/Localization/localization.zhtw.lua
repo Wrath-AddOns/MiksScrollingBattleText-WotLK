@@ -21,6 +21,13 @@ local L = MikSBT.translations
 -- Interface messages
 ------------------------------
 
+--L.MSG_CUSTOM_FONTS					= "Custom Fonts"
+--L.MSG_INVALID_CUSTOM_FONT_NAME		= "Invalid font name."
+--L.MSG_FONT_NAME_ALREADY_EXISTS		= "Font name already exists."
+--L.MSG_INVALID_CUSTOM_FONT_PATH		= "Font path must point to a .ttf file."
+--L.MSG_CUSTOM_SOUNDS					= "Custom Sounds"
+--L.MSG_INVALID_CUSTOM_SOUND_NAME		= "Invalid sound name."
+--L.MSG_SOUND_NAME_ALREADY_EXISTS		= "Sound name already exists."
 L.MSG_NEW_PROFILE					= "新建記錄檔"
 L.MSG_PROFILE_ALREADY_EXISTS		= "記錄檔已存在"
 L.MSG_INVALID_PROFILE_NAME			= "無效的記錄檔名稱"
@@ -35,6 +42,7 @@ L.MSG_TRIGGER_CLASSES				= "觸發職業"
 L.MSG_MAIN_EVENTS					= "主要事件"
 L.MSG_TRIGGER_EXCEPTIONS			= "觸發例外"
 L.MSG_EVENT_CONDITIONS				= "事件條件"
+--L.MSG_DISPLAY_QUALITY				= "Display alerts for items of this quality."
 L.MSG_SKILLS						= "技能"
 L.MSG_SKILL_ALREADY_EXISTS			= "技能名稱已存在"
 L.MSG_INVALID_SKILL_NAME			= "無效的技能名稱"
@@ -42,6 +50,10 @@ L.MSG_HOSTILE						= "敵對玩家"
 L.MSG_ANY							= "任何"
 L.MSG_CONDITION						= "條件"
 L.MSG_CONDITIONS					= "條件"
+--L.MSG_ITEM_QUALITIES				= "Item qualities"
+--L.MSG_ITEMS							= "Items"
+--L.MSG_ITEM_ALREADY_EXISTS			= "Item name already exists."
+--L.MSG_INVALID_ITEM_NAME				= "Invalid item name."
 
 
 ------------------------------
@@ -66,13 +78,15 @@ obj["WARRIOR"]		= "戰士"
 ------------------------------
 
 obj = L.TABS
-obj[1] = { label="一般設定", tooltip="一般選項設定"}
-obj[2] = { label="滾動區域", tooltip="新增、刪除和設定滾動區域；移動滑鼠到按鈕上可以得到更多訊息"}
-obj[3] = { label="事件設定", tooltip="設定承受傷害、輸出傷害和通知的事件；移動滑鼠到按鈕可得到更多訊息"}
-obj[4] = { label="技能觸發", tooltip="設定觸發；移動滑鼠到按鈕可得到更多訊息"}
-obj[5] = { label="洗屏控制", tooltip="設定對可能造成洗畫面的訊息進行控制"}
-obj[6] = { label="冷卻通知", tooltip="設定技能冷卻通知"}
-obj[7] = { label="技能圖示", tooltip="設定技能圖示"}
+--obj["customMedia"]	= { label="Custom Media", tooltip="Display options for managing custom media."}
+obj["general"]		= { label="一般設定", tooltip="一般選項設定"}
+obj["scrollAreas"]	= { label="滾動區域", tooltip="新增、刪除和設定滾動區域；移動滑鼠到按鈕上可以得到更多訊息"}
+obj["events"]		= { label="事件設定", tooltip="設定承受傷害、輸出傷害和通知的事件；移動滑鼠到按鈕可得到更多訊息"}
+obj["triggers"]		= { label="技能觸發", tooltip="設定觸發；移動滑鼠到按鈕可得到更多訊息"}
+obj["spamControl"]	= { label="洗屏控制", tooltip="設定對可能造成洗畫面的訊息進行控制"}
+obj["cooldowns"]	= { label="冷卻通知", tooltip="設定技能冷卻通知"}
+--obj["lootAlerts"]	= { label="Loot Alerts", tooltip="Display options for loot related notifications."}
+obj["skillIcons"]	= { label="技能圖示", tooltip="設定技能圖示"}
 
 
 ------------------------------
@@ -85,6 +99,7 @@ obj["stickyCrits"]				= { label="爆擊特效顯示", tooltip="使用爆擊特�
 obj["gameDamage"]				= { label="遊戲預設傷害", tooltip="開啟在敵人頭上顯示遊戲預設傷害訊息"}
 obj["gameHealing"]				= { label="遊戲預設治療", tooltip="開啟在目標頭上顯示遊戲預設治療訊息"}
 obj["enableSounds"]				= { label="啟用音效", tooltip="設定是否當指定事件和觸發器發生時播放音效"}
+--obj["textShadowing"]			= { label="Text Shadowing", tooltip="Apply a shadow effect to text to improve font crispness."}
 obj["colorPartialEffects"]		= { label="特效著色", tooltip="設定是否開啟為部分特效指定顏色"}
 obj["crushing"]					= { label="碾壓", tooltip="設定是否顯示碾壓訊息"}
 obj["glancing"]					= { label="偏斜", tooltip="設定是否顯示偏斜訊息"}
@@ -106,6 +121,9 @@ obj["hideSkills"]				= { label="隱藏技能", tooltip="在承受傷害和輸出
 obj["hideNames"]				= { label="隱藏名稱", tooltip="在承受傷害和輸出傷害中不顯示單位名稱。開啟此選項將使你失去某些事件自定義功能，因為它會忽略「%n」代碼"}
 obj["allClasses"]				= { label="所有職業"}
 obj["enableCooldowns"]			= { label="啟用冷卻", tooltip="當冷卻結束時顯示通知"}
+--obj["lootedItems"]				= { label="Looted Items", tooltip="Display notifications when items are looted."}
+obj["moneyGains"]				= { label="獲得金錢", tooltip="顯示獲得的金錢"}
+--obj["alwaysShowQuestItems"]		= { label="Always show quest items", tooltip="Always show quest items regardless of quality selections."}
 obj["enableIcons"]				= { label="啟用技能圖示", tooltip="顯示事件的技能圖示"}
 obj["exclusiveSkills"]			= { label="排除技能名稱", tooltip="僅在沒有技能圖示時，顯示技能名稱"}
 
@@ -141,6 +159,12 @@ obj["triggerParameter"]		= { label="參數:"}
 ------------------------------
 
 obj = L.BUTTONS
+--obj["addCustomFont"]			= { label="Add Font", tooltip="Adds a custom font to the list of available fonts.\n\nWARNING: The font file must exist in the target location *BEFORE* WoW was started.\n\nIt is highly recommended to place the file in the MikScrollingBattleText\\Fonts directory to avoid issues."}
+--obj["addCustomSound"]			= { label="Add Sound", tooltip="Adds a custom sound to the list of available sounds.\n\nWARNING: The sound file must exist in the target location *BEFORE* WoW was started.\n\nIt is highly recommended to place the file in the MikScrollingBattleText\\Sounds directory to avoid issues."}
+--obj["editCustomFont"]			= { tooltip="Click to edit the custom font."}
+--obj["deleteCustomFont"]			= { tooltip="Click to remove the custom font from MSBT."}
+--obj["editCustomSound"]			= { tooltip="Click to edit the custom sound."}
+--obj["deleteCustomSound"]		= { tooltip="Click to remove the custom sound from MSBT."}
 obj["copyProfile"]				= { label="複製記錄檔", tooltip="複製記錄檔到新增的記錄檔中"}
 obj["resetProfile"]				= { label="重置記錄檔", tooltip="重置記錄檔至默認設定"}
 obj["deleteProfile"]			= { label="刪除記錄檔", tooltip="刪除記錄檔"}
@@ -181,6 +205,10 @@ obj["skillSubstitutions"]		= { label="技能替換", tooltip="用自定義名稱
 obj["addSkill"]					= { label="增加技能", tooltip="增加新技能到列表中"}
 obj["deleteSkill"]				= { tooltip="點擊刪除技能"}
 obj["cooldownExclusions"]		= { label="冷卻排除", tooltip="不追蹤指定技能的冷卻"}
+--obj["itemsAllowed"]				= { label="Items Allowed", tooltip="Always show specified items regardless of item quality."}
+--obj["itemExclusions"]			= { label="Item Exclusions", tooltip="Prevent specified items from being displayed."}
+--obj["addItem"]					= { label="Add Item", tooltip="Add a new item to the list."}
+--obj["deleteItem"]				= { tooltip="Click to delete the item."}
 
 
 ------------------------------
@@ -188,6 +216,10 @@ obj["cooldownExclusions"]		= { label="冷卻排除", tooltip="不追蹤指定技
 ------------------------------
 
 obj = L.EDITBOXES
+--obj["customFontName"]	= { label="Font name:", tooltip="The name used to identify the font.\n\nExample: My Super Font"}
+--obj["customFontPath"]	= { label="Font path:", tooltip="The path to the font's file.\n\nNOTE: If the file is located in the recommended MikScrollingBattleText\\Fonts directory, only the filename needs to be entered here instead of th full path.\n\nExample: myFont.ttf "}
+--obj["customSoundName"]	= { label="Sound name:", tooltip="The name used to identify the sound.\n\nExample: My Sound"}
+--obj["customSoundPath"]	= { label="Sound path:", tooltip="The path to the sounds's file.\n\nNOTE: If the file is located in the recommended MikScrollingBattleText\\Sounds directory, only the filename needs to be entered here instead of th full path.\n\nExample: mySound.mp3 "}
 obj["copyProfile"]		= { label="新增記錄檔：", tooltip="輸入新增記錄檔的名稱"}
 obj["scrollAreaName"]	= { label="新增滾動區域:", tooltip="新增滾動區域的名稱"}
 obj["xOffset"]			= { label="X值：", tooltip="所選擇滾動區域的X值"}
@@ -197,7 +229,7 @@ obj["soundFile"]		= { label="音效檔：", tooltip="事件發生時播放的音
 obj["iconSkill"]		= { label="技能圖示：", tooltip="事件發生時會顯示該技能的圖示\n\n如果沒有圖示MSBT會自動找一個圖示\n\n注意: 如果目前玩家的技能書中無該技能，必須用技能ID取代技能名稱。可以在各大網站(例：WOWhead)找到技能ID。"}
 obj["skillName"]		= { label="技能名稱：", tooltip="所增加的技能的名稱"}
 obj["substitutionText"]	= { label="替代文字：", tooltip="用來代替技能名稱的文字"}
-
+--obj["itemName"]			= { label="Item name:", tooltip="The name of the item to add."}
 
 ------------------------------
 -- Interface sliders
@@ -243,10 +275,12 @@ obj["HEALING_TAKEN"]		= "%a - 受到治療總數.\n"
 obj["DAMAGE_DONE"]			= "%a - 輸出傷害總數.\n"
 obj["HEALING_DONE"]			= "%a - 輸出治療總數.\n"
 obj["ABSORBED_AMOUNT"]		= "%a - 吸收傷害總數.\n"
+--obj["AURA_AMOUNT"]			= "%a - Amount of stacks for the aura.\n"
 obj["ENERGY_AMOUNT"]		= "%a - 能量總數.\n"
 obj["CP_AMOUNT"]			= "%a - 你的連擊點總數.\n"
 obj["HONOR_AMOUNT"]			= "%a - 榮譽總數.\n"
 obj["REP_AMOUNT"]			= "%a - 聲望總數.\n"
+--obj["ITEM_AMOUNT"]			= "%a - Amount of the item looted.\n"
 obj["SKILL_AMOUNT"]			= "%a - 技能點總數.\n"
 obj["EXPERIENCE_AMOUNT"]	= "%a - 獲得經驗總數.\n"
 obj["ATTACKER_NAME"]		= "%n - 攻擊者名字.\n"
@@ -270,7 +304,9 @@ obj["SHARD_NAME"]			= "%e - 本地靈魂碎片的名字.\n"
 obj["EMOTE_TEXT"]			= "%e - 表情文字.\n"
 obj["MONEY_TEXT"]			= "%e - 獲取金錢文字.\n"
 obj["COOLDOWN_NAME"]		= "%e - 就緒的法術名字.\n"
+--obj["ITEM_NAME"]			= "%e - The name of the looted item.\n"
 obj["POWER_TYPE"]			= "%p - 能力類別 (能量, 怒氣, 法力).\n"
+--obj["TOTAL_ITEMS"]			= "%t - Total number of the looted item in inventory."
 
 
 ------------------------------
@@ -278,57 +314,59 @@ obj["POWER_TYPE"]			= "%p - 能力類別 (能量, 怒氣, 法力).\n"
 ------------------------------
 
 obj = L.INCOMING_PLAYER_EVENTS
-obj[1]	= { label="近戰傷害", tooltip="顯示被近戰傷害"}
-obj[2]	= { label="近戰爆擊", tooltip="顯示被近戰爆擊"}
-obj[3]	= { label="近戰未命中", tooltip="顯示未被近戰命中"}
-obj[4]	= { label="近戰閃躲", tooltip="顯示閃躲近戰攻擊"}
-obj[5]	= { label="近戰招架", tooltip="顯示招架近戰攻擊"}
-obj[6]	= { label="近戰格擋", tooltip="顯示格擋近戰攻擊"}
-obj[7]	= { label="近戰吸收", tooltip="顯示吸收近戰傷害"}
-obj[8]	= { label="近戰免疫", tooltip="顯示免疫近戰傷害"}
-obj[9]	= { label="技能傷害", tooltip="顯示被技能傷害"}
-obj[10]	= { label="技能爆擊", tooltip="顯示被技能爆擊"}
-obj[11]	= { label="技能持續傷害", tooltip="顯示被技能持續傷害"}
-obj[12]	= { label="傷害護盾傷害", tooltip="顯示被傷害護盾傷害."}
-obj[13]	= { label="傷害護盾爆擊", tooltip="顯示傷被害護盾爆擊."}
-obj[14]	= { label="技能未命中", tooltip="顯示未被技能命中"}
-obj[15]	= { label="技能閃躲", tooltip="顯示閃躲技能攻擊"}
-obj[16]	= { label="技能招架", tooltip="顯示招架技能攻擊"}
-obj[17]	= { label="技能格擋", tooltip="顯示格擋技能攻擊"}
-obj[18]	= { label="法術抵抗", tooltip="顯示抵抗法術攻擊"}
-obj[19]	= { label="技能吸收", tooltip="顯示吸收技能傷害"}
-obj[20]	= { label="技能免疫", tooltip="顯示免疫技能傷害"}
-obj[21]	= { label="技能反射", tooltip="顯示反射技能傷害"}
-obj[22]	= { label="法術打斷", tooltip="顯示打斷法術"}
-obj[23]	= { label="治療", tooltip="顯示被治療"}
-obj[24]	= { label="爆擊治療", tooltip="顯示被治療爆擊"}
-obj[25]	= { label="持續治療", tooltip="顯示被持續治療"}
-obj[26]	= { label="環境傷害", tooltip="顯示環境傷害（如跌落，窒息，熔岩等）"}
+obj["INCOMING_DAMAGE"]						= { label="近戰傷害", tooltip="顯示被近戰傷害"}
+obj["INCOMING_DAMAGE_CRIT"]					= { label="近戰爆擊", tooltip="顯示被近戰爆擊"}
+obj["INCOMING_MISS"]						= { label="近戰未命中", tooltip="顯示未被近戰命中"}
+obj["INCOMING_DODGE"]						= { label="近戰閃躲", tooltip="顯示閃躲近戰攻擊"}
+obj["INCOMING_PARRY"]						= { label="近戰招架", tooltip="顯示招架近戰攻擊"}
+obj["INCOMING_BLOCK"]						= { label="近戰格擋", tooltip="顯示格擋近戰攻擊"}
+obj["INCOMING_ABSORB"]						= { label="近戰吸收", tooltip="顯示吸收近戰傷害"}
+obj["INCOMING_IMMUNE"]						= { label="近戰免疫", tooltip="顯示免疫近戰傷害"}
+obj["INCOMING_SPELL_DAMAGE"]				= { label="技能傷害", tooltip="顯示被技能傷害"}
+obj["INCOMING_SPELL_DAMAGE_CRIT"]			= { label="技能爆擊", tooltip="顯示被技能爆擊"}
+obj["INCOMING_SPELL_DOT"]					= { label="技能持續傷害", tooltip="顯示被技能持續傷害"}
+--obj["INCOMING_SPELL_DOT_CRIT"]				= { label="Skill DoT Crits", tooltip="Enable incoming skill damage over time crits."}
+obj["INCOMING_SPELL_DAMAGE_SHIELD"]			= { label="傷害護盾傷害", tooltip="顯示被傷害護盾傷害."}
+obj["INCOMING_SPELL_DAMAGE_SHIELD_CRIT"]	= { label="傷害護盾爆擊", tooltip="顯示傷被害護盾爆擊."}
+obj["INCOMING_SPELL_MISS"]					= { label="技能未命中", tooltip="顯示未被技能命中"}
+obj["INCOMING_SPELL_DODGE"]					= { label="技能閃躲", tooltip="顯示閃躲技能攻擊"}
+obj["INCOMING_SPELL_PARRY"]					= { label="技能招架", tooltip="顯示招架技能攻擊"}
+obj["INCOMING_SPELL_BLOCK"]					= { label="技能格擋", tooltip="顯示格擋技能攻擊"}
+obj["INCOMING_SPELL_RESIST"]				= { label="法術抵抗", tooltip="顯示抵抗法術攻擊"}
+obj["INCOMING_SPELL_ABSORB"]				= { label="技能吸收", tooltip="顯示吸收技能傷害"}
+obj["INCOMING_SPELL_IMMUNE"]				= { label="技能免疫", tooltip="顯示免疫技能傷害"}
+obj["INCOMING_SPELL_REFLECT"]				= { label="技能反射", tooltip="顯示反射技能傷害"}
+obj["INCOMING_SPELL_INTERRUPT"]				= { label="法術打斷", tooltip="顯示打斷法術"}
+obj["INCOMING_HEAL"]						= { label="治療", tooltip="顯示被治療"}
+obj["INCOMING_HEAL_CRIT"]					= { label="爆擊治療", tooltip="顯示被治療爆擊"}
+obj["INCOMING_HOT"]							= { label="持續治療", tooltip="顯示被持續治療"}
+obj["INCOMING_ENVIRONMENTAL"]				= { label="環境傷害", tooltip="顯示環境傷害（如跌落，窒息，熔岩等）"}
 
 obj = L.INCOMING_PET_EVENTS
-obj[1]	= { label="近戰傷害", tooltip="顯示寵物被近戰傷害"}
-obj[2]	= { label="近戰爆擊", tooltip="顯示寵物被近戰爆擊"}
-obj[3]	= { label="近戰未命中", tooltip="顯示寵物未被近戰命中"}
-obj[4]	= { label="近戰閃躲", tooltip="顯示寵物閃躲近戰攻擊"}
-obj[5]	= { label="近戰招架", tooltip="顯示寵物招架近戰攻擊"}
-obj[6]	= { label="近戰格擋", tooltip="顯示寵物格擋近戰攻擊"}
-obj[7]	= { label="近戰吸收", tooltip="顯示寵物吸收近戰傷害"}
-obj[8]	= { label="近戰免疫", tooltip="顯示寵物免疫近戰傷害"}
-obj[9]	= { label="技能傷害", tooltip="顯示寵物被技能傷害"}
-obj[10]	= { label="技能爆擊", tooltip="顯示寵物被技能爆擊"}
-obj[11]	= { label="技能持續傷害", tooltip="顯示寵物被技能持續傷害"}
-obj[12]	= { label="傷害護盾傷害", tooltip="顯示寵物被傷害護盾的傷害."}
-obj[13]	= { label="傷害護盾爆擊", tooltip="顯示寵物被傷害護盾的爆擊."}
-obj[14]	= { label="技能未命中", tooltip="顯示寵物未被技能命中"}
-obj[15]	= { label="技能閃躲", tooltip="顯示寵物閃躲技能攻擊"}
-obj[16]	= { label="技能招架", tooltip="顯示寵物招架技能攻擊"}
-obj[17]	= { label="技能格擋", tooltip="顯示寵物格擋技能攻擊"}
-obj[18]	= { label="法術抵抗", tooltip="顯示寵物抵抗法術攻擊"}
-obj[19]	= { label="技能吸收", tooltip="顯示寵物吸收技能傷害"}
-obj[20]	= { label="技能免疫", tooltip="顯示寵物免疫技能傷害"}
-obj[21]	= { label="治療", tooltip="顯示寵物被治療"}
-obj[22]	= { label="治療爆擊", tooltip="顯示寵物被治療爆擊"}
-obj[23]	= { label="持續治療", tooltip="顯示寵物被持續治療"}
+obj["PET_INCOMING_DAMAGE"]						= { label="近戰傷害", tooltip="顯示寵物被近戰傷害"}
+obj["PET_INCOMING_DAMAGE_CRIT"]					= { label="近戰爆擊", tooltip="顯示寵物被近戰爆擊"}
+obj["PET_INCOMING_MISS"]						= { label="近戰未命中", tooltip="顯示寵物未被近戰命中"}
+obj["PET_INCOMING_DODGE"]						= { label="近戰閃躲", tooltip="顯示寵物閃躲近戰攻擊"}
+obj["PET_INCOMING_PARRY"]						= { label="近戰招架", tooltip="顯示寵物招架近戰攻擊"}
+obj["PET_INCOMING_BLOCK"]						= { label="近戰格擋", tooltip="顯示寵物格擋近戰攻擊"}
+obj["PET_INCOMING_ABSORB"]						= { label="近戰吸收", tooltip="顯示寵物吸收近戰傷害"}
+obj["PET_INCOMING_IMMUNE"]						= { label="近戰免疫", tooltip="顯示寵物免疫近戰傷害"}
+obj["PET_INCOMING_SPELL_DAMAGE"]				= { label="技能傷害", tooltip="顯示寵物被技能傷害"}
+obj["PET_INCOMING_SPELL_DAMAGE_CRIT"]			= { label="技能爆擊", tooltip="顯示寵物被技能爆擊"}
+obj["PET_INCOMING_SPELL_DOT"]					= { label="技能持續傷害", tooltip="顯示寵物被技能持續傷害"}
+--obj["PET_INCOMING_SPELL_DOT_CRIT"]				= { label="Skill DoT Crits", tooltip="Enable your pet's incoming skill damage over time crits."}
+obj["PET_INCOMING_SPELL_DAMAGE_SHIELD"]			= { label="傷害護盾傷害", tooltip="顯示寵物被傷害護盾的傷害."}
+obj["PET_INCOMING_SPELL_DAMAGE_SHIELD_CRIT"]	= { label="傷害護盾爆擊", tooltip="顯示寵物被傷害護盾的爆擊."}
+obj["PET_INCOMING_SPELL_MISS"]					= { label="技能未命中", tooltip="顯示寵物未被技能命中"}
+obj["PET_INCOMING_SPELL_DODGE"]					= { label="技能閃躲", tooltip="顯示寵物閃躲技能攻擊"}
+obj["PET_INCOMING_SPELL_PARRY"]					= { label="技能招架", tooltip="顯示寵物招架技能攻擊"}
+obj["PET_INCOMING_SPELL_BLOCK"]					= { label="技能格擋", tooltip="顯示寵物格擋技能攻擊"}
+obj["PET_INCOMING_SPELL_RESIST"]				= { label="法術抵抗", tooltip="顯示寵物抵抗法術攻擊"}
+obj["PET_INCOMING_SPELL_ABSORB"]				= { label="技能吸收", tooltip="顯示寵物吸收技能傷害"}
+obj["PET_INCOMING_SPELL_IMMUNE"]				= { label="技能免疫", tooltip="顯示寵物免疫技能傷害"}
+obj["PET_INCOMING_HEAL"]						= { label="治療", tooltip="顯示寵物被治療"}
+obj["PET_INCOMING_HEAL_CRIT"]					= { label="治療爆擊", tooltip="顯示寵物被治療爆擊"}
+obj["PET_INCOMING_HOT"]							= { label="持續治療", tooltip="顯示寵物被持續治療"}
 
 
 ------------------------------
@@ -336,59 +374,61 @@ obj[23]	= { label="持續治療", tooltip="顯示寵物被持續治療"}
 ------------------------------
 
 obj = L.OUTGOING_PLAYER_EVENTS
-obj[1]	= { label="近戰傷害", tooltip="顯示對敵近戰傷害"}
-obj[2]	= { label="近戰爆擊", tooltip="顯示對敵近戰爆擊"}
-obj[3]	= { label="近戰未命中", tooltip="顯示近戰未命中敵人"}
-obj[4]	= { label="近戰閃躲", tooltip="顯示敵人閃躲近戰攻擊"}
-obj[5]	= { label="近戰招架", tooltip="顯示敵人招架近戰攻擊"}
-obj[6]	= { label="近戰格擋", tooltip="顯示敵人格擋近戰攻擊"}
-obj[7]	= { label="近戰吸收", tooltip="顯示敵人吸收近戰傷害"}
-obj[8]	= { label="近戰免疫", tooltip="顯示敵人免疫近戰傷害"}
-obj[9]	= { label="近戰閃避", tooltip="顯示敵人閃避近戰攻擊"}
-obj[10]	= { label="技能傷害", tooltip="顯示技能傷害敵人"}
-obj[11]	= { label="技能爆擊", tooltip="顯示技能爆擊敵人"}
-obj[12]	= { label="技能持續傷害", tooltip="顯示技能持續傷害敵人"}
-obj[13]	= { label="傷害護盾傷害", tooltip="顯示傷害護盾的傷害."}
-obj[14]	= { label="傷害護盾爆擊", tooltip="顯示傷害護盾的爆擊."}
-obj[15]	= { label="技能未命中", tooltip="顯示技能未命中敵人"}
-obj[16]	= { label="技能閃躲", tooltip="顯示敵人閃躲技能攻擊"}
-obj[17]	= { label="技能招架", tooltip="顯示敵人招架技能攻擊"}
-obj[18]	= { label="技能格擋", tooltip="顯示敵人格擋技能攻擊"}
-obj[19]	= { label="法術抵抗", tooltip="顯示敵人抵抗法術攻擊"}
-obj[20]	= { label="技能吸收", tooltip="顯示敵人吸收法術傷害"}
-obj[21]	= { label="技能免疫", tooltip="顯示敵人免疫技能傷害"}
-obj[22]	= { label="技能反射", tooltip="顯示敵人反射技能傷害"}
-obj[23]	= { label="法術打斷", tooltip="顯示法術攻擊被打斷"}
-obj[24]	= { label="技能閃避", tooltip="顯示技能攻擊被閃避"}
-obj[25]	= { label="治療", tooltip="顯示治療目標"}
-obj[26]	= { label="治療爆擊", tooltip="顯示爆擊治療目標"}
-obj[27]	= { label="持續治療", tooltip="顯示持續治療目標"}
-obj[28]	= { label="淨化法術", tooltip="顯示你的淨化法術"}
+obj["OUTGOING_DAMAGE"]						= { label="近戰傷害", tooltip="顯示對敵近戰傷害"}
+obj["OUTGOING_DAMAGE_CRIT"]					= { label="近戰爆擊", tooltip="顯示對敵近戰爆擊"}
+obj["OUTGOING_MISS"]						= { label="近戰未命中", tooltip="顯示近戰未命中敵人"}
+obj["OUTGOING_DODGE"]						= { label="近戰閃躲", tooltip="顯示敵人閃躲近戰攻擊"}
+obj["OUTGOING_PARRY"]						= { label="近戰招架", tooltip="顯示敵人招架近戰攻擊"}
+obj["OUTGOING_BLOCK"]						= { label="近戰格擋", tooltip="顯示敵人格擋近戰攻擊"}
+obj["OUTGOING_ABSORB"]						= { label="近戰吸收", tooltip="顯示敵人吸收近戰傷害"}
+obj["OUTGOING_IMMUNE"]						= { label="近戰免疫", tooltip="顯示敵人免疫近戰傷害"}
+obj["OUTGOING_EVADE"]						= { label="近戰閃避", tooltip="顯示敵人閃避近戰攻擊"}
+obj["OUTGOING_SPELL_DAMAGE"]				= { label="技能傷害", tooltip="顯示技能傷害敵人"}
+obj["OUTGOING_SPELL_DAMAGE_CRIT"]			= { label="技能爆擊", tooltip="顯示技能爆擊敵人"}
+obj["OUTGOING_SPELL_DOT"]					= { label="技能持續傷害", tooltip="顯示技能持續傷害敵人"}
+--obj["OUTGOING_SPELL_DOT_CRIT"]				= { label="Skill DoT Crits", tooltip="Enable outgoing skill damage over time crits."}
+obj["OUTGOING_SPELL_DAMAGE_SHIELD"]			= { label="傷害護盾傷害", tooltip="顯示傷害護盾的傷害."}
+obj["OUTGOING_SPELL_DAMAGE_SHIELD_CRIT"]	= { label="傷害護盾爆擊", tooltip="顯示傷害護盾的爆擊."}
+obj["OUTGOING_SPELL_MISS"]					= { label="技能未命中", tooltip="顯示技能未命中敵人"}
+obj["OUTGOING_SPELL_DODGE"]					= { label="技能閃躲", tooltip="顯示敵人閃躲技能攻擊"}
+obj["OUTGOING_SPELL_PARRY"]					= { label="技能招架", tooltip="顯示敵人招架技能攻擊"}
+obj["OUTGOING_SPELL_BLOCK"]					= { label="技能格擋", tooltip="顯示敵人格擋技能攻擊"}
+obj["OUTGOING_SPELL_RESIST"]				= { label="法術抵抗", tooltip="顯示敵人抵抗法術攻擊"}
+obj["OUTGOING_SPELL_ABSORB"]				= { label="技能吸收", tooltip="顯示敵人吸收法術傷害"}
+obj["OUTGOING_SPELL_IMMUNE"]				= { label="技能免疫", tooltip="顯示敵人免疫技能傷害"}
+obj["OUTGOING_SPELL_REFLECT"]				= { label="技能反射", tooltip="顯示敵人反射技能傷害"}
+obj["OUTGOING_SPELL_INTERRUPT"]				= { label="法術打斷", tooltip="顯示法術攻擊被打斷"}
+obj["OUTGOING_SPELL_EVADE"]					= { label="技能閃避", tooltip="顯示技能攻擊被閃避"}
+obj["OUTGOING_HEAL"]						= { label="治療", tooltip="顯示治療目標"}
+obj["OUTGOING_HEAL_CRIT"]					= { label="治療爆擊", tooltip="顯示爆擊治療目標"}
+obj["OUTGOING_HOT"]							= { label="持續治療", tooltip="顯示持續治療目標"}
+obj["OUTGOING_DISPEL"]						= { label="淨化法術", tooltip="顯示你的淨化法術"}
 
 obj = L.OUTGOING_PET_EVENTS
-obj[1]	= { label="近戰傷害", tooltip="顯示寵物近戰傷害"}
-obj[2]	= { label="近戰爆擊", tooltip="顯示寵物近戰爆擊"}
-obj[3]	= { label="近戰未命中", tooltip="顯示寵物的近戰攻擊未命中敵人"}
-obj[4]	= { label="近戰閃躲", tooltip="顯示寵物的近戰攻擊被閃躲"}
-obj[5]	= { label="近戰招架", tooltip="顯示寵物的近戰攻擊被招架"}
-obj[6]	= { label="近戰格擋", tooltip="顯示寵物的近戰攻擊被格擋"}
-obj[7]	= { label="近戰吸收", tooltip="顯示寵物的近戰傷害被吸收"}
-obj[8]	= { label="近戰免疫", tooltip="顯示寵物的近戰傷害被免疫"}
-obj[9]	= { label="近戰閃避", tooltip="顯示寵物的近戰攻擊被閃避"}
-obj[10]	= { label="技能傷害", tooltip="顯示寵物的技能傷害"}
-obj[11]	= { label="技能爆擊", tooltip="顯示寵物的技能爆擊"}
-obj[12]	= { label="技能持續傷害", tooltip="顯示寵物技能的持續傷害"}
-obj[13]	= { label="傷害護盾傷害", tooltip="顯示寵物的傷害護盾的傷害."}
-obj[14]	= { label="傷害護盾爆擊", tooltip="顯示寵物的傷害護盾的爆擊."}
-obj[15]	= { label="技能未命中", tooltip="顯示寵物技能攻擊未命中敵人"}
-obj[16]	= { label="技能閃躲", tooltip="顯示寵物的技能攻擊被閃躲"}
-obj[17]	= { label="技能招架", tooltip="顯示寵物的技能攻擊被招架"}
-obj[18]	= { label="技能格擋", tooltip="顯示寵物的技能攻擊被格擋"}
-obj[19]	= { label="法術抵抗", tooltip="顯示寵物的法術攻擊被抵抗"}
-obj[20]	= { label="技能吸收", tooltip="顯示寵物的技能傷害被吸收"}
-obj[21]	= { label="技能免疫", tooltip="顯示寵物的技能傷害被免疫"}
-obj[22]	= { label="技能閃避", tooltip="顯示寵物的技能攻擊被閃避"}
-obj[23]	= { label="淨化法術", tooltip="顯示寵物的淨化法術"}
+obj["PET_OUTGOING_DAMAGE"]						= { label="近戰傷害", tooltip="顯示寵物近戰傷害"}
+obj["PET_OUTGOING_DAMAGE_CRIT"]					= { label="近戰爆擊", tooltip="顯示寵物近戰爆擊"}
+obj["PET_OUTGOING_MISS"]						= { label="近戰未命中", tooltip="顯示寵物的近戰攻擊未命中敵人"}
+obj["PET_OUTGOING_DODGE"]						= { label="近戰閃躲", tooltip="顯示寵物的近戰攻擊被閃躲"}
+obj["PET_OUTGOING_PARRY"]						= { label="近戰招架", tooltip="顯示寵物的近戰攻擊被招架"}
+obj["PET_OUTGOING_BLOCK"]						= { label="近戰格擋", tooltip="顯示寵物的近戰攻擊被格擋"}
+obj["PET_OUTGOING_ABSORB"]						= { label="近戰吸收", tooltip="顯示寵物的近戰傷害被吸收"}
+obj["PET_OUTGOING_IMMUNE"]						= { label="近戰免疫", tooltip="顯示寵物的近戰傷害被免疫"}
+obj["PET_OUTGOING_EVADE"]						= { label="近戰閃避", tooltip="顯示寵物的近戰攻擊被閃避"}
+obj["PET_OUTGOING_SPELL_DAMAGE"]				= { label="技能傷害", tooltip="顯示寵物的技能傷害"}
+obj["PET_OUTGOING_SPELL_DAMAGE_CRIT"]			= { label="技能爆擊", tooltip="顯示寵物的技能爆擊"}
+obj["PET_OUTGOING_SPELL_DOT"]					= { label="技能持續傷害", tooltip="顯示寵物技能的持續傷害"}
+--obj["PET_OUTGOING_SPELL_DOT_CRIT"]				= { label="Skill DoT Crits", tooltip="Enable outgoing skill damage over time crits."}
+obj["PET_OUTGOING_SPELL_DAMAGE_SHIELD"]			= { label="傷害護盾傷害", tooltip="顯示寵物的傷害護盾的傷害."}
+obj["PET_OUTGOING_SPELL_DAMAGE_SHIELD_CRIT"]	= { label="傷害護盾爆擊", tooltip="顯示寵物的傷害護盾的爆擊."}
+obj["PET_OUTGOING_SPELL_MISS"]					= { label="技能未命中", tooltip="顯示寵物技能攻擊未命中敵人"}
+obj["PET_OUTGOING_SPELL_DODGE"]					= { label="技能閃躲", tooltip="顯示寵物的技能攻擊被閃躲"}
+obj["PET_OUTGOING_SPELL_PARRY"]					= { label="技能招架", tooltip="顯示寵物的技能攻擊被招架"}
+obj["PET_OUTGOING_SPELL_BLOCK"]					= { label="技能格擋", tooltip="顯示寵物的技能攻擊被格擋"}
+obj["PET_OUTGOING_SPELL_RESIST"]				= { label="法術抵抗", tooltip="顯示寵物的法術攻擊被抵抗"}
+obj["PET_OUTGOING_SPELL_ABSORB"]				= { label="技能吸收", tooltip="顯示寵物的技能傷害被吸收"}
+obj["PET_OUTGOING_SPELL_IMMUNE"]				= { label="技能免疫", tooltip="顯示寵物的技能傷害被免疫"}
+obj["PET_OUTGOING_SPELL_EVADE"]					= { label="技能閃避", tooltip="顯示寵物的技能攻擊被閃避"}
+obj["PET_OUTGOING_DISPEL"]						= { label="淨化法術", tooltip="顯示寵物的淨化法術"}
 
 
 ------------------------------
@@ -396,30 +436,29 @@ obj[23]	= { label="淨化法術", tooltip="顯示寵物的淨化法術"}
 ------------------------------
 
 obj = L.NOTIFICATION_EVENTS
-obj[1]	= { label="Debuff", tooltip="顯示你遭受的Debuff"}
-obj[2]	= { label="Buff", tooltip="顯示你得到的Buff"}
-obj[3]	= { label="物品Buff", tooltip="顯示使用物品得到的Buff"}
-obj[4]	= { label="Debuff消失", tooltip="顯示從你身上消失的Debuff"}
-obj[5]	= { label="Buff消失", tooltip="顯示從你身上消失的Buff"}
-obj[6]	= { label="物品Buff消失", tooltip="顯示從你身上消失的物品Buff"}
-obj[7]	= { label="戰鬥開始", tooltip="顯示你已經開始戰鬥"}
-obj[8]	= { label="戰鬥結束", tooltip="顯示你已經結束了戰鬥"}
-obj[9]	= { label="能量獲得", tooltip="顯示你額外獲得的法力，怒氣或者能量"}
-obj[10]	= { label="能量失去", tooltip="顯示你失去的法力，怒氣或者能量"}
-obj[11]	= { label="連擊點獲得", tooltip="顯示你獲得的連擊點"}
-obj[12]	= { label="連擊點全滿", tooltip="顯示你的連擊點已滿"}
-obj[13]	= { label="獲得榮譽", tooltip="顯示你獲得榮譽"}
-obj[14]	= { label="聲望提高", tooltip="顯示你的聲望提高"}
-obj[15]	= { label="聲望下降", tooltip="顯示你的聲望下降"}
-obj[16]	= { label="獲得技能點", tooltip="顯示你獲得了技能點"}
-obj[17]	= { label="獲得經驗", tooltip="顯示你獲得了經驗值"}
-obj[18]	= { label="擊殺玩家", tooltip="顯示你擊殺了一個敵對玩家"}
-obj[19]	= { label="擊殺NPC", tooltip="顯示你擊殺了一個敵對NPC"}
-obj[20]	= { label="獲得靈魂碎片", tooltip="顯示你獲得了一個靈魂碎片"}
-obj[21]	= { label="額外攻擊", tooltip="顯示你從風怒，痛擊之刃，劍系掌握等方面獲得了一次額外攻擊"}
-obj[22]	= { label="敵人獲得Buff", tooltip="顯示目前敵對目標獲得的Buff"}
-obj[23]	= { label="怪物表情", tooltip="顯示目前目標怪物表情"}
-obj[24]	= { label="獲得金錢", tooltip="顯示獲得的金錢"}
+obj["NOTIFICATION_DEBUFF"]				= { label="Debuff", tooltip="顯示你遭受的Debuff"}
+obj["NOTIFICATION_BUFF"]				= { label="Buff", tooltip="顯示你得到的Buff"}
+obj["NOTIFICATION_ITEM_BUFF"]			= { label="物品Buff", tooltip="顯示使用物品得到的Buff"}
+obj["NOTIFICATION_DEBUFF_FADE"]			= { label="Debuff消失", tooltip="顯示從你身上消失的Debuff"}
+obj["NOTIFICATION_BUFF_FADE"]			= { label="Buff消失", tooltip="顯示從你身上消失的Buff"}
+obj["NOTIFICATION_ITEM_BUFF_FADE"]		= { label="物品Buff消失", tooltip="顯示從你身上消失的物品Buff"}
+obj["NOTIFICATION_COMBAT_ENTER"]		= { label="戰鬥開始", tooltip="顯示你已經開始戰鬥"}
+obj["NOTIFICATION_COMBAT_LEAVE"]		= { label="戰鬥結束", tooltip="顯示你已經結束了戰鬥"}
+obj["NOTIFICATION_POWER_GAIN"]			= { label="能量獲得", tooltip="顯示你額外獲得的法力，怒氣或者能量"}
+obj["NOTIFICATION_POWER_LOSS"]			= { label="能量失去", tooltip="顯示你失去的法力，怒氣或者能量"}
+obj["NOTIFICATION_CP_GAIN"]				= { label="連擊點獲得", tooltip="顯示你獲得的連擊點"}
+obj["NOTIFICATION_CP_FULL"]				= { label="連擊點全滿", tooltip="顯示你的連擊點已滿"}
+obj["NOTIFICATION_HONOR_GAIN"]			= { label="獲得榮譽", tooltip="顯示你獲得榮譽"}
+obj["NOTIFICATION_REP_GAIN"]			= { label="聲望提高", tooltip="顯示你的聲望提高"}
+obj["NOTIFICATION_REP_LOSS"]			= { label="聲望下降", tooltip="顯示你的聲望下降"}
+obj["NOTIFICATION_SKILL_GAIN"]			= { label="獲得技能點", tooltip="顯示你獲得了技能點"}
+obj["NOTIFICATION_EXPERIENCE_GAIN"]		= { label="獲得經驗", tooltip="顯示你獲得了經驗值"}
+obj["NOTIFICATION_PC_KILLING_BLOW"]		= { label="擊殺玩家", tooltip="顯示你擊殺了一個敵對玩家"}
+obj["NOTIFICATION_NPC_KILLING_BLOW"]	= { label="擊殺NPC", tooltip="顯示你擊殺了一個敵對NPC"}
+obj["NOTIFICATION_SOUL_SHARD_CREATED"]	= { label="獲得靈魂碎片", tooltip="顯示你獲得了一個靈魂碎片"}
+obj["NOTIFICATION_EXTRA_ATTACK"]		= { label="額外攻擊", tooltip="顯示你從風怒，痛擊之刃，劍系掌握等方面獲得了一次額外攻擊"}
+obj["NOTIFICATION_ENEMY_BUFF"]			= { label="敵人獲得Buff", tooltip="顯示目前敵對目標獲得的Buff"}
+obj["NOTIFICATION_MONSTER_EMOTE"]		= { label="怪物表情", tooltip="顯示目前目標怪物表情"}
 
 
 ------------------------------
@@ -510,6 +549,7 @@ obj["unitID"]					= "玩家 ID"
 obj["unitReaction"]				= "玩家反應"
 
 -- Exception conditions.
+--obj["activeTalents"]			= "Active Talents"
 obj["buffActive"]				= "BUFF生效"
 obj["buffInactive"]				= "Buff失效"
 obj["currentCP"]				= "當前連擊點"

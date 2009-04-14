@@ -199,6 +199,7 @@ local function CreateConditionFuncs()
 
  -- Exception conditions.
  exceptionConditionFuncs = {
+  activeTalents = function (f, t, v) return f(GetActiveTalentGroup(), v) end,
   buffActive = function (f, t, v) return UnitBuff("player", v) and true or false end,
   buffInactive = function (f, t, v) return not UnitBuff("player", v) and true or false end,
   currentCP = function (f, t, v) return f(GetComboPoints("player"), v) end,

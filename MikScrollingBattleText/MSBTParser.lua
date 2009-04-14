@@ -483,15 +483,15 @@ local function CreateSearchCaptureFuncs()
   SKILL_RANK_UP = function (p, c) p.eventType, p.skillName, p.amount = "proficiency", c[1], c[2] end,
 
   -- Loot events.
-  LOOT_ITEM_CREATED_SELF = function (p, c) p.eventType, p.itemLink, p.amount = "loot", c[1], c[2] end,
+  LOOT_ITEM_SELF = function (p, c) p.eventType, p.itemLink, p.amount = "loot", c[1], c[2] end,
+  LOOT_ITEM_CREATED_SELF = function (p, c) p.eventType, p.isCreate, p.itemLink, p.amount = "loot", true, c[1], c[2] end,
   LOOT_MONEY_SPLIT = function (p, c) p.eventType, p.isMoney, p.moneyString = "loot", true, c[1] end,
  }
 
+ searchCaptureFuncs["LOOT_ITEM_SELF_MULTIPLE"] = searchCaptureFuncs["LOOT_ITEM_SELF"]
  searchCaptureFuncs["LOOT_ITEM_CREATED_SELF_MULTIPLE"] = searchCaptureFuncs["LOOT_ITEM_CREATED_SELF"]
  searchCaptureFuncs["LOOT_ITEM_PUSHED_SELF"] = searchCaptureFuncs["LOOT_ITEM_CREATED_SELF"]
  searchCaptureFuncs["LOOT_ITEM_PUSHED_SELF_MULTIPLE"] = searchCaptureFuncs["LOOT_ITEM_CREATED_SELF"]
- searchCaptureFuncs["LOOT_ITEM_SELF"] = searchCaptureFuncs["LOOT_ITEM_CREATED_SELF"]
- searchCaptureFuncs["LOOT_ITEM_SELF_MULTIPLE"] = searchCaptureFuncs["LOOT_ITEM_CREATED_SELF"]
  searchCaptureFuncs["YOU_LOOT_MONEY"] = searchCaptureFuncs["LOOT_MONEY_SPLIT"]
 
  -- Print an error message for each global string that isn't found and remove it from the map.

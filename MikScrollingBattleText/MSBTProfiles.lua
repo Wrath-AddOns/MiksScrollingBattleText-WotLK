@@ -61,16 +61,13 @@ local SPELLID_VICTORY_RUSH		= 34428
 
 -- Trigger spell names.
 local SPELL_BACKLASH			= GetSkillName(34935)
-local SPELL_BLACKOUT			= GetSkillName(15268) -- TODO: Remove when patch 3.1 goes live.
 local SPELL_BLOODSURGE			= GetSkillName(46913)
 local SPELL_BLOODSURGE_SLAM		= GetSkillName(46916)
 local SPELL_BRAIN_FREEZE		= GetSkillName(44546)
 local SPELL_BF_FIREBALL			= GetSkillName(57761)
 local SPELL_CLEARCASTING		= GetSkillName(12536)
 local SPELL_COUNTER_ATTACK		= GetSkillName(SPELLID_COUNTER_ATTACK)
-local SPELL_DEATH_TRANCE		= GetSkillName(50466) -- TODO: Remove when patch 3.1 goes live.
 local SPELL_ECLIPSE				= GetSkillName(48517)
-local SPELL_ERADICATION			= GetSkillName(47274) -- TODO: Remove when patch 3.1 goes live.
 local SPELL_EXECUTE				= GetSkillName(SPELLID_EXECUTE)
 local SPELL_FINGERS_OF_FROST	= GetSkillName(44544)
 local SPELL_FREEZING_FOG       	= GetSkillName(59052)
@@ -108,7 +105,6 @@ local SPELL_DRAIN_LIFE				= GetSkillName(689)
 local SPELL_FEROCIOUS_INSPIRATION	= GetSkillName(34455)
 local SPELL_MANA_SPRING				= GetSkillName(5677)
 local SPELL_SHADOWMEND				= GetSkillName(39373)
-local SPELL_SIPHON_LIFE				= GetSkillName(18265) -- TODO: Remove when patch 3.1 goes live.
 local SPELL_REFLECTIVE_SHIELD		= GetSkillName(33201)
 local SPELL_UNDYING_RESOLVE			= GetSkillName(51915)
 local SPELL_VAMPIRIC_EMBRACE		= GetSkillName(15286)
@@ -265,6 +261,13 @@ local masterProfile = {
    message		= "(%s) -%a",
    scrollArea	= "Incoming",
   },
+  INCOMING_SPELL_DOT_CRIT = {
+   colorG		= 0,
+   colorB		= 0,
+   message		= "(%s) -%a",
+   scrollArea	= "Incoming",
+   isCrit		= true,
+  },
   INCOMING_SPELL_MISS = {
    colorR		= 0,
    colorG		= 0,
@@ -414,6 +417,12 @@ local masterProfile = {
    colorB		= 0,
    message		= "%a (%s)",
    scrollArea	= "Outgoing",
+  },
+  OUTGOING_SPELL_DOT_CRIT = {
+   colorB		= 0,
+   message		= "%a (%s)",
+   scrollArea	= "Outgoing",
+   isCrit		= true,
   },
   OUTGOING_SPELL_MISS = {
    message		= MISS .. "! (%s)",
@@ -571,6 +580,13 @@ local masterProfile = {
    message		= "(%s) " .. PET .. " -%a",
    scrollArea	= "Incoming",
   },
+  PET_INCOMING_SPELL_DOT_CRIT = {
+   colorG		= 0.41,
+   colorB		= 0.41,
+   message		= "(%s) " .. PET .. " -%a",
+   scrollArea	= "Incoming",
+   isCrit		= true,
+  },
   PET_INCOMING_SPELL_MISS = {
    colorR		= 0.57,
    colorG		= 0.58,
@@ -721,6 +737,13 @@ local masterProfile = {
    message		= PET .. " %a (%s)",
    scrollArea	= "Outgoing",
   },
+  PET_OUTGOING_SPELL_DOT_CRIT = {
+   colorR		= 0.33,
+   colorG		= 0.33,
+   message		= PET .. " %a (%s)",
+   scrollArea	= "Outgoing",
+   isCrit		= true,
+  },
   PET_OUTGOING_SPELL_MISS	 = {
    colorR		= 0.33,
    colorG		= 0.33,
@@ -781,13 +804,13 @@ local masterProfile = {
    colorR		= 0,
    colorG		= 0.5,
    colorB		= 0.5,
-   message		= "[%sl]",
+   message		= "[%sl (%a)]",
   },
   NOTIFICATION_BUFF = {
    colorR		= 0.698,
    colorG		= 0.698,
    colorB		= 0,
-   message		= "[%sl]",
+   message		= "[%sl (%a)]",
   },
   NOTIFICATION_ITEM_BUFF = {
    colorR		= 0.698,
@@ -919,7 +942,12 @@ local masterProfile = {
    message		= "%e " .. L.MSG_READY_NOW .. "!",
    scrollArea	= "Static",
    fontSize		= 22,
-   soundFile		= "MSBT Cooldown",
+   soundFile	= "MSBT Cooldown",
+  },
+  NOTIFICATION_LOOT = {
+   colorB		= 0,
+   message		= "%e (%t)",
+   scrollArea	= "Static",
   },
  }, -- End events
 
@@ -934,16 +962,6 @@ local masterProfile = {
    fontSize			= 26,
    classes			= "WARLOCK",
    mainEvents		= "SPELL_AURA_APPLIED{skillName;;eq;;" .. SPELL_BACKLASH .. ";;recipientAffiliation;;eq;;" .. FLAG_YOU .. "}",
-  },
-  MSBT_TRIGGER_BLACKOUT = { -- TODO: Remove when patch 3.1 goes live.
-   colorR			= 0.709,
-   colorG			= 0,
-   colorB			= 0.709,
-   message			= SPELL_BLACKOUT .. "!",
-   alwaysSticky		= true,
-   fontSize			= 26,
-   classes			= "PRIEST",
-   mainEvents		= "SPELL_AURA_APPLIED{skillName;;eq;;" .. SPELL_BLACKOUT .. ";;recipientAffiliation;;eq;;" .. TARGET_TARGET .. "}"
   },
   MSBT_TRIGGER_BLOODSURGE = {
    colorR			= 0.8,
@@ -991,15 +1009,6 @@ local masterProfile = {
    fontSize			= 26,
    classes			= "DRUID",
    mainEvents		= "SPELL_AURA_APPLIED{skillName;;eq;;" .. SPELL_ECLIPSE .. ";;recipientAffiliation;;eq;;" .. FLAG_YOU .. "}",
-  },
-  MSBT_TRIGGER_ERADICATION = { -- TODO: Remove when patch 3.1 goes live.
-   colorR			= 0.118,
-   colorG			= 0.882,
-   message			= SPELL_ERADICATION .. "!",
-   alwaysSticky		= true,
-   fontSize			= 26,
-   classes			= "WARLOCK",
-   mainEvents		= "SPELL_AURA_APPLIED{skillName;;eq;;" .. SPELL_ERADICATION .. ";;recipientAffiliation;;eq;;" .. FLAG_YOU .. "}",
   },
   MSBT_TRIGGER_EXECUTE = {
    colorB			= 0,
@@ -1225,16 +1234,6 @@ local masterProfile = {
    classes			= "WARRIOR",
    mainEvents		= "SPELL_AURA_APPLIED{skillName;;eq;;" .. SPELL_SUDDEN_DEATH .. ";;recipientAffiliation;;eq;;" .. FLAG_YOU .. "}",
   },
-  MSBT_TRIGGER_SUDDEN_DOOM = { -- TODO: Remove when patch 3.1 goes live.
-   colorR			= 0.709,
-   colorG			= 0,
-   colorB			= 0.709,
-   message			= SPELL_SUDDEN_DOOM .. "!",
-   alwaysSticky		= true,
-   fontSize			= 26,
-   classes			= "DEATHKNIGHT",
-   mainEvents		= "SPELL_AURA_APPLIED{skillName;;eq;;" .. SPELL_DEATH_TRANCE .. ";;recipientAffiliation;;eq;;" .. FLAG_YOU .. "}",
-  },
   MSBT_TRIGGER_SWORD_AND_BOARD = {
    colorR			= 0,
    colorG			= 0.5,
@@ -1340,7 +1339,6 @@ local masterProfile = {
   [SPELL_DRAIN_LIFE]		= 3,
   [SPELL_MANA_SPRING]		= 5,
   [SPELL_SHADOWMEND]		= 5,
-  [SPELL_SIPHON_LIFE]		= 3, -- TODO: Remove when patch 3.1 goes live.
   [SPELL_REFLECTIVE_SHIELD]	= 5,
   [SPELL_VAMPIRIC_EMBRACE]	= 5,
   [SPELL_VAMPIRIC_TOUCH]	= 5,
@@ -1358,9 +1356,19 @@ local masterProfile = {
  healThreshold			= 0,
  powerThreshold			= 0,
 
+
  -- Cooldown settings.
  cooldownExclusions		= {},
  cooldownThreshold		= 5,
+
+
+ -- Loot settings.
+ qualityExclusions		= {
+  [ITEM_QUALITY_POOR] = true,
+ },
+ alwaysShowQuestItems	= true,
+ itemsAllowed			= {},
+ itemExclusions			= {},
 }
 
 

@@ -39,13 +39,14 @@ local fonts = MSBTMedia.fonts
 local DEFAULT_PROFILE_NAME = "Default"
 local DEFAULT_FONT_NAME = L.DEFAULT_FONT_NAME
 local DEFAULT_SCROLL_AREA = "Notification"
+local DEFAULT_FONT_PATH = "Interface\\AddOns\\MikScrollingBattleText\\Fonts\\"
+local DEFAULT_SOUND_PATH = "Interface\\AddOns\\MikScrollingBattleText\\Sounds\\"
 
 local EVENT_CATEGORY_MAP = {
   "INCOMING_PLAYER_EVENTS", "INCOMING_PET_EVENTS",
   "OUTGOING_PLAYER_EVENTS", "OUTGOING_PET_EVENTS",
   "NOTIFICATION_EVENTS"
 }
-  
 
 -------------------------------------------------------------------------------
 -- Private variables.
@@ -57,8 +58,12 @@ local tabFrames = {}
 -- Reusable table to configure popup frames.
 local configTable = {}
 
--- Reusable table for skill lists.
-local skillsTable = {}
+-- Reusable table for lists.
+local listTable = {}
+
+-- Holds categorized events in the order to display them.
+local orderedEvents = {}
+
 
 -------------------------------------------------------------------------------
 -- Utility functions.
@@ -95,33 +100,537 @@ local function SortKeysByValue(t)
 end
 
 
+-- ****************************************************************************
+-- Returns an iterator for the passed table sorted by its keys.
+-- ****************************************************************************
+local function PairsByKeys(t)
+ local temp = {}
+ for k in pairs(t) do temp[#temp+1] = k end
+ table.sort(temp)
+
+ local position = 0
+ local iterator = function ()
+  position = position + 1
+  if temp[position] == nil then
+   return nil
+  else
+   return temp[position], t[temp[position]]
+  end
+ end
+ return iterator
+end
+
 
 -- ****************************************************************************
--- Populates the skills table with the skills from the current/master profile.
+-- Populates the list table with the entries from the current/master profile.
 -- ****************************************************************************
-local function PopulateSkillList(listName)
- EraseTable(skillsTable)
+local function PopulateList(listName)
+ EraseTable(listTable)
  local currentProfileList = rawget(MSBTProfiles.currentProfile, listName)
  if (currentProfileList) then
-  for skillName, value in pairs(currentProfileList) do
-   skillsTable[skillName] = value
+  for name, value in pairs(currentProfileList) do
+   listTable[name] = value
   end
  end
  
  -- Get skills available in the master profile that aren't in the current profile. 
- for skillName, value in pairs(MSBTProfiles.masterProfile[listName]) do
-  if (skillsTable[skillName] == nil) then skillsTable[skillName] = value end
+ for name, value in pairs(MSBTProfiles.masterProfile[listName]) do
+  if (listTable[name] == nil) then listTable[name] = value end
  end
 end
 
 
 -- ****************************************************************************
--- Saves the modified skill list to the current profile.
+-- Saves the modified list to the current profile.
 -- ****************************************************************************
-local function SaveSkillList(listName)
- for skillName, value in pairs(skillsTable) do
+local function SaveList(listName)
+ for skillName, value in pairs(listTable) do
   MSBTProfiles.SetOption(listName, skillName, value)
  end
+end
+
+
+-------------------------------------------------------------------------------
+-- Media tab functions.
+-------------------------------------------------------------------------------
+
+-- ****************************************************************************
+-- Enables the controls on the custom media tab.
+-- ****************************************************************************
+local function MediaTab_EnableControls()
+ for name, frame in pairs(tabFrames.media.controls) do
+  if (frame.Enable) then frame:Enable() end
+ end
+end
+
+
+-- ****************************************************************************
+-- Validates the passed custom font path.
+-- ****************************************************************************
+local function MediaTab_ValidateCustomFontPath(fontPath)
+ if (not fontPath or fontPath == "") then return L.MSG_INVALID_CUSTOM_FONT_PATH end
+ if (not string.find(fontPath, ".ttf")) then return L.MSG_INVALID_CUSTOM_FONT_PATH end
+
+ local validationFontString = tabFrames.media.fontPathValidationFontString
+ local normalFontPath, normalFontSize = GameFontNormal:GetFont()
+ if (string.lower(fontPath) == string.lower(normalFontPath)) then return end
+
+ validationFontString:SetFont(normalFontPath, normalFontSize)
+ if (not string.find(fontPath, "\\", 1, true)) then fontPath = DEFAULT_FONT_PATH .. fontPath end
+ validationFontString:SetFont(fontPath, normalFontSize)
+ if (validationFontString:GetFont() == normalFontPath) then return L.MSG_INVALID_CUSTOM_FONT_PATH end
+end
+
+
+-- ****************************************************************************
+-- Validates the passed custom font name and path.
+-- ****************************************************************************
+local function MediaTab_ValidateCustomFont(fontName, fontPath)
+ if (not fontName or fontName == "") then return L.MSG_INVALID_CUSTOM_FONT_NAME end
+
+ for name in pairs(MSBTMedia.fonts) do
+  if (name == fontName) then return L.MSG_FONT_NAME_ALREADY_EXISTS end
+ end
+ 
+ return MediaTab_ValidateCustomFontPath(fontPath)
+end
+
+
+-- ****************************************************************************
+-- Adds a new custom font with the passed name and path.
+-- ****************************************************************************
+local function MediaTab_AddCustomFont(settings)
+ local fontName = settings.inputText
+ local fontPath = settings.secondInputText
+ if (not string.find(fontPath, "\\", 1, true)) then fontPath = DEFAULT_FONT_PATH .. fontPath end
+
+ MSBTProfiles.savedMedia.fonts[fontName] = fontPath
+ MSBTMedia.RegisterFont(fontName, fontPath)
+ tabFrames.media.controls.customFontsListbox:AddItem(fontName, true)
+end
+
+
+-- ****************************************************************************
+-- Changes the custom font to the passed name and path.
+-- ****************************************************************************
+local function MediaTab_ChangeCustomFont(settings)
+ local fontName = settings.saveArg1
+ local fontPath = settings.inputText
+ if (not string.find(fontPath, "\\", 1, true)) then fontPath = DEFAULT_FONT_PATH .. fontPath end
+
+ MSBTProfiles.savedMedia.fonts[fontName] = fontPath
+ MSBTMedia.fonts[fontName] = fontPath
+  
+ tabFrames.media.controls.customFontsListbox:Refresh()
+end
+
+
+-- ****************************************************************************
+-- Deletes the custom font for the passed line and removes the line.
+-- ****************************************************************************
+local function MediaTab_DeleteCustomFont(line)
+ MSBTProfiles.savedMedia.fonts[line.fontKey] = nil
+ MSBTMedia.fonts[line.fontKey] = nil
+ tabFrames.media.controls.customFontsListbox:RemoveItem(line.itemNumber)
+end
+
+
+-- ****************************************************************************
+-- Called when one of the delete custom font buttons is clicked.
+-- ****************************************************************************
+local function MediaTab_DeleteCustomFontButtonOnClick(this)
+ EraseTable(configTable)
+ configTable.parentFrame = tabFrames.media
+ configTable.anchorFrame = this
+ configTable.acknowledgeHandler = MediaTab_DeleteCustomFont
+ configTable.saveArg1 = this:GetParent()
+ configTable.hideHandler = MediaTab_EnableControls
+ DisableControls(tabFrames.media.controls)
+ MSBTPopups.ShowAcknowledge(configTable)
+end
+
+
+-- ****************************************************************************
+-- Called when one of the edit custom font buttons is clicked.
+-- ****************************************************************************
+local function MediaTab_EditCustomFontSettingsButtonOnClick(this)
+  local fontKey = this:GetParent().fontKey
+  local fontPath = MSBTProfiles.savedMedia.fonts[fontKey]
+  fontPath = string.gsub(fontPath, DEFAULT_FONT_PATH, "")
+
+  objLocale = L.EDITBOXES["customFontPath"]
+  EraseTable(configTable)
+  configTable.defaultText = fontPath
+  configTable.editboxLabel = objLocale.label
+  configTable.editboxTooltip = objLocale.tooltip
+  configTable.parentFrame = tabFrames.media
+  configTable.anchorFrame = this
+  configTable.validateHandler = MediaTab_ValidateCustomFontPath
+  configTable.saveHandler = MediaTab_ChangeCustomFont
+  configTable.saveArg1 = fontKey
+  configTable.hideHandler = MediaTab_EnableControls
+  DisableControls(tabFrames.media.controls)
+  MSBTPopups.ShowInput(configTable)
+end
+
+
+-- ****************************************************************************
+-- Called by listbox to create a line for custom fonts.
+-- ****************************************************************************
+local function MediaTab_CreateCustomFontLine(this)
+ local controls = tabFrames.media.controls
+ 
+ local frame = CreateFrame("Button", nil, this)
+ frame:EnableMouse(false)
+ 
+ -- Delete custom font button. 
+ button = MSBTControls.CreateIconButton(frame, "Delete")
+ objLocale = L.BUTTONS["deleteCustomFont"]
+ button:SetTooltip(objLocale.tooltip)
+ button:SetPoint("RIGHT", frame, "RIGHT", -10, 0)
+ button:SetClickHandler(MediaTab_DeleteCustomFontButtonOnClick)
+ frame.deleteButton = button
+ controls[#controls+1] = button
+
+ -- Edit font setting button. 
+ local button = MSBTControls.CreateIconButton(frame, "Configure")
+ objLocale = L.BUTTONS["editCustomFont"]
+ button:SetTooltip(objLocale.tooltip)
+ button:SetPoint("RIGHT", controls[#controls], "LEFT", 0, 0)
+ button:SetClickHandler(MediaTab_EditCustomFontSettingsButtonOnClick)
+ controls[#controls+1] = button
+
+ -- Font name font string.
+ fontString = frame:CreateFontString(nil, "OVERLAY", "GameFontNormal")
+ fontString:SetPoint("LEFT", frame, "LEFT", 10, 0)
+ fontString:SetJustifyH("LEFT")
+ fontString:SetWidth(130)
+ frame.fontNameFontString = fontString
+
+ -- Font path label.
+ local fontString = frame:CreateFontString(nil, "OVERLAY", "GameFontNormalSmall")
+ fontString:SetPoint("LEFT", frame.fontNameFontString, "RIGHT", 10, 0)
+ fontString:SetPoint("RIGHT", button, "LEFT", -10, 0)
+ fontString:SetJustifyH("LEFT")
+ frame.fontPathFontString = fontString
+
+ return frame
+end
+
+
+-- ****************************************************************************
+-- Called by listbox to display a line.
+-- ****************************************************************************
+local function MediaTab_DisplayCustomFontLine(this, line, key, isSelected)
+ local fonts = MSBTProfiles.savedMedia.fonts
+ line.fontKey = key
+ local fontPath = fonts[key]
+
+ local normalFontPath, normalFontHeight, normalFontOutline = GameFontNormal:GetFont()
+ line.fontNameFontString:SetFont(normalFontPath, normalFontHeight, normalFontOutline)
+
+ local _, fontHeight, fontOutline = line.fontNameFontString:GetFont()
+ line.fontNameFontString:SetFont(fontPath, fontHeight, fontOutline)
+ line.fontNameFontString:SetText(key)
+
+ fontPath = string.gsub(fontPath, DEFAULT_FONT_PATH, "")
+ line.fontPathFontString:SetText(fontPath) 
+end
+
+
+-- ****************************************************************************
+-- Validates the passed custom sound path.
+-- ****************************************************************************
+local function MediaTab_ValidateCustomSoundPath(soundPath)
+ if (not soundPath or soundPath == "") then return L.MSG_INVALID_SOUND_FILE end
+ if (not string.find(soundPath, ".mp3") and not string.find(soundPath, ".wav")) then
+  return L.MSG_INVALID_SOUND_FILE
+ end
+end
+
+
+-- ****************************************************************************
+-- Validates the passed custom sound name and path.
+-- ****************************************************************************
+local function MediaTab_ValidateCustomSound(soundName, soundPath)
+ if (not soundName or soundName == "") then return L.MSG_INVALID_CUSTOM_SOUND_NAME end
+
+ for name in pairs(MSBTMedia.sounds) do
+  if (name == soundName) then return L.MSG_SOUND_NAME_ALREADY_EXISTS end
+ end
+ 
+ return MediaTab_ValidateCustomSoundPath(soundPath)
+end
+
+
+-- ****************************************************************************
+-- Adds a new custom sound with the passed name and path.
+-- ****************************************************************************
+local function MediaTab_AddCustomSound(settings)
+ local soundName = settings.inputText
+ local soundPath = settings.secondInputText
+ if (not string.find(soundPath, "\\", 1, true)) then soundPath = DEFAULT_SOUND_PATH .. soundPath end
+
+ MSBTProfiles.savedMedia.sounds[soundName] = soundPath
+ MSBTMedia.RegisterSound(soundName, soundPath)
+ tabFrames.media.controls.customSoundsListbox:AddItem(soundName, true)
+end
+
+
+-- ****************************************************************************
+-- Changes the custom sound to the passed name and path.
+-- ****************************************************************************
+local function MediaTab_ChangeCustomSound(settings)
+ local soundName = settings.saveArg1
+ local soundPath = settings.inputText
+ if (not string.find(soundPath, "\\", 1, true)) then soundPath = DEFAULT_SOUND_PATH .. soundPath end
+
+ MSBTProfiles.savedMedia.sounds[soundName] = soundPath
+ MSBTMedia.sounds[soundName] = soundPath
+  
+ tabFrames.media.controls.customSoundsListbox:Refresh()
+end
+
+
+-- ****************************************************************************
+-- Deletes the custom sound for the passed line and removes the line.
+-- ****************************************************************************
+local function MediaTab_DeleteCustomSound(line)
+ MSBTProfiles.savedMedia.sounds[line.soundKey] = nil
+ MSBTMedia.sounds[line.soundKey] = nil
+ tabFrames.media.controls.customSoundsListbox:RemoveItem(line.itemNumber)
+end
+
+
+-- ****************************************************************************
+-- Called when one of the delete custom sound buttons is clicked.
+-- ****************************************************************************
+local function MediaTab_DeleteCustomSoundButtonOnClick(this)
+ EraseTable(configTable)
+ configTable.parentFrame = tabFrames.media
+ configTable.anchorFrame = this
+ configTable.acknowledgeHandler = MediaTab_DeleteCustomSound
+ configTable.saveArg1 = this:GetParent()
+ configTable.hideHandler = MediaTab_EnableControls
+ DisableControls(tabFrames.media.controls)
+ MSBTPopups.ShowAcknowledge(configTable)
+end
+
+
+-- ****************************************************************************
+-- Called when one of the edit custom sound buttons is clicked.
+-- ****************************************************************************
+local function MediaTab_EditCustomSoundSettingsButtonOnClick(this)
+  local soundKey = this:GetParent().soundKey
+  local soundPath = MSBTProfiles.savedMedia.sounds[soundKey]
+  soundPath = string.gsub(soundPath, DEFAULT_SOUND_PATH, "")
+
+  objLocale = L.EDITBOXES["customSoundPath"]
+  EraseTable(configTable)
+  configTable.defaultText = soundPath
+  configTable.editboxLabel = objLocale.label
+  configTable.editboxTooltip = objLocale.tooltip
+  configTable.parentFrame = tabFrames.media
+  configTable.anchorFrame = this
+  configTable.validateHandler = MediaTab_ValidateCustomSoundPath
+  configTable.saveHandler = MediaTab_ChangeCustomSound
+  configTable.saveArg1 = soundKey
+  configTable.hideHandler = MediaTab_EnableControls
+  DisableControls(tabFrames.media.controls)
+  MSBTPopups.ShowInput(configTable)
+end
+
+
+-- ****************************************************************************
+-- Called by listbox to create a line for custom sounds.
+-- ****************************************************************************
+local function MediaTab_CreateCustomSoundLine(this)
+ local controls = tabFrames.media.controls
+ 
+ local frame = CreateFrame("Button", nil, this)
+ frame:EnableMouse(false)
+ 
+ -- Delete custom sound button. 
+ button = MSBTControls.CreateIconButton(frame, "Delete")
+ objLocale = L.BUTTONS["deleteCustomSound"]
+ button:SetTooltip(objLocale.tooltip)
+ button:SetPoint("RIGHT", frame, "RIGHT", -10, 0)
+ button:SetClickHandler(MediaTab_DeleteCustomSoundButtonOnClick)
+ frame.deleteButton = button
+ controls[#controls+1] = button
+
+ -- Edit sound setting button. 
+ local button = MSBTControls.CreateIconButton(frame, "Configure")
+ objLocale = L.BUTTONS["editCustomSound"]
+ button:SetTooltip(objLocale.tooltip)
+ button:SetPoint("RIGHT", controls[#controls], "LEFT", 0, 0)
+ button:SetClickHandler(MediaTab_EditCustomSoundSettingsButtonOnClick)
+ controls[#controls+1] = button
+ 
+ -- Play sound button.
+ button = MSBTControls.CreateOptionButton(frame)
+ local objLocale = L.BUTTONS["playSound"]
+ button:Configure(20, objLocale.label, objLocale.tooltip)
+ button:SetPoint("RIGHT", controls[#controls], "LEFT", -10, 0)
+ button:SetClickHandler(
+  function (this)
+   local soundName = this:GetParent().soundKey
+   local soundFile = MSBTProfiles.savedMedia.sounds[soundName]
+   PlaySoundFile(soundFile)
+  end
+ )
+ controls[#controls+1] = button
+
+ -- Sound name font string.
+ local fontString = frame:CreateFontString(nil, "OVERLAY", "GameFontNormalSmall")
+ fontString:SetPoint("LEFT", frame, "LEFT", 10, 0)
+ fontString:SetJustifyH("LEFT")
+ fontString:SetWidth(100)
+ frame.soundNameFontString = fontString
+ 
+
+ -- Sound path label.
+ fontString = frame:CreateFontString(nil, "OVERLAY", "GameFontNormalSmall")
+ fontString:SetPoint("LEFT", frame.soundNameFontString, "RIGHT", 10, 0)
+ fontString:SetPoint("RIGHT", button, "LEFT", -10, 0)
+ fontString:SetJustifyH("LEFT")
+ frame.soundPathFontString = fontString
+
+ return frame
+end
+
+
+-- ****************************************************************************
+-- Called by listbox to display a line.
+-- ****************************************************************************
+local function MediaTab_DisplayCustomSoundLine(this, line, key, isSelected)
+ local sounds = MSBTProfiles.savedMedia.sounds
+ line.soundKey = key
+ local soundPath = sounds[key]
+
+ line.soundNameFontString:SetText(key)
+
+ soundPath = string.gsub(soundPath, DEFAULT_SOUND_PATH, "")
+ line.soundPathFontString:SetText(soundPath) 
+end
+
+
+-- ****************************************************************************
+-- Creates the media tab frame contents.
+-- ****************************************************************************
+local function MediaTab_Create()
+ local tabFrame = tabFrames.media
+ tabFrame.controls = {}
+ local controls = tabFrame.controls
+
+ -- Custom fonts label.
+ local fontString = tabFrame:CreateFontString(nil, "OVERLAY", "GameFontNormalSmall")
+ fontString:SetPoint("TOPLEFT", tabFrame, "TOPLEFT", 5, -10)
+ fontString:SetText(L.MSG_CUSTOM_FONTS)
+
+ -- Add custom font button
+ local button = MSBTControls.CreateOptionButton(tabFrame)
+ local objLocale = L.BUTTONS["addCustomFont"]
+ button:Configure(20, objLocale.label, objLocale.tooltip)
+ button:SetPoint("LEFT", fontString, "RIGHT", 10, 0)
+ button:SetClickHandler(
+  function (this)
+   local objLocale = L.EDITBOXES["customFontName"]
+   EraseTable(configTable)
+   configTable.editboxLabel = objLocale.label
+   configTable.editboxTooltip = objLocale.tooltip
+   configTable.parentFrame = tabFrames.media
+   configTable.anchorFrame = this
+   objLocale = L.EDITBOXES["customFontPath"]
+   configTable.showSecondEditbox = true
+   configTable.secondEditboxLabel = objLocale.label
+   configTable.secondEditboxTooltip = objLocale.tooltip
+   configTable.validateHandler = MediaTab_ValidateCustomFont
+   configTable.saveHandler = MediaTab_AddCustomFont
+   configTable.hideHandler = MediaTab_EnableControls
+   DisableControls(tabFrames.media.controls)
+   MSBTPopups.ShowInput(configTable)
+  end
+ )
+ controls.addCustomFontButton = button
+ 
+ -- Custom fonts listbox. 
+ local listbox = MSBTControls.CreateListbox(tabFrame)
+ listbox:Configure(400, 150, 25)
+ listbox:SetPoint("TOPLEFT", fontString, "BOTTOMLEFT", -5, -10)
+ listbox:SetCreateLineHandler(MediaTab_CreateCustomFontLine)
+ listbox:SetDisplayHandler(MediaTab_DisplayCustomFontLine)
+ controls.customFontsListbox = listbox
+
+ -- Custom sounds label.
+ local fontString = tabFrame:CreateFontString(nil, "OVERLAY", "GameFontNormalSmall")
+ fontString:SetPoint("TOPLEFT", controls.customFontsListbox, "BOTTOMLEFT", 5, -10)
+ fontString:SetText(L.MSG_CUSTOM_SOUNDS)
+
+ -- Add custom sound button
+ local button = MSBTControls.CreateOptionButton(tabFrame)
+ local objLocale = L.BUTTONS["addCustomSound"]
+ button:Configure(20, objLocale.label, objLocale.tooltip)
+ button:SetPoint("LEFT", fontString, "RIGHT", 10, 0)
+ button:SetClickHandler(
+  function (this)
+   local objLocale = L.EDITBOXES["customSoundName"]
+   EraseTable(configTable)
+   configTable.editboxLabel = objLocale.label
+   configTable.editboxTooltip = objLocale.tooltip
+   configTable.parentFrame = tabFrames.media
+   configTable.anchorFrame = this
+   objLocale = L.EDITBOXES["customSoundPath"]
+   configTable.showSecondEditbox = true
+   configTable.secondEditboxLabel = objLocale.label
+   configTable.secondEditboxTooltip = objLocale.tooltip
+   configTable.validateHandler = MediaTab_ValidateCustomSound
+   configTable.saveHandler = MediaTab_AddCustomSound
+   configTable.hideHandler = MediaTab_EnableControls
+   DisableControls(tabFrames.media.controls)
+   MSBTPopups.ShowInput(configTable)
+  end
+ )
+ controls.addCustomSoundButton = button
+
+ -- Custom sounds listbox. 
+ local listbox = MSBTControls.CreateListbox(tabFrame)
+ listbox:Configure(400, 125, 25)
+ listbox:SetPoint("TOPLEFT", fontString, "BOTTOMLEFT", -5, -10)
+ listbox:SetCreateLineHandler(MediaTab_CreateCustomSoundLine)
+ listbox:SetDisplayHandler(MediaTab_DisplayCustomSoundLine)
+ controls.customSoundsListbox = listbox
+
+ -- Font path validation font string.
+ local fontString = tabFrame:CreateFontString(nil, "OVERLAY", "GameFontNormal")
+ tabFrame.fontPathValidationFontString = fontString
+ 
+ tabFrame.created = true
+end
+
+
+-- ****************************************************************************
+-- Called when the tab frame is shown.
+-- ****************************************************************************
+local function MediaTab_OnShow()
+ if (not tabFrames.media.created) then MediaTab_Create() end
+
+ -- Set the frame up to populate the profile options when it is shown.
+ local fontsListbox = tabFrames.media.controls.customFontsListbox
+ local previousOffset = fontsListbox:GetOffset()
+ fontsListbox:Clear()
+ for key in PairsByKeys(MSBTProfiles.savedMedia.fonts) do
+  fontsListbox:AddItem(key)
+ end
+ fontsListbox:SetOffset(previousOffset)
+ 
+ local soundsListbox = tabFrames.media.controls.customSoundsListbox
+ local previousOffset = soundsListbox:GetOffset()
+ soundsListbox:Clear()
+ for key in PairsByKeys(MSBTProfiles.savedMedia.sounds) do
+  soundsListbox:AddItem(key)
+ end
+ soundsListbox:SetOffset(previousOffset)
 end
 
 
@@ -167,6 +676,7 @@ local function GeneralTab_Populate()
  controls.gameDamageCheckbox:SetChecked(currentProfile.gameDamageEnabled)
  controls.gameHealingCheckbox:SetChecked(currentProfile.gameHealingEnabled)
  controls.enableSoundsCheckbox:SetChecked(not currentProfile.soundsDisabled)
+ controls.textShadowingCheckbox:SetChecked(not currentProfile.textShadowingDisabled)
  controls.animationSpeedSlider:SetValue(currentProfile.animationSpeed)
 end
 
@@ -363,11 +873,23 @@ local function GeneralTab_Create()
  controls.animationSpeedSlider = slider
 
  
+ -- Text shadowing checkbox.
+ checkbox = MSBTControls.CreateCheckbox(tabFrame)
+ objLocale = L.CHECKBOXES["textShadowing"]
+ checkbox:Configure(28, objLocale.label, objLocale.tooltip)
+ checkbox:SetPoint("BOTTOMRIGHT", tabFrame, "BOTTOMRIGHT", -30, 15)
+ checkbox:SetClickHandler(
+   function (this, isChecked)
+    MSBTProfiles.SetOption(nil, "textShadowingDisabled", not isChecked)
+   end
+ )
+ controls.textShadowingCheckbox = checkbox
+ 
  -- Enable sounds checkbox.
  checkbox = MSBTControls.CreateCheckbox(tabFrame)
  objLocale = L.CHECKBOXES["enableSounds"]
  checkbox:Configure(28, objLocale.label, objLocale.tooltip)
- checkbox:SetPoint("BOTTOMRIGHT", tabFrame, "BOTTOMRIGHT", -10, 15)
+ checkbox:SetPoint("BOTTOMLEFT", controls.textShadowingCheckbox, "TOPLEFT", 0, 0)
  checkbox:SetClickHandler(
    function (this, isChecked)
     MSBTProfiles.SetOption(nil, "soundsDisabled", not isChecked)
@@ -379,7 +901,7 @@ local function GeneralTab_Create()
  checkbox = MSBTControls.CreateCheckbox(tabFrame)
  objLocale = L.CHECKBOXES["gameHealing"]
  checkbox:Configure(28, objLocale.label, objLocale.tooltip)
- checkbox:SetPoint("BOTTOMRIGHT", controls.enableSoundsCheckbox, "TOPRIGHT", 0, 0)
+ checkbox:SetPoint("BOTTOMLEFT", controls.enableSoundsCheckbox, "TOPLEFT", 0, 0)
  checkbox:SetClickHandler(
    function (this, isChecked)
     MSBTProfiles.SetOption(nil, "gameHealingEnabled", isChecked)
@@ -392,7 +914,7 @@ local function GeneralTab_Create()
  checkbox = MSBTControls.CreateCheckbox(tabFrame)
  objLocale = L.CHECKBOXES["gameDamage"]
  checkbox:Configure(28, objLocale.label, objLocale.tooltip)
- checkbox:SetPoint("BOTTOMRIGHT", controls.gameHealingCheckbox, "TOPRIGHT", 0, 0)
+ checkbox:SetPoint("BOTTOMLEFT", controls.gameHealingCheckbox, "TOPLEFT", 0, 0)
  checkbox:SetClickHandler(
    function (this, isChecked)
     MSBTProfiles.SetOption(nil, "gameDamageEnabled", isChecked)
@@ -405,7 +927,7 @@ local function GeneralTab_Create()
  checkbox = MSBTControls.CreateCheckbox(tabFrame)
  objLocale = L.CHECKBOXES["stickyCrits"]
  checkbox:Configure(28, objLocale.label, objLocale.tooltip)
- checkbox:SetPoint("BOTTOMRIGHT", controls.gameDamageCheckbox, "TOPRIGHT", 0, 0)
+ checkbox:SetPoint("BOTTOMLEFT", controls.gameDamageCheckbox, "TOPLEFT", 0, 0)
  checkbox:SetClickHandler(
    function (this, isChecked)
     MSBTProfiles.SetOption(nil, "stickyCritsDisabled", not isChecked)
@@ -867,9 +1389,16 @@ end
 -------------------------------------------------------------------------------
 
 -- ****************************************************************************
--- Sets up an event with the passed event type and codes.
+-- Adds an event type to a category using the localized data and event codes.
 -- ****************************************************************************
-local function EventsTab_SetupEvent(event, eventType, codes)
+local function EventsTab_AddEvent(category, eventType, codes)
+ -- Get the localized event data and ignore it if it isn't found.
+ local event = L[category][eventType]
+ if (not event) then return end
+ 
+ -- Add the event to the ordered events table for the category and set it up
+ -- with event codes.
+ orderedEvents[category][#orderedEvents[category]+1] = event
  event.eventType = eventType
  event.codes = codes
 end
@@ -880,140 +1409,146 @@ end
 -- codes.
 -- ****************************************************************************
 local function EventsTab_SetupEvents()
+ -- Create tables to hold categorized events.
+ for index, category in ipairs(EVENT_CATEGORY_MAP) do orderedEvents[category] = {} end
+
  local c = L.EVENT_CODES
- local obj = L.INCOMING_PLAYER_EVENTS
- EventsTab_SetupEvent(obj[1], "INCOMING_DAMAGE", c.DAMAGE_TAKEN .. c.ATTACKER_NAME)
- EventsTab_SetupEvent(obj[2], "INCOMING_DAMAGE_CRIT", c.DAMAGE_TAKEN .. c.ATTACKER_NAME)
- EventsTab_SetupEvent(obj[3], "INCOMING_MISS", c.ATTACKER_NAME)
- EventsTab_SetupEvent(obj[4], "INCOMING_DODGE", c.ATTACKER_NAME)
- EventsTab_SetupEvent(obj[5], "INCOMING_PARRY", c.ATTACKER_NAME)
- EventsTab_SetupEvent(obj[6], "INCOMING_BLOCK", c.ATTACKER_NAME)
- EventsTab_SetupEvent(obj[7], "INCOMING_ABSORB", c.ABSORBED_AMOUNT .. c.ATTACKER_NAME)
- EventsTab_SetupEvent(obj[8], "INCOMING_IMMUNE", c.ATTACKER_NAME)
- EventsTab_SetupEvent(obj[9], "INCOMING_SPELL_DAMAGE", c.DAMAGE_TAKEN .. c.ATTACKER_NAME .. c.SKILL_NAME .. c.SKILL_LONG .. c.DAMAGE_TYPE_TAKEN)
- EventsTab_SetupEvent(obj[10], "INCOMING_SPELL_DAMAGE_CRIT", c.DAMAGE_TAKEN .. c.ATTACKER_NAME .. c.SKILL_NAME .. c.SKILL_LONG .. c.DAMAGE_TYPE_TAKEN)
- EventsTab_SetupEvent(obj[11], "INCOMING_SPELL_DOT", c.DAMAGE_TAKEN .. c.ATTACKER_NAME .. c.SKILL_NAME .. c.SKILL_LONG .. c.DAMAGE_TYPE_TAKEN)
- EventsTab_SetupEvent(obj[12], "INCOMING_SPELL_DAMAGE_SHIELD", c.DAMAGE_TAKEN .. c.ATTACKER_NAME .. c.SKILL_NAME .. c.SKILL_LONG .. c.DAMAGE_TYPE_TAKEN)
- EventsTab_SetupEvent(obj[13], "INCOMING_SPELL_DAMAGE_SHIELD_CRIT", c.DAMAGE_TAKEN .. c.ATTACKER_NAME .. c.SKILL_NAME .. c.SKILL_LONG .. c.DAMAGE_TYPE_TAKEN)
- EventsTab_SetupEvent(obj[14], "INCOMING_SPELL_MISS", c.ATTACKER_NAME .. c.SKILL_NAME .. c.SKILL_LONG)
- EventsTab_SetupEvent(obj[15], "INCOMING_SPELL_DODGE", c.ATTACKER_NAME .. c.SKILL_NAME .. c.SKILL_LONG)
- EventsTab_SetupEvent(obj[16], "INCOMING_SPELL_PARRY", c.ATTACKER_NAME .. c.SKILL_NAME .. c.SKILL_LONG)
- EventsTab_SetupEvent(obj[17], "INCOMING_SPELL_BLOCK", c.ATTACKER_NAME .. c.SKILL_NAME .. c.SKILL_LONG)
- EventsTab_SetupEvent(obj[18], "INCOMING_SPELL_RESIST", c.ATTACKER_NAME .. c.SPELL_NAME .. c.SKILL_LONG)
- EventsTab_SetupEvent(obj[19], "INCOMING_SPELL_ABSORB", c.ABSORBED_AMOUNT .. c.ATTACKER_NAME .. c.SKILL_NAME .. c.SKILL_LONG)
- EventsTab_SetupEvent(obj[20], "INCOMING_SPELL_IMMUNE", c.ATTACKER_NAME .. c.SKILL_NAME .. c.SKILL_LONG)
- EventsTab_SetupEvent(obj[21], "INCOMING_SPELL_REFLECT", c.ATTACKER_NAME .. c.SKILL_NAME .. c.SKILL_LONG)
- EventsTab_SetupEvent(obj[22], "INCOMING_SPELL_INTERRUPT", c.ATTACKER_NAME .. c.SPELL_NAME)
- EventsTab_SetupEvent(obj[23], "INCOMING_HEAL", c.HEALING_TAKEN .. c.HEALER_NAME .. c.SPELL_NAME .. c.SKILL_LONG)
- EventsTab_SetupEvent(obj[24], "INCOMING_HEAL_CRIT", c.HEALING_TAKEN .. c.HEALER_NAME .. c.SPELL_NAME .. c.SKILL_LONG)
- EventsTab_SetupEvent(obj[25], "INCOMING_HOT", c.HEALING_TAKEN .. c.HEALER_NAME .. c.SPELL_NAME .. c.SKILL_LONG)
- EventsTab_SetupEvent(obj[26], "INCOMING_ENVIRONMENTAL", c.DAMAGE_TAKEN .. c.ENVIRONMENTAL_DAMAGE)
+ local category = "INCOMING_PLAYER_EVENTS"
+ EventsTab_AddEvent(category, "INCOMING_DAMAGE", c.DAMAGE_TAKEN .. c.ATTACKER_NAME)
+ EventsTab_AddEvent(category, "INCOMING_DAMAGE_CRIT", c.DAMAGE_TAKEN .. c.ATTACKER_NAME)
+ EventsTab_AddEvent(category, "INCOMING_MISS", c.ATTACKER_NAME)
+ EventsTab_AddEvent(category, "INCOMING_DODGE", c.ATTACKER_NAME)
+ EventsTab_AddEvent(category, "INCOMING_PARRY", c.ATTACKER_NAME)
+ EventsTab_AddEvent(category, "INCOMING_BLOCK", c.ATTACKER_NAME)
+ EventsTab_AddEvent(category, "INCOMING_ABSORB", c.ABSORBED_AMOUNT .. c.ATTACKER_NAME)
+ EventsTab_AddEvent(category, "INCOMING_IMMUNE", c.ATTACKER_NAME)
+ EventsTab_AddEvent(category, "INCOMING_SPELL_DAMAGE", c.DAMAGE_TAKEN .. c.ATTACKER_NAME .. c.SKILL_NAME .. c.SKILL_LONG .. c.DAMAGE_TYPE_TAKEN)
+ EventsTab_AddEvent(category, "INCOMING_SPELL_DAMAGE_CRIT", c.DAMAGE_TAKEN .. c.ATTACKER_NAME .. c.SKILL_NAME .. c.SKILL_LONG .. c.DAMAGE_TYPE_TAKEN)
+ EventsTab_AddEvent(category, "INCOMING_SPELL_DOT", c.DAMAGE_TAKEN .. c.ATTACKER_NAME .. c.SKILL_NAME .. c.SKILL_LONG .. c.DAMAGE_TYPE_TAKEN)
+ EventsTab_AddEvent(category, "INCOMING_SPELL_DOT_CRIT", c.DAMAGE_TAKEN .. c.ATTACKER_NAME .. c.SKILL_NAME .. c.SKILL_LONG .. c.DAMAGE_TYPE_TAKEN)
+ EventsTab_AddEvent(category, "INCOMING_SPELL_DAMAGE_SHIELD", c.DAMAGE_TAKEN .. c.ATTACKER_NAME .. c.SKILL_NAME .. c.SKILL_LONG .. c.DAMAGE_TYPE_TAKEN)
+ EventsTab_AddEvent(category, "INCOMING_SPELL_DAMAGE_SHIELD_CRIT", c.DAMAGE_TAKEN .. c.ATTACKER_NAME .. c.SKILL_NAME .. c.SKILL_LONG .. c.DAMAGE_TYPE_TAKEN)
+ EventsTab_AddEvent(category, "INCOMING_SPELL_MISS", c.ATTACKER_NAME .. c.SKILL_NAME .. c.SKILL_LONG)
+ EventsTab_AddEvent(category, "INCOMING_SPELL_DODGE", c.ATTACKER_NAME .. c.SKILL_NAME .. c.SKILL_LONG)
+ EventsTab_AddEvent(category, "INCOMING_SPELL_PARRY", c.ATTACKER_NAME .. c.SKILL_NAME .. c.SKILL_LONG)
+ EventsTab_AddEvent(category, "INCOMING_SPELL_BLOCK", c.ATTACKER_NAME .. c.SKILL_NAME .. c.SKILL_LONG)
+ EventsTab_AddEvent(category, "INCOMING_SPELL_RESIST", c.ATTACKER_NAME .. c.SPELL_NAME .. c.SKILL_LONG)
+ EventsTab_AddEvent(category, "INCOMING_SPELL_ABSORB", c.ABSORBED_AMOUNT .. c.ATTACKER_NAME .. c.SKILL_NAME .. c.SKILL_LONG)
+ EventsTab_AddEvent(category, "INCOMING_SPELL_IMMUNE", c.ATTACKER_NAME .. c.SKILL_NAME .. c.SKILL_LONG)
+ EventsTab_AddEvent(category, "INCOMING_SPELL_REFLECT", c.ATTACKER_NAME .. c.SKILL_NAME .. c.SKILL_LONG)
+ EventsTab_AddEvent(category, "INCOMING_SPELL_INTERRUPT", c.ATTACKER_NAME .. c.SPELL_NAME)
+ EventsTab_AddEvent(category, "INCOMING_HEAL", c.HEALING_TAKEN .. c.HEALER_NAME .. c.SPELL_NAME .. c.SKILL_LONG)
+ EventsTab_AddEvent(category, "INCOMING_HEAL_CRIT", c.HEALING_TAKEN .. c.HEALER_NAME .. c.SPELL_NAME .. c.SKILL_LONG)
+ EventsTab_AddEvent(category, "INCOMING_HOT", c.HEALING_TAKEN .. c.HEALER_NAME .. c.SPELL_NAME .. c.SKILL_LONG)
+ EventsTab_AddEvent(category, "INCOMING_ENVIRONMENTAL", c.DAMAGE_TAKEN .. c.ENVIRONMENTAL_DAMAGE)
 
- obj = L.INCOMING_PET_EVENTS
- EventsTab_SetupEvent(obj[1], "PET_INCOMING_DAMAGE", c.DAMAGE_TAKEN .. c.ATTACKER_NAME)
- EventsTab_SetupEvent(obj[2], "PET_INCOMING_DAMAGE_CRIT", c.DAMAGE_TAKEN .. c.ATTACKER_NAME)
- EventsTab_SetupEvent(obj[3], "PET_INCOMING_MISS", c.ATTACKER_NAME)
- EventsTab_SetupEvent(obj[4], "PET_INCOMING_DODGE", c.ATTACKER_NAME)
- EventsTab_SetupEvent(obj[5], "PET_INCOMING_PARRY", c.ATTACKER_NAME)
- EventsTab_SetupEvent(obj[6], "PET_INCOMING_BLOCK", c.ATTACKER_NAME)
- EventsTab_SetupEvent(obj[7], "PET_INCOMING_ABSORB", c.ABSORBED_AMOUNT .. c.ATTACKER_NAME)
- EventsTab_SetupEvent(obj[8], "PET_INCOMING_IMMUNE", c.ATTACKER_NAME)
- EventsTab_SetupEvent(obj[9], "PET_INCOMING_SPELL_DAMAGE", c.DAMAGE_TAKEN .. c.ATTACKER_NAME .. c.SKILL_NAME .. c.SKILL_LONG .. c.DAMAGE_TYPE_TAKEN)
- EventsTab_SetupEvent(obj[10], "PET_INCOMING_SPELL_DAMAGE_CRIT", c.DAMAGE_TAKEN .. c.ATTACKER_NAME .. c.SKILL_NAME .. c.SKILL_LONG .. c.DAMAGE_TYPE_TAKEN)
- EventsTab_SetupEvent(obj[11], "PET_INCOMING_SPELL_DOT", c.DAMAGE_TAKEN .. c.ATTACKER_NAME .. c.SKILL_NAME .. c.SKILL_LONG .. c.DAMAGE_TYPE_TAKEN)
- EventsTab_SetupEvent(obj[12], "PET_INCOMING_SPELL_DAMAGE_SHIELD", c.DAMAGE_TAKEN .. c.ATTACKER_NAME .. c.SKILL_NAME .. c.SKILL_LONG .. c.DAMAGE_TYPE_TAKEN)
- EventsTab_SetupEvent(obj[13], "PET_INCOMING_SPELL_DAMAGE_SHIELD_CRIT", c.DAMAGE_TAKEN .. c.ATTACKER_NAME .. c.SKILL_NAME .. c.SKILL_LONG .. c.DAMAGE_TYPE_TAKEN)
- EventsTab_SetupEvent(obj[14], "PET_INCOMING_SPELL_MISS", c.ATTACKER_NAME .. c.SKILL_NAME .. c.SKILL_LONG)
- EventsTab_SetupEvent(obj[15], "PET_INCOMING_SPELL_DODGE", c.ATTACKER_NAME .. c.SKILL_NAME .. c.SKILL_LONG)
- EventsTab_SetupEvent(obj[16], "PET_INCOMING_SPELL_PARRY", c.ATTACKER_NAME .. c.SKILL_NAME .. c.SKILL_LONG)
- EventsTab_SetupEvent(obj[17], "PET_INCOMING_SPELL_BLOCK", c.ATTACKER_NAME .. c.SKILL_NAME .. c.SKILL_LONG)
- EventsTab_SetupEvent(obj[18], "PET_INCOMING_SPELL_RESIST", c.ATTACKER_NAME .. c.SPELL_NAME .. c.SKILL_LONG)
- EventsTab_SetupEvent(obj[19], "PET_INCOMING_SPELL_ABSORB", c.ABSORBED_AMOUNT .. c.ATTACKER_NAME .. c.SKILL_NAME .. c.SKILL_LONG)
- EventsTab_SetupEvent(obj[20], "PET_INCOMING_SPELL_IMMUNE", c.ATTACKER_NAME .. c.SKILL_NAME .. c.SKILL_LONG)
- EventsTab_SetupEvent(obj[21], "PET_INCOMING_HEAL", c.HEALING_TAKEN .. c.HEALER_NAME .. c.SPELL_NAME .. c.SKILL_LONG)
- EventsTab_SetupEvent(obj[22], "PET_INCOMING_HEAL_CRIT", c.HEALING_TAKEN .. c.HEALER_NAME .. c.SPELL_NAME .. c.SKILL_LONG)
- EventsTab_SetupEvent(obj[23], "PET_INCOMING_HOT", c.HEALING_TAKEN .. c.HEALER_NAME .. c.SPELL_NAME .. c.SKILL_LONG)
+ category = "INCOMING_PET_EVENTS"
+ EventsTab_AddEvent(category, "PET_INCOMING_DAMAGE", c.DAMAGE_TAKEN .. c.ATTACKER_NAME)
+ EventsTab_AddEvent(category, "PET_INCOMING_DAMAGE_CRIT", c.DAMAGE_TAKEN .. c.ATTACKER_NAME)
+ EventsTab_AddEvent(category, "PET_INCOMING_MISS", c.ATTACKER_NAME)
+ EventsTab_AddEvent(category, "PET_INCOMING_DODGE", c.ATTACKER_NAME)
+ EventsTab_AddEvent(category, "PET_INCOMING_PARRY", c.ATTACKER_NAME)
+ EventsTab_AddEvent(category, "PET_INCOMING_BLOCK", c.ATTACKER_NAME)
+ EventsTab_AddEvent(category, "PET_INCOMING_ABSORB", c.ABSORBED_AMOUNT .. c.ATTACKER_NAME)
+ EventsTab_AddEvent(category, "PET_INCOMING_IMMUNE", c.ATTACKER_NAME)
+ EventsTab_AddEvent(category, "PET_INCOMING_SPELL_DAMAGE", c.DAMAGE_TAKEN .. c.ATTACKER_NAME .. c.SKILL_NAME .. c.SKILL_LONG .. c.DAMAGE_TYPE_TAKEN)
+ EventsTab_AddEvent(category, "PET_INCOMING_SPELL_DAMAGE_CRIT", c.DAMAGE_TAKEN .. c.ATTACKER_NAME .. c.SKILL_NAME .. c.SKILL_LONG .. c.DAMAGE_TYPE_TAKEN)
+ EventsTab_AddEvent(category, "PET_INCOMING_SPELL_DOT", c.DAMAGE_TAKEN .. c.ATTACKER_NAME .. c.SKILL_NAME .. c.SKILL_LONG .. c.DAMAGE_TYPE_TAKEN)
+ EventsTab_AddEvent(category, "PET_INCOMING_SPELL_DOT_CRIT", c.DAMAGE_TAKEN .. c.ATTACKER_NAME .. c.SKILL_NAME .. c.SKILL_LONG .. c.DAMAGE_TYPE_TAKEN)
+ EventsTab_AddEvent(category, "PET_INCOMING_SPELL_DAMAGE_SHIELD", c.DAMAGE_TAKEN .. c.ATTACKER_NAME .. c.SKILL_NAME .. c.SKILL_LONG .. c.DAMAGE_TYPE_TAKEN)
+ EventsTab_AddEvent(category, "PET_INCOMING_SPELL_DAMAGE_SHIELD_CRIT", c.DAMAGE_TAKEN .. c.ATTACKER_NAME .. c.SKILL_NAME .. c.SKILL_LONG .. c.DAMAGE_TYPE_TAKEN)
+ EventsTab_AddEvent(category, "PET_INCOMING_SPELL_MISS", c.ATTACKER_NAME .. c.SKILL_NAME .. c.SKILL_LONG)
+ EventsTab_AddEvent(category, "PET_INCOMING_SPELL_DODGE", c.ATTACKER_NAME .. c.SKILL_NAME .. c.SKILL_LONG)
+ EventsTab_AddEvent(category, "PET_INCOMING_SPELL_PARRY", c.ATTACKER_NAME .. c.SKILL_NAME .. c.SKILL_LONG)
+ EventsTab_AddEvent(category, "PET_INCOMING_SPELL_BLOCK", c.ATTACKER_NAME .. c.SKILL_NAME .. c.SKILL_LONG)
+ EventsTab_AddEvent(category, "PET_INCOMING_SPELL_RESIST", c.ATTACKER_NAME .. c.SPELL_NAME .. c.SKILL_LONG)
+ EventsTab_AddEvent(category, "PET_INCOMING_SPELL_ABSORB", c.ABSORBED_AMOUNT .. c.ATTACKER_NAME .. c.SKILL_NAME .. c.SKILL_LONG)
+ EventsTab_AddEvent(category, "PET_INCOMING_SPELL_IMMUNE", c.ATTACKER_NAME .. c.SKILL_NAME .. c.SKILL_LONG)
+ EventsTab_AddEvent(category, "PET_INCOMING_HEAL", c.HEALING_TAKEN .. c.HEALER_NAME .. c.SPELL_NAME .. c.SKILL_LONG)
+ EventsTab_AddEvent(category, "PET_INCOMING_HEAL_CRIT", c.HEALING_TAKEN .. c.HEALER_NAME .. c.SPELL_NAME .. c.SKILL_LONG)
+ EventsTab_AddEvent(category, "PET_INCOMING_HOT", c.HEALING_TAKEN .. c.HEALER_NAME .. c.SPELL_NAME .. c.SKILL_LONG)
 
- obj = L.OUTGOING_PLAYER_EVENTS
- EventsTab_SetupEvent(obj[1], "OUTGOING_DAMAGE", c.DAMAGE_DONE .. c.ATTACKED_NAME)
- EventsTab_SetupEvent(obj[2], "OUTGOING_DAMAGE_CRIT", c.DAMAGE_DONE .. c.ATTACKED_NAME)
- EventsTab_SetupEvent(obj[3], "OUTGOING_MISS", c.ATTACKED_NAME)
- EventsTab_SetupEvent(obj[4], "OUTGOING_DODGE", c.ATTACKED_NAME)
- EventsTab_SetupEvent(obj[5], "OUTGOING_PARRY", c.ATTACKED_NAME)
- EventsTab_SetupEvent(obj[6], "OUTGOING_BLOCK", c.ATTACKED_NAME)
- EventsTab_SetupEvent(obj[7], "OUTGOING_ABSORB", c.ABSORBED_AMOUNT .. c.ATTACKED_NAME)
- EventsTab_SetupEvent(obj[8], "OUTGOING_IMMUNE", c.ATTACKED_NAME)
- EventsTab_SetupEvent(obj[9], "OUTGOING_EVADE", c.ATTACKED_NAME)
- EventsTab_SetupEvent(obj[10], "OUTGOING_SPELL_DAMAGE", c.DAMAGE_DONE .. c.ATTACKED_NAME .. c.SKILL_NAME .. c.SKILL_LONG .. c.DAMAGE_TYPE_DONE)
- EventsTab_SetupEvent(obj[11], "OUTGOING_SPELL_DAMAGE_CRIT", c.DAMAGE_DONE .. c.ATTACKED_NAME .. c.SKILL_NAME .. c.SKILL_LONG .. c.DAMAGE_TYPE_DONE)
- EventsTab_SetupEvent(obj[12], "OUTGOING_SPELL_DOT", c.DAMAGE_DONE .. c.ATTACKED_NAME .. c.SKILL_NAME .. c.SKILL_LONG .. c.DAMAGE_TYPE_DONE)
- EventsTab_SetupEvent(obj[13], "OUTGOING_SPELL_DAMAGE_SHIELD", c.DAMAGE_DONE .. c.ATTACKED_NAME .. c.SKILL_NAME .. c.SKILL_LONG .. c.DAMAGE_TYPE_DONE)
- EventsTab_SetupEvent(obj[14], "OUTGOING_SPELL_DAMAGE_SHIELD_CRIT", c.DAMAGE_DONE .. c.ATTACKED_NAME .. c.SKILL_NAME .. c.SKILL_LONG .. c.DAMAGE_TYPE_DONE)
- EventsTab_SetupEvent(obj[15], "OUTGOING_SPELL_MISS", c.ATTACKED_NAME .. c.SKILL_NAME .. c.SKILL_LONG)
- EventsTab_SetupEvent(obj[16], "OUTGOING_SPELL_DODGE", c.ATTACKED_NAME .. c.SKILL_NAME .. c.SKILL_LONG)
- EventsTab_SetupEvent(obj[17], "OUTGOING_SPELL_PARRY", c.ATTACKED_NAME .. c.SKILL_NAME .. c.SKILL_LONG)
- EventsTab_SetupEvent(obj[18], "OUTGOING_SPELL_BLOCK", c.ATTACKED_NAME .. c.SKILL_NAME .. c.SKILL_LONG)
- EventsTab_SetupEvent(obj[19], "OUTGOING_SPELL_RESIST", c.ATTACKED_NAME .. c.SPELL_NAME .. c.SKILL_LONG)
- EventsTab_SetupEvent(obj[20], "OUTGOING_SPELL_ABSORB", c.ABSORBED_AMOUNT .. c.ATTACKED_NAME .. c.SKILL_NAME .. c.SKILL_LONG)
- EventsTab_SetupEvent(obj[21], "OUTGOING_SPELL_IMMUNE", c.ATTACKED_NAME .. c.SKILL_NAME .. c.SKILL_LONG)
- EventsTab_SetupEvent(obj[22], "OUTGOING_SPELL_REFLECT", c.ATTACKED_NAME .. c.SKILL_NAME .. c.SKILL_LONG)
- EventsTab_SetupEvent(obj[23], "OUTGOING_SPELL_INTERRUPT", c.ATTACKED_NAME .. c.SKILL_NAME .. c.SKILL_LONG)
- EventsTab_SetupEvent(obj[24], "OUTGOING_SPELL_EVADE", c.ATTACKED_NAME .. c.SKILL_NAME .. c.SKILL_LONG)
- EventsTab_SetupEvent(obj[25], "OUTGOING_HEAL", c.HEALING_DONE .. c.HEALED_NAME .. c.SPELL_NAME .. c.SKILL_LONG)
- EventsTab_SetupEvent(obj[26], "OUTGOING_HEAL_CRIT", c.HEALING_DONE .. c.HEALED_NAME .. c.SPELL_NAME .. c.SKILL_LONG)
- EventsTab_SetupEvent(obj[27], "OUTGOING_HOT", c.HEALING_DONE .. c.HEALED_NAME .. c.SPELL_NAME .. c.SKILL_LONG)
- EventsTab_SetupEvent(obj[28], "OUTGOING_DISPEL", c.BUFF_NAME .. c.SKILL_LONG)
+ category = "OUTGOING_PLAYER_EVENTS"
+ EventsTab_AddEvent(category, "OUTGOING_DAMAGE", c.DAMAGE_DONE .. c.ATTACKED_NAME)
+ EventsTab_AddEvent(category, "OUTGOING_DAMAGE_CRIT", c.DAMAGE_DONE .. c.ATTACKED_NAME)
+ EventsTab_AddEvent(category, "OUTGOING_MISS", c.ATTACKED_NAME)
+ EventsTab_AddEvent(category, "OUTGOING_DODGE", c.ATTACKED_NAME)
+ EventsTab_AddEvent(category, "OUTGOING_PARRY", c.ATTACKED_NAME)
+ EventsTab_AddEvent(category, "OUTGOING_BLOCK", c.ATTACKED_NAME)
+ EventsTab_AddEvent(category, "OUTGOING_ABSORB", c.ABSORBED_AMOUNT .. c.ATTACKED_NAME)
+ EventsTab_AddEvent(category, "OUTGOING_IMMUNE", c.ATTACKED_NAME)
+ EventsTab_AddEvent(category, "OUTGOING_EVADE", c.ATTACKED_NAME)
+ EventsTab_AddEvent(category, "OUTGOING_SPELL_DAMAGE", c.DAMAGE_DONE .. c.ATTACKED_NAME .. c.SKILL_NAME .. c.SKILL_LONG .. c.DAMAGE_TYPE_DONE)
+ EventsTab_AddEvent(category, "OUTGOING_SPELL_DAMAGE_CRIT", c.DAMAGE_DONE .. c.ATTACKED_NAME .. c.SKILL_NAME .. c.SKILL_LONG .. c.DAMAGE_TYPE_DONE)
+ EventsTab_AddEvent(category, "OUTGOING_SPELL_DOT", c.DAMAGE_DONE .. c.ATTACKED_NAME .. c.SKILL_NAME .. c.SKILL_LONG .. c.DAMAGE_TYPE_DONE)
+ EventsTab_AddEvent(category, "OUTGOING_SPELL_DOT_CRIT", c.DAMAGE_DONE .. c.ATTACKED_NAME .. c.SKILL_NAME .. c.SKILL_LONG .. c.DAMAGE_TYPE_DONE)
+ EventsTab_AddEvent(category, "OUTGOING_SPELL_DAMAGE_SHIELD", c.DAMAGE_DONE .. c.ATTACKED_NAME .. c.SKILL_NAME .. c.SKILL_LONG .. c.DAMAGE_TYPE_DONE)
+ EventsTab_AddEvent(category, "OUTGOING_SPELL_DAMAGE_SHIELD_CRIT", c.DAMAGE_DONE .. c.ATTACKED_NAME .. c.SKILL_NAME .. c.SKILL_LONG .. c.DAMAGE_TYPE_DONE)
+ EventsTab_AddEvent(category, "OUTGOING_SPELL_MISS", c.ATTACKED_NAME .. c.SKILL_NAME .. c.SKILL_LONG)
+ EventsTab_AddEvent(category, "OUTGOING_SPELL_DODGE", c.ATTACKED_NAME .. c.SKILL_NAME .. c.SKILL_LONG)
+ EventsTab_AddEvent(category, "OUTGOING_SPELL_PARRY", c.ATTACKED_NAME .. c.SKILL_NAME .. c.SKILL_LONG)
+ EventsTab_AddEvent(category, "OUTGOING_SPELL_BLOCK", c.ATTACKED_NAME .. c.SKILL_NAME .. c.SKILL_LONG)
+ EventsTab_AddEvent(category, "OUTGOING_SPELL_RESIST", c.ATTACKED_NAME .. c.SPELL_NAME .. c.SKILL_LONG)
+ EventsTab_AddEvent(category, "OUTGOING_SPELL_ABSORB", c.ABSORBED_AMOUNT .. c.ATTACKED_NAME .. c.SKILL_NAME .. c.SKILL_LONG)
+ EventsTab_AddEvent(category, "OUTGOING_SPELL_IMMUNE", c.ATTACKED_NAME .. c.SKILL_NAME .. c.SKILL_LONG)
+ EventsTab_AddEvent(category, "OUTGOING_SPELL_REFLECT", c.ATTACKED_NAME .. c.SKILL_NAME .. c.SKILL_LONG)
+ EventsTab_AddEvent(category, "OUTGOING_SPELL_INTERRUPT", c.ATTACKED_NAME .. c.SKILL_NAME .. c.SKILL_LONG)
+ EventsTab_AddEvent(category, "OUTGOING_SPELL_EVADE", c.ATTACKED_NAME .. c.SKILL_NAME .. c.SKILL_LONG)
+ EventsTab_AddEvent(category, "OUTGOING_HEAL", c.HEALING_DONE .. c.HEALED_NAME .. c.SPELL_NAME .. c.SKILL_LONG)
+ EventsTab_AddEvent(category, "OUTGOING_HEAL_CRIT", c.HEALING_DONE .. c.HEALED_NAME .. c.SPELL_NAME .. c.SKILL_LONG)
+ EventsTab_AddEvent(category, "OUTGOING_HOT", c.HEALING_DONE .. c.HEALED_NAME .. c.SPELL_NAME .. c.SKILL_LONG)
+ EventsTab_AddEvent(category, "OUTGOING_DISPEL", c.BUFF_NAME .. c.SKILL_LONG)
  
- obj = L.OUTGOING_PET_EVENTS
- EventsTab_SetupEvent(obj[1], "PET_OUTGOING_DAMAGE", c.DAMAGE_DONE .. c.ATTACKED_NAME)
- EventsTab_SetupEvent(obj[2], "PET_OUTGOING_DAMAGE_CRIT", c.DAMAGE_DONE .. c.ATTACKED_NAME)
- EventsTab_SetupEvent(obj[3], "PET_OUTGOING_MISS", c.ATTACKED_NAME)
- EventsTab_SetupEvent(obj[4], "PET_OUTGOING_DODGE", c.ATTACKED_NAME)
- EventsTab_SetupEvent(obj[5], "PET_OUTGOING_PARRY", c.ATTACKED_NAME)
- EventsTab_SetupEvent(obj[6], "PET_OUTGOING_BLOCK", c.ATTACKED_NAME)
- EventsTab_SetupEvent(obj[7], "PET_OUTGOING_ABSORB", c.ABSORBED_AMOUNT .. c.ATTACKED_NAME)
- EventsTab_SetupEvent(obj[8], "PET_OUTGOING_IMMUNE", c.ATTACKED_NAME)
- EventsTab_SetupEvent(obj[9], "PET_OUTGOING_EVADE", c.ATTACKED_NAME)
- EventsTab_SetupEvent(obj[10], "PET_OUTGOING_SPELL_DAMAGE", c.DAMAGE_DONE .. c.ATTACKED_NAME .. c.SKILL_NAME .. c.SKILL_LONG .. c.DAMAGE_TYPE_DONE)
- EventsTab_SetupEvent(obj[11], "PET_OUTGOING_SPELL_DAMAGE_CRIT", c.DAMAGE_DONE .. c.ATTACKED_NAME .. c.SKILL_NAME .. c.SKILL_LONG .. c.DAMAGE_TYPE_DONE)
- EventsTab_SetupEvent(obj[12], "PET_OUTGOING_SPELL_DOT", c.DAMAGE_DONE .. c.ATTACKED_NAME .. c.SKILL_NAME .. c.SKILL_LONG .. c.DAMAGE_TYPE_DONE)
- EventsTab_SetupEvent(obj[13], "PET_OUTGOING_SPELL_DAMAGE_SHIELD", c.DAMAGE_DONE .. c.ATTACKED_NAME .. c.SKILL_NAME .. c.SKILL_LONG .. c.DAMAGE_TYPE_DONE)
- EventsTab_SetupEvent(obj[14], "PET_OUTGOING_SPELL_DAMAGE_SHIELD_CRIT", c.DAMAGE_DONE .. c.ATTACKED_NAME .. c.SKILL_NAME .. c.SKILL_LONG .. c.DAMAGE_TYPE_DONE)
- EventsTab_SetupEvent(obj[15], "PET_OUTGOING_SPELL_MISS", c.ATTACKED_NAME .. c.SKILL_NAME .. c.SKILL_LONG)
- EventsTab_SetupEvent(obj[16], "PET_OUTGOING_SPELL_DODGE", c.ATTACKED_NAME .. c.SKILL_NAME .. c.SKILL_LONG)
- EventsTab_SetupEvent(obj[17], "PET_OUTGOING_SPELL_PARRY", c.ATTACKED_NAME .. c.SKILL_NAME .. c.SKILL_LONG)
- EventsTab_SetupEvent(obj[18], "PET_OUTGOING_SPELL_BLOCK", c.ATTACKED_NAME .. c.SKILL_NAME .. c.SKILL_LONG)
- EventsTab_SetupEvent(obj[19], "PET_OUTGOING_SPELL_RESIST", c.ATTACKED_NAME .. c.SPELL_NAME .. c.SKILL_LONG)
- EventsTab_SetupEvent(obj[20], "PET_OUTGOING_SPELL_ABSORB", c.ABSORBED_AMOUNT .. c.ATTACKED_NAME .. c.SKILL_NAME .. c.SKILL_LONG)
- EventsTab_SetupEvent(obj[21], "PET_OUTGOING_SPELL_IMMUNE", c.ATTACKED_NAME .. c.SKILL_NAME .. c.SKILL_LONG)
- EventsTab_SetupEvent(obj[22], "PET_OUTGOING_SPELL_EVADE", c.ATTACKED_NAME .. c.SKILL_NAME .. c.SKILL_LONG)
- EventsTab_SetupEvent(obj[23], "PET_OUTGOING_DISPEL", c.BUFF_NAME .. c.SKILL_LONG)
+ category = "OUTGOING_PET_EVENTS"
+ EventsTab_AddEvent(category, "PET_OUTGOING_DAMAGE", c.DAMAGE_DONE .. c.ATTACKED_NAME)
+ EventsTab_AddEvent(category, "PET_OUTGOING_DAMAGE_CRIT", c.DAMAGE_DONE .. c.ATTACKED_NAME)
+ EventsTab_AddEvent(category, "PET_OUTGOING_MISS", c.ATTACKED_NAME)
+ EventsTab_AddEvent(category, "PET_OUTGOING_DODGE", c.ATTACKED_NAME)
+ EventsTab_AddEvent(category, "PET_OUTGOING_PARRY", c.ATTACKED_NAME)
+ EventsTab_AddEvent(category, "PET_OUTGOING_BLOCK", c.ATTACKED_NAME)
+ EventsTab_AddEvent(category, "PET_OUTGOING_ABSORB", c.ABSORBED_AMOUNT .. c.ATTACKED_NAME)
+ EventsTab_AddEvent(category, "PET_OUTGOING_IMMUNE", c.ATTACKED_NAME)
+ EventsTab_AddEvent(category, "PET_OUTGOING_EVADE", c.ATTACKED_NAME)
+ EventsTab_AddEvent(category, "PET_OUTGOING_SPELL_DAMAGE", c.DAMAGE_DONE .. c.ATTACKED_NAME .. c.SKILL_NAME .. c.SKILL_LONG .. c.DAMAGE_TYPE_DONE)
+ EventsTab_AddEvent(category, "PET_OUTGOING_SPELL_DAMAGE_CRIT", c.DAMAGE_DONE .. c.ATTACKED_NAME .. c.SKILL_NAME .. c.SKILL_LONG .. c.DAMAGE_TYPE_DONE)
+ EventsTab_AddEvent(category, "PET_OUTGOING_SPELL_DOT", c.DAMAGE_DONE .. c.ATTACKED_NAME .. c.SKILL_NAME .. c.SKILL_LONG .. c.DAMAGE_TYPE_DONE)
+ EventsTab_AddEvent(category, "PET_OUTGOING_SPELL_DOT_CRIT", c.DAMAGE_DONE .. c.ATTACKED_NAME .. c.SKILL_NAME .. c.SKILL_LONG .. c.DAMAGE_TYPE_DONE)
+ EventsTab_AddEvent(category, "PET_OUTGOING_SPELL_DAMAGE_SHIELD", c.DAMAGE_DONE .. c.ATTACKED_NAME .. c.SKILL_NAME .. c.SKILL_LONG .. c.DAMAGE_TYPE_DONE)
+ EventsTab_AddEvent(category, "PET_OUTGOING_SPELL_DAMAGE_SHIELD_CRIT", c.DAMAGE_DONE .. c.ATTACKED_NAME .. c.SKILL_NAME .. c.SKILL_LONG .. c.DAMAGE_TYPE_DONE)
+ EventsTab_AddEvent(category, "PET_OUTGOING_SPELL_MISS", c.ATTACKED_NAME .. c.SKILL_NAME .. c.SKILL_LONG)
+ EventsTab_AddEvent(category, "PET_OUTGOING_SPELL_DODGE", c.ATTACKED_NAME .. c.SKILL_NAME .. c.SKILL_LONG)
+ EventsTab_AddEvent(category, "PET_OUTGOING_SPELL_PARRY", c.ATTACKED_NAME .. c.SKILL_NAME .. c.SKILL_LONG)
+ EventsTab_AddEvent(category, "PET_OUTGOING_SPELL_BLOCK", c.ATTACKED_NAME .. c.SKILL_NAME .. c.SKILL_LONG)
+ EventsTab_AddEvent(category, "PET_OUTGOING_SPELL_RESIST", c.ATTACKED_NAME .. c.SPELL_NAME .. c.SKILL_LONG)
+ EventsTab_AddEvent(category, "PET_OUTGOING_SPELL_ABSORB", c.ABSORBED_AMOUNT .. c.ATTACKED_NAME .. c.SKILL_NAME .. c.SKILL_LONG)
+ EventsTab_AddEvent(category, "PET_OUTGOING_SPELL_IMMUNE", c.ATTACKED_NAME .. c.SKILL_NAME .. c.SKILL_LONG)
+ EventsTab_AddEvent(category, "PET_OUTGOING_SPELL_EVADE", c.ATTACKED_NAME .. c.SKILL_NAME .. c.SKILL_LONG)
+ EventsTab_AddEvent(category, "PET_OUTGOING_DISPEL", c.BUFF_NAME .. c.SKILL_LONG)
  
- obj = L.NOTIFICATION_EVENTS
- EventsTab_SetupEvent(obj[1], "NOTIFICATION_DEBUFF", c.DEBUFF_NAME .. c.SKILL_LONG)
- EventsTab_SetupEvent(obj[2], "NOTIFICATION_BUFF", c.BUFF_NAME .. c.SKILL_LONG)
- EventsTab_SetupEvent(obj[3], "NOTIFICATION_ITEM_BUFF", c.ITEM_BUFF_NAME .. c.SKILL_LONG)
- EventsTab_SetupEvent(obj[4], "NOTIFICATION_DEBUFF_FADE", c.DEBUFF_NAME .. c.SKILL_LONG)
- EventsTab_SetupEvent(obj[5], "NOTIFICATION_BUFF_FADE", c.BUFF_NAME .. c.SKILL_LONG)
- EventsTab_SetupEvent(obj[6], "NOTIFICATION_ITEM_BUFF_FADE", c.ITEM_BUFF_NAME .. c.SKILL_LONG)
- EventsTab_SetupEvent(obj[7], "NOTIFICATION_COMBAT_ENTER", "")
- EventsTab_SetupEvent(obj[8], "NOTIFICATION_COMBAT_LEAVE", "")
- EventsTab_SetupEvent(obj[9], "NOTIFICATION_POWER_GAIN", c.ENERGY_AMOUNT .. c.POWER_TYPE .. c.SKILL_NAME .. c.SKILL_LONG)
- EventsTab_SetupEvent(obj[10], "NOTIFICATION_POWER_LOSS", c.ENERGY_AMOUNT .. c.POWER_TYPE .. c.SKILL_NAME .. c.SKILL_LONG)
- EventsTab_SetupEvent(obj[11], "NOTIFICATION_CP_GAIN", c.CP_AMOUNT)
- EventsTab_SetupEvent(obj[12], "NOTIFICATION_CP_FULL", c.CP_AMOUNT)
- EventsTab_SetupEvent(obj[13], "NOTIFICATION_HONOR_GAIN", c.HONOR_AMOUNT)
- EventsTab_SetupEvent(obj[14], "NOTIFICATION_REP_GAIN", c.REP_AMOUNT)
- EventsTab_SetupEvent(obj[15], "NOTIFICATION_REP_LOSS", c.REP_AMOUNT)
- EventsTab_SetupEvent(obj[16], "NOTIFICATION_SKILL_GAIN", c.SKILL_AMOUNT .. c.SKILL_NAME .. c.SKILL_LONG)
- EventsTab_SetupEvent(obj[17], "NOTIFICATION_EXPERIENCE_GAIN", c.EXPERIENCE_AMOUNT)
- EventsTab_SetupEvent(obj[18], "NOTIFICATION_PC_KILLING_BLOW", c.UNIT_KILLED)
- EventsTab_SetupEvent(obj[19], "NOTIFICATION_NPC_KILLING_BLOW", c.UNIT_KILLED)
- EventsTab_SetupEvent(obj[20], "NOTIFICATION_SOUL_SHARD_CREATED", c.SHARD_NAME)
- EventsTab_SetupEvent(obj[21], "NOTIFICATION_EXTRA_ATTACK", c.EXTRA_ATTACKS .. c.SKILL_LONG)
- EventsTab_SetupEvent(obj[22], "NOTIFICATION_ENEMY_BUFF", c.BUFFED_NAME .. c.BUFF_NAME .. c.SKILL_LONG)
- EventsTab_SetupEvent(obj[23], "NOTIFICATION_MONSTER_EMOTE", c.EMOTE_TEXT)
- EventsTab_SetupEvent(obj[24], "NOTIFICATION_MONEY", c.MONEY_TEXT)
+ category = "NOTIFICATION_EVENTS"
+ EventsTab_AddEvent(category, "NOTIFICATION_DEBUFF", c.AURA_AMOUNT .. c.DEBUFF_NAME .. c.SKILL_LONG)
+ EventsTab_AddEvent(category, "NOTIFICATION_BUFF", c.AURA_AMOUNT .. c.BUFF_NAME .. c.SKILL_LONG)
+ EventsTab_AddEvent(category, "NOTIFICATION_ITEM_BUFF", c.ITEM_BUFF_NAME .. c.SKILL_LONG)
+ EventsTab_AddEvent(category, "NOTIFICATION_DEBUFF_FADE", c.DEBUFF_NAME .. c.SKILL_LONG)
+ EventsTab_AddEvent(category, "NOTIFICATION_BUFF_FADE", c.BUFF_NAME .. c.SKILL_LONG)
+ EventsTab_AddEvent(category, "NOTIFICATION_ITEM_BUFF_FADE", c.ITEM_BUFF_NAME .. c.SKILL_LONG)
+ EventsTab_AddEvent(category, "NOTIFICATION_COMBAT_ENTER", "")
+ EventsTab_AddEvent(category, "NOTIFICATION_COMBAT_LEAVE", "")
+ EventsTab_AddEvent(category, "NOTIFICATION_POWER_GAIN", c.ENERGY_AMOUNT .. c.POWER_TYPE .. c.SKILL_NAME .. c.SKILL_LONG)
+ EventsTab_AddEvent(category, "NOTIFICATION_POWER_LOSS", c.ENERGY_AMOUNT .. c.POWER_TYPE .. c.SKILL_NAME .. c.SKILL_LONG)
+ EventsTab_AddEvent(category, "NOTIFICATION_CP_GAIN", c.CP_AMOUNT)
+ EventsTab_AddEvent(category, "NOTIFICATION_CP_FULL", c.CP_AMOUNT)
+ EventsTab_AddEvent(category, "NOTIFICATION_HONOR_GAIN", c.HONOR_AMOUNT)
+ EventsTab_AddEvent(category, "NOTIFICATION_REP_GAIN", c.REP_AMOUNT)
+ EventsTab_AddEvent(category, "NOTIFICATION_REP_LOSS", c.REP_AMOUNT)
+ EventsTab_AddEvent(category, "NOTIFICATION_SKILL_GAIN", c.SKILL_AMOUNT .. c.SKILL_NAME .. c.SKILL_LONG)
+ EventsTab_AddEvent(category, "NOTIFICATION_EXPERIENCE_GAIN", c.EXPERIENCE_AMOUNT)
+ EventsTab_AddEvent(category, "NOTIFICATION_PC_KILLING_BLOW", c.UNIT_KILLED)
+ EventsTab_AddEvent(category, "NOTIFICATION_NPC_KILLING_BLOW", c.UNIT_KILLED)
+ EventsTab_AddEvent(category, "NOTIFICATION_SOUL_SHARD_CREATED", c.SHARD_NAME)
+ EventsTab_AddEvent(category, "NOTIFICATION_EXTRA_ATTACK", c.EXTRA_ATTACKS .. c.SKILL_LONG)
+ EventsTab_AddEvent(category, "NOTIFICATION_ENEMY_BUFF", c.BUFFED_NAME .. c.BUFF_NAME .. c.SKILL_LONG)
+ EventsTab_AddEvent(category, "NOTIFICATION_MONSTER_EMOTE", c.EMOTE_TEXT)
 end
 
 
@@ -1024,7 +1559,7 @@ local function EventsTab_ChangeEventCategory(category)
  local controls = tabFrames.events.controls
  
  controls.eventsListbox:Clear()
- for index in ipairs(L[category]) do
+ for index in ipairs(orderedEvents[category]) do
   controls.eventsListbox:AddItem(index)
  end
 end
@@ -1044,7 +1579,7 @@ end
 -- Moves all the events in the selected category to the passed scroll area.
 -- ****************************************************************************
 local function EventsTab_MoveAll(scrollArea)
- local events = L[tabFrames.events.controls.eventCategoryDropdown:GetSelectedID()]
+ local events = orderedEvents[tabFrames.events.controls.eventCategoryDropdown:GetSelectedID()]
  for index, eventData in ipairs(events) do
   MSBTProfiles.SetOption("events." .. eventData.eventType, "scrollArea", scrollArea)
  end
@@ -1247,7 +1782,7 @@ end
 -- Called by listbox to display a line.
 -- ****************************************************************************
 local function EventsTab_DisplayLine(this, line, key, isSelected)
- local events = L[tabFrames.events.controls.eventCategoryDropdown:GetSelectedID()]
+ local events = orderedEvents[tabFrames.events.controls.eventCategoryDropdown:GetSelectedID()]
  local eventType = events[key].eventType
  local eventSettings = MSBTProfiles.currentProfile.events[eventType]
  local objLocale = events[key]
@@ -1304,7 +1839,7 @@ local function EventsTab_Create()
  button:SetPoint("BOTTOMLEFT", controls.moveButton, "TOPLEFT", 0, 10)
  button:SetClickHandler(
   function (this)
-   local events = L[controls.eventCategoryDropdown:GetSelectedID()]
+   local events = orderedEvents[controls.eventCategoryDropdown:GetSelectedID()]
    for index, eventData in ipairs(events) do
     MSBTProfiles.SetOption("events." .. eventData.eventType, "disabled", not MSBTProfiles.currentProfile.events[eventData.eventType].disabled)
     controls.eventsListbox:Refresh()
@@ -1918,15 +2453,15 @@ local function SpamTab_Create()
  button:SetClickHandler(
    function (this)
     local listName = "mergeExclusions"
-    PopulateSkillList(listName)
+    PopulateList(listName)
     EraseTable(configTable)
     configTable.title = this:GetText()
-    configTable.skills = skillsTable
+    configTable.skills = listTable
     configTable.parentFrame = tabFrame
     configTable.anchorFrame = this
     configTable.anchorPoint = "BOTTOMLEFT"
     configTable.relativePoint = "TOPLEFT"
-    configTable.saveHandler = SaveSkillList
+    configTable.saveHandler = SaveList
     configTable.saveArg1 = listName
     configTable.hideHandler = SpamTab_EnableControls
     DisableControls(controls)
@@ -1943,16 +2478,16 @@ local function SpamTab_Create()
  button:SetClickHandler(
    function (this)
     local listName = "throttleList"
-    PopulateSkillList(listName)
+    PopulateList(listName)
     EraseTable(configTable)
     configTable.title = this:GetText()
-    configTable.skills = skillsTable
+    configTable.skills = listTable
     configTable.listType = "throttle"
     configTable.parentFrame = tabFrame
     configTable.anchorFrame = this
     configTable.anchorPoint = "BOTTOMLEFT"
     configTable.relativePoint = "TOPLEFT"
-    configTable.saveHandler = SaveSkillList
+    configTable.saveHandler = SaveList
     configTable.saveArg1 = listName
     configTable.hideHandler = SpamTab_EnableControls
     DisableControls(controls)
@@ -1969,16 +2504,16 @@ local function SpamTab_Create()
  button:SetClickHandler(
    function (this)
     local listName = "abilitySubstitutions"
-    PopulateSkillList(listName)
+    PopulateList(listName)
     EraseTable(configTable)
     configTable.title = this:GetText()
-    configTable.skills = skillsTable
+    configTable.skills = listTable
     configTable.listType = "substitution"
     configTable.parentFrame = tabFrame
     configTable.anchorFrame = this
     configTable.anchorPoint = "BOTTOMRIGHT"
     configTable.relativePoint = "TOPRIGHT"
-    configTable.saveHandler = SaveSkillList
+    configTable.saveHandler = SaveList
     configTable.saveArg1 = listName
     configTable.hideHandler = SpamTab_EnableControls
     DisableControls(controls)
@@ -1995,15 +2530,15 @@ local function SpamTab_Create()
  button:SetClickHandler(
    function (this)
     local listName = "abilitySuppressions"
-    PopulateSkillList(listName)
+    PopulateList(listName)
     EraseTable(configTable)
     configTable.title = this:GetText()
-    configTable.skills = skillsTable
+    configTable.skills = listTable
     configTable.parentFrame = tabFrame
     configTable.anchorFrame = this
     configTable.anchorPoint = "BOTTOMRIGHT"
     configTable.relativePoint = "TOPRIGHT"
-    configTable.saveHandler = SaveSkillList
+    configTable.saveHandler = SaveList
     configTable.saveArg1 = listName
     configTable.hideHandler = SpamTab_EnableControls
     DisableControls(controls)
@@ -2124,7 +2659,7 @@ local function CooldownsTab_Create()
     local eventSettings = MSBTProfiles.currentProfile.events.NOTIFICATION_COOLDOWN
  
     EraseTable(configTable)
-    configTable.title = L.TABS[6].label
+    configTable.title = L.TABS.cooldowns.label
     configTable.message = eventSettings.message
     configTable.codes = L.EVENT_CODES["COOLDOWN_NAME"]
     configTable.scrollArea = eventSettings.scrollArea or DEFAULT_SCROLL_AREA
@@ -2154,7 +2689,7 @@ local function CooldownsTab_Create()
     if (not saSettings) then saSettings = MSBTProfiles.currentProfile.scrollAreas[DEFAULT_SCROLL_AREA] end
  
     EraseTable(configTable)
-    configTable.title = L.TABS[6].label
+    configTable.title = L.TABS.cooldowns.label
  
     -- Inherit from the correct scroll area.
     local fontName = saSettings.normalFontName
@@ -2214,15 +2749,15 @@ local function CooldownsTab_Create()
  button:SetClickHandler(
    function (this)
     local listName = "cooldownExclusions"
-    PopulateSkillList(listName)
+    PopulateList(listName)
     EraseTable(configTable)
     configTable.title = this:GetText()
-    configTable.skills = skillsTable
+    configTable.skills = listTable
     configTable.parentFrame = tabFrame
     configTable.anchorFrame = tabFrame
     configTable.anchorPoint = "TOPRIGHT"
     configTable.relativePoint = "TOPRIGHT"
-    configTable.saveHandler = SaveSkillList
+    configTable.saveHandler = SaveList
     configTable.saveArg1 = listName
     configTable.hideHandler = CooldownsTab_EnableControls
     DisableControls(controls)
@@ -2233,6 +2768,7 @@ local function CooldownsTab_Create()
 
  tabFrame.created = true
 end
+
 
 -- ****************************************************************************
 -- Called when the tab frame is shown.
@@ -2250,6 +2786,398 @@ local function CooldownsTab_OnShow()
  tabFrame.messageFontString:SetText(eventSettings.message)
  controls.cooldownSlider:SetValue(currentProfile.cooldownThreshold)
 end
+
+
+-------------------------------------------------------------------------------
+-- Loot alerts tab functions.
+-------------------------------------------------------------------------------
+
+-- ****************************************************************************
+-- Enables the controls on the loot alerts tab.
+-- ****************************************************************************
+local function LootAlertsTab_EnableControls()
+ for name, frame in pairs(tabFrames.lootAlerts.controls) do
+  if (frame.Enable) then frame:Enable() end
+ end
+end
+
+
+-- ****************************************************************************
+-- Saves the event settings selected by the user.
+-- ****************************************************************************
+local function LootAlertsTab_SaveEventSettings(settings, eventType)
+ MSBTProfiles.SetOption("events." .. eventType, "scrollArea", settings.scrollArea, DEFAULT_SCROLL_AREA)
+ MSBTProfiles.SetOption("events." .. eventType, "message", settings.message)
+ MSBTProfiles.SetOption("events." .. eventType, "alwaysSticky", settings.alwaysSticky)
+ MSBTProfiles.SetOption("events." .. eventType, "soundFile", settings.soundFile, "")
+
+ local fontString = tabFrames.lootAlerts.lootedItemsFontString
+ if (eventType == "NOTIFICATION_MONEY") then fontString = tabFrames.lootAlerts.moneyGainsFontString end
+ fontString:SetText(settings.message) 
+end
+
+
+
+
+-- ****************************************************************************
+-- Saves the font settings selected by the user.
+-- ****************************************************************************
+local function LootAlertsTab_SaveFontSettings(settings, eventType)
+ MSBTProfiles.SetOption("events." .. eventType, "fontName", settings.normalFontName)
+ MSBTProfiles.SetOption("events." .. eventType, "outlineIndex", settings.normalOutlineIndex)
+ MSBTProfiles.SetOption("events." .. eventType, "fontSize", settings.normalFontSize)
+ MSBTProfiles.SetOption("events." .. eventType, "fontAlpha", settings.normalFontAlpha) 
+end
+
+
+-- ****************************************************************************
+-- Creates the loot alerts tab frame contents.
+-- ****************************************************************************
+local function LootAlertsTab_Create()
+ local tabFrame = tabFrames.lootAlerts
+ tabFrame.controls = {}
+ local controls = tabFrame.controls
+
+ -- Loot colorswatch.
+ local colorswatch = MSBTControls.CreateColorswatch(tabFrame)
+ colorswatch:SetPoint("TOPLEFT", tabFrame, "TOPLEFT", 5, -10)
+ colorswatch:SetColorChangedHandler(
+   function (this)
+    local eventType = "NOTIFICATION_LOOT"
+    MSBTProfiles.SetOption("events." .. eventType, "colorR", this.r, 1)
+    MSBTProfiles.SetOption("events." .. eventType, "colorG", this.g, 1)
+    MSBTProfiles.SetOption("events." .. eventType, "colorB", this.b, 1)
+   end
+ )
+ controls.lootAlertsColorSwatch = colorswatch
+
+ -- Looted items enable checkbox.
+ local checkbox = MSBTControls.CreateCheckbox(tabFrame)
+ local objLocale = L.CHECKBOXES["lootedItems"]
+ checkbox:Configure(24, objLocale.label, objLocale.tooltip)
+ checkbox:SetPoint("LEFT", colorswatch, "RIGHT", 5, 0)
+ checkbox:SetPoint("RIGHT", tabFrame, "TOPLEFT", 190, -10)
+ checkbox:SetClickHandler(
+   function (this, isChecked)
+    MSBTProfiles.SetOption("events.NOTIFICATION_LOOT", "disabled", not isChecked)
+	MSBTCooldowns.UpdateEnableState()
+   end
+ )
+ controls.lootedItemsEnableCheckbox = checkbox
+ 
+ -- Loot alerts event settings button. 
+ local button = MSBTControls.CreateIconButton(tabFrame, "Configure")
+ objLocale = L.BUTTONS["eventSettings"]
+ button:SetTooltip(objLocale.tooltip)
+ button:SetPoint("TOPRIGHT", tabFrame, "TOPRIGHT", -10, -5)
+ button:SetClickHandler(
+   function (this)
+    local eventType = "NOTIFICATION_LOOT"
+    local eventSettings = MSBTProfiles.currentProfile.events[eventType]
+ 
+    EraseTable(configTable)
+    configTable.title = L.CHECKBOXES.lootedItems.label
+    configTable.message = eventSettings.message
+    configTable.codes = L.EVENT_CODES["ITEM_AMOUNT"] .. L.EVENT_CODES["ITEM_NAME"] .. L.EVENT_CODES["TOTAL_ITEMS"]
+    configTable.scrollArea = eventSettings.scrollArea or DEFAULT_SCROLL_AREA
+    configTable.alwaysSticky = eventSettings.alwaysSticky
+    configTable.soundFile = eventSettings.soundFile
+    configTable.parentFrame = tabFrame
+    configTable.anchorFrame = tabFrame
+    configTable.anchorPoint = "TOPRIGHT"
+    configTable.relativePoint = "TOPRIGHT"
+	configTable.saveArg1 = eventType
+    configTable.saveHandler = LootAlertsTab_SaveEventSettings
+    configTable.hideHandler = LootAlertsTab_EnableControls
+    DisableControls(controls)
+    MSBTPopups.ShowEvent(configTable)
+   end
+ )
+ controls.lootAlertsEventSettingButton = button
+
+ -- Loot alerts font settings button. 
+ button = MSBTControls.CreateIconButton(tabFrame, "FontSettings")
+ objLocale = L.BUTTONS["eventFontSettings"]
+ button:SetTooltip(objLocale.tooltip)
+ button:SetPoint("RIGHT", controls.lootAlertsEventSettingButton, "LEFT", 0, 0)
+ button:SetClickHandler(
+   function (this)
+    local eventType = "NOTIFICATION_LOOT"
+    local eventSettings = MSBTProfiles.currentProfile.events[eventType]
+    local saSettings = MSBTProfiles.currentProfile.scrollAreas[eventSettings.scrollArea]
+    if (not saSettings) then saSettings = MSBTProfiles.currentProfile.scrollAreas[DEFAULT_SCROLL_AREA] end
+ 
+    EraseTable(configTable)
+    configTable.title = L.CHECKBOXES.lootedItems.label
+ 
+    -- Inherit from the correct scroll area.
+    local fontName = saSettings.normalFontName
+    if (not fonts[fontName]) then fontName = MSBTProfiles.currentProfile.normalFontName end
+    if (not fonts[fontName]) then fontName = DEFAULT_FONT_NAME end
+    configTable.inheritedNormalFontName = fontName
+    configTable.inheritedNormalOutlineIndex = saSettings.normalOutlineIndex or MSBTProfiles.currentProfile.normalOutlineIndex
+    configTable.inheritedNormalFontSize = saSettings.normalFontSize or MSBTProfiles.currentProfile.normalFontSize
+    configTable.inheritedNormalFontAlpha = saSettings.normalFontAlpha or MSBTProfiles.currentProfile.normalFontAlpha
+
+    fontName = eventSettings.fontName
+    if (not fonts[fontName]) then fontName = nil end
+    configTable.normalFontName = fontName
+    configTable.normalOutlineIndex = eventSettings.outlineIndex
+    configTable.normalFontSize = eventSettings.fontSize
+    configTable.normalFontAlpha = eventSettings.fontAlpha
+
+    configTable.hideCrit = true
+    configTable.parentFrame = tabFrames.lootAlerts
+    configTable.anchorFrame = tabFrames.lootAlerts
+    configTable.anchorPoint = "BOTTOM"
+    configTable.relativePoint = "BOTTOM"
+	configTable.saveArg1 = eventType
+    configTable.saveHandler = LootAlertsTab_SaveFontSettings
+    configTable.hideHandler = LootAlertsTab_EnableControls
+    DisableControls(controls)
+    MSBTPopups.ShowFont(configTable)
+   end
+ )
+ controls[#controls+1] = button
+
+ -- Loot alerts message font string.
+ local fontString = tabFrame:CreateFontString(nil, "OVERLAY", "GameFontNormalSmall")
+ fontString:SetPoint("LEFT", checkbox, "RIGHT", 10, 0)
+ fontString:SetPoint("RIGHT", button, "LEFT", -10, 0)
+ fontString:SetJustifyH("LEFT")
+ tabFrame.lootedItemsFontString = fontString
+
+
+ -- Money gains colorswatch.
+ local colorswatch = MSBTControls.CreateColorswatch(tabFrame)
+ colorswatch:SetPoint("TOPLEFT", controls.lootAlertsColorSwatch, "BOTTOMLEFT", 0, -10)
+ colorswatch:SetColorChangedHandler(
+   function (this)
+    local eventType = "NOTIFICATION_MONEY"
+    MSBTProfiles.SetOption("events." .. eventType, "colorR", this.r, 1)
+    MSBTProfiles.SetOption("events." .. eventType, "colorG", this.g, 1)
+    MSBTProfiles.SetOption("events." .. eventType, "colorB", this.b, 1)
+   end
+ )
+ controls.moneyGainsColorSwatch = colorswatch
+
+ -- Money gains enable checkbox.
+ local checkbox = MSBTControls.CreateCheckbox(tabFrame)
+ local objLocale = L.CHECKBOXES["moneyGains"]
+ checkbox:Configure(24, objLocale.label, objLocale.tooltip)
+ checkbox:SetPoint("LEFT", colorswatch, "RIGHT", 5, 0)
+ checkbox:SetPoint("RIGHT", tabFrame, "TOPLEFT", 190, -10)
+ checkbox:SetClickHandler(
+   function (this, isChecked)
+    MSBTProfiles.SetOption("events.NOTIFICATION_MONEY", "disabled", not isChecked)
+	MSBTCooldowns.UpdateEnableState()
+   end
+ )
+ controls.moneyGainsEnableCheckbox = checkbox
+ 
+ -- Money gains event settings button. 
+ local button = MSBTControls.CreateIconButton(tabFrame, "Configure")
+ objLocale = L.BUTTONS["eventSettings"]
+ button:SetTooltip(objLocale.tooltip)
+ button:SetPoint("TOPRIGHT", controls.lootAlertsEventSettingButton, "BOTTOMRIGHT", 0, -5)
+ button:SetClickHandler(
+   function (this)
+    local eventType = "NOTIFICATION_MONEY"
+    local eventSettings = MSBTProfiles.currentProfile.events[eventType]
+ 
+    EraseTable(configTable)
+    configTable.title = L.CHECKBOXES.moneyGains.label
+    configTable.message = eventSettings.message
+    configTable.codes = L.EVENT_CODES["MONEY_TEXT"]
+    configTable.scrollArea = eventSettings.scrollArea or DEFAULT_SCROLL_AREA
+    configTable.alwaysSticky = eventSettings.alwaysSticky
+    configTable.soundFile = eventSettings.soundFile
+    configTable.parentFrame = tabFrame
+    configTable.anchorFrame = tabFrame
+    configTable.anchorPoint = "TOPRIGHT"
+    configTable.relativePoint = "TOPRIGHT"
+	configTable.saveArg1 = eventType
+    configTable.saveHandler = LootAlertsTab_SaveEventSettings
+    configTable.hideHandler = LootAlertsTab_EnableControls
+    DisableControls(controls)
+    MSBTPopups.ShowEvent(configTable)
+   end
+ )
+ controls[#controls+1] = button
+
+ -- Money gains font settings button. 
+ button = MSBTControls.CreateIconButton(tabFrame, "FontSettings")
+ objLocale = L.BUTTONS["eventFontSettings"]
+ button:SetTooltip(objLocale.tooltip)
+ button:SetPoint("RIGHT", controls[#controls], "LEFT", 0, 0)
+ button:SetClickHandler(
+   function (this)
+    local eventType = "NOTIFICATION_MONEY"
+    local eventSettings = MSBTProfiles.currentProfile.events[eventType]
+    local saSettings = MSBTProfiles.currentProfile.scrollAreas[eventSettings.scrollArea]
+    if (not saSettings) then saSettings = MSBTProfiles.currentProfile.scrollAreas[DEFAULT_SCROLL_AREA] end
+ 
+    EraseTable(configTable)
+    configTable.title = L.CHECKBOXES.moneyGains.label
+ 
+    -- Inherit from the correct scroll area.
+    local fontName = saSettings.normalFontName
+    if (not fonts[fontName]) then fontName = MSBTProfiles.currentProfile.normalFontName end
+    if (not fonts[fontName]) then fontName = DEFAULT_FONT_NAME end
+    configTable.inheritedNormalFontName = fontName
+    configTable.inheritedNormalOutlineIndex = saSettings.normalOutlineIndex or MSBTProfiles.currentProfile.normalOutlineIndex
+    configTable.inheritedNormalFontSize = saSettings.normalFontSize or MSBTProfiles.currentProfile.normalFontSize
+    configTable.inheritedNormalFontAlpha = saSettings.normalFontAlpha or MSBTProfiles.currentProfile.normalFontAlpha
+
+    fontName = eventSettings.fontName
+    if (not fonts[fontName]) then fontName = nil end
+    configTable.normalFontName = fontName
+    configTable.normalOutlineIndex = eventSettings.outlineIndex
+    configTable.normalFontSize = eventSettings.fontSize
+    configTable.normalFontAlpha = eventSettings.fontAlpha
+
+    configTable.hideCrit = true
+    configTable.parentFrame = tabFrames.lootAlerts
+    configTable.anchorFrame = tabFrames.lootAlerts
+    configTable.anchorPoint = "BOTTOM"
+    configTable.relativePoint = "BOTTOM"
+	configTable.saveArg1 = eventType
+    configTable.saveHandler = LootAlertsTab_SaveFontSettings
+    configTable.hideHandler = LootAlertsTab_EnableControls
+    DisableControls(controls)
+    MSBTPopups.ShowFont(configTable)
+   end
+ )
+ controls[#controls+1] = button
+
+ -- Money gains message font string.
+ local fontString = tabFrame:CreateFontString(nil, "OVERLAY", "GameFontNormalSmall")
+ fontString:SetPoint("LEFT", checkbox, "RIGHT", 10, 0)
+ fontString:SetPoint("RIGHT", button, "LEFT", -10, 0)
+ fontString:SetJustifyH("LEFT")
+ tabFrame.moneyGainsFontString = fontString
+
+ -- Item qualities font string.
+ local fontString = tabFrame:CreateFontString(nil, "OVERLAY", "GameFontNormalSmall")
+ fontString:SetPoint("TOPLEFT", controls.moneyGainsColorSwatch, "BOTTOMLEFT", 0, -30)
+ fontString:SetJustifyH("LEFT")
+ fontString:SetText(L.MSG_ITEM_QUALITIES .. ":")
+
+ -- Item quality checkboxes.
+ local anchor = fontString
+ for quality = ITEM_QUALITY_POOR, ITEM_QUALITY_EPIC do
+  local checkbox = MSBTControls.CreateCheckbox(tabFrame)
+  local label = _G["ITEM_QUALITY" .. quality .. "_DESC"]
+  local color = ITEM_QUALITY_COLORS[quality]
+  if color then label = string.format("|cFF%02x%02x%02x%s|r", color.r * 255, color.g * 255, color.b * 255, label) end
+  checkbox:Configure(24, label, L.MSG_DISPLAY_QUALITY)
+  checkbox:SetPoint("TOPLEFT", anchor, "BOTTOMLEFT", anchor == fontString and 5 or 0, anchor == fontString and -10 or 0)
+  checkbox:SetClickHandler(
+   function (this, isChecked)
+    MSBTProfiles.SetOption("qualityExclusions", quality, not isChecked)
+   end
+  )
+  controls["quality" .. quality .. "Checkbox"] = checkbox
+  anchor = checkbox
+ end
+
+ -- Always show quest items checkbox.
+ local checkbox = MSBTControls.CreateCheckbox(tabFrame)
+ local objLocale = L.CHECKBOXES["alwaysShowQuestItems"]
+ checkbox:Configure(24, objLocale.label, objLocale.tooltip)
+ checkbox:SetPoint("TOPLEFT", controls.quality0Checkbox, "TOPRIGHT", 100, 0)
+  checkbox:SetClickHandler(
+   function (this, isChecked)
+    MSBTProfiles.SetOption(nil, "alwaysShowQuestItems", isChecked)
+   end
+  )
+ controls.alwaysShowQuestItemsCheckbox = checkbox
+
+ -- Items allowed button.
+ button = MSBTControls.CreateOptionButton(tabFrame)
+ objLocale = L.BUTTONS["itemsAllowed"]
+ button:Configure(20, objLocale.label, objLocale.tooltip)
+ button:SetPoint("BOTTOMLEFT", tabFrame, "BOTTOMLEFT", 5, 40)
+ button:SetClickHandler(
+   function (this)
+    local listName = "itemsAllowed"
+    PopulateList(listName)
+    EraseTable(configTable)
+    configTable.title = this:GetText()
+    configTable.items = listTable
+    configTable.parentFrame = tabFrame
+    configTable.anchorFrame = tabFrame
+    configTable.anchorPoint = "TOPRIGHT"
+    configTable.relativePoint = "TOPRIGHT"
+    configTable.saveHandler = SaveList
+    configTable.saveArg1 = listName
+    configTable.hideHandler = LootAlertsTab_EnableControls
+    DisableControls(controls)
+    MSBTPopups.ShowItemList(configTable)
+   end
+ )
+ controls.itemsAllowedButton = button
+
+ -- Item exclusions button.
+ button = MSBTControls.CreateOptionButton(tabFrame)
+ objLocale = L.BUTTONS["itemExclusions"]
+ button:Configure(20, objLocale.label, objLocale.tooltip)
+ button:SetPoint("BOTTOMRIGHT", tabFrame, "BOTTOMRIGHT", -10, 40)
+ button:SetClickHandler(
+   function (this)
+    local listName = "itemExclusions"
+    PopulateList(listName)
+    EraseTable(configTable)
+    configTable.title = this:GetText()
+    configTable.items = listTable
+    configTable.parentFrame = tabFrame
+    configTable.anchorFrame = tabFrame
+    configTable.anchorPoint = "TOPRIGHT"
+    configTable.relativePoint = "TOPRIGHT"
+    configTable.saveHandler = SaveList
+    configTable.saveArg1 = listName
+    configTable.hideHandler = LootAlertsTab_EnableControls
+    DisableControls(controls)
+    MSBTPopups.ShowItemList(configTable)
+   end
+ )
+ controls.itemExclusionsButton = button
+
+ tabFrame.created = true
+end
+
+
+-- ****************************************************************************
+-- Called when the tab frame is shown.
+-- ****************************************************************************
+local function LootAlertsTab_OnShow()
+ if (not tabFrames.lootAlerts.created) then LootAlertsTab_Create() end
+
+ local tabFrame = tabFrames.lootAlerts
+ local controls = tabFrame.controls
+ local currentProfile = MSBTProfiles.currentProfile
+
+ -- Looted items.
+ local eventSettings = currentProfile.events["NOTIFICATION_LOOT"]
+ controls.lootAlertsColorSwatch:SetColor(eventSettings.colorR or 1, eventSettings.colorG or 1, eventSettings.colorB or 1)
+ controls.lootedItemsEnableCheckbox:SetChecked(not eventSettings.disabled)
+ tabFrame.lootedItemsFontString:SetText(eventSettings.message)
+
+ -- Money gains.
+ local eventSettings = currentProfile.events["NOTIFICATION_MONEY"]
+ controls.moneyGainsColorSwatch:SetColor(eventSettings.colorR or 1, eventSettings.colorG or 1, eventSettings.colorB or 1)
+ controls.moneyGainsEnableCheckbox:SetChecked(not eventSettings.disabled)
+ tabFrame.moneyGainsFontString:SetText(eventSettings.message)
+
+ -- Item qualities.
+ for quality = ITEM_QUALITY_POOR, ITEM_QUALITY_EPIC do
+  controls["quality" .. quality .. "Checkbox"]:SetChecked(not currentProfile.qualityExclusions[quality])
+ end
+ 
+ -- Quest items.
+ controls.alwaysShowQuestItemsCheckbox:SetChecked(currentProfile.alwaysShowQuestItems)
+end
+
 
 -------------------------------------------------------------------------------
 -- Skill icons tab functions.
@@ -2320,54 +3248,77 @@ end
 -- Called when the module is loaded.
 -- ****************************************************************************
 local function OnLoad()
- -- Create an empty frame for the general tab that will be dynamically created when shown.
+ -- Create an empty frame for the media tab that will be dynamically created when shown.
+ local objLocale = L.TABS["customMedia"]
  local tabFrame = CreateFrame("Frame")
+ tabFrame:Hide()
+ tabFrame:SetScript("OnShow", MediaTab_OnShow)
+ tabFrames.media = tabFrame
+ MSBTOptMain.AddTab(tabFrame, objLocale.label, objLocale.tooltip)
+
+ -- Create an empty frame for the general tab that will be dynamically created when shown.
+ objLocale = L.TABS.general
+ tabFrame = CreateFrame("Frame")
  tabFrame:Hide()
  tabFrame:SetScript("OnShow", GeneralTab_OnShow)
  tabFrames.general = tabFrame
- MSBTOptMain.AddTab(tabFrame, L.TABS[1].label, L.TABS[1].tooltip)
+ MSBTOptMain.AddTab(tabFrame, objLocale.label, objLocale.tooltip)
 
  -- Create an empty frame for the scroll areas tab that will be dynamically created when shown.
+ objLocale = L.TABS.scrollAreas
  tabFrame = CreateFrame("Frame")
  tabFrame:Hide()
  tabFrame:SetScript("OnShow", ScrollAreasTab_OnShow)
  tabFrames.scrollAreas = tabFrame
- MSBTOptMain.AddTab(tabFrame, L.TABS[2].label, L.TABS[2].tooltip)
+ MSBTOptMain.AddTab(tabFrame, objLocale.label, objLocale.tooltip)
 
  -- Create an empty frame for the events tab that will be dynamically created when shown.
+ objLocale = L.TABS.events
  tabFrame = CreateFrame("Frame")
  tabFrame:Hide()
  tabFrame:SetScript("OnShow", EventsTab_OnShow)
  tabFrames.events = tabFrame
- MSBTOptMain.AddTab(tabFrame, L.TABS[3].label, L.TABS[3].tooltip)
+ MSBTOptMain.AddTab(tabFrame, objLocale.label, objLocale.tooltip)
 
  -- Create an empty frame for the triggers tab that will be dynamically created when shown.
+ objLocale = L.TABS.triggers
  tabFrame = CreateFrame("Frame")
  tabFrame:Hide()
  tabFrame:SetScript("OnShow", TriggersTab_OnShow)
  tabFrames.triggers = tabFrame
- MSBTOptMain.AddTab(tabFrame, L.TABS[4].label, L.TABS[4].tooltip)
+ MSBTOptMain.AddTab(tabFrame, objLocale.label, objLocale.tooltip)
 
  -- Create an empty frame for the spam tab that will be dynamically created when shown.
+ objLocale = L.TABS.spamControl
  tabFrame = CreateFrame("Frame")
  tabFrame:Hide()
  tabFrame:SetScript("OnShow", SpamTab_OnShow)
  tabFrames.spam = tabFrame
- MSBTOptMain.AddTab(tabFrame, L.TABS[5].label, L.TABS[5].tooltip)
+ MSBTOptMain.AddTab(tabFrame, objLocale.label, objLocale.tooltip)
 
  -- Create an empty frame for the cooldowns tab that will be dynamically created when shown.
+ objLocale = L.TABS.cooldowns
  tabFrame = CreateFrame("Frame")
  tabFrame:Hide()
  tabFrame:SetScript("OnShow", CooldownsTab_OnShow)
  tabFrames.cooldowns = tabFrame
- MSBTOptMain.AddTab(tabFrame, L.TABS[6].label, L.TABS[6].tooltip)
+ MSBTOptMain.AddTab(tabFrame, objLocale.label, objLocale.tooltip)
+
+ -- Create an empty frame for the loot alerts tab that will be dynamically created when shown.
+ objLocale = L.TABS.lootAlerts
+ tabFrame = CreateFrame("Frame")
+ tabFrame:Hide()
+ tabFrame:SetScript("OnShow", LootAlertsTab_OnShow)
+ tabFrames.lootAlerts = tabFrame
+ MSBTOptMain.AddTab(tabFrame, objLocale.label, objLocale.tooltip)
 
  -- Create an empty frame for the icons tab that will be dynamically created when shown.
+ objLocale = L.TABS.skillIcons
  tabFrame = CreateFrame("Frame")
  tabFrame:Hide()
  tabFrame:SetScript("OnShow", SkillIconsTab_OnShow)
  tabFrames.skillIcons = tabFrame
- MSBTOptMain.AddTab(tabFrame, L.TABS[7].label, L.TABS[7].tooltip)
+ MSBTOptMain.AddTab(tabFrame, objLocale.label, objLocale.tooltip)
 end
 
 

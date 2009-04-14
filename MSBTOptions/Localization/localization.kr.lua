@@ -19,6 +19,13 @@ local L = MikSBT.translations
 -- Interface messages
 ------------------------------
 
+--L.MSG_CUSTOM_FONTS					= "Custom Fonts"
+--L.MSG_INVALID_CUSTOM_FONT_NAME		= "Invalid font name."
+--L.MSG_FONT_NAME_ALREADY_EXISTS		= "Font name already exists."
+--L.MSG_INVALID_CUSTOM_FONT_PATH		= "Font path must point to a .ttf file."
+--L.MSG_CUSTOM_SOUNDS					= "Custom Sounds"
+--L.MSG_INVALID_CUSTOM_SOUND_NAME		= "Invalid sound name."
+--L.MSG_SOUND_NAME_ALREADY_EXISTS		= "Sound name already exists."
 L.MSG_NEW_PROFILE					= "새로운 프로필"
 L.MSG_PROFILE_ALREADY_EXISTS		= "프로필이 이미 존재합니다."
 L.MSG_INVALID_PROFILE_NAME			= "허용되지 않는 프로필 이름입니다."
@@ -33,6 +40,7 @@ L.MSG_TRIGGER_CLASSES				= "직업 트리거"
 L.MSG_MAIN_EVENTS					= "메인 이벤트"
 L.MSG_TRIGGER_EXCEPTIONS			= "트리거 예외"
 L.MSG_EVENT_CONDITIONS				= "이벤트 조건"
+--L.MSG_DISPLAY_QUALITY				= "Display alerts for items of this quality."
 L.MSG_SKILLS						= "주문 및 능력"
 L.MSG_SKILL_ALREADY_EXISTS			= "주문/능력 이름이 이미 존재합니다."
 L.MSG_INVALID_SKILL_NAME			= "허용되지 않는 주문/능력 이름입니다."
@@ -40,6 +48,10 @@ L.MSG_HOSTILE						= "적대적"
 L.MSG_ANY							= "모두"
 L.MSG_CONDITION						= "조건"
 L.MSG_CONDITIONS					= "조건 (복수)"
+--L.MSG_ITEM_QUALITIES				= "Item qualities"
+--L.MSG_ITEMS							= "Items"
+--L.MSG_ITEM_ALREADY_EXISTS			= "Item name already exists."
+--L.MSG_INVALID_ITEM_NAME				= "Invalid item name."
 
 
 ------------------------------
@@ -64,13 +76,15 @@ obj["WARRIOR"]		= "전사"
 ------------------------------
 
 obj = L.TABS
-obj[1] = { label="일반", tooltip="전반적인 설정을 표시합니다."}
-obj[2] = { label="스크롤 영역", tooltip="스크롤 영역의 생성, 삭제, 배치에 관한 설정들을 표시합니다.\n\n더 많은 정보를 얻으려면 아이콘 버튼에 마우스 커서를 올리세요."}
-obj[3] = { label="이벤트", tooltip="이벤트에 관한 설정을 표시합니다.\n\n더 많은 정보를 얻으려면 아이콘 버튼에 마우스 커서를 올리세요."}
-obj[4] = { label="트리거", tooltip="트리거 시스템에 관한 설정을 표시합니다.\n\n더 많은 정보를 얻으려면 아이콘 버튼에 마우스 커서를 올리세요."}
-obj[5] = { label="스팸 메시지 설정", tooltip="스팸 메시지 조정에 관한 설정을 표시합니다."}
-obj[6] = { label="재사용 대기시간", tooltip="재사용 대기시간 알림에 관한 설정을 표시합니다.."}
-obj[7] = { label="주문/능력 아이콘", tooltip="주문/능력 아이콘에 관한 설정을 표시합니다."}
+--obj["customMedia"]	= { label="Custom Media", tooltip="Display options for managing custom media."}
+obj["general"]		= { label="일반", tooltip="전반적인 설정을 표시합니다."}
+obj["scrollAreas"]	= { label="스크롤 영역", tooltip="스크롤 영역의 생성, 삭제, 배치에 관한 설정들을 표시합니다.\n\n더 많은 정보를 얻으려면 아이콘 버튼에 마우스 커서를 올리세요."}
+obj["events"]		= { label="이벤트", tooltip="이벤트에 관한 설정을 표시합니다.\n\n더 많은 정보를 얻으려면 아이콘 버튼에 마우스 커서를 올리세요."}
+obj["triggers"]		= { label="트리거", tooltip="트리거 시스템에 관한 설정을 표시합니다.\n\n더 많은 정보를 얻으려면 아이콘 버튼에 마우스 커서를 올리세요."}
+obj["spamControl"]	= { label="스팸 메시지 설정", tooltip="스팸 메시지 조정에 관한 설정을 표시합니다."}
+obj["cooldowns"]	= { label="재사용 대기시간", tooltip="재사용 대기시간 알림에 관한 설정을 표시합니다.."}
+--obj["lootAlerts"]	= { label="Loot Alerts", tooltip="Display options for loot related notifications."}
+obj["skillIcons"]	= { label="주문/능력 아이콘", tooltip="주문/능력 아이콘에 관한 설정을 표시합니다."}
 
 
 ------------------------------
@@ -83,6 +97,7 @@ obj["stickyCrits"]			= { label="치명타 고정", tooltip="치명타를 고정 
 obj["gameDamage"]			= { label="게임 피해량", tooltip="적의 머리위에 블리자드 기본 피해량을 표시합니다."}
 obj["gameHealing"]			= { label="게임 치유량", tooltip="대상의 머리위에 블리자드 기본 치유량을 표시합니다."}
 obj["enableSounds"]			= { label="효과음 사용", tooltip="이벤트와 트리거에 지정된 효과음을 재생합니다."}
+--obj["textShadowing"]			= { label="Text Shadowing", tooltip="Apply a shadow effect to text to improve font crispness."}
 obj["colorPartialEffects"]	= { label="부분 속성 색상", tooltip="부분 속성을 선택한 색상으로 표시합니다."}
 obj["crushing"]				= { label="강타", tooltip="강타를 표시합니다."}
 obj["glancing"]				= { label="빗맞음", tooltip="빗맞음을 표시합니다."}
@@ -104,6 +119,9 @@ obj["hideSkills"]			= { label="주문/능력 이름 숨김", tooltip="받은, �
 obj["hideNames"]			= { label="유닛 이름 숨김", tooltip="받은, 대상이 받은 이벤트에서 유닛 이름을 표시하지 않는다.\n\n이 옵션을 사용하면 %n 이벤트 코드를 무시하므로 이벤트에 대한 사용자 설정이 무시되어질 것입니다."}
 obj["allClasses"]			= { label="모든 클래스"}
 obj["enableCooldowns"]		= { label="재사용 대기시간", tooltip="재사용 대기시간이 끝났을때 알림 메시지를 표시합니다."}
+--obj["lootedItems"]				= { label="Looted Items", tooltip="Display notifications when items are looted."}
+obj["moneyGains"]			= { label="금전 획득", tooltip="금전 획득하면 알려줍니다."}
+--obj["alwaysShowQuestItems"]		= { label="Always show quest items", tooltip="Always show quest items regardless of quality selections."}
 obj["enableIcons"]			= { label="주문/능력 아이콘 사용", tooltip="이벤트에 사용 가능한 주문/능력 아이콘이 있을때 아이콘을 표시합니다."}
 obj["exclusiveSkills"]		= { label="아이콘이 없을때 주문/능력 이름만 사용", tooltip="사용 가능한 아이콘이 없을때 주문/능력 이름만 표시합니다."}
 
@@ -138,6 +156,12 @@ obj["triggerParameter"]		= { label="매개변수 (parameter):"}
 ------------------------------
 
 obj = L.BUTTONS
+--obj["addCustomFont"]			= { label="Add Font", tooltip="Adds a custom font to the list of available fonts.\n\nWARNING: The font file must exist in the target location *BEFORE* WoW was started.\n\nIt is highly recommended to place the file in the MikScrollingBattleText\\Fonts directory to avoid issues."}
+--obj["addCustomSound"]			= { label="Add Sound", tooltip="Adds a custom sound to the list of available sounds.\n\nWARNING: The sound file must exist in the target location *BEFORE* WoW was started.\n\nIt is highly recommended to place the file in the MikScrollingBattleText\\Sounds directory to avoid issues."}
+--obj["editCustomFont"]			= { tooltip="Click to edit the custom font."}
+--obj["deleteCustomFont"]			= { tooltip="Click to remove the custom font from MSBT."}
+--obj["editCustomSound"]			= { tooltip="Click to edit the custom sound."}
+--obj["deleteCustomSound"]		= { tooltip="Click to remove the custom sound from MSBT."}
 obj["copyProfile"]				= { label="프로필 복사", tooltip="명시된 이름의 새 프로필로 프로필을 복사합니다."}
 obj["resetProfile"]				= { label="프로필 초기화", tooltip="기본 설정으로 프로필을 초기화합니다."}
 obj["deleteProfile"]			= { label="프로필 삭제", tooltip="프로필을 삭제합니다."}
@@ -178,6 +202,10 @@ obj["skillSubstitutions"]		= { label="주문/능력 이름 대체", tooltip="주
 obj["addSkill"]					= { label="주문/능력 추가", tooltip="목록에 새로운 주문/능력을 추가합니다."}
 obj["deleteSkill"]				= { tooltip="주문/능력을 삭제하려면 클릭하세요."}
 obj["cooldownExclusions"]		= { label="재사용 대기시간 제외", tooltip="재사용 대기시간 감시에서 제외되는 주문/능력을 명시합니다."}
+--obj["itemsAllowed"]				= { label="Items Allowed", tooltip="Always show specified items regardless of item quality."}
+--obj["itemExclusions"]			= { label="Item Exclusions", tooltip="Prevent specified items from being displayed."}
+--obj["addItem"]					= { label="Add Item", tooltip="Add a new item to the list."}
+--obj["deleteItem"]				= { tooltip="Click to delete the item."}
 
 
 ------------------------------
@@ -185,6 +213,10 @@ obj["cooldownExclusions"]		= { label="재사용 대기시간 제외", tooltip="�
 ------------------------------
 
 obj = L.EDITBOXES
+--obj["customFontName"]	= { label="Font name:", tooltip="The name used to identify the font.\n\nExample: My Super Font"}
+--obj["customFontPath"]	= { label="Font path:", tooltip="The path to the font's file.\n\nNOTE: If the file is located in the recommended MikScrollingBattleText\\Fonts directory, only the filename needs to be entered here instead of th full path.\n\nExample: myFont.ttf "}
+--obj["customSoundName"]	= { label="Sound name:", tooltip="The name used to identify the sound.\n\nExample: My Sound"}
+--obj["customSoundPath"]	= { label="Sound path:", tooltip="The path to the sounds's file.\n\nNOTE: If the file is located in the recommended MikScrollingBattleText\\Sounds directory, only the filename needs to be entered here instead of th full path.\n\nExample: mySound.mp3 "}
 obj["copyProfile"]		= { label="새 프로필 이름 입력:", tooltip="선택된 프로필로부터 복사될 새로운 프로필의 이름."}
 obj["scrollAreaName"]	= { label="새 스크롤 영역 이름 입력:", tooltip="새로운 스크롤 영역의 이름."}
 obj["xOffset"]			= { label="X 좌표:", tooltip="선택된 스크롤 영역의 X 좌표."}
@@ -194,7 +226,7 @@ obj["soundFile"]		= { label="효과음 파일명:", tooltip="이벤트 발생시
 obj["iconSkill"]		= { label="주문/능력 아이콘:", tooltip="이벤트 발생 시 아이콘을 표시할 주문/능력의 이름입니다."}
 obj["skillName"]		= { label="주문/능력 이름 입력:", tooltip="추가되는 주문/능력의 이름."}
 obj["substitutionText"]	= { label="대체 텍스트:", tooltip="주문/능력 이름을 대체할 텍스트."}
-
+--obj["itemName"]			= { label="Item name:", tooltip="The name of the item to add."}
 
 ------------------------------
 -- Interface sliders
@@ -240,10 +272,12 @@ obj["HEALING_TAKEN"]		= "%a - 받은 치유량.\n"
 obj["DAMAGE_DONE"]			= "%a - 피해량.\n"
 obj["HEALING_DONE"]			= "%a - 치유량.\n"
 obj["ABSORBED_AMOUNT"]		= "%a - 피해 흡수량.\n"
+--obj["AURA_AMOUNT"]			= "%a - Amount of stacks for the aura.\n"
 obj["ENERGY_AMOUNT"]		= "%a - 기력.\n"
 obj["CP_AMOUNT"]			= "%a - 연계 점수.\n"
 obj["HONOR_AMOUNT"]			= "%a - 명예 점수.\n"
 obj["REP_AMOUNT"]			= "%a - 평판 수치.\n"
+--obj["ITEM_AMOUNT"]			= "%a - Amount of the item looted.\n"
 obj["SKILL_AMOUNT"]			= "%a - 주문/능력 포인트.\n"
 obj["EXPERIENCE_AMOUNT"]	= "%a - 획득한 경험치.\n"
 obj["ATTACKER_NAME"]		= "%n - 공격자 이름.\n"
@@ -267,7 +301,9 @@ obj["SHARD_NAME"]			= "%e - 영혼석의 세부 명칭.\n"
 obj["EMOTE_TEXT"]			= "%e - 감정 표현 텍스트.\n"
 obj["MONEY_TEXT"]			= "%e - 획득한 금전의 텍스트.\n"
 obj["COOLDOWN_NAME"]		= "%e - 준비된 주문/능력의 이름.\n"
+--obj["ITEM_NAME"]			= "%e - The name of the looted item.\n"
 obj["POWER_TYPE"]			= "%p - 마력의 유형 (마나, 분노, 기력, 룬마력).\n"
+--obj["TOTAL_ITEMS"]			= "%t - Total number of the looted item in inventory."
 
 
 ------------------------------
@@ -275,57 +311,59 @@ obj["POWER_TYPE"]			= "%p - 마력의 유형 (마나, 분노, 기력, 룬마력)
 ------------------------------
 
 obj = L.INCOMING_PLAYER_EVENTS
-obj[1]	= { label="근접 평타", tooltip="자신이 받은 근접 평타를 활성화합니다."}
-obj[2]	= { label="근접 치명타", tooltip="자신이 받은 근접 치명타를 활성화합니다."}
-obj[3]	= { label="근접 빗맞힘", tooltip="자신에게 적중하지 않은 근접 공격을 활성화합니다."}
-obj[4]	= { label="근접 회피", tooltip="자신의 근접 회피를 활성화합니다."}
-obj[5]	= { label="근접 막음", tooltip="자신의 근접 막음을 활성화합니다."}
-obj[6]	= { label="근접 방어", tooltip="자신의 근접 방어를 활성화합니다."}
-obj[7]	= { label="근접 흡수", tooltip="자신이 흡수한 근접 피해량을 활성화합니다."}
-obj[8]	= { label="근접 면역", tooltip="자신에게 면역인 근접 공격을 활성화합니다."}
-obj[9]	= { label="주문/능력 적중", tooltip="자신이 받은 주문/능력 피해량을 활성화합니다."}
-obj[10]	= { label="주문/능력 치명상", tooltip="자신이 받은 주문/능력 치명상을 활성화합니다."}
-obj[11]	= { label="주문/능력 주기적 피해", tooltip="자신이 받은 주기적인 주문/능력 피해량을 활성화합니다."}
-obj[12]	= { label="피해막 적중", tooltip="가시, 응보의 오라 등으로 자신이 받은 피해량을 활성화합니다."}
-obj[13]	= { label="피해막 치명상", tooltip="가시, 응보의 오라 등으로 자신이 받은 치명상을 활성화합니다."}
-obj[14]	= { label="주문/능력 빗맞힘", tooltip="자신에게 적중하지 않은 주문/능력 공격을 활성화합니다."}
-obj[15]	= { label="기술 회피", tooltip="자신의 기술 회피를 활성화합니다."}
-obj[16]	= { label="기술 막음", tooltip="자신의 기술 막음을 활성화합니다."}
-obj[17]	= { label="기술 방어", tooltip="자신의 기술 방어를 활성화합니다."}
-obj[18]	= { label="주문 저항", tooltip="자신의 주문 저항을 활성화합니다."}
-obj[19]	= { label="주문/능력 흡수", tooltip="자신이 흡수한 주문/능력 피해량을 활성화합니다."}
-obj[20]	= { label="주문/능력 면역", tooltip="자신에게 면역인 주문/능력 공격을 활성화합니다."}
-obj[21]	= { label="주문/능력 반사", tooltip="자신이 반사한 주문/능력 피해량을 활성화합니다."}
-obj[22]	= { label="주문 차단", tooltip="자신이 받은 주문 차단을 활성화합니다."}
-obj[23]	= { label="치유", tooltip="자신이 받은 치유량을 활성화합니다."}
-obj[24]	= { label="치유 극대화", tooltip="자신이 받은 치유 극대화를 활성화합니다."}
-obj[25]	= { label="주기적 치유", tooltip="자신이 받은 주기적 치유를 활성화합니다."}
-obj[26]	= { label="환경 피해", tooltip="자신이 받은 환경 피해 (낙하, 호흡, 용암 등...)를 활성화 합니다."}
+obj["INCOMING_DAMAGE"]						= { label="근접 평타", tooltip="자신이 받은 근접 평타를 활성화합니다."}
+obj["INCOMING_DAMAGE_CRIT"]					= { label="근접 치명타", tooltip="자신이 받은 근접 치명타를 활성화합니다."}
+obj["INCOMING_MISS"]						= { label="근접 빗맞힘", tooltip="자신에게 적중하지 않은 근접 공격을 활성화합니다."}
+obj["INCOMING_DODGE"]						= { label="근접 회피", tooltip="자신의 근접 회피를 활성화합니다."}
+obj["INCOMING_PARRY"]						= { label="근접 막음", tooltip="자신의 근접 막음을 활성화합니다."}
+obj["INCOMING_BLOCK"]						= { label="근접 방어", tooltip="자신의 근접 방어를 활성화합니다."}
+obj["INCOMING_ABSORB"]						= { label="근접 흡수", tooltip="자신이 흡수한 근접 피해량을 활성화합니다."}
+obj["INCOMING_IMMUNE"]						= { label="근접 면역", tooltip="자신에게 면역인 근접 공격을 활성화합니다."}
+obj["INCOMING_SPELL_DAMAGE"]				= { label="주문/능력 적중", tooltip="자신이 받은 주문/능력 피해량을 활성화합니다."}
+obj["INCOMING_SPELL_DAMAGE_CRIT"]			= { label="주문/능력 치명상", tooltip="자신이 받은 주문/능력 치명상을 활성화합니다."}
+obj["INCOMING_SPELL_DOT"]					= { label="주문/능력 주기적 피해", tooltip="자신이 받은 주기적인 주문/능력 피해량을 활성화합니다."}
+--obj["INCOMING_SPELL_DOT_CRIT"]				= { label="Skill DoT Crits", tooltip="Enable incoming skill damage over time crits."}
+obj["INCOMING_SPELL_DAMAGE_SHIELD"]			= { label="피해막 적중", tooltip="가시, 응보의 오라 등으로 자신이 받은 피해량을 활성화합니다."}
+obj["INCOMING_SPELL_DAMAGE_SHIELD_CRIT"]	= { label="피해막 치명상", tooltip="가시, 응보의 오라 등으로 자신이 받은 치명상을 활성화합니다."}
+obj["INCOMING_SPELL_MISS"]					= { label="주문/능력 빗맞힘", tooltip="자신에게 적중하지 않은 주문/능력 공격을 활성화합니다."}
+obj["INCOMING_SPELL_DODGE"]					= { label="기술 회피", tooltip="자신의 기술 회피를 활성화합니다."}
+obj["INCOMING_SPELL_PARRY"]					= { label="기술 막음", tooltip="자신의 기술 막음을 활성화합니다."}
+obj["INCOMING_SPELL_BLOCK"]					= { label="기술 방어", tooltip="자신의 기술 방어를 활성화합니다."}
+obj["INCOMING_SPELL_RESIST"]				= { label="주문 저항", tooltip="자신의 주문 저항을 활성화합니다."}
+obj["INCOMING_SPELL_ABSORB"]				= { label="주문/능력 흡수", tooltip="자신이 흡수한 주문/능력 피해량을 활성화합니다."}
+obj["INCOMING_SPELL_IMMUNE"]				= { label="주문/능력 면역", tooltip="자신에게 면역인 주문/능력 공격을 활성화합니다."}
+obj["INCOMING_SPELL_REFLECT"]				= { label="주문/능력 반사", tooltip="자신이 반사한 주문/능력 피해량을 활성화합니다."}
+obj["INCOMING_SPELL_INTERRUPT"]				= { label="주문 차단", tooltip="자신이 받은 주문 차단을 활성화합니다."}
+obj["INCOMING_HEAL"]						= { label="치유", tooltip="자신이 받은 치유량을 활성화합니다."}
+obj["INCOMING_HEAL_CRIT"]					= { label="치유 극대화", tooltip="자신이 받은 치유 극대화를 활성화합니다."}
+obj["INCOMING_HOT"]							= { label="주기적 치유", tooltip="자신이 받은 주기적 치유를 활성화합니다."}
+obj["INCOMING_ENVIRONMENTAL"]				= { label="환경 피해", tooltip="자신이 받은 환경 피해 (낙하, 호흡, 용암 등...)를 활성화 합니다."}
 
 obj = L.INCOMING_PET_EVENTS
-obj[1]	= { label="근접 평타", tooltip="소환수가 받은 근접 평타 활성화합니다."}
-obj[2]	= { label="근접 치명타", tooltip="소환수가 받은 근접 치명타를 활성화합니다."}
-obj[3]	= { label="근접 빗맞힘", tooltip="소환수에게 적중하지 않은 근접 공격을 활성화합니다."}
-obj[4]	= { label="근접 회피", tooltip="소환수의 근접 회피를 활성화합니다."}
-obj[5]	= { label="근접 막음", tooltip="소환수의 근접 막음을 활성화합니다."}
-obj[6]	= { label="근접 방어", tooltip="소환수의 근접 방어를 활성화합니다."}
-obj[7]	= { label="근접 흡수", tooltip="소환수가 흡수한 근접 피해량을 활성화합니다."}
-obj[8]	= { label="근접 면역", tooltip="소환수에게 면역인 근접 공격을 활성화합니다."}
-obj[9]	= { label="주문/능력 적중", tooltip="소환수가 받은 주문/능력 피해량을 활성화합니다."}
-obj[10]	= { label="주문/능력 치명상", tooltip="소환수가 받은 주문/능력 치명상을 활성화합니다."}
-obj[11]	= { label="주문/능력 주기적 피해", tooltip="소환수가 받은 주기적인 주문/능력 피해량을 활성화합니다."}
-obj[12]	= { label="피해막 적중", tooltip="가시, 응보의 오라 등으로 소환수가 받은 피해량을 활성화합니다."}
-obj[13]	= { label="피해막 치명상", tooltip="가시, 응보의 오라 등으로 소환수가 받은 치명상을 활성화합니다."}
-obj[14]	= { label="주문/능력 공격 실패", tooltip="소환수에게 적중하지 않은 주문/능력 공격을 활성화합니다."}
-obj[15]	= { label="기술 회피", tooltip="소환수의 기술 회피를 활성화합니다."}
-obj[16]	= { label="기술 막음", tooltip="소환수의 기술 막음을 활성화합니다."}
-obj[17]	= { label="기술 방어", tooltip="소환수의 기술 방어를 활성화합니다."}
-obj[18]	= { label="주문 저항", tooltip="소환수의 주문 저항을 활성화합니다."}
-obj[19]	= { label="주문/능력 흡수", tooltip="소환수가 흡수한 주문/능력 피해량을 활성화합니다."}
-obj[20]	= { label="주문/능력 면역", tooltip="소환수에게 면역인 주문/능력 공격를 활성화합니다."}
-obj[21]	= { label="치유", tooltip="소환수가 받은 치유량을 활성화합니다."}
-obj[22]	= { label="치유 극대화", tooltip="소환수가 받은 치유 극대화를 활성화합니다."}
-obj[23]	= { label="주기적 치유", tooltip="소환수가 받은 주기적 치유를 활성화합니다."}
+obj["PET_INCOMING_DAMAGE"]						= { label="근접 평타", tooltip="소환수가 받은 근접 평타 활성화합니다."}
+obj["PET_INCOMING_DAMAGE_CRIT"]					= { label="근접 치명타", tooltip="소환수가 받은 근접 치명타를 활성화합니다."}
+obj["PET_INCOMING_MISS"]						= { label="근접 빗맞힘", tooltip="소환수에게 적중하지 않은 근접 공격을 활성화합니다."}
+obj["PET_INCOMING_DODGE"]						= { label="근접 회피", tooltip="소환수의 근접 회피를 활성화합니다."}
+obj["PET_INCOMING_PARRY"]						= { label="근접 막음", tooltip="소환수의 근접 막음을 활성화합니다."}
+obj["PET_INCOMING_BLOCK"]						= { label="근접 방어", tooltip="소환수의 근접 방어를 활성화합니다."}
+obj["PET_INCOMING_ABSORB"]						= { label="근접 흡수", tooltip="소환수가 흡수한 근접 피해량을 활성화합니다."}
+obj["PET_INCOMING_IMMUNE"]						= { label="근접 면역", tooltip="소환수에게 면역인 근접 공격을 활성화합니다."}
+obj["PET_INCOMING_SPELL_DAMAGE"]				= { label="주문/능력 적중", tooltip="소환수가 받은 주문/능력 피해량을 활성화합니다."}
+obj["PET_INCOMING_SPELL_DAMAGE_CRIT"]			= { label="주문/능력 치명상", tooltip="소환수가 받은 주문/능력 치명상을 활성화합니다."}
+obj["PET_INCOMING_SPELL_DOT"]					= { label="주문/능력 주기적 피해", tooltip="소환수가 받은 주기적인 주문/능력 피해량을 활성화합니다."}
+--obj["PET_INCOMING_SPELL_DOT_CRIT"]				= { label="Skill DoT Crits", tooltip="Enable your pet's incoming skill damage over time crits."}
+obj["PET_INCOMING_SPELL_DAMAGE_SHIELD"]			= { label="피해막 적중", tooltip="가시, 응보의 오라 등으로 소환수가 받은 피해량을 활성화합니다."}
+obj["PET_INCOMING_SPELL_DAMAGE_SHIELD_CRIT"]	= { label="피해막 치명상", tooltip="가시, 응보의 오라 등으로 소환수가 받은 치명상을 활성화합니다."}
+obj["PET_INCOMING_SPELL_MISS"]					= { label="주문/능력 공격 실패", tooltip="소환수에게 적중하지 않은 주문/능력 공격을 활성화합니다."}
+obj["PET_INCOMING_SPELL_DODGE"]					= { label="기술 회피", tooltip="소환수의 기술 회피를 활성화합니다."}
+obj["PET_INCOMING_SPELL_PARRY"]					= { label="기술 막음", tooltip="소환수의 기술 막음을 활성화합니다."}
+obj["PET_INCOMING_SPELL_BLOCK"]					= { label="기술 방어", tooltip="소환수의 기술 방어를 활성화합니다."}
+obj["PET_INCOMING_SPELL_RESIST"]				= { label="주문 저항", tooltip="소환수의 주문 저항을 활성화합니다."}
+obj["PET_INCOMING_SPELL_ABSORB"]				= { label="주문/능력 흡수", tooltip="소환수가 흡수한 주문/능력 피해량을 활성화합니다."}
+obj["PET_INCOMING_SPELL_IMMUNE"]				= { label="주문/능력 면역", tooltip="소환수에게 면역인 주문/능력 공격를 활성화합니다."}
+obj["PET_INCOMING_HEAL"]						= { label="치유", tooltip="소환수가 받은 치유량을 활성화합니다."}
+obj["PET_INCOMING_HEAL_CRIT"]					= { label="치유 극대화", tooltip="소환수가 받은 치유 극대화를 활성화합니다."}
+obj["PET_INCOMING_HOT"]							= { label="주기적 치유", tooltip="소환수가 받은 주기적 치유를 활성화합니다."}
 
 
 ------------------------------
@@ -333,59 +371,61 @@ obj[23]	= { label="주기적 치유", tooltip="소환수가 받은 주기적 치
 ------------------------------
 
 obj = L.OUTGOING_PLAYER_EVENTS
-obj[1]	= { label="근접 평타", tooltip="대상이 받은 근접 평타를 활성화합니다."}
-obj[2]	= { label="근접 치명타", tooltip="대상이 받은 근접 치명타를 활성화합니다."}
-obj[3]	= { label="근접 빗맞힘", tooltip="대상에게 적중하지 않은 근접 공격을 활성화합니다."}
-obj[4]	= { label="근접 회피", tooltip="근접 공격에 대한 대상의 회피를 활성화합니다."}
-obj[5]	= { label="근접 막음", tooltip="근접 공격에 대한 대상의 막음을 활성화합니다."}
-obj[6]	= { label="근접 방어", tooltip="근접 공격에 대한 대상의 방어를 활성화합니다."}
-obj[7]	= { label="근접 흡수", tooltip="근접 공격에 대하여 대상이 흡수한 피해량을 활성화합니다."}
-obj[8]	= { label="근접 면역", tooltip="근접 공격에 대한 대상의 면역을 활성화합니다."}
-obj[9]	= { label="근접 빗나감", tooltip="대상에게 빗나간 근접 공격을 활성화합니다."}
-obj[10]	= { label="주문/능력 적중", tooltip="대상이 받은 주문/능력 피해량을 활성화합니다."}
-obj[11]	= { label="주문/능력 치명타", tooltip="대상이 받은 주문/능력 치명상을 활성화합니다."}
-obj[12]	= { label="주문/능력 주기적 피해", tooltip="대상이 받은 주기적인 주문/능력 피해량을 활성화합니다."}
-obj[13]	= { label="피해막 적중", tooltip="가시, 응보의 오라 등으로 대상이 받은 피해량을 활성화합니다."}
-obj[14]	= { label="피해막 치명타", tooltip="가시, 응보의 오라 등으로 대상이 받은 치명상을 활성화합니다."}
-obj[15]	= { label="주문/능력 빗맞힘", tooltip="대상에게 적중하지 않은 주문/능력 공격을 활성화합니다."}
-obj[16]	= { label="기술 회피", tooltip="기술 공격에 대한 대상의 회피를 활성화합니다."}
-obj[17]	= { label="기술 막음", tooltip="기술 공격에 대한 대상의 막음을 활성화합니다."}
-obj[18]	= { label="기술 방어", tooltip="기술 공격에 대한 대상의 방어를 활성화합니다."}
-obj[19]	= { label="주문 저항", tooltip="주문 공격에 대한 대상의 저항을 활성화합니다."}
-obj[20]	= { label="주문/능력 흡수", tooltip="주문/능력 공격에 대하여 대상이 흡수한 피해량을 활성화합니다."}
-obj[21]	= { label="주문/능력 면역", tooltip="주문/능력 공격에 대한 대상의 면역을 활성화합니다."}
-obj[22]	= { label="주문/능력 반사", tooltip="주문/능력 공격에 대하여 대상이 반사한 피해량을 활성화합니다."}
-obj[23]	= { label="주문 차단", tooltip="대상이 받은 주문 차단을 활성화합니다."}
-obj[24]	= { label="주문/능력 빗나감", tooltip="대상에게 빗나간 주문/능력 공격을 활성화합니다."}
-obj[25]	= { label="치유", tooltip="대상이 받은 치유량을 활성화합니다."}
-obj[26]	= { label="치유 극대화", tooltip="대상이 받은 치유 극대화를 활성화합니다."}
-obj[27]	= { label="주기적인 치유", tooltip="대상이 받은 주기적 치유를 활성화합니다."}
-obj[28] = { label="해제", tooltip="대상이 받은 해제를 활성화합니다."}
+obj["OUTGOING_DAMAGE"]						= { label="근접 평타", tooltip="대상이 받은 근접 평타를 활성화합니다."}
+obj["OUTGOING_DAMAGE_CRIT"]					= { label="근접 치명타", tooltip="대상이 받은 근접 치명타를 활성화합니다."}
+obj["OUTGOING_MISS"]						= { label="근접 빗맞힘", tooltip="대상에게 적중하지 않은 근접 공격을 활성화합니다."}
+obj["OUTGOING_DODGE"]						= { label="근접 회피", tooltip="근접 공격에 대한 대상의 회피를 활성화합니다."}
+obj["OUTGOING_PARRY"]						= { label="근접 막음", tooltip="근접 공격에 대한 대상의 막음을 활성화합니다."}
+obj["OUTGOING_BLOCK"]						= { label="근접 방어", tooltip="근접 공격에 대한 대상의 방어를 활성화합니다."}
+obj["OUTGOING_ABSORB"]						= { label="근접 흡수", tooltip="근접 공격에 대하여 대상이 흡수한 피해량을 활성화합니다."}
+obj["OUTGOING_IMMUNE"]						= { label="근접 면역", tooltip="근접 공격에 대한 대상의 면역을 활성화합니다."}
+obj["OUTGOING_EVADE"]						= { label="근접 빗나감", tooltip="대상에게 빗나간 근접 공격을 활성화합니다."}
+obj["OUTGOING_SPELL_DAMAGE"]				= { label="주문/능력 적중", tooltip="대상이 받은 주문/능력 피해량을 활성화합니다."}
+obj["OUTGOING_SPELL_DAMAGE_CRIT"]			= { label="주문/능력 치명타", tooltip="대상이 받은 주문/능력 치명상을 활성화합니다."}
+obj["OUTGOING_SPELL_DOT"]					= { label="주문/능력 주기적 피해", tooltip="대상이 받은 주기적인 주문/능력 피해량을 활성화합니다."}
+--obj["OUTGOING_SPELL_DOT_CRIT"]				= { label="Skill DoT Crits", tooltip="Enable outgoing skill damage over time crits."}
+obj["OUTGOING_SPELL_DAMAGE_SHIELD"]			= { label="피해막 적중", tooltip="가시, 응보의 오라 등으로 대상이 받은 피해량을 활성화합니다."}
+obj["OUTGOING_SPELL_DAMAGE_SHIELD_CRIT"]	= { label="피해막 치명타", tooltip="가시, 응보의 오라 등으로 대상이 받은 치명상을 활성화합니다."}
+obj["OUTGOING_SPELL_MISS"]					= { label="주문/능력 빗맞힘", tooltip="대상에게 적중하지 않은 주문/능력 공격을 활성화합니다."}
+obj["OUTGOING_SPELL_DODGE"]					= { label="기술 회피", tooltip="기술 공격에 대한 대상의 회피를 활성화합니다."}
+obj["OUTGOING_SPELL_PARRY"]					= { label="기술 막음", tooltip="기술 공격에 대한 대상의 막음을 활성화합니다."}
+obj["OUTGOING_SPELL_BLOCK"]					= { label="기술 방어", tooltip="기술 공격에 대한 대상의 방어를 활성화합니다."}
+obj["OUTGOING_SPELL_RESIST"]				= { label="주문 저항", tooltip="주문 공격에 대한 대상의 저항을 활성화합니다."}
+obj["OUTGOING_SPELL_ABSORB"]				= { label="주문/능력 흡수", tooltip="주문/능력 공격에 대하여 대상이 흡수한 피해량을 활성화합니다."}
+obj["OUTGOING_SPELL_IMMUNE"]				= { label="주문/능력 면역", tooltip="주문/능력 공격에 대한 대상의 면역을 활성화합니다."}
+obj["OUTGOING_SPELL_REFLECT"]				= { label="주문/능력 반사", tooltip="주문/능력 공격에 대하여 대상이 반사한 피해량을 활성화합니다."}
+obj["OUTGOING_SPELL_INTERRUPT"]				= { label="주문 차단", tooltip="대상이 받은 주문 차단을 활성화합니다."}
+obj["OUTGOING_SPELL_EVADE"]					= { label="주문/능력 빗나감", tooltip="대상에게 빗나간 주문/능력 공격을 활성화합니다."}
+obj["OUTGOING_HEAL"]						= { label="치유", tooltip="대상이 받은 치유량을 활성화합니다."}
+obj["OUTGOING_HEAL_CRIT"]					= { label="치유 극대화", tooltip="대상이 받은 치유 극대화를 활성화합니다."}
+obj["OUTGOING_HOT"]							= { label="주기적인 치유", tooltip="대상이 받은 주기적 치유를 활성화합니다."}
+obj["OUTGOING_DISPEL"]						= { label="해제", tooltip="대상이 받은 해제를 활성화합니다."}
 
 obj = L.OUTGOING_PET_EVENTS
-obj[1]	= { label="근접 평타", tooltip="소환수가 대상에게 준 근접 평타를 활성화합니다."}
-obj[2]	= { label="근접 치명타", tooltip="소환수가 대상에게 준 근접 치명타를 활성화합니다."}
-obj[3]	= { label="근접 빗맞힘", tooltip="대상에게 적중하지 않은 소환수의 근접 공격을 활성화합니다."}
-obj[4]	= { label="근접 회피", tooltip="소환수의 근접 공격에 대한의 대상의 회피를 활성화합니다."}
-obj[5]	= { label="근접 막음", tooltip="소환수의 근접 공격에 대한의 대상의 막음을 활성화합니다."}
-obj[6]	= { label="근접 방어", tooltip="소환수의 근접 공격에 대한의 대상의 방어를 활성화합니다."}
-obj[7]	= { label="근접 흡수", tooltip="소환수의 근접 공격에 대하여 대상이 흡수한 피해량을 활성화합니다."}
-obj[8]	= { label="근접 면역", tooltip="소환수의 근접 공격에 대한 대상의 면역을 활성화합니다."}
-obj[9]	= { label="근접 빗나감", tooltip="대상에게 빗나간 소환수의 근접 공격을 활성화합니다."}
-obj[10]	= { label="주문/능력 적중", tooltip="소환수가 대상에게 준 주문/능력 피해량을 활성화합니다."}
-obj[11]	= { label="주문/능력 치명타", tooltip="소환수가 대상에게 준 주문/능력 치명상을 활성화합니다."}
-obj[12]	= { label="주문/능력 주기적 피해", tooltip="소환수가 대상에게 준 주기적인 주문/능력 피해량을 활성화합니다."}
-obj[13]	= { label="피해막 적중", tooltip="가시, 응보의 오라 등으로 소환수가 대상에게 준 피해량을 활성화합니다."}
-obj[14]	= { label="피해막 치명타", tooltip="가시, 응보의 오라 등으로 소환수가 대상에게 준 치명상을 활성화합니다."}
-obj[15]	= { label="주문/능력 빗맞힘", tooltip="대상에게 적중하지 않은 소환수의 주문/능력 공격을 활성화합니다."}
-obj[16]	= { label="기술 회피", tooltip="소환수의 기술 공격에 대한 대상의 회피를 활성화합니다."}
-obj[17]	= { label="기술 막음", tooltip="소환수의 기술 공격에 대한 대상의 막음을 활성화합니다."}
-obj[18]	= { label="기술 방어", tooltip="소환수의 기술 공격에 대한 대상의 방어를 활성화합니다."}
-obj[19]	= { label="주문 저항", tooltip="소환수의 주문 공격에 대한 대상의 저항을 활성화합니다."}
-obj[20]	= { label="주문/능력 흡수", tooltip="소환수의 주문/능력 공격에 대하여 대상이 흡수한 피해량을 활성화합니다."}
-obj[21]	= { label="주문/능력 면역", tooltip="소환수의 주문/능력 공격에 대한 대상의 면역을 활성화합니다."}
-obj[22]	= { label="주문/능력 빗나감", tooltip="대상에게 빗나간 소환수의 주문/능력 공격을 활성화합니다."}
-obj[23]	= { label="해제", tooltip="소환수의 해제를 활성화합니다."}
+obj["PET_OUTGOING_DAMAGE"]						= { label="근접 평타", tooltip="소환수가 대상에게 준 근접 평타를 활성화합니다."}
+obj["PET_OUTGOING_DAMAGE_CRIT"]					= { label="근접 치명타", tooltip="소환수가 대상에게 준 근접 치명타를 활성화합니다."}
+obj["PET_OUTGOING_MISS"]						= { label="근접 빗맞힘", tooltip="대상에게 적중하지 않은 소환수의 근접 공격을 활성화합니다."}
+obj["PET_OUTGOING_DODGE"]						= { label="근접 회피", tooltip="소환수의 근접 공격에 대한의 대상의 회피를 활성화합니다."}
+obj["PET_OUTGOING_PARRY"]						= { label="근접 막음", tooltip="소환수의 근접 공격에 대한의 대상의 막음을 활성화합니다."}
+obj["PET_OUTGOING_BLOCK"]						= { label="근접 방어", tooltip="소환수의 근접 공격에 대한의 대상의 방어를 활성화합니다."}
+obj["PET_OUTGOING_ABSORB"]						= { label="근접 흡수", tooltip="소환수의 근접 공격에 대하여 대상이 흡수한 피해량을 활성화합니다."}
+obj["PET_OUTGOING_IMMUNE"]						= { label="근접 면역", tooltip="소환수의 근접 공격에 대한 대상의 면역을 활성화합니다."}
+obj["PET_OUTGOING_EVADE"]						= { label="근접 빗나감", tooltip="대상에게 빗나간 소환수의 근접 공격을 활성화합니다."}
+obj["PET_OUTGOING_SPELL_DAMAGE"]				= { label="주문/능력 적중", tooltip="소환수가 대상에게 준 주문/능력 피해량을 활성화합니다."}
+obj["PET_OUTGOING_SPELL_DAMAGE_CRIT"]			= { label="주문/능력 치명타", tooltip="소환수가 대상에게 준 주문/능력 치명상을 활성화합니다."}
+obj["PET_OUTGOING_SPELL_DOT"]					= { label="주문/능력 주기적 피해", tooltip="소환수가 대상에게 준 주기적인 주문/능력 피해량을 활성화합니다."}
+--obj["PET_OUTGOING_SPELL_DOT_CRIT"]				= { label="Skill DoT Crits", tooltip="Enable outgoing skill damage over time crits."}
+obj["PET_OUTGOING_SPELL_DAMAGE_SHIELD"]			= { label="피해막 적중", tooltip="가시, 응보의 오라 등으로 소환수가 대상에게 준 피해량을 활성화합니다."}
+obj["PET_OUTGOING_SPELL_DAMAGE_SHIELD_CRIT"]	= { label="피해막 치명타", tooltip="가시, 응보의 오라 등으로 소환수가 대상에게 준 치명상을 활성화합니다."}
+obj["PET_OUTGOING_SPELL_MISS"]					= { label="주문/능력 빗맞힘", tooltip="대상에게 적중하지 않은 소환수의 주문/능력 공격을 활성화합니다."}
+obj["PET_OUTGOING_SPELL_DODGE"]					= { label="기술 회피", tooltip="소환수의 기술 공격에 대한 대상의 회피를 활성화합니다."}
+obj["PET_OUTGOING_SPELL_PARRY"]					= { label="기술 막음", tooltip="소환수의 기술 공격에 대한 대상의 막음을 활성화합니다."}
+obj["PET_OUTGOING_SPELL_BLOCK"]					= { label="기술 방어", tooltip="소환수의 기술 공격에 대한 대상의 방어를 활성화합니다."}
+obj["PET_OUTGOING_SPELL_RESIST"]				= { label="주문 저항", tooltip="소환수의 주문 공격에 대한 대상의 저항을 활성화합니다."}
+obj["PET_OUTGOING_SPELL_ABSORB"]				= { label="주문/능력 흡수", tooltip="소환수의 주문/능력 공격에 대하여 대상이 흡수한 피해량을 활성화합니다."}
+obj["PET_OUTGOING_SPELL_IMMUNE"]				= { label="주문/능력 면역", tooltip="소환수의 주문/능력 공격에 대한 대상의 면역을 활성화합니다."}
+obj["PET_OUTGOING_SPELL_EVADE"]					= { label="주문/능력 빗나감", tooltip="대상에게 빗나간 소환수의 주문/능력 공격을 활성화합니다."}
+obj["PET_OUTGOING_DISPEL"]						= { label="해제", tooltip="소환수의 해제를 활성화합니다."}
 
 
 ------------------------------
@@ -393,30 +433,29 @@ obj[23]	= { label="해제", tooltip="소환수의 해제를 활성화합니다."
 ------------------------------
 
 obj = L.NOTIFICATION_EVENTS
-obj[1]	= { label="디버프", tooltip="당신이 걸린 디버프를 알려줍니다."}
-obj[2]	= { label="버프", tooltip="당신이 받은 버프를 활성화합니다."}
-obj[3]	= { label="아이템 버프", tooltip="당신이 받은 아이템 버프를 알려줍니다."}
-obj[4]	= { label="디버프 사라짐", tooltip="사라진 디버프를 알려줍니다."}
-obj[5]	= { label="버프 사라짐", tooltip="사라진 버프를 알려줍니다."}
-obj[6]	= { label="아이템 버프 사라짐", tooltip="사라진 아이템 버프를 알려줍니다."}
-obj[7]	= { label="전투 시작", tooltip="전투 상태 시작을 알려줍니다."}
-obj[8]	= { label="전투 종료", tooltip="전투 상태 종료를 알려줍니다."}
-obj[9]	= { label="마력 (마나/분노 등) 획득", tooltip="추가적인 마나, 분노, 기력, 룬 마력 획득을 알려줍니다."}
-obj[10]	= { label="마력 (마나/분노 등) 손실", tooltip="유출에 의한 마나, 분노, 기력, 룬 마력 손실을 알려줍니다."}
-obj[11]	= { label="연계 점수 획득", tooltip="연계 점수 획득을 알려줍니다."}
-obj[12]	= { label="연계 점수 마무리", tooltip="연계 점수가 절정 (5 포인트)에 도달했음을 알려줍니다."}
-obj[13]	= { label="명예 획득", tooltip="명예 점수 획득을 알려줍니다.."}
-obj[14]	= { label="평판 상승", tooltip="평판 수치 획득을 알려줍니다.."}
-obj[15]	= { label="평판 하락", tooltip="평판 수치 감소를 알려줍니다."}
-obj[16]	= { label="주문/능력 획득", tooltip="주문/능력 포인트 획득을 알려줍니다."}
-obj[17]	= { label="경험치 획득", tooltip="경험치 획득을 알려줍니다."}
-obj[18]	= { label="플레이어 결정타", tooltip="적대적 대상에 대해 결정타를 입혔을때 알려줍니다."}
-obj[19]	= { label="NPC 결정타", tooltip="NPC에 대해 결정타를 입혔을때 알려줍니다."}
-obj[20]	= { label="영혼석 획득", tooltip="영혼석 획득을 알려줍니다."}
-obj[21]	= { label="추가타 공격", tooltip="추가타 공격 (우뢰 폭풍, 도검 전문화 등.) 효과를 얻었음을 알려줍니다."}
-obj[22]	= { label="적의 버프 획득", tooltip="당신의 적대적 대상이 버프를 획득하면 알려줍니다."}
-obj[23]	= { label="몬스터 감정표현", tooltip="당신의 대상 몬스터의 감정 표현을 알려줍니다."}
-obj[24]	= { label="금전 획득", tooltip="금전 획득하면 알려줍니다."}
+obj["NOTIFICATION_DEBUFF"]				= { label="디버프", tooltip="당신이 걸린 디버프를 알려줍니다."}
+obj["NOTIFICATION_BUFF"]				= { label="버프", tooltip="당신이 받은 버프를 활성화합니다."}
+obj["NOTIFICATION_ITEM_BUFF"]			= { label="아이템 버프", tooltip="당신이 받은 아이템 버프를 알려줍니다."}
+obj["NOTIFICATION_DEBUFF_FADE"]			= { label="디버프 사라짐", tooltip="사라진 디버프를 알려줍니다."}
+obj["NOTIFICATION_BUFF_FADE"]			= { label="버프 사라짐", tooltip="사라진 버프를 알려줍니다."}
+obj["NOTIFICATION_ITEM_BUFF_FADE"]		= { label="아이템 버프 사라짐", tooltip="사라진 아이템 버프를 알려줍니다."}
+obj["NOTIFICATION_COMBAT_ENTER"]		= { label="전투 시작", tooltip="전투 상태 시작을 알려줍니다."}
+obj["NOTIFICATION_COMBAT_LEAVE"]		= { label="전투 종료", tooltip="전투 상태 종료를 알려줍니다."}
+obj["NOTIFICATION_POWER_GAIN"]			= { label="마력 (마나/분노 등) 획득", tooltip="추가적인 마나, 분노, 기력, 룬 마력 획득을 알려줍니다."}
+obj["NOTIFICATION_POWER_LOSS"]			= { label="마력 (마나/분노 등) 손실", tooltip="유출에 의한 마나, 분노, 기력, 룬 마력 손실을 알려줍니다."}
+obj["NOTIFICATION_CP_GAIN"]				= { label="연계 점수 획득", tooltip="연계 점수 획득을 알려줍니다."}
+obj["NOTIFICATION_CP_FULL"]				= { label="연계 점수 마무리", tooltip="연계 점수가 절정 (5 포인트)에 도달했음을 알려줍니다."}
+obj["NOTIFICATION_HONOR_GAIN"]			= { label="명예 획득", tooltip="명예 점수 획득을 알려줍니다.."}
+obj["NOTIFICATION_REP_GAIN"]			= { label="평판 상승", tooltip="평판 수치 획득을 알려줍니다.."}
+obj["NOTIFICATION_REP_LOSS"]			= { label="평판 하락", tooltip="평판 수치 감소를 알려줍니다."}
+obj["NOTIFICATION_SKILL_GAIN"]			= { label="주문/능력 획득", tooltip="주문/능력 포인트 획득을 알려줍니다."}
+obj["NOTIFICATION_EXPERIENCE_GAIN"]		= { label="경험치 획득", tooltip="경험치 획득을 알려줍니다."}
+obj["NOTIFICATION_PC_KILLING_BLOW"]		= { label="플레이어 결정타", tooltip="적대적 대상에 대해 결정타를 입혔을때 알려줍니다."}
+obj["NOTIFICATION_NPC_KILLING_BLOW"]	= { label="NPC 결정타", tooltip="NPC에 대해 결정타를 입혔을때 알려줍니다."}
+obj["NOTIFICATION_SOUL_SHARD_CREATED"]	= { label="영혼석 획득", tooltip="영혼석 획득을 알려줍니다."}
+obj["NOTIFICATION_EXTRA_ATTACK"]		= { label="추가타 공격", tooltip="추가타 공격 (우뢰 폭풍, 도검 전문화 등.) 효과를 얻었음을 알려줍니다."}
+obj["NOTIFICATION_ENEMY_BUFF"]			= { label="적의 버프 획득", tooltip="당신의 적대적 대상이 버프를 획득하면 알려줍니다."}
+obj["NOTIFICATION_MONSTER_EMOTE"]		= { label="몬스터 감정표현", tooltip="당신의 대상 몬스터의 감정 표현을 알려줍니다."}
 
 
 ------------------------------

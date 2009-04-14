@@ -272,10 +272,10 @@ local function CreateMainFrame()
   tabListbox:AddItem(k);
  end
 
- -- Select the first tab.
- tabListbox:SetSelectedItem(1);
+ -- Select the general tab.
+ tabListbox:SetSelectedItem(2);
  tabListbox:Refresh();
- tabData[1].frame:Show();
+ tabData[2].frame:Show();
  
  -- Insert the frame name into the UISpecialFrames array so it closes when
  -- the escape key is pressed.
