@@ -19,13 +19,13 @@ local L = MikSBT.translations
 -- Interface messages
 ------------------------------
 
---L.MSG_CUSTOM_FONTS					= "Custom Fonts"
---L.MSG_INVALID_CUSTOM_FONT_NAME		= "Invalid font name."
---L.MSG_FONT_NAME_ALREADY_EXISTS		= "Font name already exists."
---L.MSG_INVALID_CUSTOM_FONT_PATH		= "Font path must point to a .ttf file."
---L.MSG_CUSTOM_SOUNDS					= "Custom Sounds"
---L.MSG_INVALID_CUSTOM_SOUND_NAME		= "Invalid sound name."
---L.MSG_SOUND_NAME_ALREADY_EXISTS		= "Sound name already exists."
+L.MSG_CUSTOM_FONTS					= "自定义字体"
+L.MSG_INVALID_CUSTOM_FONT_NAME		= "无效字体名."
+L.MSG_FONT_NAME_ALREADY_EXISTS		= "字体名字已经存在."
+L.MSG_INVALID_CUSTOM_FONT_PATH		= "字体路径必须指向.ttf文件"
+L.MSG_CUSTOM_SOUNDS					= "自定义声音"
+L.MSG_INVALID_CUSTOM_SOUND_NAME		= "无效声音名"
+L.MSG_SOUND_NAME_ALREADY_EXISTS		= "声音名已经存在"
 L.MSG_NEW_PROFILE					= "新建配置"
 L.MSG_PROFILE_ALREADY_EXISTS		= "此配置文件已存在"
 L.MSG_INVALID_PROFILE_NAME			= "无效的配置名字"
@@ -34,13 +34,13 @@ L.MSG_SCROLL_AREA_ALREADY_EXISTS	= "此滚动区域已存在"
 L.MSG_INVALID_SCROLL_AREA_NAME		= "无效的滚动区名字"
 L.MSG_ACKNOWLEDGE_TEXT				= "你确定想这样做吗？"
 L.MSG_NORMAL_PREVIEW_TEXT			= "普通文字"
-L.MSG_INVALID_SOUND_FILE			= "声音必须为MP3或WAV文件。"
+L.MSG_INVALID_SOUND_FILE			= "声音必须为MP3或WAV文件"
 L.MSG_NEW_TRIGGER					= "新建触发器"
 L.MSG_TRIGGER_CLASSES				= "触发种类"
 L.MSG_MAIN_EVENTS					= "主要事件"
 L.MSG_TRIGGER_EXCEPTIONS			= "触发器例外"
 L.MSG_EVENT_CONDITIONS				= "事件条件"
---L.MSG_DISPLAY_QUALITY				= "Display alerts for items of this quality."
+L.MSG_DISPLAY_QUALITY				= "当物品为此品质时显示提示"
 L.MSG_SKILLS						= "技能"
 L.MSG_SKILL_ALREADY_EXISTS			= "技能名字已存在"
 L.MSG_INVALID_SKILL_NAME			= "无效的技能名字"
@@ -48,10 +48,10 @@ L.MSG_HOSTILE						= "敌对"
 L.MSG_ANY							= "任何"
 L.MSG_CONDITION						= "条件"
 L.MSG_CONDITIONS					= "条件"
---L.MSG_ITEM_QUALITIES				= "Item qualities"
---L.MSG_ITEMS							= "Items"
---L.MSG_ITEM_ALREADY_EXISTS			= "Item name already exists."
---L.MSG_INVALID_ITEM_NAME				= "Invalid item name."
+L.MSG_ITEM_QUALITIES				= "物品品质"
+L.MSG_ITEMS							= "物品"
+L.MSG_ITEM_ALREADY_EXISTS			= "物品名已经存在."
+L.MSG_INVALID_ITEM_NAME				= "无效物品名."
 
 
 ------------------------------
@@ -76,14 +76,14 @@ obj["WARRIOR"]		= "战士"
 ------------------------------
 
 obj = L.TABS
---obj["customMedia"]	= { label="Custom Media", tooltip="Display options for managing custom media."}
-obj["general"]		= { label="总体", tooltip="总体设置"}
+obj["customMedia"]	= { label="自定义媒体文件", tooltip="设置自定义媒体文件"}
+obj["general"]		= { label="常规", tooltip="常规设置"}
 obj["scrollAreas"]	= { label="滚动区域", tooltip="创建、删除和配置滚动区域；鼠标指向按钮可得到更多提示"}
 obj["events"]		= { label="事件", tooltip="设置承受伤害、输出伤害和通告的事件；鼠标指向按钮可得到更多提示"}
 obj["triggers"]		= { label="触发器", tooltip="设置触发器；鼠标指向按钮可得到更多提示"}
 obj["spamControl"]	= { label="预防刷屏", tooltip="设置对可能造成刷屏的信息进行控制"}
 obj["cooldowns"]	= { label="冷却通告", tooltip="设置冷却通告"}
---obj["lootAlerts"]	= { label="Loot Alerts", tooltip="Display options for loot related notifications."}
+obj["lootAlerts"]	= { label="拾取通告", tooltip="设置与拾取有关的通告"}
 obj["skillIcons"]	= { label="技能图标", tooltip="设置技能图标"}
 
 
@@ -97,7 +97,7 @@ obj["stickyCrits"]				= { label="爆击粘滞显示", tooltip="使用粘滞样�
 obj["gameDamage"]				= { label="游戏内置伤害", tooltip="在敌人头上显示游戏内置伤害信息"}
 obj["gameHealing"]				= { label="游戏内置治疗", tooltip="在目标头上显示游戏内置治疗信息"}
 obj["enableSounds"]				= { label="启用声音", tooltip="当指定事件和触发器发生时播放声音"}
---obj["textShadowing"]			= { label="Text Shadowing", tooltip="Apply a shadow effect to text to improve font crispness."}
+obj["textShadowing"]			= { label="字体阴影", tooltip="显示字体阴影效果让它们看起来更爽"}
 obj["colorPartialEffects"]		= { label="特效着色", tooltip="给某些特殊战斗效果的信息着色"}
 obj["crushing"]					= { label="碾压", tooltip="显示碾压提示"}
 obj["glancing"]					= { label="偏斜", tooltip="显示偏斜提示"}
@@ -119,9 +119,9 @@ obj["hideSkills"]				= { label="隐藏技能", tooltip="在承受伤害和输出
 obj["hideNames"]				= { label="隐藏名字", tooltip="在承受伤害和输出伤害中不显示单位名字。开启此选项将使你失去某些事件自定义功能，因为它会忽略“%n”代码"}
 obj["allClasses"]				= { label="所有职业"}
 obj["enableCooldowns"]			= { label="启用冷却", tooltip="当冷却结束时显示通告"}
---obj["lootedItems"]				= { label="Looted Items", tooltip="Display notifications when items are looted."}
+obj["lootedItems"]				= { label="拾取物品", tooltip="显示物品拾取."}
 obj["moneyGains"]				= { label="获得金钱", tooltip="显示获得的金钱"}
---obj["alwaysShowQuestItems"]		= { label="Always show quest items", tooltip="Always show quest items regardless of quality selections."}
+obj["alwaysShowQuestItems"]		= { label="总是显示任务物品", tooltip="总是显示任务物品, 无论其是何品质."}
 obj["enableIcons"]				= { label="启用技能图标", tooltip="如果可能，在技能旁显示图标"}
 obj["exclusiveSkills"]			= { label="否则仅显示技能名字", tooltip="如果没有图标，就只显示技能名字"}
 
@@ -157,12 +157,12 @@ obj["triggerParameter"]		= { label="参数:"}
 ------------------------------
 
 obj = L.BUTTONS
---obj["addCustomFont"]			= { label="Add Font", tooltip="Adds a custom font to the list of available fonts.\n\nWARNING: The font file must exist in the target location *BEFORE* WoW was started.\n\nIt is highly recommended to place the file in the MikScrollingBattleText\\Fonts directory to avoid issues."}
---obj["addCustomSound"]			= { label="Add Sound", tooltip="Adds a custom sound to the list of available sounds.\n\nWARNING: The sound file must exist in the target location *BEFORE* WoW was started.\n\nIt is highly recommended to place the file in the MikScrollingBattleText\\Sounds directory to avoid issues."}
---obj["editCustomFont"]			= { tooltip="Click to edit the custom font."}
---obj["deleteCustomFont"]			= { tooltip="Click to remove the custom font from MSBT."}
---obj["editCustomSound"]			= { tooltip="Click to edit the custom sound."}
---obj["deleteCustomSound"]		= { tooltip="Click to remove the custom sound from MSBT."}
+obj["addCustomFont"]			= { label="添加字体", tooltip="向字体列表添加自定义字体.\n\nWARNING: 字体文件必须 *在WOW运行之前* 就放置在目标文件夹内.\n\n推荐将其放置在 MikScrollingBattleText\\Fonts 文件夹."}
+obj["addCustomSound"]			= { label="添加声音", tooltip="想声音列表添加自定义声音.\n\nWARNING: 声音文件必须 *在WOW运行之前* 就放置在目标文件夹内.\n\n推荐将其放置在 MikScrollingBattleText\\Sounds 文件夹."}
+obj["editCustomFont"]			= { tooltip="点击编辑自定义字体."}
+obj["deleteCustomFont"]			= { tooltip="点击将此字体从MSBT中移除."}
+obj["editCustomSound"]			= { tooltip="点击编辑自定义声音."}
+obj["deleteCustomSound"]		= { tooltip="点击将此声音从MSBT中移除."}
 obj["copyProfile"]				= { label="复制配置", tooltip="复制配置文件到新建的配置中"}
 obj["resetProfile"]				= { label="重置配置", tooltip="重置配置至默认设置"}
 obj["deleteProfile"]			= { label="删除配置", tooltip="删除配置文件"}
@@ -203,10 +203,10 @@ obj["skillSubstitutions"]		= { label="技能替换", tooltip="用自定义名称
 obj["addSkill"]					= { label="增加技能", tooltip="增加新技能到列表中"}
 obj["deleteSkill"]				= { tooltip="点击删除技能"}
 obj["cooldownExclusions"]		= { label="冷却排除列表", tooltip="不追踪指定技能的冷却"}
---obj["itemsAllowed"]				= { label="Items Allowed", tooltip="Always show specified items regardless of item quality."}
---obj["itemExclusions"]			= { label="Item Exclusions", tooltip="Prevent specified items from being displayed."}
---obj["addItem"]					= { label="Add Item", tooltip="Add a new item to the list."}
---obj["deleteItem"]				= { tooltip="Click to delete the item."}
+obj["itemsAllowed"]				= { label="允许物品", tooltip="总是显示这些物品, 无论其是何物品品质."}
+obj["itemExclusions"]			= { label="排除物品", tooltip="永远不显示这些物品."}
+obj["addItem"]					= { label="增加物品", tooltip="向列表中增加新的物品."}
+obj["deleteItem"]				= { tooltip="点击删除物品."}
 
 
 ------------------------------
@@ -214,10 +214,10 @@ obj["cooldownExclusions"]		= { label="冷却排除列表", tooltip="不追踪指
 ------------------------------
 
 obj = L.EDITBOXES
---obj["customFontName"]	= { label="Font name:", tooltip="The name used to identify the font.\n\nExample: My Super Font"}
---obj["customFontPath"]	= { label="Font path:", tooltip="The path to the font's file.\n\nNOTE: If the file is located in the recommended MikScrollingBattleText\\Fonts directory, only the filename needs to be entered here instead of th full path.\n\nExample: myFont.ttf "}
---obj["customSoundName"]	= { label="Sound name:", tooltip="The name used to identify the sound.\n\nExample: My Sound"}
---obj["customSoundPath"]	= { label="Sound path:", tooltip="The path to the sounds's file.\n\nNOTE: If the file is located in the recommended MikScrollingBattleText\\Sounds directory, only the filename needs to be entered here instead of th full path.\n\nExample: mySound.mp3 "}
+obj["customFontName"]	= { label="字体名:", tooltip="用来确定字体的名字.\n\n例如: 我的字体"}
+obj["customFontPath"]	= { label="字体路径:", tooltip="字体文件的路径.\n\n注意: 如果文件在 MikScrollingBattleText\\Fonts 中的话, 只需要输入文件名就可以.\n\n例如: myFont.ttf "}
+obj["customSoundName"]	= { label="音效名:", tooltip="用来确定音效的名字.\n\nExample: 我的音效"}
+obj["customSoundPath"]	= { label="音效路径:", tooltip="音效文件的路径.\n\n注意: 如果文件在 MikScrollingBattleText\\Sounds 中的话, 只需要输入文件名就可以.\n\n例如: mySound.mp3 "}
 obj["copyProfile"]		= { label="新建配置：", tooltip="输入新建配置的名称"}
 obj["scrollAreaName"]	= { label="新建滚动区域:", tooltip="新建滚动区域的名称"}
 obj["xOffset"]			= { label="X值：", tooltip="所选择滚动区域的X值"}
@@ -227,7 +227,8 @@ obj["soundFile"]		= { label="声音文件：", tooltip="事件发生时播放的
 obj["iconSkill"]		= { label="技能图标：", tooltip="事件发生时, 法术的图标会被显示.\n\n如果没有指定, MSBT会自动选择一个合适的图标.\n\n注意: 法术ID必须被用来代替一个不在你法术书中的法术. 大多数数据库网站都可以用来查找."}
 obj["skillName"]		= { label="技能名称：", tooltip="所增加的技能的名字"}
 obj["substitutionText"]	= { label="替代文本：", tooltip="用来代替技能名字的文本"}
---obj["itemName"]			= { label="Item name:", tooltip="The name of the item to add."}
+obj["itemName"]			= { label="物品名称:", tooltip="要添加物品的名字."}
+
 
 ------------------------------
 -- Interface sliders
@@ -273,12 +274,12 @@ obj["HEALING_TAKEN"]		= "%a - 受到治疗总数.\n"
 obj["DAMAGE_DONE"]			= "%a - 输出伤害总数.\n"
 obj["HEALING_DONE"]			= "%a - 输出治疗总数.\n"
 obj["ABSORBED_AMOUNT"]		= "%a - 吸收伤害总数.\n"
---obj["AURA_AMOUNT"]			= "%a - Amount of stacks for the aura.\n"
+obj["AURA_AMOUNT"]			= "%a - 光环的堆叠数量.\n"
 obj["ENERGY_AMOUNT"]		= "%a - 能量总数.\n"
 obj["CP_AMOUNT"]			= "%a - 你的连击点总数.\n"
 obj["HONOR_AMOUNT"]			= "%a - 荣誉总数.\n"
 obj["REP_AMOUNT"]			= "%a - 声望总数.\n"
---obj["ITEM_AMOUNT"]			= "%a - Amount of the item looted.\n"
+obj["ITEM_AMOUNT"]			= "%a - 拾取物品的数量.\n"
 obj["SKILL_AMOUNT"]			= "%a - 技能点总数.\n"
 obj["EXPERIENCE_AMOUNT"]	= "%a - 获得经验总数.\n"
 obj["ATTACKER_NAME"]		= "%n - 攻击者名字.\n"
@@ -302,9 +303,9 @@ obj["SHARD_NAME"]			= "%e - 本地灵魂碎片的名字.\n"
 obj["EMOTE_TEXT"]			= "%e - 表情文字.\n"
 obj["MONEY_TEXT"]			= "%e - 获取金钱文字.\n"
 obj["COOLDOWN_NAME"]		= "%e - 就绪的法术名字.\n"
---obj["ITEM_NAME"]			= "%e - The name of the looted item.\n"
+obj["ITEM_NAME"]			= "%e - 拾取物品的名称.\n"
 obj["POWER_TYPE"]			= "%p - 能力类别 (能量, 怒气, 法力).\n"
---obj["TOTAL_ITEMS"]			= "%t - Total number of the looted item in inventory."
+obj["TOTAL_ITEMS"]			= "%t - 拾取物品的总数."
 
 
 ------------------------------
@@ -323,7 +324,7 @@ obj["INCOMING_IMMUNE"]						= { label="近战免疫", tooltip="显示免疫近�
 obj["INCOMING_SPELL_DAMAGE"]				= { label="技能伤害", tooltip="显示被技能伤害"}
 obj["INCOMING_SPELL_DAMAGE_CRIT"]			= { label="技能爆击", tooltip="显示被技能爆击"}
 obj["INCOMING_SPELL_DOT"]					= { label="技能持续伤害", tooltip="显示被技能持续伤害"}
---obj["INCOMING_SPELL_DOT_CRIT"]				= { label="Skill DoT Crits", tooltip="Enable incoming skill damage over time crits."}
+obj["INCOMING_SPELL_DOT_CRIT"]				= { label="技能持续伤害暴击", tooltip="显示被技能持续伤害暴击."}
 obj["INCOMING_SPELL_DAMAGE_SHIELD"]			= { label="伤害护盾伤害", tooltip="显示被伤害护盾伤害."}
 obj["INCOMING_SPELL_DAMAGE_SHIELD_CRIT"]	= { label="伤害护盾爆击", tooltip="显示伤被害护盾爆击."}
 obj["INCOMING_SPELL_MISS"]					= { label="技能未命中", tooltip="显示未被技能命中"}
@@ -352,7 +353,7 @@ obj["PET_INCOMING_IMMUNE"]						= { label="近战免疫", tooltip="显示宠物�
 obj["PET_INCOMING_SPELL_DAMAGE"]				= { label="技能伤害", tooltip="显示宠物被技能伤害"}
 obj["PET_INCOMING_SPELL_DAMAGE_CRIT"]			= { label="技能爆击", tooltip="显示宠物被技能爆击"}
 obj["PET_INCOMING_SPELL_DOT"]					= { label="技能持续伤害", tooltip="显示宠物被技能持续伤害"}
---obj["PET_INCOMING_SPELL_DOT_CRIT"]				= { label="Skill DoT Crits", tooltip="Enable your pet's incoming skill damage over time crits."}
+obj["PET_INCOMING_SPELL_DOT_CRIT"]				= { label="技能持续伤害暴击", tooltip="显示宠物被技能持续伤害暴击."}
 obj["PET_INCOMING_SPELL_DAMAGE_SHIELD"]			= { label="伤害护盾伤害", tooltip="显示宠物被伤害护盾的伤害."}
 obj["PET_INCOMING_SPELL_DAMAGE_SHIELD_CRIT"]	= { label="伤害护盾爆击", tooltip="显示宠物被伤害护盾的爆击."}
 obj["PET_INCOMING_SPELL_MISS"]					= { label="技能未命中", tooltip="显示宠物未被技能命中"}
@@ -384,7 +385,7 @@ obj["OUTGOING_EVADE"]						= { label="近战闪避", tooltip="显示敌人闪避
 obj["OUTGOING_SPELL_DAMAGE"]				= { label="技能伤害", tooltip="显示技能伤害敌人"}
 obj["OUTGOING_SPELL_DAMAGE_CRIT"]			= { label="技能爆击", tooltip="显示技能爆击敌人"}
 obj["OUTGOING_SPELL_DOT"]					= { label="技能持续伤害", tooltip="显示技能持续伤害敌人"}
---obj["OUTGOING_SPELL_DOT_CRIT"]				= { label="Skill DoT Crits", tooltip="Enable outgoing skill damage over time crits."}
+obj["OUTGOING_SPELL_DOT_CRIT"]				= { label="技能持续伤害暴击", tooltip="显示输出技能持续伤害暴击."}
 obj["OUTGOING_SPELL_DAMAGE_SHIELD"]			= { label="伤害护盾伤害", tooltip="显示伤害护盾的伤害."}
 obj["OUTGOING_SPELL_DAMAGE_SHIELD_CRIT"]	= { label="伤害护盾爆击", tooltip="显示伤害护盾的爆击."}
 obj["OUTGOING_SPELL_MISS"]					= { label="技能未命中", tooltip="显示技能未命中敌人"}
@@ -415,7 +416,7 @@ obj["PET_OUTGOING_EVADE"]						= { label="近战闪避", tooltip="显示宠物�
 obj["PET_OUTGOING_SPELL_DAMAGE"]				= { label="技能伤害", tooltip="显示宠物的技能伤害"}
 obj["PET_OUTGOING_SPELL_DAMAGE_CRIT"]			= { label="技能爆击", tooltip="显示宠物的技能爆击"}
 obj["PET_OUTGOING_SPELL_DOT"]					= { label="技能持续伤害", tooltip="显示宠物技能的持续伤害"}
---obj["PET_OUTGOING_SPELL_DOT_CRIT"]				= { label="Skill DoT Crits", tooltip="Enable outgoing skill damage over time crits."}
+obj["PET_OUTGOING_SPELL_DOT_CRIT"]				= { label="技能持续伤害暴击", tooltip="显示宠物的技能持续伤害暴击."}
 obj["PET_OUTGOING_SPELL_DAMAGE_SHIELD"]			= { label="伤害护盾伤害", tooltip="显示宠物的伤害护盾的伤害."}
 obj["PET_OUTGOING_SPELL_DAMAGE_SHIELD_CRIT"]	= { label="伤害护盾爆击", tooltip="显示宠物的伤害护盾的爆击."}
 obj["PET_OUTGOING_SPELL_MISS"]					= { label="技能未命中", tooltip="显示宠物技能攻击未命中敌人"}
@@ -547,7 +548,7 @@ obj["unitID"]					= "玩家 ID"
 obj["unitReaction"]				= "玩家反应"
 
 -- Exception conditions.
---obj["activeTalents"]			= "Active Talents"
+obj["activeTalents"]			= "启用天赋"
 obj["buffActive"]				= "BUFF生效"
 obj["buffInactive"]				= "Buff失效"
 obj["currentCP"]				= "当前连击点"
