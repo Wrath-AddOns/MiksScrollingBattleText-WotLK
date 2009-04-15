@@ -1526,8 +1526,10 @@ local function EventsTab_SetupEvents()
  EventsTab_AddEvent(category, "PET_OUTGOING_DISPEL", c.BUFF_NAME .. c.SKILL_LONG)
  
  category = "NOTIFICATION_EVENTS"
- EventsTab_AddEvent(category, "NOTIFICATION_DEBUFF", c.AURA_AMOUNT .. c.DEBUFF_NAME .. c.SKILL_LONG)
- EventsTab_AddEvent(category, "NOTIFICATION_BUFF", c.AURA_AMOUNT .. c.BUFF_NAME .. c.SKILL_LONG)
+ EventsTab_AddEvent(category, "NOTIFICATION_DEBUFF", c.DEBUFF_NAME .. c.SKILL_LONG)
+ EventsTab_AddEvent(category, "NOTIFICATION_DEBUFF_STACK", c.AURA_AMOUNT .. c.DEBUFF_NAME .. c.SKILL_LONG)
+ EventsTab_AddEvent(category, "NOTIFICATION_BUFF", c.BUFF_NAME .. c.SKILL_LONG)
+ EventsTab_AddEvent(category, "NOTIFICATION_BUFF_STACK", c.AURA_AMOUNT .. c.BUFF_NAME .. c.SKILL_LONG)
  EventsTab_AddEvent(category, "NOTIFICATION_ITEM_BUFF", c.ITEM_BUFF_NAME .. c.SKILL_LONG)
  EventsTab_AddEvent(category, "NOTIFICATION_DEBUFF_FADE", c.DEBUFF_NAME .. c.SKILL_LONG)
  EventsTab_AddEvent(category, "NOTIFICATION_BUFF_FADE", c.BUFF_NAME .. c.SKILL_LONG)

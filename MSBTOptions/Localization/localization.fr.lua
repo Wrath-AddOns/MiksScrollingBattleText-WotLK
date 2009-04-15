@@ -434,7 +434,9 @@ obj["PET_OUTGOING_DISPEL"]						= { label="Dissipation", tooltip="Affiche les di
 
 obj = L.NOTIFICATION_EVENTS
 obj["NOTIFICATION_DEBUFF"]				= { label="Debuffs", tooltip="Afficher les debuffs par lesquels vous êtes affectés."}
+--obj["NOTIFICATION_DEBUFF_STACK"]		= { label="Debuff Stacks", tooltip="Enable debuff stacks you are afflicted by."}
 obj["NOTIFICATION_BUFF"]				= { label="Buffs", tooltip="Afficher les buffs reçus."}
+--obj["NOTIFICATION_BUFF_STACK"]			= { label="Buff Stacks", tooltip="Enable buff stacks you receive."}
 obj["NOTIFICATION_ITEM_BUFF"]			= { label="Buffs des objets", tooltip="Afficher les buffs reçus par les objets."}
 obj["NOTIFICATION_DEBUFF_FADE"]			= { label="Fin des debuffs", tooltip="Signaler la fin des debuffs."}
 obj["NOTIFICATION_BUFF_FADE"]			= { label="Fin des buffs", tooltip="Signaler la fin des buffs."}

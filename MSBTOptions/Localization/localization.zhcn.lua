@@ -436,7 +436,9 @@ obj["PET_OUTGOING_DISPEL"]						= { label="驱散", tooltip="显示宠物的驱�
 
 obj = L.NOTIFICATION_EVENTS
 obj["NOTIFICATION_DEBUFF"]				= { label="Debuff", tooltip="显示你遭受的Debuff"}
+--obj["NOTIFICATION_DEBUFF_STACK"]		= { label="Debuff Stacks", tooltip="Enable debuff stacks you are afflicted by."}
 obj["NOTIFICATION_BUFF"]				= { label="Buff", tooltip="显示你得到的Buff"}
+--obj["NOTIFICATION_BUFF_STACK"]			= { label="Buff Stacks", tooltip="Enable buff stacks you receive."}
 obj["NOTIFICATION_ITEM_BUFF"]			= { label="物品Buff", tooltip="显示使用物品得到的Buff"}
 obj["NOTIFICATION_DEBUFF_FADE"]			= { label="Debuff消失", tooltip="显示从你身上消失的Debuff"}
 obj["NOTIFICATION_BUFF_FADE"]			= { label="Buff消失", tooltip="显示从你身上消失的Buff"}

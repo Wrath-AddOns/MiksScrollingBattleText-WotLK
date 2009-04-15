@@ -434,7 +434,9 @@ obj["PET_OUTGOING_DISPEL"]						= { label="해제", tooltip="소환수의 해제
 
 obj = L.NOTIFICATION_EVENTS
 obj["NOTIFICATION_DEBUFF"]				= { label="디버프", tooltip="당신이 걸린 디버프를 알려줍니다."}
+--obj["NOTIFICATION_DEBUFF_STACK"]		= { label="Debuff Stacks", tooltip="Enable debuff stacks you are afflicted by."}
 obj["NOTIFICATION_BUFF"]				= { label="버프", tooltip="당신이 받은 버프를 활성화합니다."}
+--obj["NOTIFICATION_BUFF_STACK"]			= { label="Buff Stacks", tooltip="Enable buff stacks you receive."}
 obj["NOTIFICATION_ITEM_BUFF"]			= { label="아이템 버프", tooltip="당신이 받은 아이템 버프를 알려줍니다."}
 obj["NOTIFICATION_DEBUFF_FADE"]			= { label="디버프 사라짐", tooltip="사라진 디버프를 알려줍니다."}
 obj["NOTIFICATION_BUFF_FADE"]			= { label="버프 사라짐", tooltip="사라진 버프를 알려줍니다."}

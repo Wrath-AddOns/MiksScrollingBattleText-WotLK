@@ -68,6 +68,7 @@ local SPELL_BF_FIREBALL			= GetSkillName(57761)
 local SPELL_CLEARCASTING		= GetSkillName(12536)
 local SPELL_COUNTER_ATTACK		= GetSkillName(SPELLID_COUNTER_ATTACK)
 local SPELL_ECLIPSE				= GetSkillName(48517)
+local SPELL_ERADICATION			= GetSkillName(47195)
 local SPELL_EXECUTE				= GetSkillName(SPELLID_EXECUTE)
 local SPELL_FINGERS_OF_FROST	= GetSkillName(44544)
 local SPELL_FREEZING_FOG       	= GetSkillName(59052)
@@ -804,13 +805,25 @@ local masterProfile = {
    colorR		= 0,
    colorG		= 0.5,
    colorB		= 0.5,
-   message		= "[%sl (%a)]",
+   message		= "[%sl]",
+  },
+  NOTIFICATION_DEBUFF_STACK = {
+   colorR		= 0,
+   colorG		= 0.5,
+   colorB		= 0.5,
+   message		= "[%sl %a]",
   },
   NOTIFICATION_BUFF = {
    colorR		= 0.698,
    colorG		= 0.698,
    colorB		= 0,
-   message		= "[%sl (%a)]",
+   message		= "[%sl]",
+  },
+  NOTIFICATION_BUFF_STACK = {
+   colorR		= 0.698,
+   colorG		= 0.698,
+   colorB		= 0,
+   message		= "[%sl %a]",
   },
   NOTIFICATION_ITEM_BUFF = {
    colorR		= 0.698,
@@ -946,7 +959,7 @@ local masterProfile = {
   },
   NOTIFICATION_LOOT = {
    colorB		= 0,
-   message		= "%e (%t)",
+   message		= "+%a %e (%t)",
    scrollArea	= "Static",
   },
  }, -- End events
@@ -1010,6 +1023,15 @@ local masterProfile = {
    classes			= "DRUID",
    mainEvents		= "SPELL_AURA_APPLIED{skillName;;eq;;" .. SPELL_ECLIPSE .. ";;recipientAffiliation;;eq;;" .. FLAG_YOU .. "}",
   },
+  MSBT_TRIGGER_ERADICATION = {
+   colorR			= 0.118,
+   colorG			= 0.882,
+   message			= SPELL_ERADICATION .. "!",
+   alwaysSticky		= true,
+   fontSize			= 26,
+   classes			= "WARLOCK",
+   mainEvents		= "SPELL_AURA_APPLIED{skillName;;eq;;" .. SPELL_ERADICATION .. ";;recipientAffiliation;;eq;;" .. FLAG_YOU .. "}",
+  },
   MSBT_TRIGGER_EXECUTE = {
    colorB			= 0,
    message			= SPELL_EXECUTE .. "!",
@@ -1065,7 +1087,7 @@ local masterProfile = {
    alwaysSticky		= true,
    fontSize			= 26,
    classes			= "MAGE",
-   mainEvents		= "SPELL_AURA_APPLIED{skillName;;eq;;" .. SPELL_IMPACT .. ";;recipientAffiliation;;eq;;" .. TARGET_TARGET .. "}"
+   mainEvents		= "SPELL_AURA_APPLIED{skillName;;eq;;" .. SPELL_IMPACT .. ";;recipientAffiliation;;eq;;" .. FLAG_YOU .. "}"
   },
   MSBT_TRIGGER_KILL_SHOT = {
    colorG			= 0.25,

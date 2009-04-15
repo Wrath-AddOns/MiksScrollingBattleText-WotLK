@@ -437,7 +437,9 @@ obj = L.OUTGOING_PET_EVENTS
 
 obj = L.NOTIFICATION_EVENTS
 --obj["NOTIFICATION_DEBUFF"]				= { label="Debuffs", tooltip="Enable debuffs you are afflicted by."}
+--obj["NOTIFICATION_DEBUFF_STACK"]		= { label="Debuff Stacks", tooltip="Enable debuff stacks you are afflicted by."}
 --obj["NOTIFICATION_BUFF"]				= { label="Buffs", tooltip="Enable buffs you receive."}
+--obj["NOTIFICATION_BUFF_STACK"]			= { label="Buff Stacks", tooltip="Enable buff stacks you receive."}
 --obj["NOTIFICATION_ITEM_BUFF"]			= { label="Item Buffs", tooltip="Enable buffs your items receive."}
 --obj["NOTIFICATION_DEBUFF_FADE"]			= { label="Debuff Fades", tooltip="Enable debuffs that have faded from you."}
 --obj["NOTIFICATION_BUFF_FADE"]			= { label="Buff Fades", tooltip="Enable buffs that have faded from you."}

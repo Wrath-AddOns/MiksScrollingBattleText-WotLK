@@ -847,9 +847,15 @@ local function AuraHandler(parserEvent, currentProfile)
   -- Ignore the event if it's suppressed due to a trigger.
   if (triggerSuppressions[effectName]) then return end
 
-  -- Set notificaiton buff/debuff and append fade prefix if the aura is fading.   
+  -- Set notification buff/debuff.
   eventTypeString = "NOTIFICATION_" .. parserEvent.auraType
-  if (parserEvent.isFade) then eventTypeString = eventTypeString .. "_FADE" end
+  
+ -- Append stack or fade prefix if needed.
+ if (not parserEvent.isFade) then
+  if (parserEvent.amount > 1) then eventTypeString = eventTypeString .. "_STACK" end
+ else
+  eventTypeString = eventTypeString .. "_FADE"
+ end
 
  -- Aura is pertaining to another unit.
  else

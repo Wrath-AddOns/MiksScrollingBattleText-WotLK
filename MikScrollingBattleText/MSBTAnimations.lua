@@ -21,6 +21,7 @@ local L = MikSBT.translations
 -- Local references to various functions for faster access.
 local table_remove = table.remove
 local string_find = string.find
+local string_lower = string.lower
 local IsModDisabled = MSBTProfiles.IsModDisabled
 local EraseTable = MikSBT.EraseTable
 
@@ -248,7 +249,7 @@ local function Display(message, saSettings, isSticky, colorR, colorG, colorB, fo
  fontPath = fontPath or DEFAULT_FONT_PATH
  fontString:ClearAllPoints()
  fontString:SetFont(fontPath, fontSize, fontOutline)
- if (fontPath ~= fontString:GetFont()) then fontString:SetFont(DEFAULT_FONT_PATH, fontSize, fontOutline) end
+ if (string_lower(fontPath) ~= string_lower(fontString:GetFont())) then fontString:SetFont(DEFAULT_FONT_PATH, fontSize, fontOutline) end
  fontString:SetTextColor(colorR, colorG, colorB)
  fontString:SetDrawLayer(isSticky and "OVERLAY" or "ARTWORK")
  if (not currentProfile.textShadowingDisabled) then
