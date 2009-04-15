@@ -159,8 +159,8 @@ obj["triggerParameter"]		= { label="參數:"}
 ------------------------------
 
 obj = L.BUTTONS
-obj["addCustomFont"]			= { label="添加字體", tooltip="向字體列表添加自定義字體.\n\nWARNING: 字體檔必須 *在WOW運行之前* 就放置在目標檔夾內.\n\n推薦將其放置在 MikScrollingBattleText\\Fonts 文件夾."}
-obj["addCustomSound"]			= { label="添加聲音", tooltip="想聲音列表添加自定義聲音.\n\nWARNING: 音效檔案必須 *在WOW運行之前* 就放置在目標檔夾內.\n\n推薦將其放置在 MikScrollingBattleText\\Sounds 文件夾."}
+obj["addCustomFont"]			= { label="添加字體", tooltip="向字體列表添加自定義字體.\n\n警告: 字體檔必須 *在WOW運行之前* 就放置在目標檔夾內.\n\n推薦將其放置在 MikScrollingBattleText\\Fonts 文件夾."}
+obj["addCustomSound"]			= { label="添加聲音", tooltip="想聲音列表添加自定義聲音.\n\n警告: 音效檔案必須 *在WOW運行之前* 就放置在目標檔夾內.\n\n推薦將其放置在 MikScrollingBattleText\\Sounds 文件夾."}
 obj["editCustomFont"]			= { tooltip="點擊編輯自定義字體."}
 obj["deleteCustomFont"]			= { tooltip="點擊將此字體從MSBT中移除."}
 obj["editCustomSound"]			= { tooltip="點擊編輯自定義聲音."}
