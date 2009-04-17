@@ -37,6 +37,9 @@ L.FONT_FILES = {
 L.DEFAULT_FONT_NAME = "[WoW] 기본 글꼴"
 
 
+------------------------------
+-- Commands
+------------------------------
 L.COMMAND_USAGE = {
  "사용법: " .. MikSBT.COMMAND .. " <명령어> [옵션]",
  " 명령어:",
@@ -81,7 +84,7 @@ L.MSG_STATIC			= "정적 메시지"
 L.MSG_COMBAT					= "전투 상태"
 L.MSG_DISPEL					= "해제"
 L.MSG_CP						= "연계 점수"
-L.MSG_CP_FULL					= "연계 점수 (마무리)"
+L.MSG_CP_FULL					= "마무리 공격"
 L.MSG_KILLING_BLOW				= "결정타"
 L.MSG_TRIGGER_LOW_HEALTH		= "생명력 낮음"
 L.MSG_TRIGGER_LOW_MANA			= "마나 낮음"
