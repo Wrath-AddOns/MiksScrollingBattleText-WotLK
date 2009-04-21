@@ -205,13 +205,13 @@
       <li>All Relevant Classes - Low Health, Low Mana, Low Pet Health, Viper Sting</li>
       <li>Death Knight - Rime, Rune Strike</li>
       <li>Druid - Clearcasting, Eclipse, Owlkin Frenzy</li> 
-      <li>Hunter - Counterattack, Kill Shot</li>
+      <li>Hunter - Counterattack, Kill Shot, Lock and Load</li>
       <li>Mage - Brain Freeze, Clearcasting, Fingers of Frost, Frostbite, Hot Streak, Impact, Missile Barrage</li>
       <li>Paladin - Hammer of Wrath, The Art of War</li>
       <li>Priest - Clearcasting</li>
       <li>Rogue - Riposte</li>
       <li>Shaman - Clearcasting, Maelstrom Weapon x5, Tidal Waves</li>
-      <li>Warlock - Backlash, Eradication, Molten Core, Nightfall</li>
+      <li>Warlock - Backlash, Decimation, Eradication, Molten Core, Nightfall</li>
       <li>Warrior - Bloodsurge, Execute, Overpower, Rampage, Revenge, Sudden Death, Taste for Blood, Victory Rush</li>
      </ul>
     </ul>
@@ -433,19 +433,19 @@
      <tr>
       <td class="ParameterName" nowrap="nowrap">Key Skill Usage:</td>
       <td class="ParameterDesc">
-       Many players find it useful to create a trigger for when certain key abilities such as Blessing of Freedom or Blessing of Protection are used while
+       Many players find it useful to create a trigger for when certain key abilities such as Hand of Freedom or Hand of Protection are used while
        in the arena.  Most of these effects involve successfully casting a spell and so the <a href="#MainEvents">main event</a> type will usually be "Cast Success".
        <br /><br />
        The most common <a href="#MainEventConditions">conditions</a> used for this category of triggers are "Skill Name" and "Source Unit Reaction".
        <br /><br />
-       <b><u>Blessing of Protection Used</u></b>
+       <b><u>Hand of Protection Used</u></b>
        <br /><br />
 	   Output Message: Melee Bubble!<br />
        Main Events:
        <div class="TriggerParameter">
         Cast Success
         <div class="TriggerParameter">
-         Skill Name - Is Equal To - Blessing of Protection<br />
+         Skill Name - Is Equal To - Hand of Protection<br />
          Source Unit Reaction - Is Equal To - Hostile<br />
         </div>
        </div>
@@ -1180,6 +1180,31 @@
      <td class="ParameterName" nowrap="nowrap"><a name="WhatsNew"></a>Latest</td>
      <td class="ParameterDesc">
       <ul>
+       <li>
+        Reworked the cooldown tracking system with dynamic updates in mind:
+        <ul>
+         <li>Dynamically adjusted cooldowns such as glyphed Guardian Spirit will now work correctly.</li>
+         <li>
+          Death Knight cooldowns will now consider rune cooldowns.  For example, consider Rune Tap only has 
+          4 seconds remaining, but a blood rune won't be available for 6 seconds.  The notification won't
+          display until the rune is available.
+         </li>
+         <li>The small "time drift" that could occur on long cooldowns should no longer occur.</li>
+         <li>Removed old pestilence cooldown information.</li>
+        </ul>
+       </li>
+       <br />
+       <li>Added default trigger for Decimate.</li>
+       <li>Added default trigger for Lock and Load.</li>
+       <li>Updated Korean translations from chikid.</li>
+       <li>Updated Simplified and Traditional Chinese translations from yleaf.</li>
+      </ul>
+     </td>
+    </tr>
+    <tr>
+     <td class="ParameterName" nowrap="nowrap">5.4.44</td>
+     <td class="ParameterDesc">
+      <ul>
        <li>Created new events for buff and debuff stacks.  They only apply when there are 2 or more auras stacked.</li>
        <li>Changed default loot message to include the amount of the item looted in addition to the total in inventory.</li>
        <li>Modified Impact trigger to use the new mechanics.</li>
@@ -1193,7 +1218,8 @@
      <td class="ParameterName" nowrap="nowrap">5.4.42</td>
      <td class="ParameterDesc">
       <ul>
-       <li>Created an in-game editor for managing custom media:</li>
+       <li>
+        Created an in-game editor for managing custom media:
         <ul>
          <li>Entries will persist between game sessions and version upgrades.</li>
          <li>Entries are not tied to profiles meaning they will persist through profile resets.</li>
@@ -1205,7 +1231,8 @@
         </ul>
        </li>
        <br />
-       <li>Added a new loot alerting system with several options:</li>
+       <li>
+        Added a new loot alerting system with several options:
         <ul>
          <li>Provides a total count of how many of the looted item are now in inventory and, optionally, how many items were looted (via %a event code).</li>
          <li>Looted items are colored according to their quality (grey, green, etc)</li>

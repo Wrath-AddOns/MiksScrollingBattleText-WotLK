@@ -32,13 +32,13 @@ local HandleCooldowns = MSBTTriggers.HandleCooldowns
 -- Constants.
 -------------------------------------------------------------------------------
 
--- The minimum amount of time to delay between checking cooldowns.
-local MIN_COOLDOWN_UPDATE_INTERVAL = 0.1
+-- The minimum and maximum amount of time to delay between checking cooldowns.
+local MIN_COOLDOWN_UPDATE_DELAY = 0.1
+local MAX_COOLDOWN_UPDATE_DELAY = 5
 
 -- Spell names.
 local SPELL_COLD_SNAP		= GetSkillName(11958)
 local SPELL_MIND_FREEZE		= GetSkillName(47528)
-local SPELL_PESTILENCE		= GetSkillName(50842)
 local SPELL_PREPARATION		= GetSkillName(14185)
 local SPELL_READINESS		= GetSkillName(23989)
 
@@ -66,10 +66,8 @@ local resetAbilities = {}
 local runeCooldownAbilities = {}
 local cooldownSpellName
 
--- Holds the shortest remaining cooldown time.
-local shortestRemaining = MIN_COOLDOWN_UPDATE_INTERVAL
-
 -- Used for timing between updates.
+local updateDelay = MIN_COOLDOWN_UPDATE_DELAY
 local lastUpdate = 0
 
 
@@ -86,13 +84,13 @@ local function OnSpellCast(spellName)
 
  -- An ability that resets cooldowns was cast.
  if (resetAbilities[spellName]) then
-  -- Remove cooldowns that still have an internal timer, but the game is reporting otherwise.
-  for spellName, cooldownRemaining in pairs(activeCooldowns) do
+  -- Remove active cooldowns that the game is now reporting inactive.
+  for spellName, originalDuration in pairs(activeCooldowns) do
    local startTime, duration = GetSpellCooldown(spellName)
-   if (duration <= 1.5 and (cooldownRemaining - lastUpdate) > 1.5) then activeCooldowns[spellName] = nil end
+   if (duration <= 1.5 and originalDuration > 1.5) then activeCooldowns[spellName] = nil end
 
-   -- Set the shortest remaining cooldown to the minimum update interval so it will be recalculated.
-   shortestRemaining = MIN_COOLDOWN_UPDATE_INTERVAL
+   -- Force an update.
+   updateDelay = MIN_COOLDOWN_UPDATE_DELAY
   end
  end
 
@@ -112,10 +110,10 @@ local function OnSpellUpdateCooldown()
   if (enabled == 1) then
    -- Add the spell to the active cooldowns list if the cooldown is longer than the cooldown threshold.
    if (duration >= MSBTProfiles.currentProfile.cooldownThreshold) then
-    activeCooldowns[spellName] = duration + lastUpdate
+    activeCooldowns[spellName] = duration
 
-    -- Set the shortest remaining cooldown to the minimum update interval so it will be recalculated.
-    shortestRemaining = MIN_COOLDOWN_UPDATE_INTERVAL
+    -- Force an update.
+    updateDelay = MIN_COOLDOWN_UPDATE_DELAY
 
     -- Check if the event frame is not visible and make it visible so the OnUpdate events start firing.
     -- This is done to keep the number of OnUpdate events down to a minimum for better performance.
@@ -141,10 +139,10 @@ local function OnSpellUpdateCooldown()
 
    -- Add the spell to the active cooldowns list if the cooldown is longer than the cooldown threshold.
    if (duration >= MSBTProfiles.currentProfile.cooldownThreshold) then
-    activeCooldowns[cooldownSpellName] = duration + lastUpdate
+    activeCooldowns[cooldownSpellName] = duration
 
-    -- Set the shortest remaining cooldown to the minimum update interval so it will be recalculated.
-    shortestRemaining = MIN_COOLDOWN_UPDATE_INTERVAL
+    -- Force an update.
+    updateDelay = MIN_COOLDOWN_UPDATE_DELAY
   
     -- Check if the event frame is not visible and make it visible so the OnUpdate events start firing.
     -- This is done to keep the number of OnUpdate events down to a minimum for better performance.
@@ -169,13 +167,16 @@ local function OnUpdate(this, elapsed)
  lastUpdate = lastUpdate + elapsed
 
  -- Check if it's time for an update.
- if (lastUpdate >= shortestRemaining) then
-  -- Reset the shortest remaining cooldown.
-  shortestRemaining = 65535
-  
+ if (lastUpdate >= updateDelay) then
+  -- Reset the update delay to the max value.
+  updateDelay = MAX_COOLDOWN_UPDATE_DELAY
+
   -- Loop through all of the active cooldowns.
-  for spellName, cooldownRemaining in pairs(activeCooldowns) do
-   cooldownRemaining = cooldownRemaining - lastUpdate
+  local currentTime = GetTime()
+  for spellName in pairs(activeCooldowns) do
+   -- Calculate the remaining cooldown.
+   local startTime, duration = GetSpellCooldown(spellName)
+   local cooldownRemaining = startTime + duration - currentTime
 
    -- Cooldown completed.
    if (cooldownRemaining <= 0) then
@@ -194,13 +195,12 @@ local function OnUpdate(this, elapsed)
 
    -- Cooldown NOT completed.
    else
-    activeCooldowns[spellName] = cooldownRemaining
-    if (cooldownRemaining < shortestRemaining) then shortestRemaining = cooldownRemaining end
+    if (cooldownRemaining < updateDelay) then updateDelay = cooldownRemaining end
    end
   end
 
-  -- Set the shortest cooldown to the min update interval if it's less.
-  if (shortestRemaining < MIN_COOLDOWN_UPDATE_INTERVAL) then shortestRemaining = MIN_COOLDOWN_UPDATE_INTERVAL end
+  -- Ensure the update delay isn't less than the min value.
+  if (updateDelay < MIN_COOLDOWN_UPDATE_DELAY) then updateDelay = MIN_COOLDOWN_UPDATE_DELAY end
 
   -- Hide the event frame if there are no active cooldowns so the OnUpdate events stop firing.
   -- This is done to keep the number of OnUpdate events down to a minimum for better performance.
@@ -290,7 +290,6 @@ local function OnLoad()
  
  -- Set the death knight abilities that are the same as the rune cooldown.
  runeCooldownAbilities[SPELL_MIND_FREEZE] = true
- runeCooldownAbilities[SPELL_PESTILENCE] = true
 end
 
 

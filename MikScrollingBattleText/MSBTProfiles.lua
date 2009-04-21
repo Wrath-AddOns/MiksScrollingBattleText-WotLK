@@ -67,6 +67,7 @@ local SPELL_BRAIN_FREEZE		= GetSkillName(44546)
 local SPELL_BF_FIREBALL			= GetSkillName(57761)
 local SPELL_CLEARCASTING		= GetSkillName(12536)
 local SPELL_COUNTER_ATTACK		= GetSkillName(SPELLID_COUNTER_ATTACK)
+local SPELL_DECIMATION			= GetSkillName(63165)
 local SPELL_ECLIPSE				= GetSkillName(48517)
 local SPELL_ERADICATION			= GetSkillName(47195)
 local SPELL_EXECUTE				= GetSkillName(SPELLID_EXECUTE)
@@ -77,7 +78,8 @@ local SPELL_HAMMER_OF_WRATH		= GetSkillName(SPELLID_HAMMER_OF_WRATH)
 local SPELL_HOT_STREAK			= GetSkillName(44445)
 local SPELL_IMPACT				= GetSkillName(11103)
 local SPELL_KILL_SHOT			= GetSkillName(SPELLID_KILL_SHOT)
-local SPELL_KILLING_MACHINE     = GetSkillName(51124)
+local SPELL_KILLING_MACHINE		= GetSkillName(51124)
+local SPELL_LOCK_AND_LOAD		= GetSkillName(56453)
 local SPELL_MAELSTROM_WEAPON	= GetSkillName(53817)
 local SPELL_MISSILE_BARRAGE		= GetSkillName(44401)
 local SPELL_MOLTEN_CORE			= GetSkillName(47383)
@@ -1013,6 +1015,15 @@ local masterProfile = {
    exceptions		= "unavailableSkill;;eq;;" .. SPELL_COUNTER_ATTACK,
    iconSkill		= SPELLID_COUNTER_ATTACK,
   },
+  MSBT_TRIGGER_DECIMATION = {
+   colorG			= 0.627,
+   colorB			= 0.627,
+   message			= SPELL_DECIMATION .. "!",
+   alwaysSticky		= true,
+   fontSize			= 26,
+   classes			= "WARLOCK",
+   mainEvents		= "SPELL_AURA_APPLIED{skillName;;eq;;" .. SPELL_DECIMATION .. ";;recipientAffiliation;;eq;;" .. FLAG_YOU .. "}",
+  },
   MSBT_TRIGGER_ECLIPSE = {
    colorR			= 0.709,
    colorG			= 0,
@@ -1109,6 +1120,17 @@ local masterProfile = {
    classes			= "DEATHKNIGHT",
    mainEvents		= "SPELL_AURA_APPLIED{skillName;;eq;;" .. SPELL_KILLING_MACHINE .. ";;recipientAffiliation;;eq;;" .. FLAG_YOU .. "}",
   },
+  MSBT_TRIGGER_LOCK_AND_LOAD = {
+   colorR			= 0.627,
+   colorG			= 0.5,
+   colorB			= 0,
+   message			= SPELL_LOCK_AND_LOAD .. "!",
+   alwaysSticky		= true,
+   fontSize			= 26,
+   classes			= "HUNTER",
+   mainEvents		= "SPELL_AURA_APPLIED{skillName;;eq;;" .. SPELL_LOCK_AND_LOAD .. ";;recipientAffiliation;;eq;;" .. FLAG_YOU .. "}",
+  },
+
   MSBT_TRIGGER_LOW_HEALTH = {
    colorG			= 0.5,
    colorB			= 0.5,
