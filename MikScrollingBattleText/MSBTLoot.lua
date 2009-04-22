@@ -85,9 +85,10 @@ local function HandleItems(parserEvent)
  -- Determine whether to show the event and ignore it if necessary.
  local currentProfile = MSBTProfiles.currentProfile
  local showEvent = true
- if (currentProfile.itemExclusions[itemName] or currentProfile.qualityExclusions[itemQuality]) then showEvent = false end
- if (currentProfile.itemsAllowed[itemName]) then showEvent = true end
+ if (currentProfile.qualityExclusions[itemQuality]) then showEvent = false end
  if ((itemType == ITEM_TYPE_QUEST) and currentProfile.alwaysShowQuestItems) then showEvent = true end
+ if (currentProfile.itemExclusions[itemName]) then showEvent = false end
+ if (currentProfile.itemsAllowed[itemName]) then showEvent = true end
  if (not showEvent) then return end
 
  -- Format the item name according to its quality.

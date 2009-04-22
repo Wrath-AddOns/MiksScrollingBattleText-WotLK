@@ -174,28 +174,35 @@ local function OnUpdate(this, elapsed)
   -- Loop through all of the active cooldowns.
   local currentTime = GetTime()
   for spellName in pairs(activeCooldowns) do
-   -- Calculate the remaining cooldown.
+   -- Ensure the cooldown is still valid.
    local startTime, duration = GetSpellCooldown(spellName)
-   local cooldownRemaining = startTime + duration - currentTime
+   if (startTime ~= nil) then
+    -- Calculate the remaining cooldown.
+    local cooldownRemaining = startTime + duration - currentTime
 
-   -- Cooldown completed.
-   if (cooldownRemaining <= 0) then
-    local texture = GetSpellTexture(spellName)
-    HandleCooldowns(spellName, texture)
+    -- Cooldown completed.
+    if (cooldownRemaining <= 0) then
+     local texture = GetSpellTexture(spellName)
+     HandleCooldowns(spellName, texture)
 
-    local eventSettings = MSBTProfiles.currentProfile.events.NOTIFICATION_COOLDOWN
-    if (eventSettings and not eventSettings.disabled) then
-     local message = eventSettings.message
-     message = string_gsub(message, "%%e", string_format("|cffff0000%s|r", string_gsub(spellName, "%(.+%)%(%)$", "")))
-     DisplayEvent(eventSettings, message, texture)
+     local eventSettings = MSBTProfiles.currentProfile.events.NOTIFICATION_COOLDOWN
+     if (eventSettings and not eventSettings.disabled) then
+      local message = eventSettings.message
+      message = string_gsub(message, "%%e", string_format("|cffff0000%s|r", string_gsub(spellName, "%(.+%)%(%)$", "")))
+      DisplayEvent(eventSettings, message, texture)
+     end
+
+     -- Remove the cooldown from the active cooldowns list.
+     activeCooldowns[spellName] = nil
+
+    -- Cooldown NOT completed.
+    else
+     if (cooldownRemaining < updateDelay) then updateDelay = cooldownRemaining end
     end
 
-    -- Remove the cooldown from the active cooldowns list.
-    activeCooldowns[spellName] = nil
-
-   -- Cooldown NOT completed.
+   -- Cooldown is no longer valid.
    else
-    if (cooldownRemaining < updateDelay) then updateDelay = cooldownRemaining end
+    activeCooldowns[spellName] = nil
    end
   end
 
