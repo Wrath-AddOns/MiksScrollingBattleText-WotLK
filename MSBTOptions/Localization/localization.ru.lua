@@ -19,13 +19,13 @@ local L = MikSBT.translations
 -- Interface messages
 ------------------------------
 
---L.MSG_CUSTOM_FONTS					= "Custom Fonts"
---L.MSG_INVALID_CUSTOM_FONT_NAME		= "Invalid font name."
---L.MSG_FONT_NAME_ALREADY_EXISTS		= "Font name already exists."
---L.MSG_INVALID_CUSTOM_FONT_PATH		= "Font path must point to a .ttf file."
---L.MSG_CUSTOM_SOUNDS					= "Custom Sounds"
---L.MSG_INVALID_CUSTOM_SOUND_NAME		= "Invalid sound name."
---L.MSG_SOUND_NAME_ALREADY_EXISTS		= "Sound name already exists."
+L.MSG_CUSTOM_FONTS					= "Пользовательский шрифт"
+L.MSG_INVALID_CUSTOM_FONT_NAME		= "Неверное название шрифта."
+L.MSG_FONT_NAME_ALREADY_EXISTS		= "Название шрифта уже уществует."
+L.MSG_INVALID_CUSTOM_FONT_PATH		= "Путь к шрифту должен быть указан на файл .ttf."
+L.MSG_CUSTOM_SOUNDS					= "Пользовательские звуки"
+L.MSG_INVALID_CUSTOM_SOUND_NAME		= "Неверное название звукового файла."
+L.MSG_SOUND_NAME_ALREADY_EXISTS		= "Название звукового файла уже уществует."
 L.MSG_NEW_PROFILE					= "Новый Профиль"
 L.MSG_PROFILE_ALREADY_EXISTS		= "Профиль уже существует."
 L.MSG_INVALID_PROFILE_NAME			= "Неверное название профиля."
@@ -40,7 +40,7 @@ L.MSG_TRIGGER_CLASSES				= "Триггер классы"
 L.MSG_MAIN_EVENTS					= "Главные события"
 L.MSG_TRIGGER_EXCEPTIONS			= "Триггер исключения"
 L.MSG_EVENT_CONDITIONS				= "Условие события"
---L.MSG_DISPLAY_QUALITY				= "Display alerts for items of this quality."
+L.MSG_DISPLAY_QUALITY				= "Показывать оповещение для предметов этого качества."
 L.MSG_SKILLS						= "Навыки"
 L.MSG_SKILL_ALREADY_EXISTS			= "Название навыка уже существует."
 L.MSG_INVALID_SKILL_NAME			= "Неверное название навыка."
@@ -48,10 +48,10 @@ L.MSG_HOSTILE						= "Вражеский"
 L.MSG_ANY							= "Любой"
 L.MSG_CONDITION						= "Условие"
 L.MSG_CONDITIONS					= "Условия"
---L.MSG_ITEM_QUALITIES				= "Item qualities"
---L.MSG_ITEMS							= "Items"
---L.MSG_ITEM_ALREADY_EXISTS			= "Item name already exists."
---L.MSG_INVALID_ITEM_NAME				= "Invalid item name."
+L.MSG_ITEM_QUALITIES				= "Качество предмета"
+L.MSG_ITEMS						    = "Предметы"
+L.MSG_ITEM_ALREADY_EXISTS			= "Название предмета уже уществует."
+L.MSG_INVALID_ITEM_NAME			    = "Неверное название предмета."
 
 
 ------------------------------
@@ -76,14 +76,14 @@ obj["WARRIOR"]		= "Воин"
 ------------------------------
 
 obj = L.TABS
---obj["customMedia"]	= { label="Custom Media", tooltip="Display options for managing custom media."}
+obj["customMedia"]	= { label="Аудио", tooltip="Настройки управления пользовательскими аудиофайлами."}
 obj["general"]		= { label="Основной", tooltip="Основные настройки."}
 obj["scrollAreas"]	= { label="Область прокрутки", tooltip="Настройки областей прокрутки, создание, удаление и т.д.\n\nНаведите мышь на иконки кнопок для большей информации."}
 obj["events"]		= { label="События", tooltip="Настройки входящих, исходящих, и извещающих событиях.\n\nНаведите мышь на иконки кнопок для большей информации."}
 obj["triggers"]		= { label="Триггеры", tooltip="Настройки системы триггеров.\n\nНаведите мышь на иконки кнопок для большей информации."}
 obj["spamControl"]	= { label="Контроль спама", tooltip="Настройки спам контроля."}
 obj["cooldowns"]	= { label="Срок действия", tooltip="Настройки отображения в извещениях срока действий заклинаний."}
---obj["lootAlerts"]	= { label="Loot Alerts", tooltip="Display options for loot related notifications."}
+obj["lootAlerts"]	= { label="Оповещения добычи", tooltip="Настройки отображения оповещений о добыче."}
 obj["skillIcons"]	= { label="Иконки навыков", tooltip="Настройки иконок навыков."}
 
 
@@ -97,7 +97,7 @@ obj["stickyCrits"]				= { label="Закреплённый крит", tooltip="О
 obj["gameDamage"]				= { label="Стандартный урон", tooltip="Отображение урона по умолчанию в клиенте над головой противника."}
 obj["gameHealing"]				= { label="Стандартное лечение", tooltip="Отображение лечения по умолчанию в клиенте над головой противника."}
 obj["enableSounds"]				= { label="Вкл/Выкл звуки", tooltip="Проигрывать звуки заданные в событиях и триггерах."}
---obj["textShadowing"]			= { label="Text Shadowing", tooltip="Apply a shadow effect to text to improve font crispness."}
+obj["textShadowing"]			= { label="Тень текста", tooltip="Применить эффект тени к тексту для улучшения четкости шрифта."}
 obj["colorPartialEffects"]		= { label="Цвет частичных эффектов", tooltip="Применяет установленные цвета для частичных эффектов."}
 obj["crushing"]					= { label="Сокрушительные удары", tooltip="Отображение трейлера сокрушительных ударов."}
 obj["glancing"]					= { label="Скользящие удары", tooltip="Отображение трейлера скользящих ударов."}
@@ -119,9 +119,9 @@ obj["hideSkills"]				= { label="Скрыть навыки", tooltip="Не ото
 obj["hideNames"]				= { label="Скрыть Имена", tooltip="Не отображать названия юнитов в входящих и исходящих событиях.\n\nYou will give up some customization capability at the event level if you choose to use this option since it causes the %n event code to be ignored."}
 obj["allClasses"]				= { label="Все классы"}
 obj["enableCooldowns"]			= { label="Вкл/Выкл перезарядку", tooltip="Выводит предупреждения когда заканчиваются перезарядки."}
---obj["lootedItems"]				= { label="Looted Items", tooltip="Display notifications when items are looted."}
+obj["lootedItems"]				= { label="Добыча предметов", tooltip="Выводит оповещение когда вы подбераете предметы."}
 obj["moneyGains"]				= { label="Получ. Денег", tooltip="Вкл/Выкл оповещение когда вы получаете деньги."}
---obj["alwaysShowQuestItems"]		= { label="Always show quest items", tooltip="Always show quest items regardless of quality selections."}
+obj["alwaysShowQuestItems"]		= { label="Предметы заданий", tooltip="Всегда показывать предметы заданий не обращающий внимания на выбор качества."}
 obj["enableIcons"]				= { label="Вкл/Выкл иконки навыков", tooltip="Отображение иконок для событий если это возможно и они существуют."}
 obj["exclusiveSkills"]			= { label="Особенные названия навыков", tooltip="Показывает только названия навыков когда иконки не доступны."}
 
@@ -157,12 +157,12 @@ obj["triggerParameter"]		= { label="Параметр:"}
 ------------------------------
 
 obj = L.BUTTONS
---obj["addCustomFont"]			= { label="Add Font", tooltip="Adds a custom font to the list of available fonts.\n\nWARNING: The font file must exist in the target location *BEFORE* WoW was started.\n\nIt is highly recommended to place the file in the MikScrollingBattleText\\Fonts directory to avoid issues."}
---obj["addCustomSound"]			= { label="Add Sound", tooltip="Adds a custom sound to the list of available sounds.\n\nWARNING: The sound file must exist in the target location *BEFORE* WoW was started.\n\nIt is highly recommended to place the file in the MikScrollingBattleText\\Sounds directory to avoid issues."}
---obj["editCustomFont"]			= { tooltip="Click to edit the custom font."}
---obj["deleteCustomFont"]			= { tooltip="Click to remove the custom font from MSBT."}
---obj["editCustomSound"]			= { tooltip="Click to edit the custom sound."}
---obj["deleteCustomSound"]		= { tooltip="Click to remove the custom sound from MSBT."}
+obj["addCustomFont"]			= { label="Добавить шрифт", tooltip="Добовляет пользовательский шрифт к списку доступных шрифтов.\n\nWARNING: Файл шрифта должен находиться в целевой деректории *ДО* запуска WoW.\n\nНастоятельно рекомендуется поместить файл в директорию шрифтов MikScrollingBattleText\\чтобы избежать проблем."}
+obj["addCustomSound"]			= { label="Добавить звук", tooltip="Добовляет пользовательский звук к списку доступных звуков.\n\nWARNING: Файл звука должен находиться в целевой деректории *ДО* запуска WoW.\n\nНастоятельно рекомендуется поместить файл в директорию звуков MikScrollingBattleText\\чтобы избежать проблем."}
+obj["editCustomFont"]			= { tooltip="Нажмите чтобы редавтировать пользовательский шрифт."}
+obj["deleteCustomFont"]			= { tooltip="Нажмите чтобы удалить пользовательский шрифт из MSBT."}
+obj["editCustomSound"]			= { tooltip="Нажмите чтобы редавтировать пользовательский звук."}
+obj["deleteCustomSound"]		= { tooltip="Нажмите чтобы удалить пользовательский звук из MSBT."}
 obj["copyProfile"]				= { label="Скопировать", tooltip="Скопировать профиль в новый профиль с вами установленным названием."}
 obj["resetProfile"]				= { label="Сброс", tooltip="Сброс профиля на стандартные установки."}
 obj["deleteProfile"]			= { label="Удалить", tooltip="Удалить профиль."}
@@ -203,10 +203,10 @@ obj["skillSubstitutions"]		= { label="Замена навыков", tooltip="З�
 obj["addSkill"]					= { label="Добавить навык", tooltip="Добавить новый навык в список."}
 obj["deleteSkill"]				= { tooltip="Кликните для удаления навыка."}
 obj["cooldownExclusions"]		= { label="Исключение перезарядки", tooltip="Запись навыков у которых не будут отслеживаться время перезарядки."}
---obj["itemsAllowed"]				= { label="Items Allowed", tooltip="Always show specified items regardless of item quality."}
---obj["itemExclusions"]			= { label="Item Exclusions", tooltip="Prevent specified items from being displayed."}
---obj["addItem"]					= { label="Add Item", tooltip="Add a new item to the list."}
---obj["deleteItem"]				= { tooltip="Click to delete the item."}
+obj["itemsAllowed"]				= { label="Дозволенные предметы", tooltip="Всегда показывать указанные предметы, независимо от качества предмета."}
+obj["itemExclusions"]			= { label="Исключение предметов", tooltip="Запрет на отображение, указанных предметов."}
+obj["addItem"]					= { label="Добавить предмет", tooltip="Добавить новый предмет в список."}
+obj["deleteItem"]				= { tooltip="Нажмите чтобы удалить предмет."}
 
 
 ------------------------------
@@ -214,10 +214,10 @@ obj["cooldownExclusions"]		= { label="Исключение перезарядк�
 ------------------------------
 
 obj = L.EDITBOXES
---obj["customFontName"]	= { label="Font name:", tooltip="The name used to identify the font.\n\nExample: My Super Font"}
---obj["customFontPath"]	= { label="Font path:", tooltip="The path to the font's file.\n\nNOTE: If the file is located in the recommended MikScrollingBattleText\\Fonts directory, only the filename needs to be entered here instead of th full path.\n\nExample: myFont.ttf "}
---obj["customSoundName"]	= { label="Sound name:", tooltip="The name used to identify the sound.\n\nExample: My Sound"}
---obj["customSoundPath"]	= { label="Sound path:", tooltip="The path to the sounds's file.\n\nNOTE: If the file is located in the recommended MikScrollingBattleText\\Sounds directory, only the filename needs to be entered here instead of th full path.\n\nExample: mySound.mp3 "}
+obj["customFontName"]	= { label="Шрифт:", tooltip="Название, используемое для определения шрифта.\n\nПример: Мой Супер Шрифт"}
+obj["customFontPath"]	= { label="Путь к шрифту:", tooltip="Путь к файлу шрифта.\n\nNOTE: Если файл находится в рекомендованном дериктории шрифтов\\MikScrollingBattleText, тогда впешите только названия файла, вместо полного пути.\n\nПример: мойШрифт.ttf "}
+obj["customSoundName"]	= { label="Звук:", tooltip="Название, используемое для определения звука.\n\nПример: Мой Звук"}
+obj["customSoundPath"]	= { label="Путь к звуку:", tooltip="Путь к файлу звука.\n\nNOTE: Если файл находится в рекомендованном дериктории звуков\\MikScrollingBattleText, тогда впешите только названия файла, вместо полного пути.\n\nExample: мойЗвук.mp3 "}
 obj["copyProfile"]		= { label="Новое название профиля:", tooltip="Название нового профиля в который будет скопирован выбранный профиль."}
 obj["scrollAreaName"]	= { label="Новое названия области прокрутки:", tooltip="Новое название для области прокрутки."}
 obj["xOffset"]			= { label="X смещение:", tooltip="Смещение по X в выбранной области прокрутки."}
@@ -226,8 +226,8 @@ obj["eventMessage"]		= { label="Сообщение вывода:", tooltip="Со
 obj["soundFile"]		= { label="Звуковой файл:", tooltip="Название звукового файла который будет проигрываться при свершении события."}
 obj["iconSkill"]		= { label="Иконка навыка:", tooltip="Название или идентификатор заклинания чья иконка должна отображаться при свершении события.\n\nMSBT будет автоматически пробовать найти подходящую иконку если нет назначенной.\n\nПРИМЕЧАНИЕ: Если навык не может быть найден в книге заклинаний играющего класса в момент свершения событий то идентификатор заклинания должен использоваться вместо названия.  Может быть использовано для поиска большинство онлайновых баз данных таких как wowhead."}
 obj["skillName"]		= { label="Название навыка:", tooltip="Название навыка который будет добавлен."}
-obj["substitutionText"]	= { label="Текст замещения:", tooltip="текст который будет заменять название навыка."}
---obj["itemName"]			= { label="Item name:", tooltip="The name of the item to add."}
+obj["substitutionText"]	= { label="Текст замещения:", tooltip="Текст который будет заменять название навыка."}
+obj["itemName"]			= { label="Название предмета:", tooltip="Название добавляемого предмета."}
 
 ------------------------------
 -- Interface sliders
@@ -273,12 +273,12 @@ obj["HEALING_TAKEN"]		= "%a - Значение получаемого лечен
 obj["DAMAGE_DONE"]			= "%a - Значение нанесённого урона.\n"
 obj["HEALING_DONE"]			= "%a - Значение нанесённого лечения.\n"
 obj["ABSORBED_AMOUNT"]		= "%a - Значение поглот. урона.\n"
---obj["AURA_AMOUNT"]			= "%a - Amount of stacks for the aura.\n"
+-obj["AURA_AMOUNT"]			= "%a - Значение стеков ауры.\n"
 obj["ENERGY_AMOUNT"]		= "%a - Значение энергии.\n"
 obj["CP_AMOUNT"]			= "%a - Значение сколько приёмов в серии.\n"
 obj["HONOR_AMOUNT"]			= "%a - Значение чести.\n"
 obj["REP_AMOUNT"]			= "%a - Значение репутации.\n"
---obj["ITEM_AMOUNT"]			= "%a - Amount of the item looted.\n"
+obj["ITEM_AMOUNT"]			= "%a - Значение добытого предмета.\n"
 obj["SKILL_AMOUNT"]			= "%a - Значение очков полученного навыка.\n"
 obj["EXPERIENCE_AMOUNT"]	= "%a - Значение полученного опыта.\n"
 obj["ATTACKER_NAME"]		= "%n - Имя атакующего.\n"
@@ -302,9 +302,9 @@ obj["SHARD_NAME"]			= "%e - Локализованное название кам
 obj["EMOTE_TEXT"]			= "%e - Текст эмоций.\n"
 obj["MONEY_TEXT"]			= "%e - Текст получения денег.\n"
 obj["COOLDOWN_NAME"]		= "%e - Название готового навыка.\n"
---obj["ITEM_NAME"]			= "%e - The name of the looted item.\n"
+obj["ITEM_NAME"]			= "%e - Название добытого предмета.\n"
 obj["POWER_TYPE"]			= "%p - Тип энергии (энергия, ярость, мана).\n"
---obj["TOTAL_ITEMS"]			= "%t - Total number of the looted item in inventory."
+obj["TOTAL_ITEMS"]			= "%t - Общее количество добытых предметов в инвенторе."
 
 
 ------------------------------
@@ -435,9 +435,9 @@ obj["PET_OUTGOING_DISPEL"]						= { label="Рассеивания", tooltip="В�
 
 obj = L.NOTIFICATION_EVENTS
 obj["NOTIFICATION_DEBUFF"]				= { label="Отриц. Эффекты", tooltip="Вкл/Выкл оповещение о заражении отрицательными эффектами."}
---obj["NOTIFICATION_DEBUFF_STACK"]		= { label="Debuff Stacks", tooltip="Enable debuff stacks you are afflicted by."}
+obj["NOTIFICATION_DEBUFF_STACK"]		= { label="Стаки дебаффа", tooltip="Включить оповещение сколькими стаками отрицательных эффектов вы поражены."}
 obj["NOTIFICATION_BUFF"]				= { label="Полож. Эффекты", tooltip="Вкл/Выкл оповещение о получении положительных эффектов."}
---obj["NOTIFICATION_BUFF_STACK"]			= { label="Buff Stacks", tooltip="Enable buff stacks you receive."}
+obj["NOTIFICATION_BUFF_STACK"]			= { label="Стаки баффа", tooltip="Включить оповещение сколько стаков положительного эффектка вы получили."}
 obj["NOTIFICATION_ITEM_BUFF"]			= { label="Полож. Эффекты Предметов", tooltip="Вкл/Выкл оповещение о положительных эффектах полученных вашими предметами."}
 obj["NOTIFICATION_DEBUFF_FADE"]			= { label="Пропад. отриц. эффектов", tooltip="Вкл/Выкл оповещение о пропадание с вас отрицательных эффектов."}
 obj["NOTIFICATION_BUFF_FADE"]			= { label="Пропад. полож. эффектов", tooltip="Вкл/Выкл оповещение о пропадание с вас положительных эффектов."}
@@ -549,7 +549,7 @@ obj["unitID"]					= "ID объекта"
 obj["unitReaction"]				= "Реакция юнита"
 
 -- Exception conditions.
---obj["activeTalents"]			= "Active Talents"
+obj["activeTalents"]			= "Активный талант"
 obj["buffActive"]				= "Активность заклинания"
 obj["buffInactive"]				= "Бездействующий бафф"
 obj["currentCP"]				= "Текущие очки энергии"
