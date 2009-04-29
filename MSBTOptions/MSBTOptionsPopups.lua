@@ -45,6 +45,7 @@ local DEFAULT_ANIMATION_STYLE = "Straight"
 local DEFAULT_STICKY_ANIMATION_STYLE = "Pow"
 local DEFAULT_ICON_ALIGN = "Left"
 local DEFAULT_SOUND_PATH = "Interface\\AddOns\\MikScrollingBattleText\\Sounds\\"
+local PREVIEW_ICON_PATH = "Interface\\Icons\\INV_Misc_AhnQirajTrinket_03"
 
 local FLAG_YOU = 0xF0000000
 
@@ -224,8 +225,8 @@ local function SaveInput()
   returnSettings.inputText = frame.inputEditbox:GetText()
   returnSettings.secondInputText = frame.secondInputEditbox:GetText()
   returnSettings.saveArg1 = frame.saveArg1
-  frame.saveHandler(returnSettings)
   frame:Hide()
+  frame.saveHandler(returnSettings)
  end
 end
 
@@ -774,8 +775,8 @@ local function CreateFontPopup()
  button:SetClickHandler(
   function (this)
    UpdateFontSettings()
-   if (frame.saveHandler) then frame.saveHandler(returnSettings, frame.saveArg1) end
    frame:Hide()
+   if (frame.saveHandler) then frame.saveHandler(returnSettings, frame.saveArg1) end
   end
  )
 
@@ -929,8 +930,6 @@ end
 -- ****************************************************************************
 local function CreatePartialEffects()
  local frame = CreatePopup()
- frame:SetWidth(270)
- frame:SetHeight(240)
 
  -- Close button.
  local button = CreateFrame("Button", nil, frame, "UIPanelCloseButton")
@@ -951,7 +950,8 @@ local function CreatePartialEffects()
 
  -- Partial effects.
  local anchor = checkbox
- local colorswatch
+ local colorswatch, editbox
+ local maxWidth = 0
  for effectType in string.gmatch("crushing glancing absorb block resist overheal", "[^%s]+") do
   colorswatch = MSBTControls.CreateColorswatch(frame)
   colorswatch:SetPoint("TOPLEFT", anchor, "BOTTOMLEFT", anchor == checkbox and 20 or 0, -10)
@@ -962,6 +962,7 @@ local function CreatePartialEffects()
     MSBTProfiles.SetOption(effectType, "colorB", this.b)
    end
   )
+
   checkbox = MSBTControls.CreateCheckbox(frame)
   objLocale = L.CHECKBOXES[effectType]
   checkbox:Configure(24, objLocale.label, objLocale.tooltip)
@@ -971,13 +972,31 @@ local function CreatePartialEffects()
     MSBTProfiles.SetOption(effectType, "disabled", not isChecked)
    end
   )
+  
+  if (checkbox:GetWidth() > maxWidth) then maxWidth = checkbox:GetWidth() end
+
+  local tooltip = L.EDITBOXES["partialEffect"].tooltip
+  if (effectType ~= "crushing" and effectType ~= "glancing") then tooltip = tooltip .. "\n\n" .. L.EVENT_CODES["PARTIAL_AMOUNT"] end
+  editbox = MSBTControls.CreateEditbox(frame)
+  editbox:Configure(130, nil, tooltip)
+  editbox:SetPoint("RIGHT", frame, "RIGHT", -20, 0)
+  editbox:SetPoint("TOP", checkbox, "TOP", 0, 10)
+  editbox:SetTextChangedHandler(
+   function (this)
+    MSBTProfiles.SetOption(effectType, "trailer", this:GetText())
+   end
+  )
   frame[effectType .. "Colorswatch"] = colorswatch
   frame[effectType .. "Checkbox"] = checkbox 
-  
+  frame[effectType .. "Editbox"] = editbox
+
   anchor = colorswatch
  end
 
-  return frame
+ frame:SetWidth(maxWidth + 230)
+ frame:SetHeight(240)
+
+ return frame
 end
 
 
@@ -1003,6 +1022,7 @@ local function ShowPartialEffects(configTable)
   profileEntry = MSBTProfiles.currentProfile[effectType]
   frame[effectType .. "Colorswatch"]:SetColor(profileEntry.colorR, profileEntry.colorG, profileEntry.colorB)
   frame[effectType .. "Checkbox"]:SetChecked(not profileEntry.disabled)
+  frame[effectType .. "Editbox"]:SetText(profileEntry.trailer)
  end
  
  -- Configure the frame.
@@ -1149,8 +1169,9 @@ local function CopyTempScrollAreaSettings(settingsTable)
   tempSettings.inheritedAnimationSpeed = MSBTProfiles.currentProfile.animationSpeed
   tempSettings.animationSpeed = saSettings.animationSpeed
   
-  -- Icon align.
+  -- Icon.
   tempSettings.iconAlign = saSettings.iconAlign or DEFAULT_ICON_ALIGN
+  tempSettings.skillIconsDisabled = saSettings.skillIconsDisabled
  end
 end
 
@@ -1295,8 +1316,9 @@ local function ChangeConfigScrollArea(scrollArea)
  frame.xOffsetEditbox:SetText(saSettings.offsetX)
  frame.yOffsetEditbox:SetText(saSettings.offsetY)
  
- -- Icon align.
+ -- Icon.
  frame.iconAlignDropdown:SetSelectedID(saSettings.iconAlign)
+ frame.iconsDisabledCheckbox:SetChecked(saSettings.skillIconsDisabled)
  
  -- Reset the backdrop color of all the scroll area mover frames to grey.
  for _, moverFrame in pairs(frame.moverFrames) do
@@ -1433,8 +1455,9 @@ local function SaveScrollAreaSettings(settingsTable)
   local animationSpeed = saSettings.animationSpeed
   MSBTProfiles.SetOption("scrollAreas." .. saKey, "animationSpeed", animationSpeed, saSettings.inheritedAnimationSpeed)
   
-  -- Icon align.
+  -- Icon.
   MSBTProfiles.SetOption("scrollAreas." .. saKey, "iconAlign", saSettings.iconAlign, DEFAULT_ICON_ALIGN)
+  MSBTProfiles.SetOption("scrollAreas." .. saKey, "skillIconsDisabled", saSettings.skillIconsDisabled)
  end
  MSBTAnimations.UpdateScrollAreas()
 end
@@ -1670,6 +1693,7 @@ local function CreateScrollAreaConfig()
  )
  frame.xOffsetEditbox = editbox
 
+
  -- Y offset editbox.
  editbox = MSBTControls.CreateEditbox(frame)
  objLocale = L.EDITBOXES["yOffset"] 
@@ -1700,7 +1724,18 @@ local function CreateScrollAreaConfig()
  dropdown:AddItem(L.TEXT_ALIGNS[1], "Left")
  dropdown:AddItem(L.TEXT_ALIGNS[3], "Right")
  frame.iconAlignDropdown = dropdown
- 
+
+ -- Icons disabled checkbox.
+ checkbox = MSBTControls.CreateCheckbox(frame)
+ objLocale = L.CHECKBOXES["hideSkillIcons"]
+ checkbox:Configure(20, objLocale.label, objLocale.tooltip)
+ checkbox:SetPoint("LEFT", frame.iconAlignDropdown, "RIGHT", 10, -5)
+ checkbox:SetClickHandler(
+  function (this, isChecked)
+   frame.previewSettings[frame.currentScrollArea].skillIconsDisabled = isChecked
+  end
+ )
+ frame.iconsDisabledCheckbox = checkbox 
  
  -- Bottom horizontal bar.
  texture = frame:CreateTexture(nil, "ARTWORK")
@@ -1722,9 +1757,9 @@ local function CreateScrollAreaConfig()
    local name
    for saKey in pairs(frame.previewSettings) do
     name = MSBTAnimations.scrollAreas[saKey].name
-    MikSBT.DisplayMessage(name, saKey, nil, 255, 0, 0)
-    MikSBT.DisplayMessage(name, saKey, nil, 255, 255, 255)
-    MikSBT.DisplayMessage(name, saKey, true, 0, 0, 255)
+    MikSBT.DisplayMessage(name, saKey, nil, 255, 0, 0, nil, nil, nil, PREVIEW_ICON_PATH)
+    MikSBT.DisplayMessage(name, saKey, nil, 255, 255, 255, nil, nil, nil, PREVIEW_ICON_PATH)
+    MikSBT.DisplayMessage(name, saKey, true, 0, 0, 255, 28, nil, nil, PREVIEW_ICON_PATH)
    end
   end
  )
@@ -1828,8 +1863,8 @@ local function CreateScrollAreaSelection()
  button:SetPoint("BOTTOMRIGHT", frame, "BOTTOM", -10, 20)
  button:SetClickHandler(
   function (this)
-   if (frame.saveHandler) then frame.saveHandler(frame.scrollAreaDropdown:GetSelectedID(), frame.saveArg1) end
    frame:Hide()   
+   if (frame.saveHandler) then frame.saveHandler(frame.scrollAreaDropdown:GetSelectedID(), frame.saveArg1) end
   end
  )
  frame.okayButton = button
@@ -2045,8 +2080,8 @@ local function CreateEvent()
    returnSettings.soundFile = controls.soundDropdown:GetSelectedID()
    returnSettings.alwaysSticky = controls.stickyCheckbox:GetChecked()
    returnSettings.iconSkill = controls.iconSkillEditbox:GetText()
-   if (frame.saveHandler) then frame.saveHandler(returnSettings, frame.saveArg1) end
    frame:Hide()
+   if (frame.saveHandler) then frame.saveHandler(returnSettings, frame.saveArg1) end
   end
  )
  controls[#controls+1] = button
@@ -2342,8 +2377,8 @@ local function CreateTriggerCondition()
    elseif (frame.parameterDropdown:IsShown()) then
     returnSettings.conditionValue = frame.parameterDropdown:GetSelectedID()
    end
-   if (frame.saveHandler) then frame.saveHandler(returnSettings, frame.saveArg1) end
    frame:Hide()
+   if (frame.saveHandler) then frame.saveHandler(returnSettings, frame.saveArg1) end
   end
  )
 
@@ -2651,8 +2686,8 @@ local function CreateMainEvent()
    for _, conditionEntry in ipairs(frame.eventConditions) do
     returnSettings.eventConditions[#returnSettings.eventConditions+1] = conditionEntry
    end
-   if (frame.saveHandler) then frame.saveHandler(returnSettings, frame.saveArg1) end
    frame:Hide()
+   if (frame.saveHandler) then frame.saveHandler(returnSettings, frame.saveArg1) end
   end
  )
  controls[#controls+1] = button
@@ -3150,8 +3185,8 @@ local function CreateTriggerPopup()
     returnSettings.exceptions = string.sub(exceptions, 1, -3)
    end
 
-   if (frame.saveHandler) then frame.saveHandler(returnSettings, frame.saveArg1) end
    frame:Hide()
+   if (frame.saveHandler) then frame.saveHandler(returnSettings, frame.saveArg1) end
   end
  )
  controls[#controls+1] = button
@@ -3390,6 +3425,7 @@ local function CreateTriggerPopup()
 
   -- Cast events.
   SPELL_CAST_START = {availableConditions = commonSourceFields .. commonSkillFields, defaultConditions="sourceReaction;;eq;;" .. MSBTParser.REACTION_HOSTILE .. ";;skillName;;eq;;" .. UNKNOWN},
+  SPELL_CAST_SUCCESS  = {availableConditions = commonLogFields .. commonSkillFields, defaultConditions="sourceReaction;;eq;;" .. MSBTParser.REACTION_HOSTILE .. ";;skillName;;eq;;" .. UNKNOWN},
 
   -- Kill events.
   PARTY_KILL = {availableConditions = commonLogFields, defaultConditions="recipientName;;eq;;" .. UNKNOWN},
@@ -3420,9 +3456,8 @@ local function CreateTriggerPopup()
  eventConditionData["SPELL_AURA_REMOVED"] = eventConditionData["SPELL_AURA_APPLIED"]
  eventConditionData["SPELL_STOLEN"] = eventConditionData["SPELL_DISPEL"]
  eventConditionData["ENCHANT_REMOVED"] = eventConditionData["ENCHANT_APPLIED"]
- eventConditionData["SPELL_CAST_SUCCESS"] = eventConditionData["SPELL_CAST_START"]
  eventConditionData["SPELL_CAST_FAILED"] = eventConditionData["SPELL_CAST_START"] -- Ignore failure reason.
- eventConditionData["SPELL_SUMMON"] = eventConditionData["SPELL_CAST_START"]
+ eventConditionData["SPELL_SUMMON"] = eventConditionData["SPELL_CAST_SUCCESS"]
  eventConditionData["SPELL_CREATE"] = eventConditionData["SPELL_CAST_START"]
  eventConditionData["UNIT_DIED"] = eventConditionData["PARTY_KILL"]
  eventConditionData["UNIT_DESTROYED"] = eventConditionData["PARTY_KILL"]
@@ -3658,8 +3693,8 @@ local function CreateItemList()
  button:SetPoint("BOTTOMRIGHT", frame, "BOTTOM", -10, 20)
  button:SetClickHandler(
   function (this)
-   if (frame.saveHandler) then frame.saveHandler(frame.saveArg1) end
    frame:Hide()
+   if (frame.saveHandler) then frame.saveHandler(frame.saveArg1) end
   end
  )
  controls[#controls+1] = button
@@ -3909,8 +3944,8 @@ local function CreateSkillList()
  button:SetPoint("BOTTOMRIGHT", frame, "BOTTOM", -10, 20)
  button:SetClickHandler(
   function (this)
-   if (frame.saveHandler) then frame.saveHandler(frame.saveArg1) end
    frame:Hide()
+   if (frame.saveHandler) then frame.saveHandler(frame.saveArg1) end
   end
  )
  controls[#controls+1] = button

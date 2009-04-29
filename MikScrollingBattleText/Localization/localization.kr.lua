@@ -55,8 +55,6 @@ L.COMMAND_USAGE = {
 -- Output messages
 ------------------------------
 
-L.MSG_ICON_MODULE_WARNING	= "주의사항: MSBTIcons 모듈은 더이상 필요하지 않습니다. 메모리 낭비를 줄이기 위해 AddOns 폴더에서 제거하세요."
-L.MSG_SM_MODULE_WARNING		= "주의사항: MSBTSharedMedia 모듈은 더이상 필요하지 않습니다. 메모리 낭비를 줄이기 위해 AddOns 폴더에서 제거하세요."
 L.MSG_DISABLE				= "애드온의 사용을 중지합니다."
 L.MSG_ENABLE				= "애드온을 사용합니다."
 L.MSG_PROFILE_RESET			= "프로필이 초기화 되었습니다."

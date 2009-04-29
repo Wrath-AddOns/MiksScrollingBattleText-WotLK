@@ -1357,10 +1357,10 @@ local masterProfile = {
  -- Partial effect settings. 
  crushing		= { colorR = 0.5, colorG = 0, colorB = 0, trailer = string_gsub(CRUSHING_TRAILER, "%((.+)%)", "<%1>") },
  glancing		= { colorR = 1, colorG = 0, colorB = 0, trailer = string_gsub(GLANCING_TRAILER, "%((.+)%)", "<%1>") },
- absorb			= { colorR = 1, colorG = 1, colorB = 0, trailer = string_gsub(ABSORB_TRAILER, "%((.+)%)", "<%1>") },
- block			= { colorR = 0.5, colorG = 0, colorB = 1, trailer = string_gsub(BLOCK_TRAILER, "%((.+)%)", "<%1>") },
- resist			= { colorR = 0.5, colorG = 0, colorB = 0.5, trailer = string_gsub(RESIST_TRAILER, "%((.+)%)", "<%1>") },
- overheal		= { colorR = 0, colorG = 0.705, colorB = 0.5, trailer = " <%d>" },
+ absorb			= { colorR = 1, colorG = 1, colorB = 0, trailer = string_gsub(string_gsub(ABSORB_TRAILER, "%((.+)%)", "<%1>"), "%%d", "%%a") },
+ block			= { colorR = 0.5, colorG = 0, colorB = 1, trailer = string_gsub(string_gsub(BLOCK_TRAILER, "%((.+)%)", "<%1>"), "%%d", "%%a") },
+ resist			= { colorR = 0.5, colorG = 0, colorB = 0.5, trailer = string_gsub(string_gsub(RESIST_TRAILER, "%((.+)%)", "<%1>"), "%%d", "%%a") },
+ overheal		= { colorR = 0, colorG = 0.705, colorB = 0.5, trailer = " <%a>" },
  
  
  -- Damage color settings.

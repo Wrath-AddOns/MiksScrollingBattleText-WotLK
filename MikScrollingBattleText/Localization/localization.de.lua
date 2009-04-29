@@ -41,7 +41,7 @@ L.DEFAULT_FONT_NAME = "MSBT Porky"
 L.COMMAND_USAGE = {
  "Usage: " .. MikSBT.COMMAND .. " <befehle> [params]",
  " Befehle:",
- "  " .. L.COMMAND_RESET .. " - Das aktuelle Profil auf Standardwerte zur\195\188cksetzen.",
+ "  " .. L.COMMAND_RESET .. " - Das aktuelle Profil auf Standardwerte zurücksetzen.",
  "  " .. L.COMMAND_DISABLE .. " - Das Addon deaktivieren.",
  "  " .. L.COMMAND_ENABLE .. " - Das Addon aktivieren.",
  "  " .. L.COMMAND_SHOWVER .. " - Zeigt die aktuelle Version an.",
@@ -53,16 +53,14 @@ L.COMMAND_USAGE = {
 -- Output messages
 ------------------------------
 
---L.MSG_ICON_MODULE_WARNING	= "WARNING: The MSBTIcons module is no longer required. Remove it from your AddOns folder to avoid wasting memory."
---L.MSG_SM_MODULE_WARNING		= "WARNING: The MSBTSharedMedia module is no longer required.  Remove it from your AddOns folder."
 L.MSG_DISABLE				= "Addon deaktiviert."
 L.MSG_ENABLE				= "Addon aktiviert."
-L.MSG_PROFILE_RESET			= "Profil zur\195\188cksetzen"
+L.MSG_PROFILE_RESET			= "Profil zurücksetzen"
 L.MSG_HITS					= "Treffer"
 --L.MSG_CRIT					= "Crit"
 --L.MSG_CRITS					= "Crits"
 L.MSG_MULTIPLE_TARGETS		= "Mehrere"
-L.MSG_READY_NOW				= "Vorhanden"
+L.MSG_READY_NOW				= "Verfügbar"
 
 
 ------------------------------
@@ -83,7 +81,7 @@ L.MSG_COMBAT					= "Kampf"
 L.MSG_DISPEL					= "Zerstreuen"
 --L.MSG_CP						= "CP"
 L.MSG_CP_FULL					= "Alle Combo-Punkte"
-L.MSG_KILLING_BLOW				= "Todessto\195\159"
+L.MSG_KILLING_BLOW				= "Todesstoß"
 L.MSG_TRIGGER_LOW_HEALTH		= "Gesundheit Niedrig"
 L.MSG_TRIGGER_LOW_MANA			= "Mana Niedrig"
 L.MSG_TRIGGER_LOW_PET_HEALTH	= "Begleiter Gesundheit Niedrig"

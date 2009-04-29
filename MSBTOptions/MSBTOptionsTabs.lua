@@ -1911,6 +1911,17 @@ end
 
 
 -- ****************************************************************************
+-- Saves the trigger settings selected by the user.
+-- ****************************************************************************
+local function TriggersTab_SaveTriggerSettings(settings, triggerKey)
+ MSBTProfiles.SetOption("triggers." .. triggerKey, "classes", settings.classes)
+ MSBTProfiles.SetOption("triggers." .. triggerKey, "mainEvents", settings.mainEvents)
+ MSBTProfiles.SetOption("triggers." .. triggerKey, "exceptions", settings.exceptions)
+ MSBTTriggers.UpdateTriggers()
+end
+
+
+-- ****************************************************************************
 -- Adds a new trigger with the passed output message.
 -- ****************************************************************************
 local function TriggersTab_AddTrigger(settings)
@@ -1927,6 +1938,20 @@ local function TriggersTab_AddTrigger(settings)
  MSBTProfiles.SetOption("triggers", newKey, triggerSettings)
  MSBTTriggers.UpdateTriggers()
  tabFrames.triggers.controls.triggersListbox:AddItem(newKey, true)
+ 
+ -- Launch the trigger settings dialog for the new trigger.
+ EraseTable(configTable)
+ configTable.title =  settings.inputText
+ configTable.triggerKey = newKey
+ configTable.parentFrame = tabFrames.triggers
+ configTable.anchorFrame = tabFrames.triggers
+ configTable.anchorPoint = "RIGHT"
+ configTable.relativePoint = "RIGHT"
+ configTable.saveHandler = TriggersTab_SaveTriggerSettings
+ configTable.saveArg1 = newKey
+ configTable.hideHandler = TriggersTab_EnableControls
+ DisableControls(tabFrames.triggers.controls)
+ MSBTPopups.ShowTrigger(configTable)
 end
 
 
@@ -1948,17 +1973,6 @@ end
 local function TriggersTab_EnableOnClick(this, isChecked)
  local triggerKey = this:GetParent().triggerKey
  MSBTProfiles.SetOption("triggers." .. triggerKey, "disabled", not isChecked) 
- MSBTTriggers.UpdateTriggers()
-end
-
-
--- ****************************************************************************
--- Saves the trigger settings selected by the user.
--- ****************************************************************************
-local function TriggersTab_SaveTriggerSettings(settings, triggerKey)
- MSBTProfiles.SetOption("triggers." .. triggerKey, "classes", settings.classes)
- MSBTProfiles.SetOption("triggers." .. triggerKey, "mainEvents", settings.mainEvents)
- MSBTProfiles.SetOption("triggers." .. triggerKey, "exceptions", settings.exceptions)
  MSBTTriggers.UpdateTriggers()
 end
 
@@ -2307,8 +2321,8 @@ local function SpamTab_Create()
  objLocale = L.SLIDERS["healThreshold"]
  slider:Configure(150, objLocale.label, objLocale.tooltip)
  slider:SetPoint("TOPLEFT", tabFrame, "TOPLEFT", 5, -10)
- slider:SetMinMaxValues(0, 1000)
- slider:SetValueStep(20)
+ slider:SetMinMaxValues(0, 10000)
+ slider:SetValueStep(100)
  slider:SetValueChangedHandler(
    function(this, value)
     MSBTProfiles.SetOption(nil, "healThreshold", value)
@@ -2321,8 +2335,8 @@ local function SpamTab_Create()
  objLocale = L.SLIDERS["damageThreshold"]
  slider:Configure(150, objLocale.label, objLocale.tooltip)
  slider:SetPoint("TOPLEFT", controls.healSlider, "BOTTOMLEFT", 0, -10)
- slider:SetMinMaxValues(0, 500)
- slider:SetValueStep(10)
+ slider:SetMinMaxValues(0, 10000)
+ slider:SetValueStep(100)
  slider:SetValueChangedHandler(
    function(this, value)
     MSBTProfiles.SetOption(nil, "damageThreshold", value)
@@ -2335,8 +2349,8 @@ local function SpamTab_Create()
  objLocale = L.SLIDERS["powerThreshold"]
  slider:Configure(150, objLocale.label, objLocale.tooltip)
  slider:SetPoint("TOPLEFT", controls.damageSlider, "BOTTOMLEFT", 0, -10)
- slider:SetMinMaxValues(0, 250)
- slider:SetValueStep(5)
+ slider:SetMinMaxValues(0, 2000)
+ slider:SetValueStep(40)
  slider:SetValueChangedHandler(
    function(this, value)
     MSBTProfiles.SetOption(nil, "powerThreshold", value)
@@ -2446,6 +2460,18 @@ local function SpamTab_Create()
    end
  )
  controls.hideNamesCheckbox = checkbox
+ 
+ -- Hide full overheals checkbox.
+ checkbox = MSBTControls.CreateCheckbox(tabFrame)
+ objLocale = L.CHECKBOXES["hideFullOverheals"]
+ checkbox:Configure(28, objLocale.label, objLocale.tooltip)
+ checkbox:SetPoint("TOPLEFT", controls.hideNamesCheckbox, "BOTTOMLEFT")
+ checkbox:SetClickHandler(
+   function (this, isChecked)
+    MSBTProfiles.SetOption(nil, "hideFullOverheals", isChecked)
+   end
+ )
+ controls.hideFullOverhealsCheckbox = checkbox
  
  -- Merge exclusions button.
  button = MSBTControls.CreateOptionButton(tabFrame)
@@ -2573,6 +2599,7 @@ local function SpamTab_OnShow()
  controls.abbreviateCheckbox:SetChecked(currentProfile.abbreviateAbilities)
  controls.hideSkillsCheckbox:SetChecked(currentProfile.hideSkills)
  controls.hideNamesCheckbox:SetChecked(currentProfile.hideNames)
+ controls.hideFullOverhealsCheckbox:SetChecked(currentProfile.hideFullOverheals)
 end
 
 

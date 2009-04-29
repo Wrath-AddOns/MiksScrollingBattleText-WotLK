@@ -259,7 +259,7 @@ local function Display(message, saSettings, isSticky, colorR, colorG, colorB, fo
  fontString:SetText(message)
 
  -- Set texture properties if there is a texture path that isn't the temp texture and icons are enabled.
- if (texturePath and texturePath ~= TEMP_TEXTURE_PATH and not currentProfile.skillIconsDisabled) then
+ if (texturePath and texturePath ~= TEMP_TEXTURE_PATH and not saSettings.skillIconsDisabled and not currentProfile.skillIconsDisabled) then
   -- Reuse the texture for the current display event if there is one.
   local texture = displayEvent.texture
   

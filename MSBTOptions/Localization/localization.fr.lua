@@ -110,6 +110,7 @@ obj["colorDamageAmounts"]	= { label="Valeurs des dommages en couleur", tooltip="
 obj["colorDamageEntry"]		= { tooltip="Activer la colorisation pour ce type de dommage."}
 obj["enableScrollArea"]		= { tooltip="Activer la zone de défilement."}
 obj["inheritField"]			= { label="Hérité", tooltip="Hériter de la valeur par défaut.  Désélectionner pour modifier cette valeur."}
+--obj["hideSkillIcons"]			= { label="Hide Icons", tooltip="Do not show icons in this scroll area."}
 obj["stickyEvent"]			= { label="Toujours Persistant", tooltip="Utiliser le style persistant pour l'évènement."}
 obj["enableTrigger"]		= { tooltip="Activer le déclencheur."}
 obj["allPowerGains"]		= { label="TOUS les gains d'énergie", tooltip="Affiche tous les gains d'énergie même ceux qui ne sont pas affichés dans le journal ce combat.\n\nATTENTION: Cette option est source de spam et ignorera les réglages de seuil de spam et de son contrôle.\n\nNON RECOMMANDE."}
@@ -117,6 +118,7 @@ obj["hyperRegen"]			= { label="Hyper Regen", tooltip="Affiche les gains d'énerg
 obj["abbreviateSkills"]		= { label="Compétences abrégées", tooltip="Nom des compétences abrégées (Client anglais seulement).\n\nCela peut être contourné pour chaque évènement en utilisant le code %sl."}
 obj["hideSkills"]			= { label="Cacher les noms des Compétences", tooltip="Ne pas afficher les noms de compétences pour les évènements entrants et sortants.\n\nVous abandonnerez quelques possibilités de personnalisation de l'évènement si vous utilisez cette option car le code %s sera ignoré."}
 obj["hideNames"]			= { label="Cacher les noms des Unités", tooltip="Ne pas afficher les noms des unités pour les évènements entrants et sortants.\n\nVous abandonnerez quelques possibilités de personnalisation de l'évènement si vous utilisez cette option car le code %n sera ignoré."}
+--obj["hideFullOverheals"]		= { label="Hide Full Overheals", tooltip="Don't display heals that have an effective heal amount of zero."}
 obj["allClasses"]			= { label="Toutes les classes"}
 obj["enableCooldowns"]		= { label="Activer les Cooldowns", tooltip="Affiche une notification quand un cooldown est terminé."}
 --obj["lootedItems"]				= { label="Looted Items", tooltip="Display notifications when items are looted."}
@@ -219,6 +221,7 @@ obj = L.EDITBOXES
 --obj["customSoundName"]	= { label="Sound name:", tooltip="The name used to identify the sound.\n\nExample: My Sound"}
 --obj["customSoundPath"]	= { label="Sound path:", tooltip="The path to the sounds's file.\n\nNOTE: If the file is located in the recommended MikScrollingBattleText\\Sounds directory, only the filename needs to be entered here instead of th full path.\n\nExample: mySound.mp3 "}
 obj["copyProfile"]		= { label="Nom du nouveau profil:", tooltip="Nom du nouveau profil vers lequel copier le profil courant."}
+--obj["partialEffect"]	= { tooltip="The trailer that will be appended when the partial effect occurs."}
 obj["scrollAreaName"]	= { label="Nouveau nom pour la zone de défilement:", tooltip="Nouveau nom pour la zone de défilement."}
 obj["xOffset"]			= { label="Décalage X:", tooltip="Le décalage horizontal de la zone de défilement."}
 obj["yOffset"]			= { label="Décalage Y:", tooltip="Le décalage vertical de la zone de défilement."}
@@ -280,6 +283,7 @@ obj["REP_AMOUNT"]			= "%a - Quantité de réputation.\n"
 --obj["ITEM_AMOUNT"]			= "%a - Amount of the item looted.\n"
 obj["SKILL_AMOUNT"]			= "%a - Nouveau niveau dans la compétence.\n"
 obj["EXPERIENCE_AMOUNT"]	= "%a - Quantité d'expérience.\n"
+--obj["PARTIAL_AMOUNT"]		= "%a - Amount of the partial effect.\n"
 obj["ATTACKER_NAME"]		= "%n - Nom de l'attaquant.\n"
 obj["HEALER_NAME"]			= "%n - Nom du soigneur.\n"
 obj["ATTACKED_NAME"]		= "%n - Nom de l'unité attaquée.\n"

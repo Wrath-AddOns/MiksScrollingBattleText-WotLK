@@ -112,6 +112,7 @@ obj["colorDamageAmounts"]		= { label="傷害數值著色", tooltip="設定是否
 obj["colorDamageEntry"]			= { tooltip="讓此傷害類型顯示不同的顏色"}
 obj["enableScrollArea"]			= { tooltip="啟用滾動區域"}
 obj["inheritField"]				= { label="沿用", tooltip="沿用主要字型，不勾選則無效"}
+--obj["hideSkillIcons"]			= { label="Hide Icons", tooltip="Do not show icons in this scroll area."}
 obj["stickyEvent"]				= { label="套用爆擊", tooltip="使用爆擊效果來顯示事件"}
 obj["enableTrigger"]			= { tooltip="啟用觸發"}
 obj["allPowerGains"]			= { label="所有能量獲取", tooltip="顯示所有獲取的能量包括那些戰鬥日誌中不顯示的。警告：這個選項將會大量洗頻同時無視能量門檻和抑制顯示設定\n不推薦"}
@@ -119,6 +120,7 @@ obj["hyperRegen"]				= { label="超級回復", tooltip="顯示從快速回復技
 obj["abbreviateSkills"]			= { label="技能縮寫", tooltip="縮減技能名稱（僅適用於英文版）。若事件描述中加入「%sl」代碼，此選項即失效"}
 obj["hideSkills"]				= { label="隱藏技能", tooltip="在承受傷害和輸出傷害中不顯示技能名稱。開啟此選項將使你失去某些事件自定義功能，因為它會忽略「%s」代碼"}
 obj["hideNames"]				= { label="隱藏名稱", tooltip="在承受傷害和輸出傷害中不顯示單位名稱。開啟此選項將使你失去某些事件自定義功能，因為它會忽略「%n」代碼"}
+--obj["hideFullOverheals"]		= { label="Hide Full Overheals", tooltip="Don't display heals that have an effective heal amount of zero."}
 obj["allClasses"]				= { label="所有職業"}
 obj["enableCooldowns"]			= { label="啟用冷卻", tooltip="當冷卻結束時顯示通知"}
 obj["lootedItems"]				= { label="拾取物品", tooltip="顯示物品拾取."}
@@ -221,6 +223,7 @@ obj["customFontPath"]	= { label="字體路徑:", tooltip="字體檔的路徑.\n\
 obj["customSoundName"]	= { label="音效名:", tooltip="用來確定音效的名字.\n\nExample: 我的音效"}
 obj["customSoundPath"]	= { label="音效路徑:", tooltip="音效檔的路徑.\n\n注意: 如果檔在 MikScrollingBattleText\\Sounds 中的話, 只需要輸入檔案名就可以.\n\n例如: mySound.mp3 "}
 obj["copyProfile"]		= { label="新增記錄檔：", tooltip="輸入新增記錄檔的名稱"}
+--obj["partialEffect"]	= { tooltip="The trailer that will be appended when the partial effect occurs."}
 obj["scrollAreaName"]	= { label="新增滾動區域:", tooltip="新增滾動區域的名稱"}
 obj["xOffset"]			= { label="X值：", tooltip="所選擇滾動區域的X值"}
 obj["yOffset"]			= { label="Y值：", tooltip="所選擇滾動區域的Y值"}
@@ -284,6 +287,7 @@ obj["REP_AMOUNT"]			= "%a - 聲望總數.\n"
 obj["ITEM_AMOUNT"]			= "%a - 拾取物品的數量.\n"
 obj["SKILL_AMOUNT"]			= "%a - 技能點總數.\n"
 obj["EXPERIENCE_AMOUNT"]	= "%a - 獲得經驗總數.\n"
+--obj["PARTIAL_AMOUNT"]		= "%a - Amount of the partial effect.\n"
 obj["ATTACKER_NAME"]		= "%n - 攻擊者名字.\n"
 obj["HEALER_NAME"]			= "%n - 治療者名字.\n"
 obj["ATTACKED_NAME"]		= "%n - 被攻擊者名字.\n"

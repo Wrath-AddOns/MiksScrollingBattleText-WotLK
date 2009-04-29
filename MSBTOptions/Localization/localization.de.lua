@@ -28,14 +28,14 @@ local L = MikSBT.translations
 --L.MSG_SOUND_NAME_ALREADY_EXISTS		= "Sound name already exists."
 L.MSG_NEW_PROFILE					= "Neues Profil"
 L.MSG_PROFILE_ALREADY_EXISTS		= "Profil besteht bereits."
-L.MSG_INVALID_PROFILE_NAME			= "Ung\195\188ltiger Profil-Name."
+L.MSG_INVALID_PROFILE_NAME			= "Ungültiger Profil-Name."
 L.MSG_NEW_SCROLL_AREA				= "Neues Scroll-Bereich"
-L.MSG_SCROLL_AREA_ALREADY_EXISTS	= "Name f\195\188r Scroll-Bereich existiert bereits."
-L.MSG_INVALID_SCROLL_AREA_NAME		= "Ung\195\188ltiger Name f\195\188r Scroll-Bereich."
-L.MSG_ACKNOWLEDGE_TEXT				= "Bist du sicher, dass du diese Aktion durchf�hren willst?"
+L.MSG_SCROLL_AREA_ALREADY_EXISTS	= "Name für Scroll-Bereich existiert bereits."
+L.MSG_INVALID_SCROLL_AREA_NAME		= "Ungültiger Name für Scroll-Bereich."
+L.MSG_ACKNOWLEDGE_TEXT				= "Bist du sicher, dass du diese Aktion durchführen willst?"
 --L.MSG_NORMAL_PREVIEW_TEXT			= "Normal"
 --L.MSG_INVALID_SOUND_FILE			= "Sound must be a .mp3 or .wav file."
-L.MSG_NEW_TRIGGER					= "Neuer Ausl\195\182ser"
+L.MSG_NEW_TRIGGER					= "Neuer Auslöser"
 --L.MSG_TRIGGER_CLASSES				= "Trigger Classes"
 --L.MSG_MAIN_EVENTS					= "Main Events"
 --L.MSG_TRIGGER_EXCEPTIONS			= "Trigger Exceptions"
@@ -61,7 +61,7 @@ L.MSG_NEW_TRIGGER					= "Neuer Ausl\195\182ser"
 local obj = L.CLASS_NAMES
 obj["DEATHKNIGHT"]	= "Death Knight"
 obj["DRUID"]		= "Druide"
-obj["HUNTER"]		= "J\195\164ger"
+obj["HUNTER"]		= "Jäger"
 obj["MAGE"]			= "Magier"
 obj["PALADIN"]		= "Paladin"
 obj["PRIEST"]		= "Priester"
@@ -79,9 +79,9 @@ obj["WARRIOR"]		= "Krieger"
 obj = L.TABS
 --obj["customMedia"]	= { label="Custom Media", tooltip="Display options for managing custom media."}
 obj["general"]		= { label="Allgemein", tooltip="Allgemeine Optionen anzeigen."}
-obj["scrollAreas"]	= { label="Scrollbereiche", tooltip="Optionen f\195\188r das Erstellen, L\195\182schen, und Konfigurieren der Scroll-Bereiche anzeigen.\n\nMouse over the icon buttons for more information."}
-obj["events"]		= { label="Ereignisse", tooltip="Optionen f\195\188r eingehende, ausgehende und benachrichtigende Ereignisse anzeigen.\n\nMouse over the icon buttons for more information."}
-obj["triggers"]		= { label="Ausl\195\182ser", tooltip="Optionen f\195\188r das Ausl\195\182ser-System anzeigen.\n\nMouse over the icon buttons for more information."}
+obj["scrollAreas"]	= { label="Scrollbereiche", tooltip="Optionen für das Erstellen, Löschen, und Konfigurieren der Scroll-Bereiche anzeigen.\n\nMouse over the icon buttons for more information."}
+obj["events"]		= { label="Ereignisse", tooltip="Optionen für eingehende, ausgehende und benachrichtigende Ereignisse anzeigen.\n\nMouse over the icon buttons for more information."}
+obj["triggers"]		= { label="Auslöser", tooltip="Optionen für das Auslöser-System anzeigen.\n\nMouse over the icon buttons for more information."}
 --obj["spamControl"]	= { label="Spam Control", tooltip="Display options for controlling spam."}
 --obj["cooldowns"]	= { label="Cooldowns", tooltip="Display options for cooldown notifications."}
 --obj["lootAlerts"]	= { label="Loot Alerts", tooltip="Display options for loot related notifications."}
@@ -100,7 +100,7 @@ obj["enableMSBT"]				= { label="Mik's Scrolling Battle Text aktivieren", tooltip
 --obj["gameHealing"]				= { label="Game Healing", tooltip="Display blizzard's default healing above the target's heads."}
 --obj["enableSounds"]				= { label="Sounds aktivieren", tooltip="Play sounds that are assigned to events and triggers."}
 --obj["textShadowing"]			= { label="Text Shadowing", tooltip="Apply a shadow effect to text to improve font crispness."}
-obj["colorPartialEffects"]		= { label="Partielle Effekte einf\195\164rben", tooltip="Partiellen effekte die festgelegten farben."}
+obj["colorPartialEffects"]		= { label="Partielle Effekte einfärben", tooltip="Partiellen effekte die festgelegten farben."}
 --obj["crushing"]					= { label="Crushing Blows", tooltip="Display the crushing blows trailer."}
 --obj["glancing"]					= { label="Glancing Hits", tooltip="Display the glancing hits trailer."}
 --obj["absorb"]					= { label="Partial Absorbs", tooltip="Display partial absorb amounts."}
@@ -111,14 +111,16 @@ obj["colorPartialEffects"]		= { label="Partielle Effekte einf\195\164rben", tool
 --obj["colorDamageAmounts"]		= { label="Color Damage Amounts", tooltip="Apply specified colors to damage amounts."}
 --obj["colorDamageEntry"]			= { tooltip="Enable coloring for this damage type."}
 obj["enableScrollArea"]			= { tooltip="Scroll-Bereich aktivieren."}
-obj["inheritField"]				= { label="\195\156bernehmen", tooltip="Inherit the field's value.  Uncheck to override."}
+obj["inheritField"]				= { label="Übernehmen", tooltip="Inherit the field's value.  Uncheck to override."}
+--obj["hideSkillIcons"]			= { label="Hide Icons", tooltip="Do not show icons in this scroll area."}
 obj["stickyEvent"]				= { label="Immer Sticky-Style", tooltip="Ereignis im Sticky-Style angezeigt."}
-obj["enableTrigger"]			= { tooltip="Ausl\195\182ser aktivieren."}
+obj["enableTrigger"]			= { tooltip="Auslöser aktivieren."}
 --obj["allPowerGains"]			= { label="ALL Power Gains", tooltip="Display all power gains including those that are not reported to the combat log.\n\nWARNING: This option is very spammy and will ignore the power threshold and throttling mechanics.\n\nNOT RECOMMENDED."}
 --obj["hyperRegen"]				= { label="Hyper Regen", tooltip="Display power gains during fast regen abilities such as Innervate and Spirit Tap.\n\nNOTE: The gains shown will not be throttled."}
 --obj["abbreviateSkills"]			= { label="Abbreviate Skills", tooltip="Abbreviates skill names (English only).\n\nThis can be overriden by each event with the %sl event code."}
 --obj["hideSkills"]				= { label="Hide Skills", tooltip="Don't display skill names for incoming and outgoing events.\n\nYou will give up some customization capability at the event level if you choose to use this option since it causes the %s event code to be ignored."}
 --obj["hideNames"]				= { label="Hide Names", tooltip="Don't display unit names for incoming and outgoing events.\n\nYou will give up some customization capability at the event level if you choose to use this option since it causes the %n event code to be ignored."}
+--obj["hideFullOverheals"]		= { label="Hide Full Overheals", tooltip="Don't display heals that have an effective heal amount of zero."}
 obj["allClasses"]				= { label="Alle Klassen"}
 --obj["enableCooldowns"]			= { label="Enable Cooldowns", tooltip="Display notifications when cooldowns complete."}
 --obj["lootedItems"]				= { label="Looted Items", tooltip="Display notifications when items are looted."}
@@ -134,20 +136,20 @@ obj["exclusiveSkills"]			= { label="Exclusive Skill Names", tooltip="Only show s
 
 obj = L.DROPDOWNS
 obj["profile"]				= { label="Aktuelles Profil:", tooltip="Legt das aktuelle Profil fest."}
-obj["normalFont"]			= { label="Schrift - Normal:", tooltip="Legt die Schriftart f\195\188r Nicht-kritische Treffer."}
-obj["critFont"]				= { label="Schrift - Kritisch:", tooltip="Legt die Schriftart f\195\188r kritische Treffer."}
-obj["normalOutline"]		= { label="Kontur - Normal:", tooltip="Legt die Kontur f\195\188r Nicht-kritische Treffer."}
-obj["critOutline"]			= { label="Kontur - Kritisch:", tooltip="Legt die Kontur f\195\188r kritische Treffer."}
+obj["normalFont"]			= { label="Schrift - Normal:", tooltip="Legt die Schriftart für Nicht-kritische Treffer."}
+obj["critFont"]				= { label="Schrift - Kritisch:", tooltip="Legt die Schriftart für kritische Treffer."}
+obj["normalOutline"]		= { label="Kontur - Normal:", tooltip="Legt die Kontur für Nicht-kritische Treffer."}
+obj["critOutline"]			= { label="Kontur - Kritisch:", tooltip="Legt die Kontur für kritische Treffer."}
 --obj["sound"]				= { label="Sound:", tooltip="Selects the sound to play when the event occurs."}
-obj["scrollArea"]			= { label="Scrollbereich:", tooltip="W\195\164hlt den zu konfigurierenden Scrollbereich aus."}
+obj["scrollArea"]			= { label="Scrollbereich:", tooltip="Wählt den zu konfigurierenden Scrollbereich aus."}
 --obj["animationStyle"]		= { label="Animations:", tooltip="The animation style for non-sticky animations in the scroll area."}
 --obj["stickyAnimationStyle"]	= { label="Sticky Animations:", tooltip="The animation style for sticky animations in the scroll area."}
 --obj["direction"]			= { label="Direction:", tooltip="The direction of the animation."}
 --obj["behavior"]				= { label="Behavior:", tooltip="The behavior of the animation."}
-obj["textAlign"]			= { label="Text ausrichten:", tooltip="Die Ausrichtung des Textes f\195\188r den Animation."}
+obj["textAlign"]			= { label="Text ausrichten:", tooltip="Die Ausrichtung des Textes für den Animation."}
 --obj["iconAlign"]			= { label="Icon Align:", tooltip="The alignment of skill icons relative to the text."}
 obj["eventCategory"]		= { label="Ereignis-Kategorie:", tooltip="Die Kategorie der zu konfigurienden Ereignisse."}
-obj["outputScrollArea"]		= { label="Scrollbereich:", tooltip="Den Scrollbereich f\195\188r die Textausgabe ausw\195\164hlen."}
+obj["outputScrollArea"]		= { label="Scrollbereich:", tooltip="Den Scrollbereich für die Textausgabe auswählen."}
 --obj["mainEvent"]			= { label="Main Event:"}
 --obj["triggerCondition"]		= { label="Condition:", tooltip="The condition to test."}
 --obj["triggerRelation"]		= { label="Relation:"}
@@ -166,30 +168,30 @@ obj = L.BUTTONS
 --obj["editCustomSound"]			= { tooltip="Click to edit the custom sound."}
 --obj["deleteCustomSound"]		= { tooltip="Click to remove the custom sound from MSBT."}
 obj["copyProfile"]				= { label="Kopieren", tooltip="Kopiert das aktuelle Profil auf ein neues Profil, dessen Namen du selbst bestimmst."}
-obj["resetProfile"]				= { label="Zur\195\188cksetzen", tooltip="Setzt das Profil auf die Standardeinstellungen zur\195\188ck."}
-obj["deleteProfile"]			= { label="L\195\182schen", tooltip="L\195\182scht das Profil."}
+obj["resetProfile"]				= { label="Zurücksetzen", tooltip="Setzt das Profil auf die Standardeinstellungen zurück."}
+obj["deleteProfile"]			= { label="Löschen", tooltip="Löscht das Profil."}
 --obj["masterFont"]				= { label="Master Fonts", tooltip="Allows you to setup the master font settings which will be inherited by all scroll areas and events within them, unless overridden."}
-obj["partialEffects"]			= { label="Partielle Effekte", tooltip="Erlaubt dir festzulegen welche partiellen Effekte angezeigt werden sollen, ob sie eingef\195\164rbt werden sollen, und wenn ja in welcher Farbe."}
+obj["partialEffects"]			= { label="Partielle Effekte", tooltip="Erlaubt dir festzulegen welche partiellen Effekte angezeigt werden sollen, ob sie eingefärbt werden sollen, und wenn ja in welcher Farbe."}
 --obj["damageColors"]				= { label="Damage Colors", tooltip="Allows you to setup whether or not amounts are color coded by damage type and what colors to use for each type."}
-obj["inputOkay"]				= { label=OKAY, tooltip="Eingaben \195\188bernehmen."}
-obj["inputCancel"]				= { label=CANCEL, tooltip="Eingaben zur\195\188cksetzen."}
-obj["genericSave"]				= { label=SAVE, tooltip="Speichert die \195\132nderungen."}
-obj["genericCancel"]			= { label=CANCEL, tooltip="Bricht die \195\132nderungen."}
-obj["addScrollArea"]			= { label="Nueus Scrollbereich", tooltip="Einen neuen Scrollbereich ausw\195\164hlen, dem Ereignisse und Ausl\195\182ser zugewiesen werden k\195\182nnen."}
+obj["inputOkay"]				= { label=OKAY, tooltip="Eingaben übernehmen."}
+obj["inputCancel"]				= { label=CANCEL, tooltip="Eingaben zurücksetzen."}
+obj["genericSave"]				= { label=SAVE, tooltip="Speichert die Änderungen."}
+obj["genericCancel"]			= { label=CANCEL, tooltip="Bricht die Änderungen."}
+obj["addScrollArea"]			= { label="Nueus Scrollbereich", tooltip="Einen neuen Scrollbereich auswählen, dem Ereignisse und Auslöser zugewiesen werden können."}
 --obj["configScrollAreas"]		= { label="Scrollbereiche konfigurieren", tooltip="Configure the normal and sticky animation styles, text alignment, scroll width/height, and location of the scroll areas."}
 obj["editScrollAreaName"]		= { tooltip="Klicken, um den Namen des Scrollbereichs zu bearbeiten."}
-obj["scrollAreaFontSettings"]	= { tooltip="Klicken, um die Schrifteinstellungen des Scrollbereichs zu bearbeiten, welche von allen Ereignissen dieses Bereichs \195\188bernommen werden, sofern sie nicht \195\188berschrieben werden."}
-obj["deleteScrollArea"]			= { tooltip="Klicken, um den Scrollbereich zu l\195\182schen."}
-obj["scrollAreasPreview"]		= { label="Vorschau", tooltip="Eine Vorschau auf die \195\132nderungen."}
+obj["scrollAreaFontSettings"]	= { tooltip="Klicken, um die Schrifteinstellungen des Scrollbereichs zu bearbeiten, welche von allen Ereignissen dieses Bereichs übernommen werden, sofern sie nicht überschrieben werden."}
+obj["deleteScrollArea"]			= { tooltip="Klicken, um den Scrollbereich zu löschen."}
+obj["scrollAreasPreview"]		= { label="Vorschau", tooltip="Eine Vorschau auf die Änderungen."}
 --obj["toggleAll"]				= { label="Toggle All", tooltip="Toggle the enable state of all events in the selected category."}
 --obj["moveAll"]					= { label="Move All", tooltip="Moves all of the events in the selected category to the specified scroll area."}
-obj["eventFontSettings"]		= { tooltip="Klicken, um die Schrifteinstellungen f\195\188r das Event zu bearbeiten."}
+obj["eventFontSettings"]		= { tooltip="Klicken, um die Schrifteinstellungen für das Event zu bearbeiten."}
 --obj["eventSettings"]			= { tooltip="Click to edit the event settings such as the output scroll area, output message, sound, etc."}
 --obj["customSound"]				= { tooltip="Click to enter a custom sound file." }
 --obj["playSound"]				= { label="Play", tooltip="Click to play the selected sound."}
-obj["addTrigger"]				= { label="Neuen Ausl\195\182ser hinzuf\195\188gen", tooltip="Einen neuen Ausl\195\182ser hinzuf\195\188gen."}
-obj["triggerSettings"]			= { tooltip="Klicken, um die Ausl\195\182ser-Einstellungen zu konfigurieren."}
-obj["deleteTrigger"]			= { tooltip="Klicken, um diesen Ausl\195\182ser zu l\195\182schen."}
+obj["addTrigger"]				= { label="Neuen Auslöser hinzufügen", tooltip="Einen neuen Auslöser hinzufügen."}
+obj["triggerSettings"]			= { tooltip="Klicken, um die Auslöser-Einstellungen zu konfigurieren."}
+obj["deleteTrigger"]			= { tooltip="Klicken, um diesen Auslöser zu löschen."}
 --obj["editTriggerClasses"]		= { tooltip="Click to edit the classes the trigger applies to."}
 --obj["addMainEvent"]				= { label="Add Event", tooltip="When ANY of these events occur and their defined conditions are true, the trigger will fire unless one of the exceptions specified below is true."}
 --obj["addTriggerException"]		= { label="Add Exception", tooltip="When ANY of these exceptions are true, the trigger will not fire."}
@@ -220,8 +222,9 @@ obj = L.EDITBOXES
 --obj["customFontPath"]	= { label="Font path:", tooltip="The path to the font's file.\n\nNOTE: If the file is located in the recommended MikScrollingBattleText\\Fonts directory, only the filename needs to be entered here instead of th full path.\n\nExample: myFont.ttf "}
 --obj["customSoundName"]	= { label="Sound name:", tooltip="The name used to identify the sound.\n\nExample: My Sound"}
 --obj["customSoundPath"]	= { label="Sound path:", tooltip="The path to the sounds's file.\n\nNOTE: If the file is located in the recommended MikScrollingBattleText\\Sounds directory, only the filename needs to be entered here instead of th full path.\n\nExample: mySound.mp3 "}
---obj["copyProfile"]		= { label="Gib einen neuen Profilnamen ein:", tooltip="Der Name des neuen Profils auf den das eben gew\195\164hlte Profil kopiert werden soll."}
---obj["scrollAreaName"]	= { label="Neuen Scrollbereich-Namen eingeben:", tooltip="Neuer Name f\195\188r den Scrollbereichs."}
+--obj["copyProfile"]		= { label="Gib einen neuen Profilnamen ein:", tooltip="Der Name des neuen Profils auf den das eben gewählte Profil kopiert werden soll."}
+--obj["partialEffect"]	= { tooltip="The trailer that will be appended when the partial effect occurs."}
+--obj["scrollAreaName"]	= { label="Neuen Scrollbereich-Namen eingeben:", tooltip="Neuer Name für den Scrollbereichs."}
 --obj["xOffset"]			= { label="X Offset:", tooltip="The X offset of the selected scroll area."}
 --obj["yOffset"]			= { label="Y Offset:", tooltip="The Y offset of the selected scroll area."}
 --obj["eventMessage"]		= { label="Ausgabenachricht eingeben:", tooltip="Die Nachricht die angezeigt wird, wenn das Ereignis vorkommt."}
@@ -237,11 +240,11 @@ obj = L.EDITBOXES
 
 obj = L.SLIDERS
 obj["animationSpeed"]		= { label="Animationsgeschwindigkeit", tooltip="Die Master Geschwindigkeit der Animation."}
-obj["normalFontSize"]		= { label="Normale Schriftgr\195\182\195\159e", tooltip="Die Schriftgr\195\182\195\159e f\195\188r Nicht-kritische Treffer."}
+obj["normalFontSize"]		= { label="Normale Schriftgröße", tooltip="Die Schriftgröße für Nicht-kritische Treffer."}
 --obj["normalFontOpacity"]	= { label="Normal Opacity", tooltip="Sets the font opacity for non-crits."}
-obj["critFontSize"]			= { label="Kritische Schriftgr\195\182\195\159e", tooltip="Die Schriftgr\195\182\195\159e f\195\188r kritische Treffer."}
+obj["critFontSize"]			= { label="Kritische Schriftgröße", tooltip="Die Schriftgröße für kritische Treffer."}
 --obj["critFontOpacity"]		= { label="Crit Opacity", tooltip="Sets the font opacity for crits."}
-obj["scrollHeight"]			= { label="Scroll-H\195\182he", tooltip="Die H\195\182he des Scrollbereich."}
+obj["scrollHeight"]			= { label="Scroll-Höhe", tooltip="Die Höhe des Scrollbereich."}
 obj["scrollWidth"]			= { label="Scroll Width", tooltip="The width of the scroll area."}
 obj["scrollAnimationSpeed"]	= { label="Geschwindigkeit", tooltip="Die Geschwindigkeit der Animation des Scrollbereich."}
 --obj["powerThreshold"]		= { label="Power Threshold", tooltip="The threshold that power gains must exceed to be displayed."}
@@ -283,6 +286,7 @@ obj = L.EVENT_CODES
 --obj["ITEM_AMOUNT"]			= "%a - Amount of the item looted.\n"
 --obj["SKILL_AMOUNT"]			= "%a - Amount of points you have in the skill.\n"
 --obj["EXPERIENCE_AMOUNT"]	= "%a - Amount of experience you gained.\n"
+--obj["PARTIAL_AMOUNT"]		= "%a - Amount of the partial effect.\n"
 --obj["ATTACKER_NAME"]		= "%n - Name of the attacker.\n"
 --obj["HEALER_NAME"]			= "%n - Name of the healer.\n"
 --obj["ATTACKED_NAME"]		= "%n - Name of the attacked unit.\n"
@@ -619,7 +623,7 @@ obj["zoneTypePvP"]				= BATTLEGROUND
 -- Font outlines.
 obj = L.OUTLINES
 obj[1] = "Kein"
-obj[2] = "D\195\188nn"
+obj[2] = "Dünn"
 obj[3] = "Dick"
 
 -- Text aligns.

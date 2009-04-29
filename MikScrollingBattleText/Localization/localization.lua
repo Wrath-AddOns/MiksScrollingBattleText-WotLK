@@ -55,8 +55,6 @@ L.COMMAND_USAGE = {
 -- Output messages
 ------------------------------
 
-L.MSG_ICON_MODULE_WARNING	= "WARNING: The MSBTIcons module is no longer required. Remove it from your AddOns folder to avoid wasting memory."
-L.MSG_SM_MODULE_WARNING		= "WARNING: The MSBTSharedMedia module is no longer required.  Remove it from your AddOns folder."
 L.MSG_DISABLE				= "Mod disabled."
 L.MSG_ENABLE				= "Mod enabled."
 L.MSG_PROFILE_RESET			= "Profile Reset"

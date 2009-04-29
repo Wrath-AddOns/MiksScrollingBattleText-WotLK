@@ -39,7 +39,7 @@
   <div id="HeaderBlock">
    Version: 5.4<br />
    Author: Mik<br />
-   Updated: Nov 20, 2008<br />
+   Updated: Apr 28, 2009<br />
    Official Site: <a href="http://mikord.wowinterface.com">http://mikord.wowinterface.com</a><br /><br />
    <a href="#Credits">See Credits</a>
   </div>
@@ -1078,7 +1078,10 @@
      <br /><br />
      <ol type="a">
       <li>Since a new trigger is being created, click the Add New Trigger button, enter "Poly Broke - %r!" for the output message, and click Okay.</li>
-      <li>Click the trigger conditions icon button (the gear) next to the newly added trigger at the bottom of the list.</li>
+      <li>
+       The trigger conditions configuration dialog for the new trigger will automatically be shown.  You can click the trigger conditions icon
+       button (the gear) next to a trigger to access these settings manually at a later time.
+      </li>
       <li>
        Click the edit Trigger Classes icon button and uncheck "All" classes.  Check Mage for the class the trigger will apply to.
        It is better to select the specific classes the trigger applies to instead of selecting all classes since by specifying
@@ -1178,6 +1181,24 @@
    <table cellspacing="3">
     <tr>
      <td class="ParameterName" nowrap="nowrap"><a name="WhatsNew"></a>Latest</td>
+     <td class="ParameterDesc">
+      <ul>
+       <li>Added the ability to customize the trailer message shown for partial effects.</li>
+       <li>There is now an option to disable icons for each scroll areas.</li>
+       <li>Added an option to hide heals that have an effective heal amount of zero (full overheals).</li>
+       <li>
+        Modified cast success and summon triggers to include recipient conditions.  Unfortunately cast start
+        events do not report recipient infomation, so it is not available for them.
+       </li>
+       <li>Increased the damage, healing, and power thresholds significantly to keep up with inflation.</li>
+       <li>Implemented internal throttling for identical enemy buff gains to reduce spam on fights like Yogg-Saron.</li>
+       <li>Added a preview icon to the scroll areas preview feature for better visual representation of icon settings.</li>
+       <li>Updated Russian translations from StingerSoft.</li>
+      </ul>
+     </td>
+    </tr>
+    <tr>
+     <td class="ParameterName" nowrap="nowrap">5.4.49</td>
      <td class="ParameterDesc">
       <ul>
        <li>

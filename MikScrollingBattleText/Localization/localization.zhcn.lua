@@ -44,8 +44,6 @@ L.COMMAND_USAGE = {
 -- Output messages
 ------------------------------
 
-L.MSG_ICON_MODULE_WARNING	= "*警告*: 不在需要MSBTIcons模块. 请删除此文件夹避免浪费内存."
-L.MSG_SM_MODULE_WARNING		= "*警告*: 不再需要MSBTSharedMedia模块. 请删除此文件夹以免浪费内存."
 L.MSG_DISABLE				= "禁用插件."
 L.MSG_ENABLE				= "启用插件."
 L.MSG_PROFILE_RESET			= "重置配置"

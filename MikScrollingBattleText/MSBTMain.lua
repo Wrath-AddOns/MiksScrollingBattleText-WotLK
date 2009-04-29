@@ -51,8 +51,9 @@ local MERGE_DELAY_TIME = 0.3
 -- How long to wait between throttle window checking.
 local THROTTLE_UPDATE_TIME = 0.5
 
--- Amount of time to hold recent monster emotes in cache.
+-- Amount of time to hold recent monster emotes and enemy buffs in cache.
 local EMOTE_HOLD_TIME = 1
+local ENEMY_BUFF_HOLD_TIME = 5
 
 -- Damage types.
 local DAMAGETYPE_PHYSICAL = 0x1
@@ -141,8 +142,8 @@ local lastThrottleUpdate = 0
 local isEnglish
 local lastPowerAmount = 65535
 local finisherShown
-local emoteCleanupTime = 0
 local recentEmotes = {}
+local recentEnemyBuffs = {}
 local ignoreAuras = {}
 
 -- Regen ability info.
@@ -273,7 +274,7 @@ local function FormatPartialEffects(absorbAmount, blockAmount, resistAmount, isG
  local trailer = effectSettings and effectSettings.trailer
  if (trailer and not effectSettings.disabled) then
   -- Substitute the amount into the trailer.
-  trailer = string_gsub(trailer, "%%d", amount)
+  trailer = string_gsub(trailer, "%%a", amount)
   
   -- Color the text if coloring isn't disabled.
   if (not currentProfile.partialColoringDisabled) then
@@ -348,7 +349,7 @@ local function FormatEvent(message, amount, damageType, overhealAmount, powerTyp
    if (overhealColorCode) then overhealAmount = overhealColorCode .. overhealAmount .. "|r" end
    
    -- Append the overheal amount to the actual amount healed.
-   amount = amount .. string_gsub(currentProfile.overheal.trailer, "%%d", overhealAmount)
+   amount = amount .. string_gsub(currentProfile.overheal.trailer, "%%a", overhealAmount)
   end -- Overheal amount and overhealing display enabled.
 
   -- Color the amount according to the damage type, if any.
@@ -780,8 +781,15 @@ local function HealHandler(parserEvent, currentProfile)
  -- Ignore the event if it doesn't pertain to the player or their pet.
  if (not eventTypeString) then return end
 
- -- Ignore the event if the heal amount is under the healing threshold to be shown.
- if (parserEvent.amount and parserEvent.amount < currentProfile.healThreshold) then return end
+ local amount = parserEvent.amount
+ if (amount) then
+  -- Ignore the event if the heal amount is under the healing threshold to be shown.
+  if (amount < currentProfile.healThreshold) then return end
+
+  -- Ignore the event if the effective heal amount is zero and the hide full overheals options is set.
+  local overhealAmount = parserEvent.overhealAmount
+  if (overhealAmount and (amount - overhealAmount == 0) and currentProfile.hideFullOverheals) then return end
+ end
 
  -- Append hot suffix if it's a hot.
  eventTypeString = eventTypeString .. (parserEvent.isHoT and "_HOT" or "_HEAL")
@@ -868,8 +876,20 @@ local function AuraHandler(parserEvent, currentProfile)
   -- Ignore the event if it's a friendly unit.
   if (not UnitIsEnemy("player", "target")) then return end
 
-  -- Ignore the event it isn't not a buff gain.
+  -- Ignore the event if it's not a buff gain.
   if (parserEvent.auraType ~= "BUFF" or parserEvent.isFade == true) then return end
+
+  -- Loop through all of the recent enemy buff gains and remove the old ones.
+  local now = GetTime()
+  for buff, cleanupTime in pairs(recentEnemyBuffs) do
+   if (now >= cleanupTime) then recentEnemyBuffs[buff] = nil end
+  end
+
+  -- Ignore the event if it has already been shown within the specified time frame.
+  if (recentEnemyBuffs[effectName]) then return end
+
+  -- Add the event to the recent enemy buffs list.
+  recentEnemyBuffs[effectName] = now + ENEMY_BUFF_HOLD_TIME
 
   eventTypeString = "NOTIFICATION_ENEMY_BUFF"
   affectedUnitName = parserEvent.recipientName
@@ -1310,12 +1330,6 @@ local function OnEvent(this, event, arg1, arg2)
   -- Must do it once the variables are loaded because blizzard's code overrides the FCT
   -- settings after the ADDON_LOADED code runs.
   MSBTProfiles.SetOptionUserDisabled(MSBTProfiles.IsModDisabled())
-
-  -- Display warning if the old icon module is loaded.  
-  if (MSBTIconSupport) then message(L.MSG_ICON_MODULE_WARNING) end
-
-  -- Display warning if the old shared media module is loaded.  
-  if (MSBTSharedMedia) then message(L.MSG_SM_MODULE_WARNING) end
   collectgarbage("collect")
 
  -- Power changes.

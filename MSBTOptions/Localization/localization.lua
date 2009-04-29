@@ -135,6 +135,7 @@ obj["colorDamageAmounts"]		= { label="Color Damage Amounts", tooltip="Apply spec
 obj["colorDamageEntry"]			= { tooltip="Enable coloring for this damage type."}
 obj["enableScrollArea"]			= { tooltip="Enable the scroll area."}
 obj["inheritField"]				= { label="Inherit", tooltip="Inherit the field's value.  Uncheck to override."}
+obj["hideSkillIcons"]			= { label="Hide Icons", tooltip="Do not show icons in this scroll area."}
 obj["stickyEvent"]				= { label="Always Sticky", tooltip="Always display the event using the sticky style."}
 obj["enableTrigger"]			= { tooltip="Enable the trigger."}
 obj["allPowerGains"]			= { label="ALL Power Gains", tooltip="Display all power gains including those that are not reported to the combat log.\n\nWARNING: This option is very spammy and will ignore the power threshold and throttling mechanics.\n\nNOT RECOMMENDED."}
@@ -142,6 +143,7 @@ obj["hyperRegen"]				= { label="Hyper Regen", tooltip="Display power gains durin
 obj["abbreviateSkills"]			= { label="Abbreviate Skills", tooltip="Abbreviates skill names (English only).\n\nThis can be overriden by each event with the %sl event code."}
 obj["hideSkills"]				= { label="Hide Skills", tooltip="Don't display skill names for incoming and outgoing events.\n\nYou will give up some customization capability at the event level if you choose to use this option since it causes the %s event code to be ignored."}
 obj["hideNames"]				= { label="Hide Names", tooltip="Don't display unit names for incoming and outgoing events.\n\nYou will give up some customization capability at the event level if you choose to use this option since it causes the %n event code to be ignored."}
+obj["hideFullOverheals"]		= { label="Hide Full Overheals", tooltip="Don't display heals that have an effective heal amount of zero."}
 obj["allClasses"]				= { label="All Classes"}
 obj["enableCooldowns"]			= { label="Enable Cooldowns", tooltip="Display notifications when cooldowns complete."}
 obj["lootedItems"]				= { label="Looted Items", tooltip="Display notifications when items are looted."}
@@ -244,6 +246,7 @@ obj["customFontPath"]	= { label="Font path:", tooltip="The path to the font's fi
 obj["customSoundName"]	= { label="Sound name:", tooltip="The name used to identify the sound.\n\nExample: My Sound"}
 obj["customSoundPath"]	= { label="Sound path:", tooltip="The path to the sounds's file.\n\nNOTE: If the file is located in the recommended MikScrollingBattleText\\Sounds directory, only the filename needs to be entered here instead of th full path.\n\nExample: mySound.mp3 "}
 obj["copyProfile"]		= { label="New profile name:", tooltip="Name of the new profile to copy the currently selected one to."}
+obj["partialEffect"]	= { tooltip="The trailer that will be appended when the partial effect occurs."}
 obj["scrollAreaName"]	= { label="New scroll area name:", tooltip="New name for the scroll area."}
 obj["xOffset"]			= { label="X Offset:", tooltip="The X offset of the selected scroll area."}
 obj["yOffset"]			= { label="Y Offset:", tooltip="The Y offset of the selected scroll area."}
@@ -307,6 +310,7 @@ obj["REP_AMOUNT"]			= "%a - Amount of reputation.\n"
 obj["ITEM_AMOUNT"]			= "%a - Amount of the item looted.\n"
 obj["SKILL_AMOUNT"]			= "%a - Amount of points you have in the skill.\n"
 obj["EXPERIENCE_AMOUNT"]	= "%a - Amount of experience you gained.\n"
+obj["PARTIAL_AMOUNT"]		= "%a - Amount of the partial effect.\n"
 obj["ATTACKER_NAME"]		= "%n - Name of the attacker.\n"
 obj["HEALER_NAME"]			= "%n - Name of the healer.\n"
 obj["ATTACKED_NAME"]		= "%n - Name of the attacked unit.\n"

@@ -110,6 +110,7 @@ obj["colorDamageAmounts"]		= { label="伤害数值着色", tooltip="为伤害值
 obj["colorDamageEntry"]			= { tooltip="为此类伤害着色"}
 obj["enableScrollArea"]			= { tooltip="启用滚动区域"}
 obj["inheritField"]				= { label="继承", tooltip="继承此区域的值，不勾选则无效"}
+--obj["hideSkillIcons"]			= { label="Hide Icons", tooltip="Do not show icons in this scroll area."}
 obj["stickyEvent"]				= { label="始终粘滞", tooltip="总是使用粘滞样式显示事件"}
 obj["enableTrigger"]			= { tooltip="启用触发器"}
 obj["allPowerGains"]			= { label="所有能量获取", tooltip="显示所有获取的能量包括那些战斗日志中不显示的。警告：这个选项将会大量刷屏同时无视能量阈值和抑制显示设置\n不推荐"}
@@ -117,6 +118,7 @@ obj["hyperRegen"]				= { label="超级回复", tooltip="显示从快速回复技
 obj["abbreviateSkills"]			= { label="技能简称", tooltip="简缩技能名字（仅适用于英文版）。若事件描述中加入“%sl”代码，此选项即失效"}
 obj["hideSkills"]				= { label="隐藏技能", tooltip="在承受伤害和输出伤害中不显示技能名字。开启此选项将使你失去某些事件自定义功能，因为它会忽略“%s”代码"}
 obj["hideNames"]				= { label="隐藏名字", tooltip="在承受伤害和输出伤害中不显示单位名字。开启此选项将使你失去某些事件自定义功能，因为它会忽略“%n”代码"}
+--obj["hideFullOverheals"]		= { label="Hide Full Overheals", tooltip="Don't display heals that have an effective heal amount of zero."}
 obj["allClasses"]				= { label="所有职业"}
 obj["enableCooldowns"]			= { label="启用冷却", tooltip="当冷却结束时显示通告"}
 obj["lootedItems"]				= { label="拾取物品", tooltip="显示物品拾取."}
@@ -219,6 +221,7 @@ obj["customFontPath"]	= { label="字体路径:", tooltip="字体文件的路径.
 obj["customSoundName"]	= { label="音效名:", tooltip="用来确定音效的名字.\n\nExample: 我的音效"}
 obj["customSoundPath"]	= { label="音效路径:", tooltip="音效文件的路径.\n\n注意: 如果文件在 MikScrollingBattleText\\Sounds 中的话, 只需要输入文件名就可以.\n\n例如: mySound.mp3 "}
 obj["copyProfile"]		= { label="新建配置：", tooltip="输入新建配置的名称"}
+--obj["partialEffect"]	= { tooltip="The trailer that will be appended when the partial effect occurs."}
 obj["scrollAreaName"]	= { label="新建滚动区域:", tooltip="新建滚动区域的名称"}
 obj["xOffset"]			= { label="X值：", tooltip="所选择滚动区域的X值"}
 obj["yOffset"]			= { label="Y值：", tooltip="所选择滚动区域的Y值"}
@@ -282,6 +285,7 @@ obj["REP_AMOUNT"]			= "%a - 声望总数.\n"
 obj["ITEM_AMOUNT"]			= "%a - 拾取物品的数量.\n"
 obj["SKILL_AMOUNT"]			= "%a - 技能点总数.\n"
 obj["EXPERIENCE_AMOUNT"]	= "%a - 获得经验总数.\n"
+--obj["PARTIAL_AMOUNT"]		= "%a - Amount of the partial effect.\n"
 obj["ATTACKER_NAME"]		= "%n - 攻击者名字.\n"
 obj["HEALER_NAME"]			= "%n - 治疗者名字.\n"
 obj["ATTACKED_NAME"]		= "%n - 被攻击者名字.\n"
