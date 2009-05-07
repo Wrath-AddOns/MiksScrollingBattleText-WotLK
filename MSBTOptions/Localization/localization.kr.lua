@@ -111,7 +111,7 @@ obj["colorDamageAmounts"]		= { label="피해량 속성 색상", tooltip="피해�
 obj["colorDamageEntry"]			= { tooltip="이 피해량 속성에 대한 색상을 활성화 합니다."}
 obj["enableScrollArea"]			= { tooltip="이 스크롤 영역을 활성화 합니다."}
 obj["inheritField"]				= { label="상속", tooltip="이 항목 값을 상속합니다. 체크를 하지 않으면 무시됩니다."}
---obj["hideSkillIcons"]			= { label="Hide Icons", tooltip="Do not show icons in this scroll area."}
+obj["hideSkillIcons"]			= { label="아이콘 숨김", tooltip="이 스크롤 영역 안에 아이콘을 표시하지 않습니다."}
 obj["stickyEvent"]				= { label="항상 고정", tooltip="항상 고정 스타일로 이벤트를 표시합니다."}
 obj["enableTrigger"]			= { tooltip="트리거를 활성화합니다."}
 obj["allPowerGains"]			= { label="모든 마력 (마나/분노 등) 획득", tooltip="전투 로그로 나타나지 않는 것을 포함한 모든 마력 (마나, 분노, 기력, 룬 마력) 획득을 표시합니다..\n\n주의: 이 옵션은 마력 표시 기준 및 출력시간 설정을 무시하므로 원치 않는 메시지를 많이 표시할수 있습니다.\n\n[비 추천]"}
@@ -119,7 +119,7 @@ obj["hyperRegen"]				= { label="고속 회복", tooltip="고속 회복 능력(�
 obj["abbreviateSkills"]			= { label="짧은 기술 이름", tooltip="기술 이름을 짧게 표시해줍니다(영문).\n\n이 설정은 %sl 이벤트 코드를 사용한 이벤트에서 무시되어집니다."}
 obj["hideSkills"]				= { label="기술 이름 숨김", tooltip="받은, 대상이 받은 이벤트에서 기술 이름을 표시하지 않습니다.\n\n이 옵션을 사용하면 %s 이벤트 코드를 무시하므로 이벤트에 대한 사용자 설정이 무시되어질 것입니다."}
 obj["hideNames"]				= { label="유닛 이름 숨김", tooltip="받은, 대상이 받은 이벤트에서 유닛 이름을 표시하지 않는다.\n\n이 옵션을 사용하면 %n 이벤트 코드를 무시하므로 이벤트에 대한 사용자 설정이 무시되어질 것입니다."}
---obj["hideFullOverheals"]		= { label="Hide Full Overheals", tooltip="Don't display heals that have an effective heal amount of zero."}
+obj["hideFullOverheals"]		= { label="최대 초과치유 숨김", tooltip="0의 치유량 효과를 가진 치유는 표시하지 않습니다."}
 obj["allClasses"]				= { label="모든 클래스"}
 obj["enableCooldowns"]			= { label="재사용 대기시간", tooltip="재사용 대기시간이 끝났을때 알림 메세지를 표시합니다."}
 obj["lootedItems"]				= { label="획득한 아이템", tooltip="아이템을 획득했을때 알림 메세지를 표시합니다."}
@@ -222,11 +222,11 @@ obj["customFontPath"]	= { label="글꼴 경로:", tooltip="글꼴 파일이 있�
 obj["customSoundName"]	= { label="소리 이름:", tooltip="이름은 소리를 식별하는데 사용합니다.\n\n사용예: 나의 소리"}
 obj["customSoundPath"]	= { label="소리 경로:", tooltip="소리 파일이 있는 경로.\n\n노트: 만약 파일이 권장하는 MikScrollingBattleText\\Sounds 폴더 위치에 있으면, 여기엔 오로지 전체 경로 대신 파일 이름을 입력해야 됩니다.\n\n사용예: mySound.mp3 "}
 obj["copyProfile"]		= { label="새 프로필 이름 입력:", tooltip="선택된 프로필로부터 복사될 새로운 프로필의 이름."}
---obj["partialEffect"]	= { tooltip="The trailer that will be appended when the partial effect occurs."}
+obj["partialEffect"]	= { tooltip="부분 효과 발생 시 추가될 메세지."}
 obj["scrollAreaName"]	= { label="새 스크롤 영역 이름 입력:", tooltip="새로운 스크롤 영역의 이름."}
 obj["xOffset"]			= { label="X 좌표:", tooltip="선택된 스크롤 영역의 X 좌표."}
 obj["yOffset"]			= { label="Y 좌표:", tooltip="선택된 스크롤 영역의 Y 좌표."}
-obj["eventMessage"]		= { label="출력 메세지 입력:", tooltip="이벤트 발생시 출력되는 메시지."}
+obj["eventMessage"]		= { label="출력 메세지 입력:", tooltip="이벤트 발생시 출력되는 메세지."}
 obj["soundFile"]		= { label="효과음 파일명:", tooltip="이벤트 발생시 재생할 효과음 파일."}
 obj["iconSkill"]		= { label="기술 아이콘:", tooltip="이벤트 발생 시 아이콘을 표시할 기술의 이름입니다."}
 obj["skillName"]		= { label="기술 이름 입력:", tooltip="추가되는 기술의 이름."}
@@ -286,7 +286,7 @@ obj["REP_AMOUNT"]			= "%a - 평판 수치.\n"
 obj["ITEM_AMOUNT"]			= "%a - 획득한 아이템 수량.\n"
 obj["SKILL_AMOUNT"]			= "%a - 기술 점수.\n"
 obj["EXPERIENCE_AMOUNT"]	= "%a - 획득한 경험치.\n"
---obj["PARTIAL_AMOUNT"]		= "%a - Amount of the partial effect.\n"
+obj["PARTIAL_AMOUNT"]		= "%a - 부분 효과 횟수.\n"
 obj["ATTACKER_NAME"]		= "%n - 공격자 이름.\n"
 obj["HEALER_NAME"]			= "%n - 치유자 이름.\n"
 obj["ATTACKED_NAME"]		= "%n - 피해자 이름.\n"
