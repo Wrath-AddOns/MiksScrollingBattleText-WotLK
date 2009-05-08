@@ -23,7 +23,6 @@ local L = MikSBT.translations
 
 -- Local references to various functions for faster access.
 local table_remove = table.remove
-local math_ceil = math.ceil
 local string_find = string.find
 local string_gsub = string.gsub
 local string_format = string.format
@@ -35,10 +34,12 @@ local Print = MikSBT.Print
 local GetSkillName = MikSBT.GetSkillName
 local DisplayEvent = MSBTAnimations.DisplayEvent
 local IsScrollAreaActive = MSBTAnimations.IsScrollAreaActive
+local IsScrollAreaIconShown = MSBTAnimations.IsScrollAreaIconShown
 local TestFlagsAll = MSBTParser.TestFlagsAll
 
 -- Local references to various variables for faster access.
 local triggerSuppressions = MSBTTriggers.triggerSuppressions
+local classMap = MSBTParser.classMap
 
 
 -------------------------------------------------------------------------------
@@ -278,7 +279,7 @@ local function FormatPartialEffects(absorbAmount, blockAmount, resistAmount, isG
   
   -- Color the text if coloring isn't disabled.
   if (not currentProfile.partialColoringDisabled) then
-   partialEffectText = string_format("|cFF%02x%02x%02x%s|r", math_ceil(effectSettings.colorR * 255), math_ceil(effectSettings.colorG * 255), math_ceil(effectSettings.colorB * 255), trailer)
+   partialEffectText = string_format("|cFF%02x%02x%02x%s|r", effectSettings.colorR * 255, effectSettings.colorG * 255, effectSettings.colorB * 255, trailer)
   else
    partialEffectText = trailer
   end
@@ -303,7 +304,7 @@ local function FormatPartialEffects(absorbAmount, blockAmount, resistAmount, isG
  if (trailer and not effectSettings.disabled) then
   -- Color the text if coloring isn't disabled.
   if (not currentProfile.partialColoringDisabled) then
-   partialEffectText = partialEffectText .. string_format("|cFF%02x%02x%02x%s|r", math_ceil(effectSettings.colorR * 255), math_ceil(effectSettings.colorG * 255), math_ceil(effectSettings.colorB * 255), trailer)
+   partialEffectText = partialEffectText .. string_format("|cFF%02x%02x%02x%s|r", effectSettings.colorR * 255, effectSettings.colorG * 255, effectSettings.colorB * 255, trailer)
   else
    partialEffectText = partialEffectText .. trailer
   end
@@ -316,47 +317,51 @@ end
 -- ****************************************************************************
 -- Formats an event with the parameters.
 -- ****************************************************************************
-local function FormatEvent(message, amount, damageType, overhealAmount, powerType, name, effectName, partialEffects, mergeTrailer, hasTexture, ignoreDamageColoring, filterCodes)
+local function FormatEvent(message, amount, damageType, overhealAmount, overkillAmount, powerType, name, class, effectName, partialEffects, mergeTrailer, ignoreDamageColoring, hideSkills, hideNames)
  -- Get a local reference to the current profile.
  local currentProfile = MSBTProfiles.currentProfile
  local checkParens
  
  -- Substitute amount.
  if (amount and string_find(message, "%a", 1, true)) then
-  -- Get the hex color for the damage type if there is one and coloring is enabled.
-  local damageColorCode
-  if (damageType and not ignoreDamageColoring and not currentProfile.damageColoringDisabled) then
-   -- Set the damage color code if the color data is present for the damage type.
-   local damageColor = currentProfile[damageColorProfileEntries[damageType]]
-   if (damageColor and not damageColor.disabled) then
-    damageColorCode = string_format("|cFF%02x%02x%02x", math_ceil(damageColor.colorR * 255), math_ceil(damageColor.colorG * 255), math_ceil(damageColor.colorB * 255))
-   end
-  end -- Damage type and damage coloring is enabled.
-
   -- Check if there is overheal information and displaying it is enabled.
+  local partialAmount = ""
   if (overhealAmount and overhealAmount > 0 and not currentProfile.overheal.disabled) then
    -- Deduct the overheal amount from the total amount healed.
    amount = amount - overhealAmount
-   
-   -- Get the overheal amount and color it with the correct color if coloring is enabled.
-   local overhealColorCode
+
+   -- Color it with the correct color if coloring is enabled.
+   local overhealSettings = currentProfile.overheal
+   partialAmount = string_gsub(overhealSettings.trailer, "%%a", overhealAmount)
    if (not currentProfile.partialColoringDisabled) then
-    local overhealColor = currentProfile.overheal
-    overhealColorCode = string_format("|cFF%02x%02x%02x", math_ceil(overhealColor.colorR * 255), math_ceil(overhealColor.colorG * 255), math_ceil(overhealColor.colorB * 255)) 
+    partialAmount = string_format("|cFF%02x%02x%02x%s|r", overhealSettings.colorR * 255, overhealSettings.colorG * 255, overhealSettings.colorB * 255, partialAmount)
    end
 
-   -- Color the overheal amount if there is a color code.
-   if (overhealColorCode) then overhealAmount = overhealColorCode .. overhealAmount .. "|r" end
-   
-   -- Append the overheal amount to the actual amount healed.
-   amount = amount .. string_gsub(currentProfile.overheal.trailer, "%%a", overhealAmount)
-  end -- Overheal amount and overhealing display enabled.
+  -- No overheal so check if there is overkill information and displaying it is enabled.
+  elseif (overkillAmount and overkillAmount > 0 and not currentProfile.overkill.disabled) then
+   -- Deduct the overkill amount from the total amount of damage done.
+   amount = amount - overkillAmount
 
-  -- Color the amount according to the damage type, if any.
-  if (damageColorCode) then amount = damageColorCode .. amount .. "|r" end
+   -- Color it with the correct color if coloring is enabled.
+   local overkillSettings = currentProfile.overkill
+   partialAmount = string_gsub(overkillSettings.trailer, "%%a", overkillAmount)
+   if (not currentProfile.partialColoringDisabled) then
+    partialAmount = string_format("|cFF%02x%02x%02x%s|r", overkillSettings.colorR * 255, overkillSettings.colorG * 255, overkillSettings.colorB * 255, partialAmount)
+   end
+  end
+
+  -- Get the hex color for the damage type if there is one and coloring is enabled.
+  local formattedAmount = amount
+  if (damageType and not ignoreDamageColoring and not currentProfile.damageColoringDisabled) then
+   -- Color the amount according to the damage type if there is one and it's enabled.
+   local damageSettings = currentProfile[damageColorProfileEntries[damageType]]
+   if (damageSettings and not damageSettings.disabled) then
+    formattedAmount = string_format("|cFF%02x%02x%02x%d|r", damageSettings.colorR * 255, damageSettings.colorG * 255, damageSettings.colorB * 255, amount)
+   end
+  end -- Damage type and damage coloring is enabled.
 
   -- Substitute all %a event codes with the amount.
-  message = string_gsub(message, "%%a", amount)
+  message = string_gsub(message, "%%a", formattedAmount .. partialAmount)
  end -- Substitute amount.
 
 
@@ -366,11 +371,20 @@ local function FormatEvent(message, amount, damageType, overhealAmount, powerTyp
 
  -- Substitute names.
  if (name and string_find(message, "%n", 1, true)) then
-  if (filterCodes and currentProfile.hideNames) then
+  if (hideNames) then
    message = string_gsub(message, "%s?%-?%s?%%n", "")
    checkParens = true
   else
+   -- Strip realm from names.
    if (string_find(name, "-", 1, true)) then name = string_gsub(name, "(.-)%-.*", "%1") end
+
+   -- Color the name according to the class if there is one and it's enabled.
+   if (class and not currentProfile.classColoringDisabled) then
+    local classSettings = currentProfile[class]
+    if (classSettings and not classSettings.disabled) then name = string_format("|cFF%02x%02x%02x%s|r", classSettings.colorR * 255, classSettings.colorG * 255, classSettings.colorB * 255, name) end
+   end
+
+   -- Substitute all %n event codes with the name.
    message = string_gsub(message, "%%n", name)
   end
  end
@@ -384,7 +398,7 @@ local function FormatEvent(message, amount, damageType, overhealAmount, powerTyp
  if (effectName) then
   if (string_find(message, "%s", 1, true)) then
    -- Hide skill names if there is an icon for it and the option is set.
-   if (filterCodes and (hasTexture and not currentProfile.exclusiveSkillsDisabled or currentProfile.hideSkills)) then
+   if (hideSkills) then
     message = string_gsub(message, "%s?%-?%s?%%sl?%s?%-?%s?", "")
     checkParens = true
    else
@@ -408,7 +422,7 @@ local function FormatEvent(message, amount, damageType, overhealAmount, powerTyp
    end
   end
  end
- 
+
 
  -- Remove empty parenthesis left frame ignoring event codes.
  if (checkParens) then message = string_gsub(message, "%(%)", "") end
@@ -416,15 +430,15 @@ local function FormatEvent(message, amount, damageType, overhealAmount, powerTyp
 
  -- Substitute damage types.
  if (damageType and string_find(message, "%t", 1, true)) then message = string_gsub(message, "%%t", damageTypeMap[damageType] or STRING_SCHOOL_UNKNOWN) end
- 
- 
+
+
  -- Append partial effects if there are any.
  if (partialEffects) then message = message .. partialEffects end
 
- 
+
  -- Append the merge trailer if there is one.
  if (mergeTrailer) then message = message .. mergeTrailer end
- 
+
  -- Return the formatted message.
  return message 
 end
@@ -435,24 +449,28 @@ end
 -- can be incoming or outgoing.
 -- ****************************************************************************
 local function GetInOutEventData(parserEvent)
- local eventTypeString, affectedUnitName
- 
+ local eventTypeString, affectedUnitName, affectedUnitClass
+
  -- Get the information for whether the event is incoming or outgoing.
  if (parserEvent.recipientUnit == "player") then
   affectedUnitName = parserEvent.sourceName
   eventTypeString = "INCOMING"
+  affectedUnitClass = classMap[parserEvent.sourceGUID]
  elseif (parserEvent.sourceUnit == "player") then
   affectedUnitName = parserEvent.recipientName
   eventTypeString = "OUTGOING"
+  affectedUnitClass = classMap[parserEvent.recipientGUID]
  elseif (parserEvent.recipientUnit == "pet") then
   affectedUnitName = parserEvent.sourceName
   eventTypeString = "PET_INCOMING"
+  affectedUnitClass = classMap[parserEvent.sourceGUID]
  elseif (parserEvent.sourceUnit == "pet") then
   affectedUnitName = parserEvent.recipientName
   eventTypeString = "PET_OUTGOING"
+  affectedUnitClass = classMap[parserEvent.recipientGUID]
  end
 
- return eventTypeString, affectedUnitName
+ return eventTypeString, affectedUnitName, affectedUnitClass
 end
 
 
@@ -468,7 +486,7 @@ local function DetectPowerGain(powerAmount)
 
  -- Display the power change if it is a gain.
  if (powerAmount > lastPowerAmount) then
-  DisplayEvent(eventSettings, FormatEvent(eventSettings.message, powerAmount - lastPowerAmount, nil, nil, UnitPowerType("player")))
+  DisplayEvent(eventSettings, FormatEvent(eventSettings.message, powerAmount - lastPowerAmount, nil, nil, nil, UnitPowerType("player")))
  end
 end
 
@@ -516,7 +534,7 @@ local function HandleMonsterEmotes(emoteString)
  if (recentEmotes[emoteString]) then return end
 
  -- Display the event and add it to the recent emotes list.
- DisplayEvent(eventSettings, FormatEvent(eventSettings.message, nil, nil, nil, nil, nil, emoteString))
+ DisplayEvent(eventSettings, FormatEvent(eventSettings.message, nil, nil, nil, nil, nil, nil, nil, emoteString))
  recentEmotes[emoteString] = now + EMOTE_HOLD_TIME 
 end
 
@@ -548,6 +566,9 @@ local function MergeEvents(numEvents)
     elseif (unmergedEvent.effectName == mergedEvent.effectName) then
      -- Change the name to the multiple targets string if the names don't match.
      if (unmergedEvent.name ~= mergedEvent.name) then mergedEvent.name = L.MSG_MULTIPLE_TARGETS end
+ 
+     -- Clear the class if they don't match.
+     if (unmergedEvent.class ~= mergedEvent.class) then mergedEvent.class = nil end
 
      -- Set the merge flag.
      doMerge = true 
@@ -571,7 +592,7 @@ local function MergeEvents(numEvents)
     -- Increment the number of merged events.
     mergedEvent.numMerged = mergedEvent.numMerged + 1
 
-    -- Increment the number of crits is the event being merged is a crit.  Clear the crit flag for the merged event if it isn't.
+    -- Increment the number of crits if the event being merged is a crit.  Clear the crit flag for the merged event if it isn't.
     if (unmergedEvent.isCrit) then mergedEvent.numCrits = mergedEvent.numCrits + 1 else mergedEvent.isCrit = false end
 
     -- Break out of the merged events loop since the event has been merged.
@@ -733,7 +754,7 @@ end
 -- ****************************************************************************
 local function DamageHandler(parserEvent, currentProfile)
  -- Setup info for whether the event is incoming or outgoing.
- local eventTypeString, affectedUnitName = GetInOutEventData(parserEvent)
+ local eventTypeString, affectedUnitName, affectedUnitClass = GetInOutEventData(parserEvent)
 
  -- Ignore the event if it doesn't pertain to the player or their pet.
  if (not eventTypeString) then return end
@@ -747,7 +768,7 @@ local function DamageHandler(parserEvent, currentProfile)
  -- Append correct damage suffix.
  eventTypeString = eventTypeString .. (parserEvent.isDoT and "_DOT" or parserEvent.isDamageShield and "_DAMAGE_SHIELD" or "_DAMAGE")
  
- return eventTypeString, true, parserEvent.skillName, affectedUnitName
+ return eventTypeString, parserEvent.skillName, affectedUnitName, affectedUnitClass, true
 end
 
 
@@ -756,7 +777,7 @@ end
 -- ****************************************************************************
 local function MissHandler(parserEvent, currentProfile)
  -- Setup info for whether the event is incoming or outgoing.
- local eventTypeString, affectedUnitName = GetInOutEventData(parserEvent)
+ local eventTypeString, affectedUnitName, affectedUnitClass = GetInOutEventData(parserEvent)
 
  -- Ignore the event if it doesn't pertain to the player or their pet.
  if (not eventTypeString) then return end
@@ -767,7 +788,7 @@ local function MissHandler(parserEvent, currentProfile)
  -- Append the miss type.
  eventTypeString = eventTypeString .. "_" .. parserEvent.missType   
 
- return eventTypeString, true, parserEvent.skillName, affectedUnitName
+ return eventTypeString, parserEvent.skillName, affectedUnitName, affectedUnitClass, true
 end
 
 
@@ -776,7 +797,7 @@ end
 -- ****************************************************************************
 local function HealHandler(parserEvent, currentProfile)
  -- Setup info for whether the event is incoming or outgoing.
- local eventTypeString, affectedUnitName = GetInOutEventData(parserEvent)
+ local eventTypeString, affectedUnitName, affectedUnitClass = GetInOutEventData(parserEvent)
 
  -- Ignore the event if it doesn't pertain to the player or their pet.
  if (not eventTypeString) then return end
@@ -794,7 +815,7 @@ local function HealHandler(parserEvent, currentProfile)
  -- Append hot suffix if it's a hot.
  eventTypeString = eventTypeString .. (parserEvent.isHoT and "_HOT" or "_HEAL")
 
- return eventTypeString, true, parserEvent.skillName, affectedUnitName
+ return eventTypeString, parserEvent.skillName, affectedUnitName, affectedUnitClass, true
 end
 
 
@@ -803,7 +824,7 @@ end
 -- ****************************************************************************
 local function InterruptHandler(parserEvent, currentProfile)
  -- Setup info for whether the event is incoming or outgoing.
- local eventTypeString, affectedUnitName = GetInOutEventData(parserEvent)
+ local eventTypeString, affectedUnitName, affectedUnitClass = GetInOutEventData(parserEvent)
 
  -- Ignore the event if it doesn't pertain to the player or their pet.
  if (not eventTypeString) then return end
@@ -811,7 +832,7 @@ local function InterruptHandler(parserEvent, currentProfile)
  -- Append interrupt suffix. 
  eventTypeString = eventTypeString .. "_SPELL_INTERRUPT"
  
- return eventTypeString, true, parserEvent.extraSkillName, affectedUnitName
+ return eventTypeString, parserEvent.extraSkillName, affectedUnitName, affectedUnitClass
 end
 
 
@@ -822,7 +843,7 @@ local function EnvironmentalHandler(parserEvent, currentProfile)
  -- Ignore the event if it isn't the player.
  if (parserEvent.recipientUnit ~= "player") then return end
  
- return "INCOMING_ENVIRONMENTAL", nil, _G["STRING_ENVIRONMENTAL_DAMAGE_" .. parserEvent.hazardType]
+ return "INCOMING_ENVIRONMENTAL", _G["STRING_ENVIRONMENTAL_DAMAGE_" .. parserEvent.hazardType]
 end
 
 
@@ -830,7 +851,7 @@ end
 -- Handles aura parser events.
 -- ****************************************************************************
 local function AuraHandler(parserEvent, currentProfile)
- local eventTypeString, affectedUnitName
+ local eventTypeString, affectedUnitName, affectedUnitClass
  local effectName = parserEvent.skillName
   
  -- Aura is pertaining to the player.
@@ -858,12 +879,12 @@ local function AuraHandler(parserEvent, currentProfile)
   -- Set notification buff/debuff.
   eventTypeString = "NOTIFICATION_" .. parserEvent.auraType
   
- -- Append stack or fade prefix if needed.
- if (not parserEvent.isFade) then
-  if (parserEvent.amount > 1) then eventTypeString = eventTypeString .. "_STACK" end
- else
-  eventTypeString = eventTypeString .. "_FADE"
- end
+  -- Append stack or fade prefix if needed.
+  if (not parserEvent.isFade) then
+   if (parserEvent.amount > 1) then eventTypeString = eventTypeString .. "_STACK" end
+  else
+   eventTypeString = eventTypeString .. "_FADE"
+  end
 
  -- Aura is pertaining to another unit.
  else
@@ -893,9 +914,10 @@ local function AuraHandler(parserEvent, currentProfile)
 
   eventTypeString = "NOTIFICATION_ENEMY_BUFF"
   affectedUnitName = parserEvent.recipientName
+  affectedUnitClass = classMap[parserEvent.recipientGUID]
  end -- Player or enemy check.
 
- return eventTypeString, nil, effectName, affectedUnitName
+ return eventTypeString, effectName, affectedUnitName, affectedUnitClass
 end
 
 
@@ -910,7 +932,7 @@ local function EnchantHandler(parserEvent, currentProfile)
  local eventTypeString = "NOTIFICATION_ITEM_BUFF"
  if (parserEvent.isFade) then eventTypeString = eventTypeString .. "_FADE" end
   
- return eventTypeString, nil, parserEvent.skillName
+ return eventTypeString, parserEvent.skillName
 end
 
 
@@ -929,7 +951,7 @@ local function DispelHandler(parserEvent, currentProfile)
   return
  end
  
- return eventTypeString, nil, parserEvent.extraSkillName
+ return eventTypeString, parserEvent.extraSkillName, parserEvent.recipientName, classMap[parserEvent.recipientGUID]
 end
 
 
@@ -956,7 +978,7 @@ local function PowerHandler(parserEvent, currentProfile)
  -- Append gain or loss suffix. 
  local eventTypeString = "NOTIFICATION_POWER_" .. (parserEvent.isDrain and "LOSS" or "GAIN")
  
- return eventTypeString, true, parserEvent.skillName
+ return eventTypeString, parserEvent.skillName, nil, nil, true
 end
 
 
@@ -979,7 +1001,7 @@ local function KillHandler(parserEvent, currentProfile)
  eventTypeString = eventTypeString .. (TestFlagsAll(parserEvent.recipientFlags, MSBTParser.CONTROL_SERVER) and "NPC" or "PC")
  eventTypeString = eventTypeString .. "_KILLING_BLOW"
 
- return eventTypeString, nil, parserEvent.recipientName
+ return eventTypeString, nil, parserEvent.recipientName, classMap[parserEvent.recipientGUID]
 end
 
 
@@ -1003,7 +1025,7 @@ local function ReputationHandler(parserEvent, currentProfile)
 
  -- Append loss or gain suffix.
  local eventTypeString = "NOTIFICATION_REP_" .. (parserEvent.isLoss and "LOSS" or "GAIN")
- return eventTypeString, nil, parserEvent.factionName
+ return eventTypeString, parserEvent.factionName
 end
 
 
@@ -1014,7 +1036,7 @@ local function ProficiencyHandler(parserEvent, currentProfile)
  -- Ignore the event if it isn't for the player.
  if (parserEvent.recipientUnit ~= "player") then return end
 
- return "NOTIFICATION_SKILL_GAIN", nil, parserEvent.skillName
+ return "NOTIFICATION_SKILL_GAIN", parserEvent.skillName
 end
 
 
@@ -1036,7 +1058,7 @@ local function ExtraAttacksHandler(parserEvent, currentProfile)
  -- Ignore the event if it isn't for the player.
  if (parserEvent.sourceUnit ~= "player") then return end
 
- return "NOTIFICATION_EXTRA_ATTACK", nil, parserEvent.skillName
+ return "NOTIFICATION_EXTRA_ATTACK", parserEvent.skillName
 end
 
 
@@ -1055,7 +1077,7 @@ local function LootHandler(parserEvent, currentProfile)
  local matchStart, _, itemID, itemName = string_find(itemLink, "item:(%d+):[%-%d:]+|h%[(.+)%]")
  if (itemID ~= "6265") then return end
 
- return "NOTIFICATION_SOUL_SHARD_CREATED", nil, itemName
+ return "NOTIFICATION_SOUL_SHARD_CREATED", itemName
 end
 
 
@@ -1067,7 +1089,7 @@ local function ParserEventsHandler(parserEvent)
  local currentProfile = MSBTProfiles.currentProfile
 
  -- Information regarding how to display the event.
- local eventTypeString, mergeEligible, effectName, affectedUnitName
+ local eventTypeString, effectName, affectedUnitName, affectedUnitClass, mergeEligible
 
  -- Local copy of the eventType for faster access.
  local eventType = parserEvent.eventType
@@ -1075,7 +1097,7 @@ local function ParserEventsHandler(parserEvent)
  -- Call the correct handler for the event type if there is one.
  local handler = eventHandlers[eventType]
  if (handler) then
-  eventTypeString, mergeEligible, effectName, affectedUnitName = handler(parserEvent, currentProfile)
+  eventTypeString, effectName, affectedUnitName, affectedUnitClass, mergeEligible = handler(parserEvent, currentProfile)
  end
 
  -- Ignore the event if it is unrecognized.
@@ -1112,7 +1134,7 @@ local function ParserEventsHandler(parserEvent)
 
  -- Attempt to get the texture for the event if icons are not disabled.
  local effectTexture
- if (not currentProfile.skillIconsDisabled) then
+ if (not currentProfile.skillIconsDisabled and IsScrollAreaIconShown(eventSettings.scrollArea)) then
   effectTexture = parserEvent.skillTexture
   if (not effectTexture and skillID) then _, _, effectTexture = GetSpellInfo(skillID) end
  
@@ -1122,8 +1144,20 @@ local function ParserEventsHandler(parserEvent)
   end
  end
 
- -- Check if the event is eligible for merging. 
- if (mergeEligible and not currentProfile.mergeExclusions[effectName]) then
+ -- Event is not eligible to be merged so just display it now without processing the impossible fields.
+ if (not mergeEligible) then
+  local outputMessage = FormatEvent(eventSettings.message, parserEvent.amount, damageType, nil, nil, nil, affectedUnitName, affectedUnitClass, effectName)
+  DisplayEvent(eventSettings, outputMessage, effectTexture)
+
+ -- Event is eligible for merging, but is excluded so display it now with full processing.
+ elseif (currentProfile.mergeExclusions[effectName]) then
+  -- Hide skill names according to the options if a texture is available.
+  local hideSkills = effectTexture and not currentProfile.exclusiveSkillsDisabled or currentProfile.hideSkills
+  local outputMessage = FormatEvent(eventSettings.message, parserEvent.amount, damageType, parserEvent.overhealAmount, parserEvent.overkillAmount, parserEvent.powerType, affectedUnitName, affectedUnitClass, effectName, partialEffects, nil, ignoreDamageColoring, hideSkills, currentProfile.hideNames)
+  DisplayEvent(eventSettings, outputMessage, effectTexture)
+
+ -- The event is eligible for merging. 
+ else
   -- Acquire a recycled table from cache or create a new one if there aren't any available in cache.
   local combatEvent = table_remove(combatEventCache) or {}
   
@@ -1135,10 +1169,12 @@ local function ParserEventsHandler(parserEvent)
   combatEvent.effectName = effectName
   combatEvent.effectTexture = effectTexture
   combatEvent.name = affectedUnitName
+  combatEvent.class = affectedUnitClass
   combatEvent.damageType = damageType
   combatEvent.ignoreDamageColoring = ignoreDamageColoring
   combatEvent.partialEffects = partialEffects
   combatEvent.overhealAmount = parserEvent.overhealAmount
+  combatEvent.overkillAmount = parserEvent.overkillAmount
   combatEvent.powerType = parserEvent.powerType
 
   
@@ -1206,13 +1242,7 @@ local function ParserEventsHandler(parserEvent)
   -- Check if the merge event frame is not visible and make it visible so the OnUpdate events start firing.
   -- This is done to keep the number of OnUpdate events down to a minimum for better performance.
   if (not eventFrame:IsVisible()) then eventFrame:Show() end
-  
- -- Event is not to be merged so just display it now.
- else
-  -- Display the event.
-  local outputMessage = FormatEvent(eventSettings.message, parserEvent.amount, damageType, parserEvent.overhealAmount, parserEvent.powerType, affectedUnitName, effectName, partialEffects, nil, effectTexture, ignoreDamageColoring)
-  DisplayEvent(eventSettings, outputMessage, effectTexture)
- end
+ end -- Merge eligibility.
 end
 
 
@@ -1228,11 +1258,17 @@ local function OnUpdateEventFrame(this, elapsed)
   -- Merge like events.
   MergeEvents(#unmergedEvents)
 
+  -- Local references for faster access.
+  local currentProfile = MSBTProfiles.currentProfile
+  local hideNames = currentProfile.hideNames
+  local exclusiveSkillsDisabled = currentProfile.exclusiveSkillsDisabled 
+
   -- Display and recycle the merged events.
-  local eventSettings, outputMessage
+  local eventSettings, hideSkills, outputMessage
   for i, combatEvent in ipairs(mergedEvents) do
-   eventSettings = MSBTProfiles.currentProfile.events[combatEvent.isCrit and combatEvent.eventType .. "_CRIT" or combatEvent.eventType]
-   outputMessage = FormatEvent(eventSettings.message, combatEvent.amount, combatEvent.damageType, combatEvent.overhealAmount, combatEvent.powerType, combatEvent.name, combatEvent.effectName, combatEvent.partialEffects, combatEvent.mergeTrailer, combatEvent.effectTexture, combatEvent.ignoreDamageColoring, true)
+   eventSettings = currentProfile.events[combatEvent.isCrit and combatEvent.eventType .. "_CRIT" or combatEvent.eventType]
+   hideSkills = combatEvent.effectTexture and not exclusiveSkillsDisabled or currentProfile.hideSkills
+   outputMessage = FormatEvent(eventSettings.message, combatEvent.amount, combatEvent.damageType, combatEvent.overhealAmount, combatEvent.overkillAmount, combatEvent.powerType, combatEvent.name, combatEvent.class, combatEvent.effectName, combatEvent.partialEffects, combatEvent.mergeTrailer, combatEvent.ignoreDamageColoring, hideSkills, hideNames)
    DisplayEvent(eventSettings, outputMessage, combatEvent.effectTexture)
    mergedEvents[i] = nil
    EraseTable(combatEvent)

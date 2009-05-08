@@ -93,7 +93,7 @@ local externalScrollAreas = {}
 -------------------------------------------------------------------------------
 
 -- ****************************************************************************
--- Return whether or not the passed scroll area is valid and enabled.
+-- Returns whether or not the passed scroll area is valid and enabled.
 -- ****************************************************************************
 local function IsScrollAreaActive(scrollArea)
  local saSettings = scrollAreas[scrollArea] or scrollAreas[DEFAULT_SCROLL_AREA]
@@ -103,6 +103,17 @@ local function IsScrollAreaActive(scrollArea)
 
  -- Return true to indicate the scroll area is active.
  return true
+end
+
+
+-- ****************************************************************************
+-- Returns whether or not the passed scroll area is set to display icons.
+-- ****************************************************************************
+local function IsScrollAreaIconShown(scrollArea)
+ local saSettings = scrollAreas[scrollArea] or scrollAreas[DEFAULT_SCROLL_AREA]
+
+ -- Return true if the scroll area valid and the icons are not disabled.
+ return saSettings and not saSettings.skillIconsDisabled or false
 end
 
 
@@ -221,6 +232,8 @@ local function Display(message, saSettings, isSticky, colorR, colorG, colorB, fo
  local displayEvent
  if (#animationArray >= MAX_ANIMATIONS_PER_AREA) then
   displayEvent = table_remove(animationArray, 1)
+  displayEvent.fontString:SetAlpha(0)
+  if (displayEvent.texture) then displayEvent.texture:SetAlpha(0) end
  else
   displayEvent = table_remove(displayEventCache) or { fontString = animationFrame:CreateFontString(nil, "ARTWORK", MasterFont) }
  end
@@ -249,12 +262,15 @@ local function Display(message, saSettings, isSticky, colorR, colorG, colorB, fo
  fontPath = fontPath or DEFAULT_FONT_PATH
  fontString:ClearAllPoints()
  fontString:SetFont(fontPath, fontSize, fontOutline)
- if (string_lower(fontPath) ~= string_lower(fontString:GetFont())) then fontString:SetFont(DEFAULT_FONT_PATH, fontSize, fontOutline) end
+ if (string_lower(fontPath) ~= string_lower(fontString:GetFont() or "")) then fontString:SetFont(DEFAULT_FONT_PATH, fontSize, fontOutline) end
  fontString:SetTextColor(colorR, colorG, colorB)
  fontString:SetDrawLayer(isSticky and "OVERLAY" or "ARTWORK")
  if (not currentProfile.textShadowingDisabled) then
   fontString:SetShadowColor(0, 0, 0, 1)
   fontString:SetShadowOffset(1, -1)
+ else
+  fontString:SetShadowColor(0, 0, 0, 0)
+  fontString:SetShadowOffset(0, 0)
  end
  fontString:SetText(message)
 
@@ -515,6 +531,7 @@ module.stickyAnimationStyles	= stickyAnimationStyles
 
 -- Protected Functions.
 module.IsScrollAreaActive			= IsScrollAreaActive
+module.IsScrollAreaIconShown		= IsScrollAreaIconShown
 module.UpdateScrollAreas			= UpdateScrollAreas
 module.RegisterAnimationStyle		= RegisterAnimationStyle
 module.RegisterStickyAnimationStyle	= RegisterStickyAnimationStyle

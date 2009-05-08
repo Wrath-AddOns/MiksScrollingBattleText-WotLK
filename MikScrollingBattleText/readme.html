@@ -1183,12 +1183,38 @@
      <td class="ParameterName" nowrap="nowrap"><a name="WhatsNew"></a>Latest</td>
      <td class="ParameterDesc">
       <ul>
+       <li>Implemented capability to color unit names according to their class including customization options:</li>
+        <ul>
+         <li>Choose whether or not to enable class coloring on a global basis.</li>
+         <li>Control color and enabled state for each individual class.</li>
+         <li>Uses standard class colors defined by Blizzard by default.</li>
+         <li>Applies to class names shown in triggers as well.</li>
+        </ul>
+       </li>
+       <br />
+       <li>Made minor optimizations to the merging system and event formatting.</li>
+       <li>Added overkill amounts to available partial effects, but they are disabled by default.</li>
+       <li>Added a default trigger for hostile player PvP trinket usage including who used it.  It is set to only show in arenas by default.</li>
+       <li>Changed the event code for killing blows to %n so it works correctly with class coloring.</li>
+       <li>Made the %n event code available for the built-in outgoing dispels event.</li>
+       <li>Fixed an issue where certain new text could briefly appear in the wrong spot when initially displayed on slower PCs.</li>
+       <li>The exclusive skill icons option will no longer be ignored when a scroll area has its icon disabled.</li>
+       <li>Font files that have been removed but are still referenced will now correctly use the default font instead of resulting in errors.</li>
+       <li>Updated Simplified and Traditional Chinese translations from yleaf.</li>
+       <li>Updated Korean translations from chkid.</li>
+      </ul>
+     </td>
+    </tr>
+    <tr>
+     <td class="ParameterName" nowrap="nowrap">5.4.52</td>
+     <td class="ParameterDesc">
+      <ul>
        <li>Added the ability to customize the trailer message shown for partial effects.</li>
-       <li>There is now an option to disable icons for each scroll areas.</li>
+       <li>There is now an option to disable icons for each scroll area.</li>
        <li>Added an option to hide heals that have an effective heal amount of zero (full overheals).</li>
        <li>
-        Modified cast success and summon triggers to include recipient conditions.  Unfortunately cast start
-        events do not report recipient infomation, so it is not available for them.
+        Modified cast success and summon trigger events to include recipient conditions.  Unfortunately cast start
+        events do not report recipient information, so it is not available for them.
        </li>
        <li>Increased the damage, healing, and power thresholds significantly to keep up with inflation.</li>
        <li>Implemented internal throttling for identical enemy buff gains to reduce spam on fights like Yogg-Saron.</li>
@@ -1219,7 +1245,7 @@
        <li>Added default trigger for Decimate.</li>
        <li>Added default trigger for Lock and Load.</li>
        <li>Modified item exclusions to include quest items.</li>
-       <li>Updated Korean translations from chikid.</li>
+       <li>Updated Korean translations from chkid.</li>
        <li>Updated Simplified and Traditional Chinese translations from yleaf.</li>
       </ul>
      </td>

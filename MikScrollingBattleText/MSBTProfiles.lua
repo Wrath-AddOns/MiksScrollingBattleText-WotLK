@@ -85,6 +85,7 @@ local SPELL_MISSILE_BARRAGE		= GetSkillName(44401)
 local SPELL_MOLTEN_CORE			= GetSkillName(47383)
 local SPELL_NIGHTFALL			= GetSkillName(18094)
 local SPELL_OWLKIN_FRENZY		= GetSkillName(48391)
+local SPELL_PVP_TRINKET			= GetSkillName(42292)
 local SPELL_RAMPAGE				= GetSkillName(SPELLID_RAMPAGE)
 local SPELL_REVENGE				= GetSkillName(SPELLID_REVENGE)
 local SPELL_RIME 				= GetSkillName(49188)
@@ -129,7 +130,6 @@ local savedVariables
 local savedVariablesPerChar
 local savedMedia
 
-
 -- Currently selected profile.
 local currentProfile
 
@@ -138,10 +138,29 @@ local pathTable = {}
 
 
 -------------------------------------------------------------------------------
+-- Master profile utility functions.
+-------------------------------------------------------------------------------
+
+-- ****************************************************************************
+-- Returns a table to be used for the settings of the passed class using color
+-- information from the default class colors table.
+-- ****************************************************************************
+local function CreateClassSettingsTable(class)
+ -- Return disabled settings if the class doesn't exist in the default class colors table for some reason.
+ if (not RAID_CLASS_COLORS[class]) then return { disabled = true, colorR = 1, colorG = 1, colorB = 1 } end
+
+ -- Return a table using the default class color. 
+ return { colorR = RAID_CLASS_COLORS[class].r, colorG = RAID_CLASS_COLORS[class].g, colorB = RAID_CLASS_COLORS[class].b }
+end
+
+
+
+-------------------------------------------------------------------------------
 -- Master profile.
 -------------------------------------------------------------------------------
 
 local masterProfile = {
+ -- Scroll area settings.
  scrollAreas = {
   Incoming = {
    name					= L.MSG_INCOMING,
@@ -184,6 +203,7 @@ local masterProfile = {
  },
 
  
+ -- Built-in event settings.
  events = {
   INCOMING_DAMAGE = {
    colorG		= 0,
@@ -912,7 +932,7 @@ local masterProfile = {
   NOTIFICATION_PC_KILLING_BLOW = {
    colorR		= 0.333,
    colorG		= 0.333,
-   message		= L.MSG_KILLING_BLOW .. "! (%e)",
+   message		= L.MSG_KILLING_BLOW .. "! (%n)",
    alwaysSticky	= true,
    fontSize		= 26,
   },
@@ -920,7 +940,7 @@ local masterProfile = {
    disabled		= true,
    colorR		= 0.333,
    colorG		= 0.333,
-   message		= L.MSG_KILLING_BLOW .. "! (%e)",
+   message		= L.MSG_KILLING_BLOW .. "! (%n)",
    alwaysSticky	= true,
    fontSize		= 26,
   },
@@ -967,6 +987,7 @@ local masterProfile = {
  }, -- End events
 
  
+ -- Default trigger settings.
  triggers = {
   MSBT_TRIGGER_BACKLASH = {
    colorR			= 0.709,
@@ -1130,7 +1151,6 @@ local masterProfile = {
    classes			= "HUNTER",
    mainEvents		= "SPELL_AURA_APPLIED{skillName;;eq;;" .. SPELL_LOCK_AND_LOAD .. ";;recipientAffiliation;;eq;;" .. FLAG_YOU .. "}",
   },
-
   MSBT_TRIGGER_LOW_HEALTH = {
    colorG			= 0.5,
    colorB			= 0.5,
@@ -1207,6 +1227,14 @@ local masterProfile = {
    mainEvents		= "GENERIC_MISSED{sourceAffiliation;;eq;;" .. FLAG_YOU .. ";;missType;;eq;;DODGE}",
    exceptions		= "unavailableSkill;;eq;;" .. SPELL_OVERPOWER,
    iconSkill		= SPELLID_OVERPOWER,
+  },
+  MSBT_TRIGGER_PVP_TRINKET = {
+   colorB			= 0,
+   message			= SPELL_PVP_TRINKET .. "! (%r)",
+   alwaysSticky		= true,
+   fontSize			= 26,
+   mainEvents		= "SPELL_AURA_APPLIED{skillName;;eq;;" .. SPELL_PVP_TRINKET .. ";;recipientReaction;;eq;;" .. REACTION_HOSTILE .. "}",
+   exceptions		= "zoneType;;ne;;arena",
   },
   MSBT_TRIGGER_OWLKIN_FRENZY = {
    colorR			= 0.627,
@@ -1361,6 +1389,7 @@ local masterProfile = {
  block			= { colorR = 0.5, colorG = 0, colorB = 1, trailer = string_gsub(string_gsub(BLOCK_TRAILER, "%((.+)%)", "<%1>"), "%%d", "%%a") },
  resist			= { colorR = 0.5, colorG = 0, colorB = 0.5, trailer = string_gsub(string_gsub(RESIST_TRAILER, "%((.+)%)", "<%1>"), "%%d", "%%a") },
  overheal		= { colorR = 0, colorG = 0.705, colorB = 0.5, trailer = " <%a>" },
+ overkill		= { disabled = true, colorR = 0.83, colorG = 0, colorB = 0.13, trailer = " <%a>" },
  
  
  -- Damage color settings.
@@ -1373,7 +1402,20 @@ local masterProfile = {
  arcane			= { colorR = 1, colorG = 0.725, colorB = 1 },
  frostfire		= { colorR = 0.824, colorG = 0.314, colorB = 0.471 },
 
- 
+
+ -- Class color settings.
+ DEATHKNIGHT	= CreateClassSettingsTable("DEATHKNIGHT"),
+ DRUID			= CreateClassSettingsTable("DRUID"),
+ HUNTER			= CreateClassSettingsTable("HUNTER"),
+ MAGE			= CreateClassSettingsTable("MAGE"),
+ PALADIN		= CreateClassSettingsTable("PALADIN"),
+ PRIEST			= CreateClassSettingsTable("PRIEST"),
+ ROGUE			= CreateClassSettingsTable("ROGUE"),
+ SHAMAN			= CreateClassSettingsTable("SHAMAN"),
+ WARLOCK		= CreateClassSettingsTable("WARLOCK"),
+ WARRIOR		= CreateClassSettingsTable("WARRIOR"),
+
+
  -- Throttle settings.
  dotThrottleDuration	= 3,
  hotThrottleDuration	= 3,
@@ -1414,6 +1456,7 @@ local masterProfile = {
  itemsAllowed			= {},
  itemExclusions			= {},
 }
+
 
 
 -------------------------------------------------------------------------------

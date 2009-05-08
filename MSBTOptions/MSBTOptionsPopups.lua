@@ -952,7 +952,7 @@ local function CreatePartialEffects()
  local anchor = checkbox
  local colorswatch, editbox
  local maxWidth = 0
- for effectType in string.gmatch("crushing glancing absorb block resist overheal", "[^%s]+") do
+ for effectType in string.gmatch("crushing glancing absorb block resist overheal overkill", "[^%s]+") do
   colorswatch = MSBTControls.CreateColorswatch(frame)
   colorswatch:SetPoint("TOPLEFT", anchor, "BOTTOMLEFT", anchor == checkbox and 20 or 0, -10)
   colorswatch:SetColorChangedHandler(
@@ -994,7 +994,7 @@ local function CreatePartialEffects()
  end
 
  frame:SetWidth(maxWidth + 230)
- frame:SetHeight(240)
+ frame:SetHeight(260)
 
  return frame
 end
@@ -1018,7 +1018,7 @@ local function ShowPartialEffects(configTable)
  frame.colorCheckbox:SetChecked(not MSBTProfiles.currentProfile.partialColoringDisabled)
  
  local profileEntry
- for effectType in string.gmatch("crushing glancing absorb block resist overheal", "[^%s]+") do
+ for effectType in string.gmatch("crushing glancing absorb block resist overheal overkill", "[^%s]+") do
   profileEntry = MSBTProfiles.currentProfile[effectType]
   frame[effectType .. "Colorswatch"]:SetColor(profileEntry.colorR, profileEntry.colorG, profileEntry.colorB)
   frame[effectType .. "Checkbox"]:SetChecked(not profileEntry.disabled)
@@ -1119,6 +1119,101 @@ local function ShowDamageColors(configTable)
   profileEntry = MSBTProfiles.currentProfile[damageType]
   frame[damageType .. "Colorswatch"]:SetColor(profileEntry.colorR, profileEntry.colorG, profileEntry.colorB)
   frame[damageType .. "Checkbox"]:SetChecked(not profileEntry.disabled)
+ end
+ 
+ -- Configure the frame.
+ frame.hideHandler = configTable.hideHandler
+ frame:ClearAllPoints()
+ frame:SetPoint(configTable.anchorPoint or "TOPLEFT", configTable.anchorFrame, configTable.relativePoint or "BOTTOMLEFT")
+ frame:Show()
+ frame:Raise()
+end
+
+
+-------------------------------------------------------------------------------
+-- Class color frame functions.
+-------------------------------------------------------------------------------
+
+-- ****************************************************************************
+-- Creates the popup class colors frame.
+-- ****************************************************************************
+local function CreateClassColors()
+ local frame = CreatePopup()
+ frame:SetWidth(260)
+ frame:SetHeight(280)
+
+ -- Close button.
+ local button = CreateFrame("Button", nil, frame, "UIPanelCloseButton")
+ button:SetPoint("TOPRIGHT", frame, "TOPRIGHT", -2, -2)
+
+ -- Color class amounts.
+ local checkbox = MSBTControls.CreateCheckbox(frame)
+ local objLocale = L.CHECKBOXES["colorUnitNames"]
+ checkbox:Configure(24, objLocale.label, objLocale.tooltip)
+ checkbox:SetPoint("TOPLEFT", frame, "TOPLEFT", 20, -20)
+ checkbox:SetClickHandler(
+  function (this, isChecked)
+   MSBTProfiles.SetOption(nil, "classColoringDisabled", not isChecked)
+  end
+ )
+ frame.colorCheckbox = checkbox
+
+
+ -- Classes.
+ local anchor = checkbox
+ local globalStringSchoolIndex = 0
+ local colorswatch, fontString
+ for class in string.gmatch("DEATHKNIGHT DRUID HUNTER MAGE PALADIN PRIEST ROGUE SHAMAN WARLOCK WARRIOR", "[^%s]+") do
+  colorswatch = MSBTControls.CreateColorswatch(frame)
+  colorswatch:SetPoint("TOPLEFT", anchor, "BOTTOMLEFT", anchor == checkbox and 20 or 0, anchor == checkbox and -10 or -5)
+  colorswatch:SetColorChangedHandler(
+   function (this)
+    MSBTProfiles.SetOption(class, "colorR", this.r)
+    MSBTProfiles.SetOption(class, "colorG", this.g)
+    MSBTProfiles.SetOption(class, "colorB", this.b)
+   end
+  )
+  checkbox = MSBTControls.CreateCheckbox(frame)
+  objLocale = L.CHECKBOXES["colorClassEntry"]
+  checkbox:Configure(24, L.CLASS_NAMES[class], objLocale.tooltip)
+  checkbox:SetPoint("LEFT", colorswatch, "RIGHT", 5, 0)
+  checkbox:SetClickHandler(
+   function (this, isChecked)
+    MSBTProfiles.SetOption(class, "disabled", not isChecked)
+   end
+  )
+  frame[class .. "Colorswatch"] = colorswatch
+  frame[class .. "Checkbox"] = checkbox 
+  
+  anchor = colorswatch 
+ end
+
+ return frame
+end
+
+
+-- ****************************************************************************
+-- Shows the popup damage type colors frame using the passed config.
+-- ****************************************************************************
+local function ShowClassColors(configTable)
+ -- Don't do anything if required parameters weren't passed.
+ if (not configTable or not configTable.anchorFrame or not configTable.parentFrame) then return end
+
+ -- Create the frame if it hasn't already been.
+ if (not popupFrames.classColorsFrame) then popupFrames.classColorsFrame = CreateClassColors() end
+
+ -- Set parent.
+ local frame = popupFrames.classColorsFrame
+ ChangePopupParent(frame, configTable.parentFrame)
+
+ -- Populate data.
+ frame.colorCheckbox:SetChecked(not MSBTProfiles.currentProfile.classColoringDisabled)
+
+ local profileEntry
+ for class in string.gmatch("DEATHKNIGHT DRUID HUNTER MAGE PALADIN PRIEST ROGUE SHAMAN WARLOCK WARRIOR", "[^%s]+") do
+  profileEntry = MSBTProfiles.currentProfile[class]
+  frame[class .. "Colorswatch"]:SetColor(profileEntry.colorR, profileEntry.colorG, profileEntry.colorB)
+  frame[class .. "Checkbox"]:SetChecked(not profileEntry.disabled)
  end
  
  -- Configure the frame.
@@ -4016,6 +4111,7 @@ module.ShowAcknowledge				= ShowAcknowledge
 module.ShowFont						= ShowFont
 module.ShowPartialEffects			= ShowPartialEffects
 module.ShowDamageColors				= ShowDamageColors
+module.ShowClassColors				= ShowClassColors
 module.ShowScrollAreaConfig			= ShowScrollAreaConfig
 module.ShowScrollAreaSelection		= ShowScrollAreaSelection
 module.ShowEvent					= ShowEvent

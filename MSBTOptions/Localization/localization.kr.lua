@@ -107,8 +107,11 @@ obj["block"]					= { label="방어", tooltip="방어량을 표시합니다."}
 obj["resist"]					= { label="저항", tooltip="부분 저항 피해량을 표시합니다."}
 obj["vulnerability"]			= { label="약점 보너스", tooltip="약점 보너스를 표시합니다."}
 obj["overheal"]					= { label="초과 치유", tooltip="초과 치유량을 표시합니다."}
+--obj["overkill"]					= { label="Overkills", tooltip="Display overkill amounts."}
 obj["colorDamageAmounts"]		= { label="피해량 속성 색상", tooltip="피해량 속성을 선택한 색상으로 표시합니다."}
 obj["colorDamageEntry"]			= { tooltip="이 피해량 속성에 대한 색상을 활성화 합니다."}
+--obj["colorUnitNames"]			= { label="Color Unit Names", tooltip="Apply specified class colors to unit names."}
+--obj["colorClassEntry"]			= { tooltip="Enable coloring for this class."}
 obj["enableScrollArea"]			= { tooltip="이 스크롤 영역을 활성화 합니다."}
 obj["inheritField"]				= { label="상속", tooltip="이 항목 값을 상속합니다. 체크를 하지 않으면 무시됩니다."}
 obj["hideSkillIcons"]			= { label="아이콘 숨김", tooltip="이 스크롤 영역 안에 아이콘을 표시하지 않습니다."}
@@ -172,6 +175,7 @@ obj["deleteProfile"]			= { label="프로필 삭제", tooltip="프로필을 삭�
 obj["masterFont"]				= { label="주 글꼴 설정", tooltip="모든 스크롤 영역과 이벤트에 상속 적용될(무시되지 않을 경우) 주 글꼴을 설정합니다."}
 obj["partialEffects"]			= { label="부분 효과", tooltip="색상으로 표시할 부분 효과를 설정합니다."}
 obj["damageColors"]				= { label="피해량 속성 색상", tooltip="피해량 속성에 따른 색상 및 사용 유무를 설정합니다."}
+--obj["classColors"]				= { label="Class Colors", tooltip="Allows you to setup whether or not unit names are color coded by their class and what colors to use for each class." }
 obj["inputOkay"]				= { label=OKAY, tooltip="입력을 확인합니다."}
 obj["inputCancel"]				= { label=CANCEL, tooltip="입력을 취소합니다."}
 obj["genericSave"]				= { label=SAVE, tooltip="변경사항을 저장합니다."}
@@ -292,6 +296,7 @@ obj["HEALER_NAME"]			= "%n - 치유자 이름.\n"
 obj["ATTACKED_NAME"]		= "%n - 피해자 이름.\n"
 obj["HEALED_NAME"]			= "%n - 치유 받은 유닛 이름.\n"
 obj["BUFFED_NAME"]			= "%n - 버프 받은 유닛 이름.\n"
+obj["UNIT_KILLED"]			= "%n - 죽은 유닛의 이름.\n"
 obj["SKILL_NAME"]			= "%s - 기술의 이름.\n"
 obj["SPELL_NAME"]			= "%s - 주문의 이름.\n"
 obj["DEBUFF_NAME"]			= "%s - 디버프의 이름.\n"
@@ -303,7 +308,6 @@ obj["DAMAGE_TYPE_TAKEN"]	= "%t - 받은 피해량 속성.\n"
 obj["DAMAGE_TYPE_DONE"]		= "%t - 피해량 속성.\n"
 obj["ENVIRONMENTAL_DAMAGE"]	= "%e - 피해량 원인 (낙하, 호흡, 용암 등...)\n"
 obj["FACTION_NAME"]			= "%e - 평판 이름.\n"
-obj["UNIT_KILLED"]			= "%e - 죽은 유닛의 이름.\n"
 obj["SHARD_NAME"]			= "%e - 영혼석의 세부 명칭.\n"
 obj["EMOTE_TEXT"]			= "%e - 감정 표현 텍스트.\n"
 obj["MONEY_TEXT"]			= "%e - 획득한 금전의 텍스트.\n"

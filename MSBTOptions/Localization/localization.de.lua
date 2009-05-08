@@ -108,8 +108,11 @@ obj["colorPartialEffects"]		= { label="Partielle Effekte einfärben", tooltip="P
 --obj["resist"]					= { label="Partial Resists", tooltip="Display partial resist amounts."}
 --obj["vulnerability"]			= { label="Vulnerability Bonuses", tooltip="Display vulnerabliity bonus amounts."}
 --obj["overheal"]					= { label="Overheals", tooltip="Display overhealing amounts."}
+--obj["overkill"]					= { label="Overkills", tooltip="Display overkill amounts."}
 --obj["colorDamageAmounts"]		= { label="Color Damage Amounts", tooltip="Apply specified colors to damage amounts."}
 --obj["colorDamageEntry"]			= { tooltip="Enable coloring for this damage type."}
+--obj["colorUnitNames"]			= { label="Color Unit Names", tooltip="Apply specified class colors to unit names."}
+--obj["colorClassEntry"]			= { tooltip="Enable coloring for this class."}
 obj["enableScrollArea"]			= { tooltip="Scroll-Bereich aktivieren."}
 obj["inheritField"]				= { label="Übernehmen", tooltip="Inherit the field's value.  Uncheck to override."}
 --obj["hideSkillIcons"]			= { label="Hide Icons", tooltip="Do not show icons in this scroll area."}
@@ -173,6 +176,7 @@ obj["deleteProfile"]			= { label="Löschen", tooltip="Löscht das Profil."}
 --obj["masterFont"]				= { label="Master Fonts", tooltip="Allows you to setup the master font settings which will be inherited by all scroll areas and events within them, unless overridden."}
 obj["partialEffects"]			= { label="Partielle Effekte", tooltip="Erlaubt dir festzulegen welche partiellen Effekte angezeigt werden sollen, ob sie eingefärbt werden sollen, und wenn ja in welcher Farbe."}
 --obj["damageColors"]				= { label="Damage Colors", tooltip="Allows you to setup whether or not amounts are color coded by damage type and what colors to use for each type."}
+--obj["classColors"]				= { label="Class Colors", tooltip="Allows you to setup whether or not unit names are color coded by their class and what colors to use for each class." }
 obj["inputOkay"]				= { label=OKAY, tooltip="Eingaben übernehmen."}
 obj["inputCancel"]				= { label=CANCEL, tooltip="Eingaben zurücksetzen."}
 obj["genericSave"]				= { label=SAVE, tooltip="Speichert die Änderungen."}
@@ -292,6 +296,7 @@ obj = L.EVENT_CODES
 --obj["ATTACKED_NAME"]		= "%n - Name of the attacked unit.\n"
 --obj["HEALED_NAME"]			= "%n - Name of the healed unit.\n"
 --obj["BUFFED_NAME"]			= "%n - Name of the buffed unit.\n"
+--obj["UNIT_KILLED"]			= "%n - Name of the unit killed.\n"
 --obj["SKILL_NAME"]			= "%s - Name of the skill.\n"
 --obj["SPELL_NAME"]			= "%s - Name of the spell.\n"
 --obj["DEBUFF_NAME"]			= "%s - Name of the debuff.\n"
@@ -303,7 +308,6 @@ obj = L.EVENT_CODES
 --obj["DAMAGE_TYPE_DONE"]		= "%t - Type of damage done.\n"
 --obj["ENVIRONMENTAL_DAMAGE"]	= "%e - Name of the source of the damage (falling, drowning, lava, etc...)\n"
 --obj["FACTION_NAME"]			= "%e - Name of the faction.\n"
---obj["UNIT_KILLED"]			= "%e - Name of the unit killed.\n"
 --obj["SHARD_NAME"]			= "%e - Localized name of the soul shard.\n"
 --obj["EMOTE_TEXT"]			= "%e - The text of the emote.\n"
 --obj["MONEY_TEXT"]			= "%e - The money gained text.\n"

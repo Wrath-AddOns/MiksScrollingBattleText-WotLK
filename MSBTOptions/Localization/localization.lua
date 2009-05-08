@@ -131,8 +131,11 @@ obj["block"]					= { label="Partial Blocks", tooltip="Display partial block amou
 obj["resist"]					= { label="Partial Resists", tooltip="Display partial resist amounts."}
 obj["vulnerability"]			= { label="Vulnerability Bonuses", tooltip="Display vulnerabliity bonus amounts."}
 obj["overheal"]					= { label="Overheals", tooltip="Display overhealing amounts."}
+obj["overkill"]					= { label="Overkills", tooltip="Display overkill amounts."}
 obj["colorDamageAmounts"]		= { label="Color Damage Amounts", tooltip="Apply specified colors to damage amounts."}
 obj["colorDamageEntry"]			= { tooltip="Enable coloring for this damage type."}
+obj["colorUnitNames"]			= { label="Color Unit Names", tooltip="Apply specified class colors to unit names."}
+obj["colorClassEntry"]			= { tooltip="Enable coloring for this class."}
 obj["enableScrollArea"]			= { tooltip="Enable the scroll area."}
 obj["inheritField"]				= { label="Inherit", tooltip="Inherit the field's value.  Uncheck to override."}
 obj["hideSkillIcons"]			= { label="Hide Icons", tooltip="Do not show icons in this scroll area."}
@@ -196,6 +199,7 @@ obj["deleteProfile"]			= { label="Delete Profile", tooltip="Deletes the profile.
 obj["masterFont"]				= { label="Master Fonts", tooltip="Allows you to setup the master font settings which will be inherited by all scroll areas and events within them, unless overridden."}
 obj["partialEffects"]			= { label="Partial Effects", tooltip="Allows you to setup which partial effects will be shown, if they are color coded, and in what color."}
 obj["damageColors"]				= { label="Damage Colors", tooltip="Allows you to setup whether or not amounts are color coded by damage type and what colors to use for each type."}
+obj["classColors"]				= { label="Class Colors", tooltip="Allows you to setup whether or not unit names are color coded by their class and what colors to use for each class." }
 obj["inputOkay"]				= { label=OKAY, tooltip="Accepts the input."}
 obj["inputCancel"]				= { label=CANCEL, tooltip="Cancels the input."}
 obj["genericSave"]				= { label=SAVE, tooltip="Saves the changes."}
@@ -316,6 +320,7 @@ obj["HEALER_NAME"]			= "%n - Name of the healer.\n"
 obj["ATTACKED_NAME"]		= "%n - Name of the attacked unit.\n"
 obj["HEALED_NAME"]			= "%n - Name of the healed unit.\n"
 obj["BUFFED_NAME"]			= "%n - Name of the buffed unit.\n"
+obj["UNIT_KILLED"]			= "%n - Name of the unit killed.\n"
 obj["SKILL_NAME"]			= "%s - Name of the skill.\n"
 obj["SPELL_NAME"]			= "%s - Name of the spell.\n"
 obj["DEBUFF_NAME"]			= "%s - Name of the debuff.\n"
@@ -327,7 +332,6 @@ obj["DAMAGE_TYPE_TAKEN"]	= "%t - Type of damage taken.\n"
 obj["DAMAGE_TYPE_DONE"]		= "%t - Type of damage done.\n"
 obj["ENVIRONMENTAL_DAMAGE"]	= "%e - Name of the source of the damage (falling, drowning, lava, etc...)\n"
 obj["FACTION_NAME"]			= "%e - Name of the faction.\n"
-obj["UNIT_KILLED"]			= "%e - Name of the unit killed.\n"
 obj["SHARD_NAME"]			= "%e - Localized name of the soul shard.\n"
 obj["EMOTE_TEXT"]			= "%e - The text of the emote.\n"
 obj["MONEY_TEXT"]			= "%e - The money gained text.\n"

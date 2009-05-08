@@ -20,6 +20,7 @@ local MSBTParser = MikSBT.Parser
 -- Get local references to various functions for faster access.
 local string_find = string.find
 local string_gsub = string.gsub
+local string_format = string.format
 local string_gmatch = string.gmatch
 local GetSpellInfo = GetSpellInfo
 local Print = MikSBT.Print
@@ -28,8 +29,10 @@ local DisplayEvent = MikSBT.Animations.DisplayEvent
 local TestFlagsAny = MSBTParser.TestFlagsAny
 
 -- Local reference to various variables for faster access.
-local unitMap = MSBTParser.unitMap
 local REACTION_HOSTILE = MSBTParser.REACTION_HOSTILE
+local unitMap = MSBTParser.unitMap
+local classMap = MSBTParser.classMap
+
 
 
 -------------------------------------------------------------------------------
@@ -425,20 +428,41 @@ end
 -- ****************************************************************************
 -- Displays the passed trigger settings.
 -- ****************************************************************************
-local function DisplayTrigger(triggerSettings, sourceName, recipientName, skillName, extraSkillName, amount, effectTexture)
+local function DisplayTrigger(triggerSettings, sourceName, sourceClass, recipientName, recipientClass, skillName, extraSkillName, amount, effectTexture)
+ -- Get a local reference to the current profile.
+ local currentProfile = MSBTProfiles.currentProfile
+
  -- Get the trigger message and icon skill.
  local message = triggerSettings.message
  local iconSkill = triggerSettings.iconSkill
- 
+
  -- Substitute source name.
  if (sourceName and string_find(message, "%n", 1, true)) then
+  -- Strip realm from names.
   if (string_find(sourceName, "-", 1, true)) then sourceName = string_gsub(sourceName, "(.-)%-.*", "%1") end
+
+  -- Color the name according to the class if there is one and it's enabled.
+  if (sourceClass and not currentProfile.classColoringDisabled) then
+   local classSettings = currentProfile[sourceClass]
+   if (classSettings and not classSettings.disabled) then sourceName = string_format("|cFF%02x%02x%02x%s|r", classSettings.colorR * 255, classSettings.colorG * 255, classSettings.colorB * 255, sourceName) end
+  end
+
+  -- Substitute all %n event codes with the source name.
   message = string_gsub(message, "%%n", sourceName)
  end
 
  -- Substitute recipient name.
  if (recipientName and string_find(message, "%r", 1, true)) then
+  -- Strip realm from names.
   if (string_find(sourceName, "-", 1, true)) then recipientName = string_gsub(recipientName, "(.-)%-.*", "%1") end
+
+  -- Color the name according to the class if there is one and it's enabled.
+  if (recipientClass and not currentProfile.classColoringDisabled) then
+   local classSettings = currentProfile[recipientClass]
+   if (classSettings and not classSettings.disabled) then recipientName = string_format("|cFF%02x%02x%02x%s|r", classSettings.colorR * 255, classSettings.colorG * 255, classSettings.colorB * 255, recipientName) end
+  end
+
+  -- Substitute all %r event codes with the recipient name.
   message = string_gsub(message, "%%r", recipientName)
  end
  
@@ -539,9 +563,10 @@ local function HandleHealthAndPowerTriggers(unit, event, currentAmount, maxAmoun
  if (next(triggersToFire)) then
   -- Display the fired triggers if none of the exceptions are true.
   local recipientName = UnitName(unit)
+  local _, recipientClass = UnitClass(unit)
   local amount = currentAmount
   for triggerSettings in pairs(triggersToFire) do
-   if (not TestExceptions(triggerSettings)) then DisplayTrigger(triggerSettings, nil, recipientName, nil, nil, amount) end
+   if (not TestExceptions(triggerSettings)) then DisplayTrigger(triggerSettings, nil, nil, recipientName, recipientClass, nil, nil, amount) end
   end
  end -- Triggers to fire?
 
@@ -588,7 +613,7 @@ local function HandleCooldowns(skillName, effectTexture)
   -- Display the fired triggers if none of the exceptions are true.
   local recipientName = playerName
   for triggerSettings in pairs(triggersToFire) do
-   if (not TestExceptions(triggerSettings)) then DisplayTrigger(triggerSettings, nil, recipientName, skillName, nil, nil, effectTexture) end
+   if (not TestExceptions(triggerSettings)) then DisplayTrigger(triggerSettings, nil, nil, recipientName, playerClass, skillName, nil, nil, effectTexture) end
   end
  end -- Triggers to fire?
 end
@@ -655,11 +680,13 @@ local function HandleCombatLogTriggers(timestamp, event, sourceGUID, sourceName,
   -- Display the fired triggers if none of the exceptions are true.
   local sourceName = parserEvent.sourceName
   local recipientName = parserEvent.recipientName
+  local sourceClass = classMap[sourceGUID]
+  local recipientClass = classMap[recipientGUID]
   local skillName = parserEvent.skillName
   local extraSkillName = parserEvent.extraSkillName
   local amount = parserEvent.amount
   for triggerSettings in pairs(triggersToFire) do
-   if (not TestExceptions(triggerSettings)) then DisplayTrigger(triggerSettings, sourceName, recipientName, skillName, extraSkillName, amount, effectTexture) end
+   if (not TestExceptions(triggerSettings)) then DisplayTrigger(triggerSettings, sourceName, sourceClass, recipientName, recipientClass, skillName, extraSkillName, amount, effectTexture) end
   end
  end -- Triggers to fire?
 end

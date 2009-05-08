@@ -109,8 +109,11 @@ obj["block"]					= { label="部分格挡", tooltip="显示部分格挡数值"}
 obj["resist"]					= { label="部分抵抗", tooltip="显示部分抵抗数值"}
 obj["vulnerability"]			= { label="易伤加成", tooltip="显示易伤加成数值"}
 obj["overheal"]					= { label="过量治疗", tooltip="显示过量治疗数值"}
+--obj["overkill"]					= { label="Overkills", tooltip="Display overkill amounts."}
 obj["colorDamageAmounts"]		= { label="伤害数值着色", tooltip="为伤害值着色"}
 obj["colorDamageEntry"]			= { tooltip="为此类伤害着色"}
+--obj["colorUnitNames"]			= { label="Color Unit Names", tooltip="Apply specified class colors to unit names."}
+--obj["colorClassEntry"]			= { tooltip="Enable coloring for this class."}
 obj["enableScrollArea"]			= { tooltip="启用滚动区域"}
 obj["inheritField"]				= { label="继承", tooltip="继承此区域的值，不勾选则无效"}
 obj["hideSkillIcons"]			= { label="隐藏图标", tooltip="滚动区域不显示图标."}
@@ -174,6 +177,7 @@ obj["deleteProfile"]			= { label="删除配置", tooltip="删除配置文件"}
 obj["masterFont"]				= { label="主要字体", tooltip="设置主要字体样式；除非另有指定，否则所有的滚动区域和事件均将使用这种字体样式"}
 obj["partialEffects"]			= { label="特效着色", tooltip="设置显示哪些特殊战斗效果以及着什么颜色"}
 obj["damageColors"]				= { label="伤害着色", tooltip="设置是否为某种伤害数值着色以及着什么颜色"}
+--obj["classColors"]				= { label="Class Colors", tooltip="Allows you to setup whether or not unit names are color coded by their class and what colors to use for each class." }
 obj["inputOkay"]				= { label=OKAY, tooltip="接受输入"}
 obj["inputCancel"]				= { label=CANCEL, tooltip="取消输入"}
 obj["genericSave"]				= { label=SAVE, tooltip="保存改变"}
@@ -294,6 +298,7 @@ obj["HEALER_NAME"]			= "%n - 治疗者名字.\n"
 obj["ATTACKED_NAME"]		= "%n - 被攻击者名字.\n"
 obj["HEALED_NAME"]			= "%n - 被治疗者名字.\n"
 obj["BUFFED_NAME"]			= "%n - 被Buff者名字.\n"
+obj["UNIT_KILLED"]			= "%n - 被杀死的单位名字.\n"
 obj["SKILL_NAME"]			= "%s - 技能名.\n"
 obj["SPELL_NAME"]			= "%s - 法术名.\n"
 obj["DEBUFF_NAME"]			= "%s - Debuff名.\n"
@@ -305,7 +310,6 @@ obj["DAMAGE_TYPE_TAKEN"]	= "%t - 受到伤害类型.\n"
 obj["DAMAGE_TYPE_DONE"]		= "%t - 输出伤害类型.\n"
 obj["ENVIRONMENTAL_DAMAGE"]	= "%e - 伤害来源 (掉落, 溺水, 岩浆, 等等...)\n"
 obj["FACTION_NAME"]			= "%e - 声望阵营名.\n"
-obj["UNIT_KILLED"]			= "%e - 被杀死的单位名字.\n"
 obj["SHARD_NAME"]			= "%e - 本地灵魂碎片的名字.\n"
 obj["EMOTE_TEXT"]			= "%e - 表情文字.\n"
 obj["MONEY_TEXT"]			= "%e - 获取金钱文字.\n"

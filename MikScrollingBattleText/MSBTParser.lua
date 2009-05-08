@@ -20,6 +20,9 @@ local string_gsub = string.gsub
 local string_len = string.len
 local bit_band = bit.band
 local bit_bor = bit.bor
+local GetTime = GetTime
+local UnitClass = UnitClass
+local UnitGUID = UnitGUID
 local Print = MikSBT.Print
 local EraseTable = MikSBT.EraseTable
 
@@ -62,6 +65,7 @@ local AURA_TYPE_DEBUFF = "DEBUFF"
 local UNIT_MAP_UPDATE_DELAY = 0.2
 local PET_UPDATE_DELAY = 1
 local REFLECT_HOLD_TIME = 3
+local CLASS_HOLD_TIME = 45
 
 -- Commonly used flag combinations.
 local FLAGS_ME			= bit_bor(AFFILIATION_MINE, REACTION_FRIENDLY, CONTROL_HUMAN, UNITTYPE_PLAYER)
@@ -87,7 +91,7 @@ local lastPetMapUpdate = 0
 local isUnitMapStale
 local isPetMapStale
 
--- Map of names to unit ids.
+-- Map of guids to unit ids.
 local unitMap = {}
 local petMap = {}
 
@@ -114,6 +118,11 @@ local handlers = {}
 -- Holds information about reflected skills to track how much was reflected.
 local reflectedSkills = {}
 local reflectedTimes = {}
+
+-- Holds information about guid to class mappings for known units.
+local classMapCleanupTime = 0
+local classMap = {}
+local classTimes = {}
 
 
 -------------------------------------------------------------------------------
@@ -353,7 +362,7 @@ local function ParseLogMessage(timestamp, event, sourceGUID, sourceName, sourceF
  -- Attempt to figure out the source and recipient unitIDs.
  local sourceUnit = unitMap[sourceGUID] or petMap[sourceGUID]
  local recipientUnit = unitMap[recipientGUID] or petMap[recipientGUID]
-
+ 
  -- Treat player guardians like pets. 
  if (not sourceUnit and TestFlagsAll(sourceFlags, FLAGS_MY_GUARDIAN)) then sourceUnit = "pet" end
  if (not recipientUnit and TestFlagsAll(recipientFlags, FLAGS_MY_GUARDIAN)) then recipientUnit = "pet" end
@@ -373,10 +382,10 @@ local function ParseLogMessage(timestamp, event, sourceGUID, sourceName, sourceF
  parserEvent.sourceGUID = sourceGUID
  parserEvent.sourceName = sourceName
  parserEvent.sourceFlags = sourceFlags
+ parserEvent.sourceUnit = sourceUnit
  parserEvent.recipientGUID = recipientGUID
  parserEvent.recipientName = recipientName
  parserEvent.recipientFlags = recipientFlags 
- parserEvent.sourceUnit = sourceUnit
  parserEvent.recipientUnit = recipientUnit
  
  -- Map the local arguments into the parser event table.
@@ -659,27 +668,41 @@ local function OnUpdateDelayedInfo(this, elapsed)
    -- Update the player GUID if it isn't known yet and verify it's now known.
    if (not playerGUID) then playerGUID = UnitGUID("player") end
    if (playerGUID) then
-    -- Erase the unit map table.
-    for key in pairs(unitMap) do unitMap[key] = nil end
+    -- Erase the unit map table and mark all old units for cleanup from the class map.
+    local now = GetTime()
+    for guid in pairs(unitMap) do
+     unitMap[guid] = nil
+     classTimes[guid] = now + CLASS_HOLD_TIME
+    end
 
     -- Check if there are raid members.
     local numRaidMembers = GetNumRaidMembers()
     if (numRaidMembers > 0) then
-     -- Loop through all of the raid members and add them.
+     -- Loop through all of the raid members and add them and their class to the maps.
      for i = 1, numRaidMembers do
       local unitID = "raid" .. i
-      unitMap[UnitGUID(unitID)] = unitID
-     end
+      local guid = UnitGUID(unitID)
+      unitMap[guid] = unitID
+      if (not classMap[guid]) then _, classMap[guid] = UnitClass(unitID) end
+      classTimes[guid] = nil
+     end -- Loop through raid members
+
+    -- There are not any raid members so look for party members.
     else
-     -- Loop through all of the party members and add them.
+     -- Loop through all of the party members and add their class to the maps.
      for i = 1, GetNumPartyMembers() do
       local unitID = "party" .. i
-	  unitMap[UnitGUID(unitID)] = unitID
-     end
+      local guid = UnitGUID(unitID)
+      unitMap[guid] = unitID
+      if (not classMap[guid]) then _, classMap[guid] = UnitClass(unitID) end
+      classTimes[guid] = nil
+     end -- Loop through party members
     end
 
-    -- Add the player.
+    -- Add the player and player's clas to the maps.
     unitMap[playerGUID] = "player"
+	if (not classMap[playerGUID]) then _, classMap[playerGUID] = UnitClass("player") end
+    classTimes[playerGUID] = nil
    
     -- Clear the unit map stale flag.
     isUnitMapStale = false
@@ -700,27 +723,43 @@ local function OnUpdateDelayedInfo(this, elapsed)
    -- Verify the player's pet is not in an unknown state if there is one.
    local petName = UnitName("pet")
    if (not petName or petName ~= UNKNOWN) then
-    -- Erase the pet map table.
-    for key in pairs(petMap) do petMap[key] = nil end
+    -- Erase the pet map table and mark all old units for cleanup from the class map.
+    local now = GetTime()
+    for guid in pairs(petMap) do
+     petMap[guid] = nil
+     classTimes[guid] = now + CLASS_HOLD_TIME
+    end
 
     -- Check if there are raid members.
     local numRaidMembers = GetNumRaidMembers()
-     if (numRaidMembers > 0) then
-      -- Loop through all of the raid members and add their pets.
-      for i = 1, numRaidMembers do
+    if (numRaidMembers > 0) then
+     -- Loop through all of the raid members and add their pets and pet's class to the maps.
+     for i = 1, numRaidMembers do
       local unitID = "raidpet" .. i
-	  if (UnitExists(unitID)) then petMap[UnitGUID(unitID)] = unitID end
-     end
+      if (UnitExists(unitID)) then
+       local guid = UnitGUID(unitID)
+       petMap[guid] = unitID
+       if (not classMap[guid]) then _, classMap[guid] = UnitClass(unitID) end
+       classTimes[guid] = nil
+      end
+     end -- Loop through raid members
+
+    -- There are not any raid members so look for party members.
     else
-     -- Loop through all of the party members and add them.
+     -- Loop through all of the party members and add their pets and pet's class to the maps.
      for i = 1, GetNumPartyMembers() do
       local unitID = "partypet" .. i
-	  if (UnitExists(unitID)) then petMap[UnitGUID(unitID)] = unitID end
-     end
+      if (UnitExists(unitID)) then
+       local guid = UnitGUID(unitID)
+       petMap[guid] = unitID
+       if (not classMap[guid]) then _, classMap[guid] = UnitClass(unitID) end
+       classTimes[guid] = nil
+      end
+     end -- Loop through party members
     end
 
     -- Add the player's pet if there is one.
-	if (petName) then petMap[UnitGUID("pet")] = "pet" end
+    if (petName) then petMap[UnitGUID("pet")] = "pet" end
 
     -- Clear the pet map stale flag.
     isPetMapStale = false
@@ -743,6 +782,34 @@ local function OnEvent(this, event, arg1, arg2, ...)
  -- Combat log events.
  if (event == "COMBAT_LOG_EVENT_UNFILTERED") then
   ParseLogMessage(arg1, arg2, ...)
+
+ -- Mouseover changes.
+ elseif (event == "UPDATE_MOUSEOVER_UNIT") then
+  -- Map the GUID for the moused over unit to a class.
+  local mouseoverGUID = UnitGUID("mouseover")
+  if (mouseoverGUID) then
+   classTimes[mouseoverGUID] = GetTime() + CLASS_HOLD_TIME
+   if (not classMap[mouseoverGUID]) then local _, class = UnitClass("mouseover") classMap[mouseoverGUID] = class end
+  end
+
+ -- Target changes.
+ elseif (event == "PLAYER_TARGET_CHANGED") then
+  -- Map the GUID for the target unit to a class.
+  local targetGUID = UnitGUID("target")
+  if (targetGUID) then
+   local now = GetTime()
+   classTimes[targetGUID] = now + CLASS_HOLD_TIME
+   if (not classMap[targetGUID]) then local _, class = UnitClass("target") classMap[targetGUID] = class end
+
+    -- Loop through all of the recent guid to class mappings and remove the old ones if enough time has passed.
+   if (now >= classMapCleanupTime) then
+    for guid, cleanupTime in pairs(classTimes) do
+     if (now >= cleanupTime) then classMap[guid] = nil classTimes[guid] = nil end
+    end
+
+    classMapCleanupTime = now + CLASS_HOLD_TIME
+   end -- Time to clean up class map.
+  end
 
  -- Party/Raid changes.
  elseif (event == "PARTY_MEMBERS_CHANGED" or event == "RAID_ROSTER_UPDATE") then
@@ -774,10 +841,12 @@ local function Enable()
   eventFrame:RegisterEvent(event)
  end
 
- -- Register additional events for aura and overheal processing.
+ -- Register additional events for unit and class map processing.
  eventFrame:RegisterEvent("PARTY_MEMBERS_CHANGED")
  eventFrame:RegisterEvent("RAID_ROSTER_UPDATE")
  eventFrame:RegisterEvent("UNIT_PET") 
+ eventFrame:RegisterEvent("PLAYER_TARGET_CHANGED")
+ eventFrame:RegisterEvent("UPDATE_MOUSEOVER_UNIT")
 
  -- Update the unit map and current pet information.
  isUnitMapStale = true
@@ -812,7 +881,7 @@ local function OnLoad()
  eventFrame:SetScript("OnEvent", OnEvent)
  eventFrame:SetScript("OnUpdate", OnUpdateDelayedInfo)
 
- -- Get the name and GUID of the player.
+ -- Get the name, GUID, and class of the player.
  playerName = UnitName("player")
  playerGUID = UnitGUID("player")
  
@@ -860,6 +929,7 @@ module.OBJECT_NONE			= OBJECT_NONE
 
 -- Protected Variables.
 module.unitMap = unitMap
+module.classMap = classMap
 
 -- Protected Functions.
 module.RegisterHandler				= RegisterHandler

@@ -106,8 +106,11 @@ obj["block"]				= { label="Bloquages partiels", tooltip="Afficher la valeur des 
 obj["resist"]				= { label="Résistances partielles", tooltip="Afficher la valeur des résistances partielles."}
 obj["vulnerability"]		= { label="Bonus de vulnérabilité", tooltip="Afficher la valeur des bonus de vulnérabilité."}
 obj["overheal"]				= { label="Overheals", tooltip="Afficher la valeur d'overheal."}
+--obj["overkill"]					= { label="Overkills", tooltip="Display overkill amounts."}
 obj["colorDamageAmounts"]	= { label="Valeurs des dommages en couleur", tooltip="Utiliser des couleurs pour la valeur des dommages."}
 obj["colorDamageEntry"]		= { tooltip="Activer la colorisation pour ce type de dommage."}
+--obj["colorUnitNames"]			= { label="Color Unit Names", tooltip="Apply specified class colors to unit names."}
+--obj["colorClassEntry"]			= { tooltip="Enable coloring for this class."}
 obj["enableScrollArea"]		= { tooltip="Activer la zone de défilement."}
 obj["inheritField"]			= { label="Hérité", tooltip="Hériter de la valeur par défaut.  Désélectionner pour modifier cette valeur."}
 --obj["hideSkillIcons"]			= { label="Hide Icons", tooltip="Do not show icons in this scroll area."}
@@ -171,6 +174,7 @@ obj["deleteProfile"]			= { label="Supprimer", tooltip="Supprime le profil."}
 obj["masterFont"]				= { label="Police principale", tooltip="Paramètres des polices principales, hérités par les zones de défilement et les évènements associées avec elles, à moins qu'ils ne soient dépassés par les réglages individuels."}
 obj["partialEffects"]			= { label="Effets partiels", tooltip="Détermine les effets partiels affichés et les paramètres de couleurs."}
 obj["damageColors"]				= { label="Couleurs des dommages", tooltip="Vous permet de paramétrer les couleurs assignés aux valeurs des dommages suivant leur type."}
+--obj["classColors"]				= { label="Class Colors", tooltip="Allows you to setup whether or not unit names are color coded by their class and what colors to use for each class." }
 obj["inputOkay"]				= { label="OK", tooltip="Accepte la saisie."}
 obj["inputCancel"]				= { label="Annuler", tooltip="Annule la saisie."}
 obj["genericSave"]				= { label="Enregistrer", tooltip="Enregistre les modifications."}
@@ -289,6 +293,7 @@ obj["HEALER_NAME"]			= "%n - Nom du soigneur.\n"
 obj["ATTACKED_NAME"]		= "%n - Nom de l'unité attaquée.\n"
 obj["HEALED_NAME"]			= "%n - Nom de l'unité soignée.\n"
 obj["BUFFED_NAME"]			= "%n - Nom de l'unité.\n"
+obj["UNIT_KILLED"]			= "%n - Nom de l'unité tuée.\n"
 obj["SKILL_NAME"]			= "%s - Nom de la compétence.\n"
 obj["SPELL_NAME"]			= "%s - Nom du sort.\n"
 obj["DEBUFF_NAME"]			= "%s - Nom du debuff.\n"
@@ -300,7 +305,6 @@ obj["DAMAGE_TYPE_TAKEN"]	= "%t - Type de dommages.\n"
 obj["DAMAGE_TYPE_DONE"]		= "%t - Type de dommages faits.\n"
 obj["ENVIRONMENTAL_DAMAGE"]	= "%e - Nom de la source de dommages (chute, noyade, lave, etc...)\n"
 obj["FACTION_NAME"]			= "%e - Faction.\n"
-obj["UNIT_KILLED"]			= "%e - Nom de l'unité tuée.\n"
 obj["SHARD_NAME"]			= "%e - Fragment d'âme.\n"
 obj["EMOTE_TEXT"]			= "%e - Le texte de l'emote.\n"
 obj["MONEY_TEXT"]			= "%e - Le texte de l'argent gagné.\n"

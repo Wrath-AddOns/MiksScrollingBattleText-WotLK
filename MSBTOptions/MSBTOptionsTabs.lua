@@ -862,7 +862,7 @@ local function GeneralTab_Create()
  local slider = MSBTControls.CreateSlider(tabFrame)
  objLocale = L.SLIDERS["animationSpeed"] 
  slider:Configure(180, objLocale.label, objLocale.tooltip)
- slider:SetPoint("TOPLEFT", controls.copyProfileButton, "BOTTOMLEFT", 0, -45)
+ slider:SetPoint("TOPLEFT", controls.copyProfileButton, "BOTTOMLEFT", 0, -35)
  slider:SetMinMaxValues(20, 250)
  slider:SetValueStep(10)
  slider:SetValueChangedHandler(
@@ -937,11 +937,30 @@ local function GeneralTab_Create()
  
 
 
-  -- Damage colors button.
+  -- Class colors button.
+ button = MSBTControls.CreateOptionButton(tabFrame)
+ objLocale = L.BUTTONS["classColors"]
+ button:Configure(20, objLocale.label, objLocale.tooltip)
+ button:SetPoint("BOTTOMLEFT", tabFrame, "BOTTOMLEFT", 5, 15)
+ button:SetClickHandler(
+   function (this)
+    EraseTable(configTable)
+    configTable.parentFrame = tabFrame
+    configTable.anchorFrame = this
+    configTable.anchorPoint = "BOTTOMLEFT"
+    configTable.relativePoint = "TOPLEFT"
+    configTable.hideHandler = GeneralTab_EnableControls
+    DisableControls(controls)
+    MSBTPopups.ShowClassColors(configTable)
+   end
+ )
+ controls.classColorsButton = button
+
+ -- Damage colors button.
  button = MSBTControls.CreateOptionButton(tabFrame)
  objLocale = L.BUTTONS["damageColors"]
  button:Configure(20, objLocale.label, objLocale.tooltip)
- button:SetPoint("BOTTOMLEFT", tabFrame, "BOTTOMLEFT", 5, 15)
+ button:SetPoint("BOTTOMLEFT", controls.classColorsButton, "TOPLEFT", 0, 10)
  button:SetClickHandler(
    function (this)
     EraseTable(configTable)
@@ -1497,7 +1516,7 @@ local function EventsTab_SetupEvents()
  EventsTab_AddEvent(category, "OUTGOING_HEAL", c.HEALING_DONE .. c.HEALED_NAME .. c.SPELL_NAME .. c.SKILL_LONG)
  EventsTab_AddEvent(category, "OUTGOING_HEAL_CRIT", c.HEALING_DONE .. c.HEALED_NAME .. c.SPELL_NAME .. c.SKILL_LONG)
  EventsTab_AddEvent(category, "OUTGOING_HOT", c.HEALING_DONE .. c.HEALED_NAME .. c.SPELL_NAME .. c.SKILL_LONG)
- EventsTab_AddEvent(category, "OUTGOING_DISPEL", c.BUFF_NAME .. c.SKILL_LONG)
+ EventsTab_AddEvent(category, "OUTGOING_DISPEL", c.ATTACKED_NAME .. c.BUFF_NAME .. c.SKILL_LONG)
  
  category = "OUTGOING_PET_EVENTS"
  EventsTab_AddEvent(category, "PET_OUTGOING_DAMAGE", c.DAMAGE_DONE .. c.ATTACKED_NAME)
