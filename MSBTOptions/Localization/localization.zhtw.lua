@@ -108,11 +108,11 @@ obj["block"]					= { label="格擋", tooltip="設定是否顯示部分格擋數�
 obj["resist"]					= { label="抵抗", tooltip="設定是否顯示部分抵抗數值"}
 obj["vulnerability"]			= { label="虛弱加成", tooltip="設定是否顯示虛弱加成數值"}
 obj["overheal"]					= { label="過量治療", tooltip="設定是否顯示過量治療數值"}
---obj["overkill"]					= { label="Overkills", tooltip="Display overkill amounts."}
+obj["overkill"]					= { label="滅絕", tooltip="顯示滅絕總數."}
 obj["colorDamageAmounts"]		= { label="傷害數值著色", tooltip="設定是否讓不同的傷害類型顯示不同的顏色"}
 obj["colorDamageEntry"]			= { tooltip="讓此傷害類型顯示不同的顏色"}
---obj["colorUnitNames"]			= { label="Color Unit Names", tooltip="Apply specified class colors to unit names."}
---obj["colorClassEntry"]			= { tooltip="Enable coloring for this class."}
+obj["colorUnitNames"]			= { label="名字著色", tooltip="名字使用職業顏色著色."}
+obj["colorClassEntry"]			= { tooltip="啟用此職業的顏色."}
 obj["enableScrollArea"]			= { tooltip="啟用滾動區域"}
 obj["inheritField"]				= { label="沿用", tooltip="沿用主要字型，不勾選則無效"}
 obj["hideSkillIcons"]			= { label="隱藏圖標", tooltip="滾動區域不顯示圖標."}
@@ -176,7 +176,7 @@ obj["deleteProfile"]			= { label="刪除記錄檔", tooltip="刪除記錄檔"}
 obj["masterFont"]				= { label="主要字型", tooltip="設定主要字型樣式；除非另有指定，否則所有的滾動區域和事件均將使用這種字型樣式"}
 obj["partialEffects"]			= { label="特效著色", tooltip="設定顯示哪些特殊戰鬥效果以及著什麼顏色"}
 obj["damageColors"]				= { label="傷害著色", tooltip="設定是否為某種傷害數值著色以及著什麼顏色"}
---obj["classColors"]				= { label="Class Colors", tooltip="Allows you to setup whether or not unit names are color coded by their class and what colors to use for each class." }
+obj["classColors"]				= { label="職業顏色", tooltip="設置名字是否使用職業顏色著色和每種職業所用的顏色." }
 obj["inputOkay"]				= { label=OKAY, tooltip="接受輸入"}
 obj["inputCancel"]				= { label=CANCEL, tooltip="取消輸入"}
 obj["genericSave"]				= { label=SAVE, tooltip="儲存改變"}
