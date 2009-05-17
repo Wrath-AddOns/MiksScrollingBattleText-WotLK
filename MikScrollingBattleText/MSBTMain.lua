@@ -1366,6 +1366,12 @@ local function OnEvent(this, event, arg1, arg2)
   -- Must do it once the variables are loaded because blizzard's code overrides the FCT
   -- settings after the ADDON_LOADED code runs.
   MSBTProfiles.SetOptionUserDisabled(MSBTProfiles.IsModDisabled())
+
+  -- Support CUSTOM_CLASS_COLORS.
+  if (CUSTOM_CLASS_COLORS) then
+   MSBTProfiles.UpdateCustomClassColors()
+   if (CUSTOM_CLASS_COLORS.RegisterCallback) then CUSTOM_CLASS_COLORS:RegisterCallback(MSBTProfiles.UpdateCustomClassColors) end
+  end
   collectgarbage("collect")
 
  -- Power changes.

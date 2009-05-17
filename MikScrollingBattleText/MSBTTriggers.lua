@@ -454,7 +454,7 @@ local function DisplayTrigger(triggerSettings, sourceName, sourceClass, recipien
  -- Substitute recipient name.
  if (recipientName and string_find(message, "%r", 1, true)) then
   -- Strip realm from names.
-  if (string_find(sourceName, "-", 1, true)) then recipientName = string_gsub(recipientName, "(.-)%-.*", "%1") end
+  if (string_find(recipientName, "-", 1, true)) then recipientName = string_gsub(recipientName, "(.-)%-.*", "%1") end
 
   -- Color the name according to the class if there is one and it's enabled.
   if (recipientClass and not currentProfile.classColoringDisabled) then

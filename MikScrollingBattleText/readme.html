@@ -124,6 +124,7 @@
      <li>Set "Master Font" settings that will be inherited by all of the scroll areas and the events in them unless they are overridden at the scroll area or event level.</li>
      <li>Merge AoE data into one event with cumulative damage/healing done with number of normal and crits specified.</li>
      <li>Show overhealing amounts against yourself or party/raid members.</li>
+     <li>Color unit names according to their class (including CUSTOM_CLASS_COLORS support).</li>
      <li>Color damage amounts according to damage type.</li>
      <li>Show partial effects (resists, absorbs, vulnerabilities, etc) colored according to type.</li>
      <li>Filter output information with a full suite of spam controls.</li>
@@ -1183,7 +1184,20 @@
      <td class="ParameterName" nowrap="nowrap"><a name="WhatsNew"></a>Latest</td>
      <td class="ParameterDesc">
       <ul>
-       <li>Implemented capability to color unit names according to their class including customization options:</li>
+       <li>Added support for the CUSTOM_CLASS_COLORS standard.</li>
+       <li>Implemented logic to ensure classes are always known for opponents in arenas.</li>
+       <li>Tweaked class identification code to fix an issue where classes weren't known when they should have been.</li>
+       <li>Fixed issue that caused an error when using the %r event code on health and power change events.</li>
+       <li>Updated Simplified and Traditional Chinese translations from yleaf.</li>
+       <li>Updated Korean translations from chkid.</li>
+      </ul>
+     </td>
+    </tr>
+    <tr>
+     <td class="ParameterName" nowrap="nowrap">5.4.55</td>
+     <td class="ParameterDesc">
+      <ul>
+       <li>Implemented capability to color unit names according to their class including customization options:
         <ul>
          <li>Choose whether or not to enable class coloring on a global basis.</li>
          <li>Control color and enabled state for each individual class.</li>

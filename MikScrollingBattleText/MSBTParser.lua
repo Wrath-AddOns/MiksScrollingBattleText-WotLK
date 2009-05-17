@@ -65,7 +65,7 @@ local AURA_TYPE_DEBUFF = "DEBUFF"
 local UNIT_MAP_UPDATE_DELAY = 0.2
 local PET_UPDATE_DELAY = 1
 local REFLECT_HOLD_TIME = 3
-local CLASS_HOLD_TIME = 45
+local CLASS_HOLD_TIME = 300
 
 -- Commonly used flag combinations.
 local FLAGS_ME			= bit_bor(AFFILIATION_MINE, REACTION_FRIENDLY, CONTROL_HUMAN, UNITTYPE_PLAYER)
@@ -123,6 +123,7 @@ local reflectedTimes = {}
 local classMapCleanupTime = 0
 local classMap = {}
 local classTimes = {}
+local arenaUnits = {}
 
 
 -------------------------------------------------------------------------------
@@ -699,9 +700,9 @@ local function OnUpdateDelayedInfo(this, elapsed)
      end -- Loop through party members
     end
 
-    -- Add the player and player's clas to the maps.
+    -- Add the player and player's class to the maps.
     unitMap[playerGUID] = "player"
-	if (not classMap[playerGUID]) then _, classMap[playerGUID] = UnitClass("player") end
+    if (not classMap[playerGUID]) then _, classMap[playerGUID] = UnitClass("player") end
     classTimes[playerGUID] = nil
    
     -- Clear the unit map stale flag.
@@ -758,8 +759,13 @@ local function OnUpdateDelayedInfo(this, elapsed)
      end -- Loop through party members
     end
 
-    -- Add the player's pet if there is one.
-    if (petName) then petMap[UnitGUID("pet")] = "pet" end
+    -- Add the player's pet and its class if there is one.
+    if (petName) then
+     local petGUID = UnitGUID("pet")
+     petMap[petGUID] = "pet"
+     if (not classMap[petGUID]) then _, classMap[petGUID] = UnitClass("pet") end
+     classTimes[petGUID] = nil
+    end
 
     -- Clear the pet map stale flag.
     isPetMapStale = false
@@ -787,29 +793,37 @@ local function OnEvent(this, event, arg1, arg2, ...)
  elseif (event == "UPDATE_MOUSEOVER_UNIT") then
   -- Map the GUID for the moused over unit to a class.
   local mouseoverGUID = UnitGUID("mouseover")
-  if (mouseoverGUID) then
-   classTimes[mouseoverGUID] = GetTime() + CLASS_HOLD_TIME
-   if (not classMap[mouseoverGUID]) then local _, class = UnitClass("mouseover") classMap[mouseoverGUID] = class end
-  end
+  if (not mouseoverGUID) then return end
+
+  -- Ignore the GUID if its class is already known and there is no cleanup time for it.
+  if (classMap[mouseoverGUID] and not classTimes[mouseoverGUID]) then return end
+
+  -- Update the cleanup time for the GUID and map it to a class if it's not already known.
+  classTimes[mouseoverGUID] = GetTime() + CLASS_HOLD_TIME
+  if (not classMap[mouseoverGUID]) then _, classMap[mouseoverGUID] = UnitClass("mouseover") end
 
  -- Target changes.
  elseif (event == "PLAYER_TARGET_CHANGED") then
   -- Map the GUID for the target unit to a class.
   local targetGUID = UnitGUID("target")
-  if (targetGUID) then
-   local now = GetTime()
-   classTimes[targetGUID] = now + CLASS_HOLD_TIME
-   if (not classMap[targetGUID]) then local _, class = UnitClass("target") classMap[targetGUID] = class end
+  if (not targetGUID) then return end
 
-    -- Loop through all of the recent guid to class mappings and remove the old ones if enough time has passed.
-   if (now >= classMapCleanupTime) then
-    for guid, cleanupTime in pairs(classTimes) do
-     if (now >= cleanupTime) then classMap[guid] = nil classTimes[guid] = nil end
-    end
+  -- Ignore the GUID if its class is already known and there is no cleanup time for it.
+  if (classMap[targetGUID] and not classTimes[targetGUID]) then return end
 
-    classMapCleanupTime = now + CLASS_HOLD_TIME
-   end -- Time to clean up class map.
-  end
+  -- Update the cleanup time for the GUID and map it to a class if it's not already known.
+  local now = GetTime()
+  classTimes[targetGUID] = now + CLASS_HOLD_TIME
+  if (not classMap[targetGUID]) then _, classMap[targetGUID] = UnitClass("target") end
+
+  -- Loop through all of the recent guid to class mappings and remove the old ones if enough time has passed.
+  if (now >= classMapCleanupTime) then
+   for guid, cleanupTime in pairs(classTimes) do
+    if (now >= cleanupTime) then classMap[guid] = nil classTimes[guid] = nil end
+   end
+
+   classMapCleanupTime = now + CLASS_HOLD_TIME
+  end -- Time to clean up class map.
 
  -- Party/Raid changes.
  elseif (event == "PARTY_MEMBERS_CHANGED" or event == "RAID_ROSTER_UPDATE") then
@@ -821,6 +835,23 @@ local function OnEvent(this, event, arg1, arg2, ...)
  elseif (event == "UNIT_PET") then
   isPetMapStale = true
   eventFrame:Show()
+
+ -- Arena opponent changes.
+ elseif (event == "ARENA_OPPONENT_UPDATE") then
+  -- Map the unit id and GUID for an arena unit to a class when it's seen.
+  if (arg2 == "seen") then
+   local arenaGUID = UnitGUID(arg1)
+   if (not arenaGUID) then return end
+   arenaUnits[arg1] = arenaGUID
+   _, classMap[arenaGUID] = UnitClass(arg1)
+
+  -- Remove the mappings for an arena unit when it's cleared.
+  elseif (arg2 == "cleared") then
+   local arenaGUID = arenaUnits[arg1]
+   if (not arenaGUID) then return end
+   arenaUnits[arg1] = nil
+   classMap[arenaGUID] = nil
+  end
 
  -- Chat message combat events.
  else
@@ -845,6 +876,7 @@ local function Enable()
  eventFrame:RegisterEvent("PARTY_MEMBERS_CHANGED")
  eventFrame:RegisterEvent("RAID_ROSTER_UPDATE")
  eventFrame:RegisterEvent("UNIT_PET") 
+ eventFrame:RegisterEvent("ARENA_OPPONENT_UPDATE")
  eventFrame:RegisterEvent("PLAYER_TARGET_CHANGED")
  eventFrame:RegisterEvent("UPDATE_MOUSEOVER_UNIT")
 

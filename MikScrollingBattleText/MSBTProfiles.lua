@@ -1660,6 +1660,21 @@ local function IsModDisabled()
 end
 
 
+-- ****************************************************************************
+-- Updates the class colors in the master profile with the colors defined in
+-- the CUSTOM_CLASS_COLORS table.
+-- ****************************************************************************
+local function UpdateCustomClassColors()
+ for class, colors in pairs(CUSTOM_CLASS_COLORS) do  
+  if (masterProfile[class]) then
+   masterProfile[class].colorR = colors.r or masterProfile[class].colorR
+   masterProfile[class].colorG = colors.g or masterProfile[class].colorG
+   masterProfile[class].colorB = colors.b or masterProfile[class].colorB
+  end
+ end
+end
+
+
 -------------------------------------------------------------------------------
 -- Profile functions.
 -------------------------------------------------------------------------------
@@ -1864,4 +1879,5 @@ module.SelectProfile				= SelectProfile
 module.UpdateGameOptions			= UpdateGameOptions
 module.SetOption					= SetOption
 module.SetOptionUserDisabled		= SetOptionUserDisabled
+module.UpdateCustomClassColors		= UpdateCustomClassColors
 module.IsModDisabled				= IsModDisabled

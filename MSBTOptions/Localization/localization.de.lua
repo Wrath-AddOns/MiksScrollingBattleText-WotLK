@@ -59,7 +59,7 @@ L.MSG_NEW_TRIGGER					= "Neuer Auslöser"
 ------------------------------
 
 local obj = L.CLASS_NAMES
-obj["DEATHKNIGHT"]	= "Death Knight"
+obj["DEATHKNIGHT"]	= "Todesritter"
 obj["DRUID"]		= "Druide"
 obj["HUNTER"]		= "Jäger"
 obj["MAGE"]			= "Magier"
