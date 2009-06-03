@@ -1,6 +1,6 @@
 ----------------------------------------------------------------------------
 -- Title: MSBT Options Simplified Chinese Localization
--- Author: Mik
+-- Author: Mikord
 -- Simplified Chinese Translation by:
 --	elafor
 --	hscui
@@ -97,8 +97,6 @@ obj["skillIcons"]	= { label="技能图标", tooltip="设置技能图标"}
 obj = L.CHECKBOXES
 obj["enableMSBT"]				= { label="启用MSBT", tooltip="启用MSBT"}
 obj["stickyCrits"]				= { label="爆击粘滞显示", tooltip="使用粘滞样式显示爆击"}
-obj["gameDamage"]				= { label="游戏内置伤害", tooltip="在敌人头上显示游戏内置伤害信息"}
-obj["gameHealing"]				= { label="游戏内置治疗", tooltip="在目标头上显示游戏内置治疗信息"}
 obj["enableSounds"]				= { label="启用声音", tooltip="当指定事件和触发器发生时播放声音"}
 obj["textShadowing"]			= { label="字体阴影", tooltip="显示字体阴影效果让它们看起来更爽"}
 obj["colorPartialEffects"]		= { label="特效着色", tooltip="给某些特殊战斗效果的信息着色"}

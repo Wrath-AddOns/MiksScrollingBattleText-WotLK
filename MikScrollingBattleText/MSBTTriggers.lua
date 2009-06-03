@@ -1,6 +1,6 @@
 -------------------------------------------------------------------------------
 -- Title: Mik's Scrolling Battle Text Triggers
--- Author: Mik
+-- Author: Mikord
 -------------------------------------------------------------------------------
 
 -- Create module and set its name.
@@ -748,25 +748,24 @@ local function Disable()
 end
 
 
--- ****************************************************************************
--- Called when the module is loaded.
--- ****************************************************************************
-local function OnLoad()
- -- Get the player's name and class.
- playerName = UnitName("player")
- playerGUID = UnitGUID("player")
- _, playerClass = UnitClass("player")
+-------------------------------------------------------------------------------
+-- Initialization.
+-------------------------------------------------------------------------------
 
- -- Create a frame to receive events.
- eventFrame = CreateFrame("Frame")
- eventFrame:Hide()
- eventFrame:SetScript("OnEvent", OnEvent)
+-- Get the player's name and class.
+playerName = UnitName("player")
+playerGUID = UnitGUID("player")
+_, playerClass = UnitClass("player")
+
+-- Create a frame to receive events.
+eventFrame = CreateFrame("Frame")
+eventFrame:Hide()
+eventFrame:SetScript("OnEvent", OnEvent)
  
- -- Create function maps.
- CreateCaptureFuncs()
- CreateTestFuncs()
- CreateConditionFuncs()
-end
+-- Create function maps.
+CreateCaptureFuncs()
+CreateTestFuncs()
+CreateConditionFuncs()
 
 
 
@@ -785,10 +784,3 @@ module.ConvertType			= ConvertType
 module.UpdateTriggers		= UpdateTriggers
 module.Enable				= Enable
 module.Disable				= Disable
-
-
--------------------------------------------------------------------------------
--- Load.
--------------------------------------------------------------------------------
-
-OnLoad()

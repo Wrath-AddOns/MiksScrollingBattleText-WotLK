@@ -1,6 +1,6 @@
 -------------------------------------------------------------------------------
 -- Title: Mik's Scrolling Battle Text Main
--- Author: Mik
+-- Author: Mikord
 -------------------------------------------------------------------------------
 
 -- Create module and set its name.
@@ -30,7 +30,6 @@ local bit_bor = bit.bor
 local GetTime = GetTime
 local GetSpellInfo = GetSpellInfo
 local EraseTable = MikSBT.EraseTable
-local Print = MikSBT.Print
 local GetSkillName = MikSBT.GetSkillName
 local DisplayEvent = MSBTAnimations.DisplayEvent
 local IsScrollAreaActive = MSBTAnimations.IsScrollAreaActive
@@ -104,7 +103,6 @@ local SPELL_BLINK			= GetSkillName(1953)
 local SPELL_BLIZZARD		= GetSkillName(10)
 local SPELL_HELLFIRE		= GetSkillName(1949)
 local SPELL_HURRICANE		= GetSkillName(16914)
-local SPELL_INNERVATE		= GetSkillName(29166)
 local SPELL_SPIRIT_TAP		= GetSkillName(15270)
 local SPELL_RAIN_OF_FIRE	= GetSkillName(5740)
 local SPELL_VOLLEY			= GetSkillName(1510)
@@ -150,6 +148,7 @@ local ignoreAuras = {}
 -- Regen ability info.
 local regenAbilities = {}
 local activeRegenAbility
+local activeRegenTexture
 
 
 -------------------------------------------------------------------------------
@@ -203,33 +202,6 @@ local function CreateDamageMaps()
  damageColorProfileEntries[DAMAGETYPE_SHADOW] = "shadow"
  damageColorProfileEntries[DAMAGETYPE_ARCANE] = "arcane"
  damageColorProfileEntries[DAMAGETYPE_FROSTFIRE] = "frostfire"
-end
-
-
--- ****************************************************************************
--- Sets up a button to access MSBT's options from the Blizzard interface
--- options AddOns tab.
--- ****************************************************************************
-local function SetupBlizzardOptions()
- -- Create a container frame for the Blizzard options area.
- local frame = CreateFrame("Frame")
- frame.name = "MikScrollingBattleText"
- 
- -- Create an option button in the center of the frame to launch MSBT's options.
- local button = CreateFrame("Button", nil, frame, "OptionsButtonTemplate")
- button:SetPoint("CENTER")
- button:SetText(MikSBT.COMMAND)
- button:SetScript("OnClick",
-  function (this)
-   InterfaceOptionsFrameCancel_OnClick()
-   HideUIPanel(GameMenuFrame)
-   if (not IsAddOnLoaded("MSBTOptions")) then UIParentLoadAddOn("MSBTOptions") end
-   if (IsAddOnLoaded("MSBTOptions")) then MSBTOptions.Main.ShowMainFrame() end
-  end
- )
-
- -- Add the frame as a new category to Blizzard's interface options.
- InterfaceOptions_AddCategory(frame)
 end
 
 
@@ -486,7 +458,7 @@ local function DetectPowerGain(powerAmount)
 
  -- Display the power change if it is a gain.
  if (powerAmount > lastPowerAmount) then
-  DisplayEvent(eventSettings, FormatEvent(eventSettings.message, powerAmount - lastPowerAmount, nil, nil, nil, UnitPowerType("player")))
+  DisplayEvent(eventSettings, FormatEvent(eventSettings.message, powerAmount - lastPowerAmount, nil, nil, nil, UnitPowerType("player"), nil, nil, activeRegenAbility or UNKNOWN), activeRegenTexture)
  end
 end
 
@@ -647,105 +619,6 @@ end
 
 
 -------------------------------------------------------------------------------
--- Command handler functions.
--------------------------------------------------------------------------------
-
--- ****************************************************************************
--- Returns the current and remaining parameters from the passed string.
--- ****************************************************************************
-local function GetNextParameter(paramString)
- local remainingParams
- local currentParam = paramString
-
- -- Look for a space.
- local index = string_find(paramString, " ", 1, true)
- if (index) then
-  -- Get the current and remaing parameters.
-  currentParam = string.sub(paramString, 1, index-1)
-  remainingParams = string.sub(paramString, index+1)
- end
-
- -- Return the current parameter and the remaining ones.
- return currentParam, remainingParams
-end
-
-
--- ****************************************************************************
--- Called to handle commands.
--- ****************************************************************************
-local function CommandHandler(params)
- -- Get the parameter.
- local currentParam, remainingParams
- currentParam, remainingParams = GetNextParameter(params)
-
- -- Flag for whether or not to show usage info.
- local showUsage = true
-
- -- Make sure there is a current parameter and lower case it.
- if (currentParam) then currentParam = string.lower(currentParam) end
-
- -- Look for the recognized parameters.
- if (currentParam == "") then
-  -- Load the on demand options if they are not loaded.
-  if (not IsAddOnLoaded("MSBTOptions")) then UIParentLoadAddOn("MSBTOptions") end
-
-  -- Show the options interface after verifying the on demand options actually loaded.
-  if (IsAddOnLoaded("MSBTOptions")) then MSBTOptions.Main.ShowMainFrame() end
-
-  -- Don't show the usage info.
-  showUsage = false
-
-  -- Reset.
-  elseif (currentParam == L.COMMAND_RESET) then
-  -- Reset the current profile.
-  MSBTProfiles.ResetProfile(nil, true)
-
-  -- Don't show the usage info.
-  showUsage = false
-  
- -- Disable.
- elseif (currentParam == L.COMMAND_DISABLE) then
-  -- Set the user disabled option.
-  MSBTProfiles.SetOptionUserDisabled(true)
-
-  -- Output an informative message.
-  Print(L.MSG_DISABLE, 1,1,1)
-
-  -- Don't show the usage info.
-  showUsage = false
-
- -- Enable.
- elseif (currentParam == L.COMMAND_ENABLE) then
-  -- Unset the user disabled option.
-  MSBTProfiles.SetOptionUserDisabled(false)
-
-  -- Output an informative message.
-  Print(L.MSG_ENABLE, 1,1,1)
-
-  -- Don't show the usage info.
-  showUsage = false
-
- -- Version.
- elseif (currentParam == L.COMMAND_SHOWVER) then
-  -- Output the current version number.
-  Print(MikSBT.VERSION_STRING, 1,1,1)
-
-  -- Don't show the usage info.
-  showUsage = false
-
- end 
-
- -- Check if the usage information should be shown.
- if (showUsage) then
-  -- Loop through all of the entries in the command usage list.
-  for _, msg in ipairs(L.COMMAND_USAGE) do
-   Print(msg, 1, 1, 1)
-  end
- end -- Show usage.
-end
-
-
--------------------------------------------------------------------------------
 -- Event handlers.
 -------------------------------------------------------------------------------
 
@@ -864,12 +737,15 @@ local function AuraHandler(parserEvent, currentProfile)
    -- Buff gain.
    if (not parserEvent.isFade) then
     -- Set the active regen ability if the buff being gained is on the regen abilities list.
-    if (regenAbilities[effectName] and not currentProfile.regenAbilitiesDisabled) then activeRegenAbility = effectName end
+    if (regenAbilities[effectName] and not currentProfile.regenAbilitiesDisabled) then
+     activeRegenAbility = effectName
+     if (parserEvent.skillID) then _, _, activeRegenTexture = GetSpellInfo(parserEvent.skillID) end
+	end
 
    -- Buff fade.
    else
     -- Clear the active regen ability if the fading buff is the active one.
-    if (effectName == activeRegenAbility) then activeRegenAbility = nil end
+    if (effectName == activeRegenAbility) then activeRegenAbility = nil activeRegenTexture = nil end
    end
   end
 
@@ -1135,8 +1011,7 @@ local function ParserEventsHandler(parserEvent)
  -- Attempt to get the texture for the event if icons are not disabled.
  local effectTexture
  if (not currentProfile.skillIconsDisabled and IsScrollAreaIconShown(eventSettings.scrollArea)) then
-  effectTexture = parserEvent.skillTexture
-  if (not effectTexture and skillID) then _, _, effectTexture = GetSpellInfo(skillID) end
+  if (skillID) then _, _, effectTexture = GetSpellInfo(skillID) end
  
   -- Override texture for dispels and interrupts.
   if ((eventType == "dispel" or eventType == "interrupt" or (eventType == "miss" and parserEvent.missType == "RESIST")) and parserEvent.extraSkillID) then
@@ -1339,43 +1214,8 @@ end
 -- Called when the registered events occur.
 -- ****************************************************************************
 local function OnEvent(this, event, arg1, arg2)
- -- When an addon is loaded.
- if (event == "ADDON_LOADED") then
-  -- Ignore the event if it isn't this addon.
-  if (arg1 ~= "MikScrollingBattleText") then return end
-
-  -- Don't get notification for other addons being loaded.
-  this:UnregisterEvent("ADDON_LOADED")
-
-  -- Register slash commands
-  SLASH_MSBT1 = MikSBT.COMMAND
-  SlashCmdList["MSBT"] = CommandHandler
-
-  -- Initialize the saved variables to make sure there is a profile to work with.
-  MSBTProfiles.InitSavedVariables()
-
-  -- Add a button to launch MSBT's options from the Blizzard interface options.
-  SetupBlizzardOptions()
-
-  -- Let the media module know the variables are initialized.
-  MSBTMedia.OnVariablesInitialized()
-
- -- Variables for all addons loaded.
- elseif (event == "VARIABLES_LOADED") then
-  -- Disable or enable the mod depending on the saved setting.
-  -- Must do it once the variables are loaded because blizzard's code overrides the FCT
-  -- settings after the ADDON_LOADED code runs.
-  MSBTProfiles.SetOptionUserDisabled(MSBTProfiles.IsModDisabled())
-
-  -- Support CUSTOM_CLASS_COLORS.
-  if (CUSTOM_CLASS_COLORS) then
-   MSBTProfiles.UpdateCustomClassColors()
-   if (CUSTOM_CLASS_COLORS.RegisterCallback) then CUSTOM_CLASS_COLORS:RegisterCallback(MSBTProfiles.UpdateCustomClassColors) end
-  end
-  collectgarbage("collect")
-
  -- Power changes.
- elseif (powerTypeEvents[event]) then
+ if (powerTypeEvents[event]) then
   -- Ignore the event if it isn't for the player.
   if (arg1 ~= "player") then return end
 
@@ -1444,77 +1284,70 @@ local function Disable()
 end
 
 
--- ****************************************************************************
--- Called when the module is loaded.
--- ****************************************************************************
-local function OnLoad()
- -- Create a frame to receive events.
- eventFrame = CreateFrame("Frame")
- eventFrame:Hide()
- eventFrame:SetScript("OnEvent", OnEvent)
- eventFrame:SetScript("OnUpdate", OnUpdateEventFrame)
- 
- -- Create a frame to receive throttle update events.
- throttleFrame = CreateFrame("Frame")
- throttleFrame:Hide()
- throttleFrame:SetScript("OnUpdate", OnUpdateThrottleFrame)
+-------------------------------------------------------------------------------
+-- Initialization.
+-------------------------------------------------------------------------------
 
- -- Create the map of handlers to call for each event.
- eventHandlers["damage"] = DamageHandler
- eventHandlers["miss"] = MissHandler
- eventHandlers["heal"] = HealHandler
- eventHandlers["interrupt"] = InterruptHandler
- eventHandlers["environmental"] = EnvironmentalHandler
- eventHandlers["aura"] = AuraHandler
- eventHandlers["enchant"] = EnchantHandler
- eventHandlers["dispel"] = DispelHandler
- eventHandlers["power"] = PowerHandler
- eventHandlers["kill"] = KillHandler
- eventHandlers["honor"] = HonorHandler
- eventHandlers["reputation"] = ReputationHandler
- eventHandlers["proficiency"] = ProficiencyHandler
- eventHandlers["experience"] = ExperienceHandler
- eventHandlers["extraattacks"] = ExtraAttacksHandler
- eventHandlers["loot"] = LootHandler
+-- Create a frame to receive events.
+eventFrame = CreateFrame("Frame")
+eventFrame:Hide()
+eventFrame:SetScript("OnEvent", OnEvent)
+eventFrame:SetScript("OnUpdate", OnUpdateEventFrame)
  
- -- Create the power types lookup map. 
- powerTypes[SPELL_POWER_MANA] = MANA
- powerTypes[SPELL_POWER_RAGE] = RAGE
- powerTypes[SPELL_POWER_FOCUS] = FOCUS
- powerTypes[SPELL_POWER_ENERGY] = ENERGY
- powerTypes[SPELL_POWER_HAPPINESS] = HAPPINESS
- powerTypes[SPELL_POWER_RUNES] = RUNES
- powerTypes[SPELL_POWER_RUNIC_POWER] = RUNIC_POWER
- 
- -- Create power type events lookup map.
- powerTypeEvents["UNIT_MANA"] = true
- powerTypeEvents["UNIT_RAGE"] = true
- powerTypeEvents["UNIT_ENERGY"] = true
- powerTypeEvents["UNIT_RUNIC_POWER"] = true
+-- Create a frame to receive throttle update events.
+throttleFrame = CreateFrame("Frame")
+throttleFrame:Hide()
+throttleFrame:SetScript("OnUpdate", OnUpdateThrottleFrame)
 
- -- Create damage type and damage color profile maps.
- CreateDamageMaps()
+-- Create the map of handlers to call for each event.
+eventHandlers["damage"] = DamageHandler
+eventHandlers["miss"] = MissHandler
+eventHandlers["heal"] = HealHandler
+eventHandlers["interrupt"] = InterruptHandler
+eventHandlers["environmental"] = EnvironmentalHandler
+eventHandlers["aura"] = AuraHandler
+eventHandlers["enchant"] = EnchantHandler
+eventHandlers["dispel"] = DispelHandler
+eventHandlers["power"] = PowerHandler
+eventHandlers["kill"] = KillHandler
+eventHandlers["honor"] = HonorHandler
+eventHandlers["reputation"] = ReputationHandler
+eventHandlers["proficiency"] = ProficiencyHandler
+eventHandlers["experience"] = ExperienceHandler
+eventHandlers["extraattacks"] = ExtraAttacksHandler
+eventHandlers["loot"] = LootHandler
  
- -- Set the isEnglish flag correctly.
- if (string_find(GetLocale(), "en..")) then isEnglish = true end
+-- Create the power types lookup map. 
+powerTypes[SPELL_POWER_MANA] = MANA
+powerTypes[SPELL_POWER_RAGE] = RAGE
+powerTypes[SPELL_POWER_FOCUS] = FOCUS
+powerTypes[SPELL_POWER_ENERGY] = ENERGY
+powerTypes[SPELL_POWER_HAPPINESS] = HAPPINESS
+powerTypes[SPELL_POWER_RUNES] = RUNES
+powerTypes[SPELL_POWER_RUNIC_POWER] = RUNIC_POWER
  
- -- Add auras to always ignore.
- ignoreAuras[SPELL_BLINK] = true
- ignoreAuras[SPELL_BLIZZARD] = true
- ignoreAuras[SPELL_HELLFIRE] = true
- ignoreAuras[SPELL_HURRICANE] = true
- ignoreAuras[SPELL_RAIN_OF_FIRE] = true
- ignoreAuras[SPELL_VOLLEY] = true
- 
+-- Create power type events lookup map.
+powerTypeEvents["UNIT_MANA"] = true
+powerTypeEvents["UNIT_RAGE"] = true
+powerTypeEvents["UNIT_ENERGY"] = true
+powerTypeEvents["UNIT_RUNIC_POWER"] = true
 
- -- Add the regen abilities. 
- regenAbilities[SPELL_SPIRIT_TAP] = true
- regenAbilities[SPELL_INNERVATE] = true
+-- Create damage type and damage color profile maps.
+CreateDamageMaps()
  
- -- Register events for when the mod is loaded and variables are loaded.
- eventFrame:RegisterEvent("ADDON_LOADED")
- eventFrame:RegisterEvent("VARIABLES_LOADED")
-end
+-- Set the isEnglish flag correctly.
+if (string_find(GetLocale(), "en..")) then isEnglish = true end
+ 
+-- Add auras to always ignore.
+ignoreAuras[SPELL_BLINK] = true
+ignoreAuras[SPELL_BLIZZARD] = true
+ignoreAuras[SPELL_HELLFIRE] = true
+ignoreAuras[SPELL_HURRICANE] = true
+ignoreAuras[SPELL_RAIN_OF_FIRE] = true
+ignoreAuras[SPELL_VOLLEY] = true
+ 
+-- Add the regen abilities. 
+regenAbilities[SPELL_SPIRIT_TAP] = true
 
 
 
@@ -1552,10 +1385,3 @@ MikSBT.IterateScrollAreas			= MSBTAnimations.IterateScrollAreas
 MikSBT.IterateSounds				= MSBTMedia.IterateSounds
 MikSBT.DisplayMessage				= MSBTAnimations.DisplayMessage
 MikSBT.IsModDisabled				= MSBTProfiles.IsModDisabled
-
-
--------------------------------------------------------------------------------
--- Load.
--------------------------------------------------------------------------------
-
-OnLoad()

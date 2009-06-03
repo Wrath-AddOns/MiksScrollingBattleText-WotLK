@@ -1,6 +1,6 @@
 -------------------------------------------------------------------------------
 -- Title: Mik's Scrolling Battle Text French Localization
--- Author: Mik
+-- Author: Mikord
 -- French Translation by: Calthas, Devfool
 -------------------------------------------------------------------------------
 

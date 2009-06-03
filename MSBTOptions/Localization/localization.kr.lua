@@ -1,6 +1,6 @@
 -------------------------------------------------------------------------------
 -- Title: MSBT Options Korean Localization
--- Author: Mik
+-- Author: Mikord
 -- Korean Translation by: Slowhand, Fenlis, chkid
 -------------------------------------------------------------------------------
 
@@ -95,8 +95,6 @@ obj["skillIcons"] = { label="기술 아이콘", tooltip="기술 아이콘에 관
 obj = L.CHECKBOXES
 obj["enableMSBT"]				= { label="Mik's Scrolling Battle Text (MSBT) 사용", tooltip="MSBT를 사용합니다."}
 obj["stickyCrits"]				= { label="치명타 고정", tooltip="치명타를 고정 스타일로 표시합니다."}
-obj["gameDamage"]				= { label="게임 피해량", tooltip="적의 머리위에 블리자드 기본 피해량을 표시합니다."}
-obj["gameHealing"]				= { label="게임 치유량", tooltip="대상의 머리위에 블리자드 기본 치유량을 표시합니다."}
 obj["enableSounds"]				= { label="효과음 사용", tooltip="이벤트와 트리거에 지정된 효과음을 재생합니다."}
 obj["textShadowing"]			= { label="문자 그림자", tooltip="글꼴을 또렷하게 개선하도록 문자에 그림자 효과를 적용합니다."}
 obj["colorPartialEffects"]		= { label="부분 속성 색상", tooltip="부분 속성을 선택한 색상으로 표시합니다."}

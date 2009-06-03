@@ -1,6 +1,6 @@
 -------------------------------------------------------------------------------
 -- Title: Mik's Scrolling Battle Text Default Animation Styles
--- Author: Mik
+-- Author: Mikord
 -------------------------------------------------------------------------------
 
 -------------------------------------------------------------------------------
@@ -829,10 +829,8 @@ local function InitStatic(newDisplayEvent, activeDisplayEvents, direction, behav
 end
 
 
-
-
 -------------------------------------------------------------------------------
--- Load.
+-- Initialization.
 -------------------------------------------------------------------------------
 
 -- Register the default animation styles.

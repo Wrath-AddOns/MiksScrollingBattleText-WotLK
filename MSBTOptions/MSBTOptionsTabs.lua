@@ -1,6 +1,6 @@
 -------------------------------------------------------------------------------
 -- Title: MSBT Options Tab Frames
--- Author: Mik
+-- Author: Mikord
 -------------------------------------------------------------------------------
 
 -- Create module and set its name.
@@ -673,8 +673,6 @@ local function GeneralTab_Populate()
  
  controls.enableCheckbox:SetChecked(not MSBTProfiles.IsModDisabled())
  controls.stickyCritsCheckbox:SetChecked(not currentProfile.stickyCritsDisabled)
- controls.gameDamageCheckbox:SetChecked(currentProfile.gameDamageEnabled)
- controls.gameHealingCheckbox:SetChecked(currentProfile.gameHealingEnabled)
  controls.enableSoundsCheckbox:SetChecked(not currentProfile.soundsDisabled)
  controls.textShadowingCheckbox:SetChecked(not currentProfile.textShadowingDisabled)
  controls.animationSpeedSlider:SetValue(currentProfile.animationSpeed)
@@ -896,38 +894,12 @@ local function GeneralTab_Create()
    end
  )
  controls.enableSoundsCheckbox = checkbox
-
- -- Game healing checkbox.
- checkbox = MSBTControls.CreateCheckbox(tabFrame)
- objLocale = L.CHECKBOXES["gameHealing"]
- checkbox:Configure(28, objLocale.label, objLocale.tooltip)
- checkbox:SetPoint("BOTTOMLEFT", controls.enableSoundsCheckbox, "TOPLEFT", 0, 0)
- checkbox:SetClickHandler(
-   function (this, isChecked)
-    MSBTProfiles.SetOption(nil, "gameHealingEnabled", isChecked)
-    MSBTProfiles.UpdateGameOptions()
-   end
- )
- controls.gameHealingCheckbox = checkbox
  
- -- Game damage checkbox.
- checkbox = MSBTControls.CreateCheckbox(tabFrame)
- objLocale = L.CHECKBOXES["gameDamage"]
- checkbox:Configure(28, objLocale.label, objLocale.tooltip)
- checkbox:SetPoint("BOTTOMLEFT", controls.gameHealingCheckbox, "TOPLEFT", 0, 0)
- checkbox:SetClickHandler(
-   function (this, isChecked)
-    MSBTProfiles.SetOption(nil, "gameDamageEnabled", isChecked)
-    MSBTProfiles.UpdateGameOptions()
-   end
- )
- controls.gameDamageCheckbox = checkbox
-
  -- Sticky crits checkbox.
  checkbox = MSBTControls.CreateCheckbox(tabFrame)
  objLocale = L.CHECKBOXES["stickyCrits"]
  checkbox:Configure(28, objLocale.label, objLocale.tooltip)
- checkbox:SetPoint("BOTTOMLEFT", controls.gameDamageCheckbox, "TOPLEFT", 0, 0)
+ checkbox:SetPoint("BOTTOMLEFT", controls.enableSoundsCheckbox, "TOPLEFT", 0, 0)
  checkbox:SetClickHandler(
    function (this, isChecked)
     MSBTProfiles.SetOption(nil, "stickyCritsDisabled", not isChecked)
@@ -3290,90 +3262,78 @@ local function SkillIconsTab_OnShow()
 end
 
 
-
-
--- ****************************************************************************
--- Called when the module is loaded.
--- ****************************************************************************
-local function OnLoad()
- -- Create an empty frame for the media tab that will be dynamically created when shown.
- local objLocale = L.TABS["customMedia"]
- local tabFrame = CreateFrame("Frame")
- tabFrame:Hide()
- tabFrame:SetScript("OnShow", MediaTab_OnShow)
- tabFrames.media = tabFrame
- MSBTOptMain.AddTab(tabFrame, objLocale.label, objLocale.tooltip)
-
- -- Create an empty frame for the general tab that will be dynamically created when shown.
- objLocale = L.TABS.general
- tabFrame = CreateFrame("Frame")
- tabFrame:Hide()
- tabFrame:SetScript("OnShow", GeneralTab_OnShow)
- tabFrames.general = tabFrame
- MSBTOptMain.AddTab(tabFrame, objLocale.label, objLocale.tooltip)
-
- -- Create an empty frame for the scroll areas tab that will be dynamically created when shown.
- objLocale = L.TABS.scrollAreas
- tabFrame = CreateFrame("Frame")
- tabFrame:Hide()
- tabFrame:SetScript("OnShow", ScrollAreasTab_OnShow)
- tabFrames.scrollAreas = tabFrame
- MSBTOptMain.AddTab(tabFrame, objLocale.label, objLocale.tooltip)
-
- -- Create an empty frame for the events tab that will be dynamically created when shown.
- objLocale = L.TABS.events
- tabFrame = CreateFrame("Frame")
- tabFrame:Hide()
- tabFrame:SetScript("OnShow", EventsTab_OnShow)
- tabFrames.events = tabFrame
- MSBTOptMain.AddTab(tabFrame, objLocale.label, objLocale.tooltip)
-
- -- Create an empty frame for the triggers tab that will be dynamically created when shown.
- objLocale = L.TABS.triggers
- tabFrame = CreateFrame("Frame")
- tabFrame:Hide()
- tabFrame:SetScript("OnShow", TriggersTab_OnShow)
- tabFrames.triggers = tabFrame
- MSBTOptMain.AddTab(tabFrame, objLocale.label, objLocale.tooltip)
-
- -- Create an empty frame for the spam tab that will be dynamically created when shown.
- objLocale = L.TABS.spamControl
- tabFrame = CreateFrame("Frame")
- tabFrame:Hide()
- tabFrame:SetScript("OnShow", SpamTab_OnShow)
- tabFrames.spam = tabFrame
- MSBTOptMain.AddTab(tabFrame, objLocale.label, objLocale.tooltip)
-
- -- Create an empty frame for the cooldowns tab that will be dynamically created when shown.
- objLocale = L.TABS.cooldowns
- tabFrame = CreateFrame("Frame")
- tabFrame:Hide()
- tabFrame:SetScript("OnShow", CooldownsTab_OnShow)
- tabFrames.cooldowns = tabFrame
- MSBTOptMain.AddTab(tabFrame, objLocale.label, objLocale.tooltip)
-
- -- Create an empty frame for the loot alerts tab that will be dynamically created when shown.
- objLocale = L.TABS.lootAlerts
- tabFrame = CreateFrame("Frame")
- tabFrame:Hide()
- tabFrame:SetScript("OnShow", LootAlertsTab_OnShow)
- tabFrames.lootAlerts = tabFrame
- MSBTOptMain.AddTab(tabFrame, objLocale.label, objLocale.tooltip)
-
- -- Create an empty frame for the icons tab that will be dynamically created when shown.
- objLocale = L.TABS.skillIcons
- tabFrame = CreateFrame("Frame")
- tabFrame:Hide()
- tabFrame:SetScript("OnShow", SkillIconsTab_OnShow)
- tabFrames.skillIcons = tabFrame
- MSBTOptMain.AddTab(tabFrame, objLocale.label, objLocale.tooltip)
-end
-
-
-
-
 -------------------------------------------------------------------------------
--- Load.
+-- Initialization.
 -------------------------------------------------------------------------------
 
-OnLoad()
+-- Create an empty frame for the media tab that will be dynamically created when shown.
+local objLocale = L.TABS["customMedia"]
+local tabFrame = CreateFrame("Frame")
+tabFrame:Hide()
+tabFrame:SetScript("OnShow", MediaTab_OnShow)
+tabFrames.media = tabFrame
+MSBTOptMain.AddTab(tabFrame, objLocale.label, objLocale.tooltip)
+
+-- Create an empty frame for the general tab that will be dynamically created when shown.
+objLocale = L.TABS.general
+tabFrame = CreateFrame("Frame")
+tabFrame:Hide()
+tabFrame:SetScript("OnShow", GeneralTab_OnShow)
+tabFrames.general = tabFrame
+MSBTOptMain.AddTab(tabFrame, objLocale.label, objLocale.tooltip)
+
+-- Create an empty frame for the scroll areas tab that will be dynamically created when shown.
+objLocale = L.TABS.scrollAreas
+tabFrame = CreateFrame("Frame")
+tabFrame:Hide()
+tabFrame:SetScript("OnShow", ScrollAreasTab_OnShow)
+tabFrames.scrollAreas = tabFrame
+MSBTOptMain.AddTab(tabFrame, objLocale.label, objLocale.tooltip)
+
+-- Create an empty frame for the events tab that will be dynamically created when shown.
+objLocale = L.TABS.events
+tabFrame = CreateFrame("Frame")
+tabFrame:Hide()
+tabFrame:SetScript("OnShow", EventsTab_OnShow)
+tabFrames.events = tabFrame
+MSBTOptMain.AddTab(tabFrame, objLocale.label, objLocale.tooltip)
+
+-- Create an empty frame for the triggers tab that will be dynamically created when shown.
+objLocale = L.TABS.triggers
+tabFrame = CreateFrame("Frame")
+tabFrame:Hide()
+tabFrame:SetScript("OnShow", TriggersTab_OnShow)
+tabFrames.triggers = tabFrame
+MSBTOptMain.AddTab(tabFrame, objLocale.label, objLocale.tooltip)
+
+-- Create an empty frame for the spam tab that will be dynamically created when shown.
+objLocale = L.TABS.spamControl
+tabFrame = CreateFrame("Frame")
+tabFrame:Hide()
+tabFrame:SetScript("OnShow", SpamTab_OnShow)
+tabFrames.spam = tabFrame
+MSBTOptMain.AddTab(tabFrame, objLocale.label, objLocale.tooltip)
+
+-- Create an empty frame for the cooldowns tab that will be dynamically created when shown.
+objLocale = L.TABS.cooldowns
+tabFrame = CreateFrame("Frame")
+tabFrame:Hide()
+tabFrame:SetScript("OnShow", CooldownsTab_OnShow)
+tabFrames.cooldowns = tabFrame
+MSBTOptMain.AddTab(tabFrame, objLocale.label, objLocale.tooltip)
+
+-- Create an empty frame for the loot alerts tab that will be dynamically created when shown.
+objLocale = L.TABS.lootAlerts
+tabFrame = CreateFrame("Frame")
+tabFrame:Hide()
+tabFrame:SetScript("OnShow", LootAlertsTab_OnShow)
+tabFrames.lootAlerts = tabFrame
+MSBTOptMain.AddTab(tabFrame, objLocale.label, objLocale.tooltip)
+
+-- Create an empty frame for the icons tab that will be dynamically created when shown.
+objLocale = L.TABS.skillIcons
+tabFrame = CreateFrame("Frame")
+tabFrame:Hide()
+tabFrame:SetScript("OnShow", SkillIconsTab_OnShow)
+tabFrames.skillIcons = tabFrame
+MSBTOptMain.AddTab(tabFrame, objLocale.label, objLocale.tooltip)

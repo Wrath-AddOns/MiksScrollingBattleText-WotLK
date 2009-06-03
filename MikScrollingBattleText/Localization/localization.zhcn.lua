@@ -1,6 +1,6 @@
 -------------------------------------------------------------------------------
 -- Title: Mik's Scrolling Battle Text Simplified Chinese Localization
--- Author: Mik
+-- Author: Mikord
 -- Simplified Chinese Translation by: elafor, hscui, yleaf(yaroot@gmail.com)
 -------------------------------------------------------------------------------
 

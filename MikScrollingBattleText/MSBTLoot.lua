@@ -1,6 +1,6 @@
 -------------------------------------------------------------------------------
 -- Title: Mik's Scrolling Battle Text Loot
--- Author: Mik
+-- Author: Mikord
 -------------------------------------------------------------------------------
 
 -- Create module and set its name.
@@ -125,24 +125,14 @@ local function ParserEventsHandler(parserEvent)
 end
 
 
--- ****************************************************************************
--- Called when the module is loaded.
--- ****************************************************************************
-local function OnLoad()
- -- Setup the item quality color patterns.
- for k, v in pairs(ITEM_QUALITY_COLORS) do
-  qualityPatterns[k] = string_format("|cFF%02x%02x%02x[%%s]|r", math_ceil(v.r * 255), math_ceil(v.g * 255), math_ceil(v.b * 255))
- end
+-------------------------------------------------------------------------------
+-- Initialization.
+-------------------------------------------------------------------------------
 
- -- Register the parser events handler.
- MSBTParser.RegisterHandler(ParserEventsHandler)
+-- Setup the item quality color patterns.
+for k, v in pairs(ITEM_QUALITY_COLORS) do
+ qualityPatterns[k] = string_format("|cFF%02x%02x%02x[%%s]|r", math_ceil(v.r * 255), math_ceil(v.g * 255), math_ceil(v.b * 255))
 end
 
-
-
-
--------------------------------------------------------------------------------
--- Load.
--------------------------------------------------------------------------------
-
-OnLoad()
+-- Register the parser events handler.
+MSBTParser.RegisterHandler(ParserEventsHandler)

@@ -1,6 +1,6 @@
 -------------------------------------------------------------------------------
 -- Title: Mik's Scrolling Battle Text Russian Localization
--- Author: Mik
+-- Author: Mikord
 -- Russian Translation by: Eritnull (StingerSoft)
 -------------------------------------------------------------------------------
 

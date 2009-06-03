@@ -1,6 +1,6 @@
 -------------------------------------------------------------------------------
 -- Title: Mik's Scrolling Battle Text Parser
--- Author: Mik
+-- Author: Mikord
 -------------------------------------------------------------------------------
 
 -- Create module and set its name.
@@ -69,6 +69,7 @@ local CLASS_HOLD_TIME = 300
 
 -- Commonly used flag combinations.
 local FLAGS_ME			= bit_bor(AFFILIATION_MINE, REACTION_FRIENDLY, CONTROL_HUMAN, UNITTYPE_PLAYER)
+local FLAGS_MINE		= bit_bor(AFFILIATION_MINE, REACTION_FRIENDLY, CONTROL_HUMAN)
 local FLAGS_MY_GUARDIAN	= bit_bor(AFFILIATION_MINE, REACTION_FRIENDLY, CONTROL_HUMAN, UNITTYPE_GUARDIAN)
 
 
@@ -363,12 +364,12 @@ local function ParseLogMessage(timestamp, event, sourceGUID, sourceName, sourceF
  -- Attempt to figure out the source and recipient unitIDs.
  local sourceUnit = unitMap[sourceGUID] or petMap[sourceGUID]
  local recipientUnit = unitMap[recipientGUID] or petMap[recipientGUID]
- 
- -- Treat player guardians like pets. 
- if (not sourceUnit and TestFlagsAll(sourceFlags, FLAGS_MY_GUARDIAN)) then sourceUnit = "pet" end
- if (not recipientUnit and TestFlagsAll(recipientFlags, FLAGS_MY_GUARDIAN)) then recipientUnit = "pet" end
 
- -- Ignore the event if it is not one that should be fully parsed and it doesn't pertain to the player
+ -- Treat guardians that are flagged as belonging to the player as their pet and vehicles and other objects as the player.
+ if (not sourceUnit and TestFlagsAll(sourceFlags, FLAGS_MINE)) then sourceUnit = TestFlagsAll(sourceFlags, FLAGS_MY_GUARDIAN) and "pet" or "player" end
+ if (not recipientUnit and TestFlagsAll(recipientFlags, FLAGS_MINE)) then recipientUnit = TestFlagsAll(sourceFlags, FLAGS_MY_GUARDIAN) and "pet" or "player" end
+ 
+  -- Ignore the event if it is not one that should be fully parsed and it doesn't pertain to the player
  -- or pet.  This is done to avoid wasting time parsing events that won't be used like damage that other
  -- players are doing.
  if (not fullParseEvents[event] and sourceUnit ~= "player" and sourceUnit ~= "pet" and
@@ -592,6 +593,7 @@ local function CreateCaptureFuncs()
   RANGE_DAMAGE = function (p, ...) p.eventType, p.isRange, p.skillID, p.skillName, p.skillSchool, p.amount, p.overkillAmount, p.damageType, p.resistAmount, p.blockAmount, p.absorbAmount, p.isCrit, p.isGlancing, p.isCrushing = "damage", true, ... end,
   SPELL_DAMAGE = function (p, ...) p.eventType, p.skillID, p.skillName, p.skillSchool, p.amount, p.overkillAmount, p.damageType, p.resistAmount, p.blockAmount, p.absorbAmount, p.isCrit, p.isGlancing, p.isCrushing = "damage", ... end,
   SPELL_PERIODIC_DAMAGE = function (p, ...) p.eventType, p.isDoT, p.skillID, p.skillName, p.skillSchool, p.amount, p.overkillAmount, p.damageType, p.resistAmount, p.blockAmount, p.absorbAmount, p.isCrit, p.isGlancing, p.isCrushing = "damage", true, ... end,
+  SPELL_BUILDING_DAMAGE = function (p, ...) p.eventType, p.skillID, p.skillName, p.skillSchool, p.amount, p.overkillAmount, p.damageType, p.resistAmount, p.blockAmount, p.absorbAmount, p.isCrit, p.isGlancing, p.isCrushing = "damage", ... end,
   DAMAGE_SHIELD = function (p, ...) p.eventType, p.isDamageShield, p.skillID, p.skillName, p.skillSchool, p.amount, p.overkillAmount, p.damageType, p.resistAmount, p.blockAmount, p.absorbAmount, p.isCrit, p.isGlancing, p.isCrushing = "damage", true, ... end,
 
   -- Miss events.
@@ -759,12 +761,14 @@ local function OnUpdateDelayedInfo(this, elapsed)
      end -- Loop through party members
     end
 
-    -- Add the player's pet and its class if there is one.
+    -- Add the player's pet and its class if there is one.  Treat vehicles as the player instead of a pet.
     if (petName) then
-     local petGUID = UnitGUID("pet")
-     petMap[petGUID] = "pet"
-     if (not classMap[petGUID]) then _, classMap[petGUID] = UnitClass("pet") end
-     classTimes[petGUID] = nil
+     local unitID = "pet"
+     local guid = UnitGUID(unitID)
+     if (guid == UnitGUID("vehicle")) then unitID = "player" end
+     petMap[guid] = unitID
+     if (not classMap[guid]) then _, classMap[guid] = UnitClass(unitID) end
+     classTimes[guid] = nil
     end
 
     -- Clear the pet map stale flag.
@@ -903,35 +907,34 @@ local function Disable()
 end
 
 
--- ****************************************************************************
--- Called when the parser is loaded.
--- ****************************************************************************
-local function OnLoad()
- -- Create a frame to receive events.
- eventFrame = CreateFrame("Frame")
- eventFrame:Hide()
- eventFrame:SetScript("OnEvent", OnEvent)
- eventFrame:SetScript("OnUpdate", OnUpdateDelayedInfo)
+-------------------------------------------------------------------------------
+-- Initialization.
+-------------------------------------------------------------------------------
 
- -- Get the name, GUID, and class of the player.
- playerName = UnitName("player")
- playerGUID = UnitGUID("player")
+-- Create a frame to receive events.
+eventFrame = CreateFrame("Frame")
+eventFrame:Hide()
+eventFrame:SetScript("OnEvent", OnEvent)
+eventFrame:SetScript("OnUpdate", OnUpdateDelayedInfo)
+
+-- Get the name, GUID, and class of the player.
+playerName = UnitName("player")
+playerGUID = UnitGUID("player")
  
- -- Create various maps.
- CreateSearchMap()
- CreateSearchCaptureFuncs()
- CreateCaptureFuncs()
+-- Create various maps.
+CreateSearchMap()
+CreateSearchCaptureFuncs()
+CreateCaptureFuncs()
  
- -- Create the list of events that should be fully parsed.
- CreateFullParseList()
+-- Create the list of events that should be fully parsed.
+CreateFullParseList()
 
- -- Find the rarest word for each supported global string.
- FindRareWords()
- ValidateRareWords()
+-- Find the rarest word for each supported global string.
+FindRareWords()
+ValidateRareWords()
 
- -- Convert the supported global strings into lua search patterns.
- ConvertGlobalStrings()
-end
+-- Convert the supported global strings into lua search patterns.
+ConvertGlobalStrings()
 
 
 
@@ -970,10 +973,3 @@ module.TestFlagsAny					= TestFlagsAny
 module.TestFlagsAll					= TestFlagsAll
 module.Enable						= Enable
 module.Disable						= Disable
-
-
--------------------------------------------------------------------------------
--- Load.
--------------------------------------------------------------------------------
-
-OnLoad()

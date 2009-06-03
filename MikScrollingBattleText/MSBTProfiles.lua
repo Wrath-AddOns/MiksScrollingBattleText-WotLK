@@ -1,6 +1,6 @@
 -------------------------------------------------------------------------------
 -- Title: Mik's Scrolling Battle Text Profiles
--- Author: Mik
+-- Author: Mikord
 -------------------------------------------------------------------------------
 
 -- Create module and set its name.
@@ -104,13 +104,16 @@ local SPELL_VICTORY_RUSH		= GetSkillName(SPELLID_VICTORY_RUSH)
 local SPELL_VIPER_STING			= GetSkillName(3034)
 
 -- Throttle, suppression, and other spell names.
+local SPELL_ABOMINABLE_MIGHT		= GetSkillName(53136)
 local SPELL_BLOOD_PRESENCE			= GetSkillName(48266)
+local SPELL_DESECRATION				= GetSkillName(63595)
 local SPELL_DRAIN_LIFE				= GetSkillName(689)
 local SPELL_FEROCIOUS_INSPIRATION	= GetSkillName(34455)
 local SPELL_MANA_SPRING				= GetSkillName(5677)
 local SPELL_SHADOWMEND				= GetSkillName(39373)
 local SPELL_REFLECTIVE_SHIELD		= GetSkillName(33201)
 local SPELL_UNDYING_RESOLVE			= GetSkillName(51915)
+local SPELL_UNLEASHED_RAGE			= GetSkillName(30803)
 local SPELL_VAMPIRIC_EMBRACE		= GetSkillName(15286)
 local SPELL_VAMPIRIC_TOUCH			= GetSkillName(34914)
 
@@ -119,6 +122,9 @@ local SPELL_VAMPIRIC_TOUCH			= GetSkillName(34914)
 -------------------------------------------------------------------------------
 -- Private variables.
 -------------------------------------------------------------------------------
+
+-- Dynamically created frame for receiving events.
+local eventFrame
 
 -- Meta table for the differential profile tables.
 local differentialMap = {}
@@ -135,6 +141,9 @@ local currentProfile
 
 -- Path information for setting differential options.
 local pathTable = {}
+
+-- Flag to hold whether or not this is the first load.
+local isFirstLoad
 
 
 -------------------------------------------------------------------------------
@@ -1435,8 +1444,11 @@ local masterProfile = {
  mergeExclusions		= {},
  abilitySubstitutions	= {},
  abilitySuppressions	= {
-  [SPELL_UNDYING_RESOLVE]		= true,
+  [SPELL_ABOMINABLE_MIGHT]	= true,
+  [SPELL_DESECRATION]			= true,
   [SPELL_FEROCIOUS_INSPIRATION]	= true,
+  [SPELL_UNDYING_RESOLVE]		= true,
+  [SPELL_UNLEASHED_RAGE]		= true,
  },
  damageThreshold		= 0,
  healThreshold			= 0,
@@ -1581,39 +1593,44 @@ end
 
 
 -- ****************************************************************************
--- Sets the game damage and healing options according to the current profile.
+-- Sets up a button to access MSBT's options from the Blizzard interface
+-- options AddOns tab.
 -- ****************************************************************************
-local function UpdateGameOptions()
- -- Turn the game damage and healing display on or off.
- SetCVar("CombatDamage", currentProfile.gameDamageEnabled and 1 or 0)
- SetCVar("CombatHealing", currentProfile.gameHealingEnabled and 1 or 0)
+local function SetupBlizzardOptions()
+ -- Create a container frame for the Blizzard options area.
+ local frame = CreateFrame("Frame")
+ frame.name = "MikScrollingBattleText"
+ 
+ -- Create an option button in the center of the frame to launch MSBT's options.
+ local button = CreateFrame("Button", nil, frame, "OptionsButtonTemplate")
+ button:SetPoint("CENTER")
+ button:SetText(MikSBT.COMMAND)
+ button:SetScript("OnClick",
+  function (this)
+   InterfaceOptionsFrameCancel_OnClick()
+   HideUIPanel(GameMenuFrame)
+   if (not IsAddOnLoaded("MSBTOptions")) then UIParentLoadAddOn("MSBTOptions") end
+   if (IsAddOnLoaded("MSBTOptions")) then MSBTOptions.Main.ShowMainFrame() end
+  end
+ )
+
+ -- Add the frame as a new category to Blizzard's interface options.
+ InterfaceOptions_AddCategory(frame)
 end
 
 
 -- ****************************************************************************
--- Disable or enable blizzard's combat text.
+-- Disable Blizzard's combat text.
 -- ****************************************************************************
-local function DisableBlizzardCombatText(isDisabled)
- -- Check if the text should be disabled.
- if (isDisabled) then
-  -- Turn off Blizzard's default combat text.
-  SetCVar("enableCombatText", 0)
-  SHOW_COMBAT_TEXT = "0"
-  if (CombatText_UpdateDisplayedMessages) then
-   CombatText_UpdateDisplayedMessages()
-  end
- else
-  -- Turn on Blizzard's default combat text.
-  SetCVar("enableCombatText", 1)
-  SHOW_COMBAT_TEXT = "1"
-  if (not IsAddOnLoaded("Blizzard_CombatText")) then
-   UIParentLoadAddOn("Blizzard_CombatText")
-  end
-  if (CombatText_UpdateDisplayedMessages) then
-   CombatText_UpdateDisplayedMessages()
-  end
- end  
+local function DisableBlizzardCombatText()
+ -- Turn off Blizzard's default combat text.
+ SetCVar("CombatDamage", 0)
+ SetCVar("CombatHealing", 0)
+ SetCVar("enableCombatText", 0)
+ SHOW_COMBAT_TEXT = "0"
+ if (CombatText_UpdateDisplayedMessages) then CombatText_UpdateDisplayedMessages() end
 end
+
 
 
 -- ****************************************************************************
@@ -1630,25 +1647,13 @@ local function SetOptionUserDisabled(isDisabled)
   MikSBT.Parser.Disable()
   MikSBT.Main.Disable()
 
-  -- Turn on the game's display of outgoing damage.
-  SetCVar("CombatDamage", 1)
-  
-  -- Turn on the game's display of outgoing heals.
-  SetCVar("CombatHealing", 1)
-
  else 
   -- Enable the main, event parser, triggers, and cooldowns modules.
   MikSBT.Main.Enable()
   MikSBT.Parser.Enable() 
   MikSBT.Triggers.Enable()
   MikSBT.Cooldowns.UpdateEnableState()
-
-  -- Disable or enable game damage and healing based on the settings.
-  UpdateGameOptions()
  end
-
- -- Toggle the game's floating combat text depending on mod's disable state.
- DisableBlizzardCombatText(not isDisabled)
 end
 
 
@@ -1716,9 +1721,6 @@ local function SelectProfile(profileName)
   -- Associate the current profile tables with the corresponding master profile entries.
   AssociateDifferentialTables(currentProfile, masterProfile)
  
-  -- Disable or enable game damage and healing based on the settings.
-  UpdateGameOptions()
-
   -- Update the scroll areas and triggers with the current profile settings. 
   MikSBT.Animations.UpdateScrollAreas()
   MikSBT.Triggers.UpdateTriggers()
@@ -1827,6 +1829,9 @@ local function InitSavedVariables()
 
   savedVariables.profiles[DEFAULT_PROFILE_NAME].creationVersion = MikSBT.VERSION .. "." .. MikSBT.SVN_REVISION
   
+  -- Set the first time loaded flag.
+  isFirstLoad = true
+  
  -- There are saved variables.
  else
   -- Updates profiles created by older versions.
@@ -1861,6 +1866,169 @@ local function InitSavedVariables()
 end
 
 
+-------------------------------------------------------------------------------
+-- Command handler functions.
+-------------------------------------------------------------------------------
+
+-- ****************************************************************************
+-- Returns the current and remaining parameters from the passed string.
+-- ****************************************************************************
+local function GetNextParameter(paramString)
+ local remainingParams
+ local currentParam = paramString
+
+ -- Look for a space.
+ local index = string_find(paramString, " ", 1, true)
+ if (index) then
+  -- Get the current and remaing parameters.
+  currentParam = string.sub(paramString, 1, index-1)
+  remainingParams = string.sub(paramString, index+1)
+ end
+
+ -- Return the current parameter and the remaining ones.
+ return currentParam, remainingParams
+end
+
+
+-- ****************************************************************************
+-- Called to handle commands.
+-- ****************************************************************************
+local function CommandHandler(params)
+ -- Get the parameter.
+ local currentParam, remainingParams
+ currentParam, remainingParams = GetNextParameter(params)
+
+ -- Flag for whether or not to show usage info.
+ local showUsage = true
+
+ -- Make sure there is a current parameter and lower case it.
+ if (currentParam) then currentParam = string.lower(currentParam) end
+
+ -- Look for the recognized parameters.
+ if (currentParam == "") then
+  -- Load the on demand options if they are not loaded.
+  if (not IsAddOnLoaded("MSBTOptions")) then UIParentLoadAddOn("MSBTOptions") end
+
+  -- Show the options interface after verifying the on demand options actually loaded.
+  if (IsAddOnLoaded("MSBTOptions")) then MSBTOptions.Main.ShowMainFrame() end
+
+  -- Don't show the usage info.
+  showUsage = false
+
+  -- Reset.
+  elseif (currentParam == L.COMMAND_RESET) then
+  -- Reset the current profile.
+  ResetProfile(nil, true)
+
+  -- Don't show the usage info.
+  showUsage = false
+  
+ -- Disable.
+ elseif (currentParam == L.COMMAND_DISABLE) then
+  -- Set the user disabled option.
+  SetOptionUserDisabled(true)
+
+  -- Output an informative message.
+  Print(L.MSG_DISABLE, 1, 1, 1)
+
+  -- Don't show the usage info.
+  showUsage = false
+
+ -- Enable.
+ elseif (currentParam == L.COMMAND_ENABLE) then
+  -- Unset the user disabled option.
+  SetOptionUserDisabled(false)
+
+  -- Output an informative message.
+  Print(L.MSG_ENABLE, 1, 1, 1)
+
+  -- Don't show the usage info.
+  showUsage = false
+
+ -- Version.
+ elseif (currentParam == L.COMMAND_SHOWVER) then
+  -- Output the current version number.
+  Print(MikSBT.VERSION_STRING, 1, 1, 1)
+
+  -- Don't show the usage info.
+  showUsage = false
+
+ end 
+
+ -- Check if the usage information should be shown.
+ if (showUsage) then
+  -- Loop through all of the entries in the command usage list.
+  for _, msg in ipairs(L.COMMAND_USAGE) do
+   Print(msg, 1, 1, 1)
+  end
+ end -- Show usage.
+end
+
+
+-------------------------------------------------------------------------------
+-- Event handlers.
+-------------------------------------------------------------------------------
+
+-- ****************************************************************************
+-- Called when the registered events occur.
+-- ****************************************************************************
+local function OnEvent(this, event, arg1)
+ -- When an addon is loaded.
+ if (event == "ADDON_LOADED") then
+  -- Ignore the event if it isn't this addon.
+  if (arg1 ~= "MikScrollingBattleText") then return end
+
+  -- Don't get notification for other addons being loaded.
+  this:UnregisterEvent("ADDON_LOADED")
+
+  -- Register slash commands
+  SLASH_MSBT1 = MikSBT.COMMAND
+  SlashCmdList["MSBT"] = CommandHandler
+
+  -- Initialize the saved variables to make sure there is a profile to work with.
+  InitSavedVariables()
+
+  -- Add a button to launch MSBT's options from the Blizzard interface options.
+  SetupBlizzardOptions()
+
+  -- Let the media module know the variables are initialized.
+  MikSBT.Media.OnVariablesInitialized()
+
+  --TODO: Implement damage font...
+  --DAMAGE_TEXT_FONT = "Interface\\AddOns\\MikScrollingBattleText\\Fonts\\porky.ttf"
+
+ -- Variables for all addons loaded.
+ elseif (event == "VARIABLES_LOADED") then
+  -- Disable or enable the mod depending on the saved setting.
+  SetOptionUserDisabled(IsModDisabled())
+  
+  -- Disable Blizzard's combat text if it's the first load.
+  if (isFirstLoad) then DisableBlizzardCombatText() end
+
+  -- Support CUSTOM_CLASS_COLORS.
+  if (CUSTOM_CLASS_COLORS) then
+   UpdateCustomClassColors()
+   if (CUSTOM_CLASS_COLORS.RegisterCallback) then CUSTOM_CLASS_COLORS:RegisterCallback(UpdateCustomClassColors) end
+  end
+  collectgarbage("collect")
+ end
+end
+
+
+-------------------------------------------------------------------------------
+-- Initialization.
+-------------------------------------------------------------------------------
+
+-- Create a frame to receive events.
+eventFrame = CreateFrame("Frame")
+eventFrame:Hide()
+eventFrame:SetScript("OnEvent", OnEvent)
+
+-- Register events for when the mod is loaded and variables are loaded.
+eventFrame:RegisterEvent("ADDON_LOADED")
+eventFrame:RegisterEvent("VARIABLES_LOADED")
+
+
 
 
 -------------------------------------------------------------------------------
@@ -1871,13 +2039,10 @@ end
 module.masterProfile = masterProfile
 
 -- Protected Functions.
-module.InitSavedVariables			= InitSavedVariables
 module.CopyProfile					= CopyProfile
 module.DeleteProfile				= DeleteProfile
 module.ResetProfile					= ResetProfile
 module.SelectProfile				= SelectProfile
-module.UpdateGameOptions			= UpdateGameOptions
 module.SetOption					= SetOption
 module.SetOptionUserDisabled		= SetOptionUserDisabled
-module.UpdateCustomClassColors		= UpdateCustomClassColors
 module.IsModDisabled				= IsModDisabled

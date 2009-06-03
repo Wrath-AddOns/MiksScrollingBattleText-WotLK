@@ -1,6 +1,6 @@
 -------------------------------------------------------------------------------
 -- Title: MSBT Options Russian Localization
--- Author: Mik
+-- Author: Mikord
 -- Russain Translation by: Eritnull (StingerSoft)
 -------------------------------------------------------------------------------
 
@@ -94,8 +94,6 @@ obj["skillIcons"]	= { label="Иконки навыков", tooltip="Настро
 obj = L.CHECKBOXES
 obj["enableMSBT"]				= { label="Вкл/Выкл Mik's Scrolling Battle Text", tooltip="Вкл/Выкл MSBT."}
 obj["stickyCrits"]				= { label="Закреплённый крит", tooltip="Отображение критов используя стиль закрепления."}
-obj["gameDamage"]				= { label="Стандартный урон", tooltip="Отображение урона по умолчанию в клиенте над головой противника."}
-obj["gameHealing"]				= { label="Стандартное лечение", tooltip="Отображение лечения по умолчанию в клиенте над головой противника."}
 obj["enableSounds"]				= { label="Вкл/Выкл звуки", tooltip="Проигрывать звуки заданные в событиях и триггерах."}
 obj["textShadowing"]			= { label="Тень текста", tooltip="Применить эффект тени к тексту для улучшения четкости шрифта."}
 obj["colorPartialEffects"]		= { label="Цвет частичных эффектов", tooltip="Применяет установленные цвета для частичных эффектов."}

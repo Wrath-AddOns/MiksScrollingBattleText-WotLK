@@ -1,6 +1,6 @@
 -------------------------------------------------------------------------------
 -- Title: Mik's Scrolling Battle Text Traditional Chinese Localization
--- Author: Mik
+-- Author: Mikord
 -- Traditional Chinese Translation by: 世界之樹-Myth, yleaf(yaroot@gmail.com)
 -------------------------------------------------------------------------------
 

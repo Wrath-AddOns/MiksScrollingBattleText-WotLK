@@ -1,6 +1,6 @@
 -------------------------------------------------------------------------------
 -- Title: MSBT Options French Localization
--- Author: Mik
+-- Author: Mikord
 -- French Translation by: Calthas, Devfool
 -------------------------------------------------------------------------------
 
@@ -94,8 +94,6 @@ obj["skillIcons"]	= { label="Icônes des Compétences", tooltip="Affiche les opt
 obj = L.CHECKBOXES
 obj["enableMSBT"]			= { label="Activer Mik's Scrolling Battle Text", tooltip="Activer MSBT."}
 obj["stickyCrits"]			= { label="Critiques persistants", tooltip="Utiliser le style persistant pour les coups critiques."}
-obj["gameDamage"]			= { label="Dommages du jeu", tooltip="Afficher les dommages par défaut du jeu au dessus de la tête des ennemis."}
-obj["gameHealing"]			= { label="Soins du jeu", tooltip="Afficher les soins par déaut du jeu au dessus de la tête des cibles."}
 obj["enableSounds"]			= { label="Activer les sons", tooltip="Jouer les sons associés aux évènements et déclencheurs."}
 --obj["textShadowing"]			= { label="Text Shadowing", tooltip="Apply a shadow effect to text to improve font crispness."}
 obj["colorPartialEffects"]	= { label="Coloriser les effets partiels", tooltip="Assigner des couleurs aux effets partiels."}

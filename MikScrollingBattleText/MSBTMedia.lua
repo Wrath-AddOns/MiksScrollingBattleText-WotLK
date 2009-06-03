@@ -1,6 +1,6 @@
 -------------------------------------------------------------------------------
 -- Title: Mik's Scrolling Battle Text Media
--- Author: Mik
+-- Author: Mikord
 -------------------------------------------------------------------------------
 
 -- Create module and set its name.
@@ -124,23 +124,6 @@ end
 
 
 -- ****************************************************************************
--- Called when the module is loaded.
--- ****************************************************************************
-local function OnLoad()
- -- Register default fonts and sounds.
- for fontName, fontPath in pairs(DEFAULT_FONT_FILES) do RegisterFont(fontName, fontPath) end
- for soundName, soundPath in pairs(DEFAULT_SOUND_FILES) do RegisterSound(soundName, soundPath) end
-
- -- Register the currently available fonts and sounds in shared media with MSBT.
- for index, fontName in pairs(SML:List("font")) do fonts[fontName] = SML:Fetch("font", fontName) end
- for index, soundName in pairs(SML:List("sound")) do sounds[soundName] = SML:Fetch("sound", soundName) end
-
- -- Register a callback with shared media to keep MSBT synced.
- SML.RegisterCallback("MSBTSharedMedia", "LibSharedMedia_Registered", SMLRegistered)
-end
-
-
--- ****************************************************************************
 -- Called when the mod variables are initialized.
 -- ****************************************************************************
 local function OnVariablesInitialized()
@@ -148,6 +131,22 @@ local function OnVariablesInitialized()
  for fontName, fontPath in pairs(MSBTProfiles.savedMedia.fonts) do RegisterFont(fontName, fontPath) end
  for soundName, soundPath in pairs(MSBTProfiles.savedMedia.sounds) do RegisterSound(soundName, soundPath) end
 end
+
+
+-------------------------------------------------------------------------------
+-- Initialization.
+-------------------------------------------------------------------------------
+
+-- Register default fonts and sounds.
+for fontName, fontPath in pairs(DEFAULT_FONT_FILES) do RegisterFont(fontName, fontPath) end
+for soundName, soundPath in pairs(DEFAULT_SOUND_FILES) do RegisterSound(soundName, soundPath) end
+
+-- Register the currently available fonts and sounds in shared media with MSBT.
+for index, fontName in pairs(SML:List("font")) do fonts[fontName] = SML:Fetch("font", fontName) end
+for index, soundName in pairs(SML:List("sound")) do sounds[soundName] = SML:Fetch("sound", soundName) end
+
+-- Register a callback with shared media to keep MSBT synced.
+SML.RegisterCallback("MSBTSharedMedia", "LibSharedMedia_Registered", SMLRegistered)
 
 
 
@@ -166,10 +165,3 @@ module.RegisterSound			= RegisterSound
 module.IterateFonts				= IterateFonts
 module.IterateSounds			= IterateSounds
 module.OnVariablesInitialized	= OnVariablesInitialized
-
-
--------------------------------------------------------------------------------
--- Load.
--------------------------------------------------------------------------------
-
-OnLoad()

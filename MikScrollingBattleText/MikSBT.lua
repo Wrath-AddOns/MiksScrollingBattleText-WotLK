@@ -1,6 +1,6 @@
 -------------------------------------------------------------------------------
 -- Title: Mik's Scrolling Battle Text
--- Author: Mik
+-- Author: Mikord
 -------------------------------------------------------------------------------
 
 -- Create mod namespace and set its name.

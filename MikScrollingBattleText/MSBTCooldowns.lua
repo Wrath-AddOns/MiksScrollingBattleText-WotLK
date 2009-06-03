@@ -1,6 +1,6 @@
 -------------------------------------------------------------------------------
 -- Title: Mik's Scrolling Battle Text Cooldowns
--- Author: Mik
+-- Author: Mikord
 -------------------------------------------------------------------------------
 
 -- Create module and set its name.
@@ -277,27 +277,26 @@ local function UpdateEnableState()
 end
 
 
--- ****************************************************************************
--- Called when the module is loaded.
--- ****************************************************************************
-local function OnLoad()
- -- Create a frame to receive events.
- eventFrame = CreateFrame("Frame")
- eventFrame:Hide()
- eventFrame:SetScript("OnEvent", OnEvent)
- eventFrame:SetScript("OnUpdate", OnUpdate)
+-------------------------------------------------------------------------------
+-- Initialization.
+-------------------------------------------------------------------------------
 
- -- Get the player's class.
- _, playerClass = UnitClass("player")
+-- Create a frame to receive events.
+eventFrame = CreateFrame("Frame")
+eventFrame:Hide()
+eventFrame:SetScript("OnEvent", OnEvent)
+eventFrame:SetScript("OnUpdate", OnUpdate)
 
- -- Specify the abilities that reset cooldowns.
- resetAbilities[SPELL_COLD_SNAP] = true
- resetAbilities[SPELL_PREPARATION] = true
- resetAbilities[SPELL_READINESS] = true
+-- Get the player's class.
+_, playerClass = UnitClass("player")
+
+-- Specify the abilities that reset cooldowns.
+resetAbilities[SPELL_COLD_SNAP] = true
+resetAbilities[SPELL_PREPARATION] = true
+resetAbilities[SPELL_READINESS] = true
  
- -- Set the death knight abilities that are the same as the rune cooldown.
- runeCooldownAbilities[SPELL_MIND_FREEZE] = true
-end
+-- Set the death knight abilities that are the same as the rune cooldown.
+runeCooldownAbilities[SPELL_MIND_FREEZE] = true
 
 
 
@@ -310,10 +309,3 @@ end
 module.Enable				= Enable
 module.Disable				= Disable
 module.UpdateEnableState	= UpdateEnableState
-
-
--------------------------------------------------------------------------------
--- Load.
--------------------------------------------------------------------------------
-
-OnLoad()

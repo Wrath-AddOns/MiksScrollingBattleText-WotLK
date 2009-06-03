@@ -1,6 +1,6 @@
 -------------------------------------------------------------------------------
 -- Title: Mik's Scrolling Battle Text German Localization
--- Author: Mik
+-- Author: Mikord
 -- German Translation by: Farook
 -------------------------------------------------------------------------------
 

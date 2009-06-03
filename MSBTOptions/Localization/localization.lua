@@ -1,6 +1,6 @@
 -------------------------------------------------------------------------------
 -- Title: MSBT Options English Localization
--- Author: Mik
+-- Author: Mikord
 -------------------------------------------------------------------------------
 
 -- Create options namespace.
@@ -119,8 +119,6 @@ obj["skillIcons"]	= { label="Skill Icons", tooltip="Display options for skill ic
 obj = L.CHECKBOXES
 obj["enableMSBT"]				= { label="Enable Mik's Scrolling Battle Text", tooltip="Enable MSBT."}
 obj["stickyCrits"]				= { label="Sticky Crits", tooltip="Display crits using the sticky style."}
-obj["gameDamage"]				= { label="Game Damage", tooltip="Display blizzard's default damage above the enemy's heads."}
-obj["gameHealing"]				= { label="Game Healing", tooltip="Display blizzard's default healing above the target's heads."}
 obj["enableSounds"]				= { label="Enable Sounds", tooltip="Play sounds that are assigned to events and triggers."}
 obj["textShadowing"]			= { label="Text Shadowing", tooltip="Apply a shadow effect to text to improve font crispness."}
 obj["colorPartialEffects"]		= { label="Color Partial Effects", tooltip="Apply specified colors to partial effects."}

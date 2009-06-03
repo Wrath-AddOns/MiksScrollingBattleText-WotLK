@@ -1,6 +1,6 @@
 -------------------------------------------------------------------------------
 -- Title: Mik's Scrolling Battle Text Animations
--- Author: Mik
+-- Author: Mikord
 -------------------------------------------------------------------------------
 
 -- Create module and set its name.
@@ -460,14 +460,15 @@ local function OnUpdateAnimationFrame(this, elapsed)
    -- Loop through all the display events for the scroll area.
    for i = 1, numEvents do
     displayEvent = displayEvents[i]
-    displayEvent.elapsedTime = displayEvent.elapsedTime + elapsed
     displayEvent.timeSinceLastUpdate = displayEvent.timeSinceLastUpdate + elapsed
     
     -- Animate the event if enough time has passed and reset the last updated time.
     if (displayEvent.timeSinceLastUpdate >= ANIMATION_DELAY) then
+     displayEvent.elapsedTime = displayEvent.elapsedTime + displayEvent.timeSinceLastUpdate
      AnimateEvent(displayEvent)
      displayEvent.timeSinceLastUpdate = 0
     end
+
 
     -- Clear the all inactive flag
     allInactive = false
@@ -503,19 +504,19 @@ local function OnUpdateAnimationFrame(this, elapsed)
 end
 
 
--- ****************************************************************************
--- Called when the module is loaded.
--- ****************************************************************************
-local function OnLoad()
- -- Create a frame for receiving animation updates.
- animationFrame = CreateFrame("Frame", "MSBTAnimationFrame", UIParent)
- animationFrame:SetFrameStrata("HIGH")
- animationFrame:SetPoint("BOTTOM", UIParent, "CENTER")
- animationFrame:SetWidth(0.0001)
- animationFrame:SetHeight(0.0001)
- animationFrame:Hide()
- animationFrame:SetScript("OnUpdate", OnUpdateAnimationFrame)
-end
+-------------------------------------------------------------------------------
+-- Initialization.
+-------------------------------------------------------------------------------
+
+-- Create a frame for receiving animation updates.
+animationFrame = CreateFrame("Frame", "MSBTAnimationFrame", UIParent)
+animationFrame:SetFrameStrata("HIGH")
+animationFrame:SetPoint("BOTTOM", UIParent, "CENTER")
+animationFrame:SetWidth(0.0001)
+animationFrame:SetHeight(0.0001)
+animationFrame:Hide()
+animationFrame:SetScript("OnUpdate", OnUpdateAnimationFrame)
+
 
 
 
@@ -538,10 +539,3 @@ module.RegisterStickyAnimationStyle	= RegisterStickyAnimationStyle
 module.IterateScrollAreas			= IterateScrollAreas
 module.DisplayMessage				= DisplayMessage
 module.DisplayEvent					= DisplayEvent
-
-
--------------------------------------------------------------------------------
--- Load.
--------------------------------------------------------------------------------
-
-OnLoad()

@@ -1,6 +1,6 @@
 -------------------------------------------------------------------------------
 -- Title: Mik's Scrolling Battle Text Localization
--- Author: Mik
+-- Author: Mikord
 -------------------------------------------------------------------------------
 
 -- Local reference for faster access.

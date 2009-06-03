@@ -1,6 +1,6 @@
 -------------------------------------------------------------------------------
 -- Title: Mik's Scrolling Battle Text Korean Localization
--- Author: Mik
+-- Author: Mikord
 -- Korean Translation by: Slowhand, Fenlis, chkid
 -------------------------------------------------------------------------------
 

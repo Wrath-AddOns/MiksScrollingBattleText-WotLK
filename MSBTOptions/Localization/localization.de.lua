@@ -1,6 +1,6 @@
 -------------------------------------------------------------------------------------
 -- Title: MSBT Options German Localization
--- Author: Mik
+-- Author: Mikord
 -- German Translation by: Farook
 -------------------------------------------------------------------------------------
 
@@ -96,8 +96,6 @@ obj["triggers"]		= { label="Auslöser", tooltip="Optionen für das Auslöser-Sys
 obj = L.CHECKBOXES
 obj["enableMSBT"]				= { label="Mik's Scrolling Battle Text aktivieren", tooltip="MSBT aktivieren."}
 --obj["stickyCrits"]				= { label="Sticky Crits", tooltip="Display crits using the sticky style."}
---obj["gameDamage"]				= { label="Game Damage", tooltip="Display blizzard's default damage above the enemy's heads."}
---obj["gameHealing"]				= { label="Game Healing", tooltip="Display blizzard's default healing above the target's heads."}
 --obj["enableSounds"]				= { label="Sounds aktivieren", tooltip="Play sounds that are assigned to events and triggers."}
 --obj["textShadowing"]			= { label="Text Shadowing", tooltip="Apply a shadow effect to text to improve font crispness."}
 obj["colorPartialEffects"]		= { label="Partielle Effekte einfärben", tooltip="Partiellen effekte die festgelegten farben."}

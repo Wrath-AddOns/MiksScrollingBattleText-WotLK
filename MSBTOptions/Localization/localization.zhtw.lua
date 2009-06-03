@@ -1,6 +1,6 @@
 ----------------------------------------------------------------------------
 -- Title: MSBT Options Traditional Chinese Localization
--- Author: Mik
+-- Author: Mikord
 -- Credits:
 --	Whitepaw  @ 暗影之月(TW-Shadowmoon)
 --	yleaf(yaroot#gmail_com)
@@ -96,8 +96,6 @@ obj["skillIcons"]	= { label="技能圖示", tooltip="設定技能圖示"}
 obj = L.CHECKBOXES
 obj["enableMSBT"]				= { label="啟用MSBT", tooltip="啟用MSBT"}
 obj["stickyCrits"]				= { label="爆擊特效顯示", tooltip="使用爆擊特效來顯示致命一擊"}
-obj["gameDamage"]				= { label="遊戲預設傷害", tooltip="開啟在敵人頭上顯示遊戲預設傷害訊息"}
-obj["gameHealing"]				= { label="遊戲預設治療", tooltip="開啟在目標頭上顯示遊戲預設治療訊息"}
 obj["enableSounds"]				= { label="啟用音效", tooltip="設定是否當指定事件和觸發器發生時播放音效"}
 obj["textShadowing"]			= { label="字體陰影", tooltip="顯示字體陰影效果讓它們看起來更爽"}
 obj["colorPartialEffects"]		= { label="特效著色", tooltip="設定是否開啟為部分特效指定顏色"}
