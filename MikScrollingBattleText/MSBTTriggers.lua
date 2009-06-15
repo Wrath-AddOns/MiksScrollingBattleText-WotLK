@@ -125,6 +125,7 @@ end
 local function CreateCaptureFuncs()
  captureFuncs = {
   -- Leave out eventType because we really don't care about it for triggers.
+  SPELL_AURA_BROKEN_SPELL = function (p, ...) p.skillID, p.skillName, p.skillSchool, p.extraSkillID, p.extraSkillName, p.extraSkillSchool, p.auraType = ... end,
   SPELL_CAST_SUCCESS = function (p, ...) p.skillID, p.skillName, p.skillSchool = ... end,
   SPELL_CAST_FAILED = function (p, ...) p.skillID, p.skillName, p.skillSchool, p.missType = ... end,
   SPELL_SUMMON = function (p, ...) p.skillID, p.skillName, p.skillSchool = ... end,

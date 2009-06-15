@@ -503,6 +503,7 @@ obj = L.TRIGGER_DATA
 --obj["SPELL_AURA_REMOVED"]		= "Aura Removal"
 --obj["SPELL_STOLEN"]				= "Aura Stolen"
 --obj["SPELL_DISPEL"]				= "Aura Dispel"
+--obj["SPELL_AURA_BROKEN_SPELL"]	= "Aura Broken"
 --obj["ENCHANT_APPLIED"]			= "Enchant Application"
 --obj["ENCHANT_REMOVED"]			= "Enchant Removal"
 --obj["SPELL_CAST_START"]			= "Cast Start"

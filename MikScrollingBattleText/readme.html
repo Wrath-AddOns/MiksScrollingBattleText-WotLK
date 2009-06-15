@@ -39,7 +39,7 @@
   <div id="HeaderBlock">
    Version: 5.4<br />
    Author: Mikord<br />
-   Updated: June 02, 2009<br />
+   Updated: June 14, 2009<br />
    Official Site: <a href="http://mikord.wowinterface.com">http://mikord.wowinterface.com</a><br /><br />
    <a href="#Credits">See Credits</a>
   </div>
@@ -543,6 +543,10 @@
      <tr>
       <td class="ParameterName" nowrap="nowrap">Aura Application:</td>
       <td class="ParameterDesc">Fired when an aura is applied to a unit.</td>
+     </tr>
+     <tr>
+      <td class="ParameterName" nowrap="nowrap">Aura Broken:</td>
+      <td class="ParameterDesc">Fired when an aura is broken by a skill.</td>
      </tr>
      <tr>
       <td class="ParameterName" nowrap="nowrap">Aura Dispel:</td>
@@ -1137,8 +1141,8 @@
     <li class="FAQListItem">
      <a name="FAQGameDamage"></a><b>Is there a way to show the damage above the target's heads like the default damage text?</b>
      <br /><br />
-     The only way this is possible is using the built-in game damage.  The "Game Damage" option on the General tab will reenable
-     it, but keep in mind you will lose all customization capabilities for outgoing damage if you choose to use the game's built-in damage.
+     The only way this is possible is using the built-in game damage.  It can be enabled through the game's interface options, but keep
+     in mind you will lose all customization capabilities for outgoing damage if you choose to use the game's built-in damage.
      WoW's API does not provide a method to get the position of 3D game objects such as players and mobs.  This is intentional on their
      part and will likely never change.
      <br /><br />
@@ -1182,6 +1186,17 @@
    <table cellspacing="3">
     <tr>
      <td class="ParameterName" nowrap="nowrap"><a name="WhatsNew"></a>Latest</td>
+     <td class="ParameterDesc">
+      <ul>
+       <li>Added Aura Broken to the available trigger events.</li>
+       <li>Fixed issue with guardians being treated as the player instead of a pet.</li>
+       <li>Added logic to prevent potential errors due to load ordering.</li>
+       <li>Updated Russian translations from StingerSoft.</li>
+      </ul>
+     </td>
+    </tr>
+    <tr>
+     <td class="ParameterName" nowrap="nowrap">5.4.59</td>
      <td class="ParameterDesc">
       <ul>
        <li>Changed the interaction with Blizzard's default FCT (Floating Combat Text) and damage/healing displays:

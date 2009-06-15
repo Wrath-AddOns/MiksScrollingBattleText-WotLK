@@ -367,7 +367,7 @@ local function ParseLogMessage(timestamp, event, sourceGUID, sourceName, sourceF
 
  -- Treat guardians that are flagged as belonging to the player as their pet and vehicles and other objects as the player.
  if (not sourceUnit and TestFlagsAll(sourceFlags, FLAGS_MINE)) then sourceUnit = TestFlagsAll(sourceFlags, FLAGS_MY_GUARDIAN) and "pet" or "player" end
- if (not recipientUnit and TestFlagsAll(recipientFlags, FLAGS_MINE)) then recipientUnit = TestFlagsAll(sourceFlags, FLAGS_MY_GUARDIAN) and "pet" or "player" end
+ if (not recipientUnit and TestFlagsAll(recipientFlags, FLAGS_MINE)) then recipientUnit = TestFlagsAll(recipientFlags, FLAGS_MY_GUARDIAN) and "pet" or "player" end
  
   -- Ignore the event if it is not one that should be fully parsed and it doesn't pertain to the player
  -- or pet.  This is done to avoid wasting time parsing events that won't be used like damage that other

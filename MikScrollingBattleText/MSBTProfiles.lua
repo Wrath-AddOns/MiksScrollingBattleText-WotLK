@@ -1661,7 +1661,7 @@ end
 -- Returns whether or not the mod is disabled.
 -- ****************************************************************************
 local function IsModDisabled()
- return savedVariables.userDisabled
+ return savedVariables and savedVariables.userDisabled
 end
 
 
