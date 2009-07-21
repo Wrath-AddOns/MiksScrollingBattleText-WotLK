@@ -3483,7 +3483,7 @@ local function CreateTriggerPopup()
  local commonSkillFields = "skillID skillName skillSchool "
  local commonDamageFields = "amount overkillAmount damageType resistAmount blockAmount absorbAmount isCrit isGlancing isCrushing"
  local commonExtraSkillFields = "extraSkillID extraSkillName extraSkillSchool "
- local commonHealFields = "amount isCrit"
+ local commonHealFields = "amount absorbAmount isCrit"
  local commonPowerFields = "amount powerType"
  local commonHealthPowerFields = "unitID unitReaction amount threshold"
  local eventConditionData = {

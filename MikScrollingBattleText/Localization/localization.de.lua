@@ -1,4 +1,4 @@
--------------------------------------------------------------------------------
+﻿-------------------------------------------------------------------------------
 -- Title: Mik's Scrolling Battle Text German Localization
 -- Author: Mikord
 -- German Translation by: Farook
@@ -57,14 +57,14 @@ L.MSG_DISABLE				= "Addon deaktiviert."
 L.MSG_ENABLE				= "Addon aktiviert."
 L.MSG_PROFILE_RESET			= "Profil zurücksetzen"
 L.MSG_HITS					= "Treffer"
---L.MSG_CRIT					= "Crit"
---L.MSG_CRITS					= "Crits"
+L.MSG_CRIT					= "Krit"
+L.MSG_CRITS					= "Krits"
 L.MSG_MULTIPLE_TARGETS		= "Mehrere"
 L.MSG_READY_NOW				= "Verfügbar"
 
 
 ------------------------------
--- Scroll area messages
+-- Scroll area names
 ------------------------------
 
 L.MSG_INCOMING			= "Eingehend"
@@ -73,15 +73,15 @@ L.MSG_NOTIFICATION		= "Benachrichtigung"
 L.MSG_STATIC			= "Statisch"
 
 
----------------------------------------
+----------------------------------------
 -- Master profile event output messages
----------------------------------------
+----------------------------------------
 
 L.MSG_COMBAT					= "Kampf"
-L.MSG_DISPEL					= "Zerstreuen"
---L.MSG_CP						= "CP"
+L.MSG_DISPEL					= "Dispel"
+L.MSG_CP						= "CP"
 L.MSG_CP_FULL					= "Alle Combo-Punkte"
 L.MSG_KILLING_BLOW				= "Todesstoß"
-L.MSG_TRIGGER_LOW_HEALTH		= "Gesundheit Niedrig"
-L.MSG_TRIGGER_LOW_MANA			= "Mana Niedrig"
+L.MSG_TRIGGER_LOW_HEALTH		= "Wenig Gesundheit"
+L.MSG_TRIGGER_LOW_MANA			= "Wenig Mana"
 L.MSG_TRIGGER_LOW_PET_HEALTH	= "Begleiter Gesundheit Niedrig"

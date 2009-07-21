@@ -1,4 +1,4 @@
-## Interface: 30100
+## Interface: 30200
 ## Version: 5.4.wowi:revision
 ## Title: Mik's Scrolling Battle Text
 ## Author: Mikord
