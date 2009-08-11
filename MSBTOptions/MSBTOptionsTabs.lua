@@ -1411,6 +1411,7 @@ local function EventsTab_SetupEvents()
  EventsTab_AddEvent(category, "INCOMING_DODGE", c.ATTACKER_NAME)
  EventsTab_AddEvent(category, "INCOMING_PARRY", c.ATTACKER_NAME)
  EventsTab_AddEvent(category, "INCOMING_BLOCK", c.ATTACKER_NAME)
+ EventsTab_AddEvent(category, "INCOMING_DEFLECT", c.ATTACKER_NAME)
  EventsTab_AddEvent(category, "INCOMING_ABSORB", c.ABSORBED_AMOUNT .. c.ATTACKER_NAME)
  EventsTab_AddEvent(category, "INCOMING_IMMUNE", c.ATTACKER_NAME)
  EventsTab_AddEvent(category, "INCOMING_SPELL_DAMAGE", c.DAMAGE_TAKEN .. c.ATTACKER_NAME .. c.SKILL_NAME .. c.SKILL_LONG .. c.DAMAGE_TYPE_TAKEN)
@@ -1423,6 +1424,7 @@ local function EventsTab_SetupEvents()
  EventsTab_AddEvent(category, "INCOMING_SPELL_DODGE", c.ATTACKER_NAME .. c.SKILL_NAME .. c.SKILL_LONG)
  EventsTab_AddEvent(category, "INCOMING_SPELL_PARRY", c.ATTACKER_NAME .. c.SKILL_NAME .. c.SKILL_LONG)
  EventsTab_AddEvent(category, "INCOMING_SPELL_BLOCK", c.ATTACKER_NAME .. c.SKILL_NAME .. c.SKILL_LONG)
+ EventsTab_AddEvent(category, "INCOMING_SPELL_DEFLECT", c.ATTACKER_NAME .. c.SKILL_NAME .. c.SKILL_LONG)
  EventsTab_AddEvent(category, "INCOMING_SPELL_RESIST", c.ATTACKER_NAME .. c.SPELL_NAME .. c.SKILL_LONG)
  EventsTab_AddEvent(category, "INCOMING_SPELL_ABSORB", c.ABSORBED_AMOUNT .. c.ATTACKER_NAME .. c.SKILL_NAME .. c.SKILL_LONG)
  EventsTab_AddEvent(category, "INCOMING_SPELL_IMMUNE", c.ATTACKER_NAME .. c.SKILL_NAME .. c.SKILL_LONG)
@@ -1440,6 +1442,7 @@ local function EventsTab_SetupEvents()
  EventsTab_AddEvent(category, "PET_INCOMING_DODGE", c.ATTACKER_NAME)
  EventsTab_AddEvent(category, "PET_INCOMING_PARRY", c.ATTACKER_NAME)
  EventsTab_AddEvent(category, "PET_INCOMING_BLOCK", c.ATTACKER_NAME)
+ EventsTab_AddEvent(category, "PET_INCOMING_DEFLECT", c.ATTACKER_NAME)
  EventsTab_AddEvent(category, "PET_INCOMING_ABSORB", c.ABSORBED_AMOUNT .. c.ATTACKER_NAME)
  EventsTab_AddEvent(category, "PET_INCOMING_IMMUNE", c.ATTACKER_NAME)
  EventsTab_AddEvent(category, "PET_INCOMING_SPELL_DAMAGE", c.DAMAGE_TAKEN .. c.ATTACKER_NAME .. c.SKILL_NAME .. c.SKILL_LONG .. c.DAMAGE_TYPE_TAKEN)
@@ -1452,6 +1455,7 @@ local function EventsTab_SetupEvents()
  EventsTab_AddEvent(category, "PET_INCOMING_SPELL_DODGE", c.ATTACKER_NAME .. c.SKILL_NAME .. c.SKILL_LONG)
  EventsTab_AddEvent(category, "PET_INCOMING_SPELL_PARRY", c.ATTACKER_NAME .. c.SKILL_NAME .. c.SKILL_LONG)
  EventsTab_AddEvent(category, "PET_INCOMING_SPELL_BLOCK", c.ATTACKER_NAME .. c.SKILL_NAME .. c.SKILL_LONG)
+ EventsTab_AddEvent(category, "PET_INCOMING_SPELL_DEFLECT", c.ATTACKER_NAME .. c.SKILL_NAME .. c.SKILL_LONG)
  EventsTab_AddEvent(category, "PET_INCOMING_SPELL_RESIST", c.ATTACKER_NAME .. c.SPELL_NAME .. c.SKILL_LONG)
  EventsTab_AddEvent(category, "PET_INCOMING_SPELL_ABSORB", c.ABSORBED_AMOUNT .. c.ATTACKER_NAME .. c.SKILL_NAME .. c.SKILL_LONG)
  EventsTab_AddEvent(category, "PET_INCOMING_SPELL_IMMUNE", c.ATTACKER_NAME .. c.SKILL_NAME .. c.SKILL_LONG)
@@ -1466,6 +1470,7 @@ local function EventsTab_SetupEvents()
  EventsTab_AddEvent(category, "OUTGOING_DODGE", c.ATTACKED_NAME)
  EventsTab_AddEvent(category, "OUTGOING_PARRY", c.ATTACKED_NAME)
  EventsTab_AddEvent(category, "OUTGOING_BLOCK", c.ATTACKED_NAME)
+ EventsTab_AddEvent(category, "OUTGOING_DEFLECT", c.ATTACKED_NAME)
  EventsTab_AddEvent(category, "OUTGOING_ABSORB", c.ABSORBED_AMOUNT .. c.ATTACKED_NAME)
  EventsTab_AddEvent(category, "OUTGOING_IMMUNE", c.ATTACKED_NAME)
  EventsTab_AddEvent(category, "OUTGOING_EVADE", c.ATTACKED_NAME)
@@ -1479,6 +1484,7 @@ local function EventsTab_SetupEvents()
  EventsTab_AddEvent(category, "OUTGOING_SPELL_DODGE", c.ATTACKED_NAME .. c.SKILL_NAME .. c.SKILL_LONG)
  EventsTab_AddEvent(category, "OUTGOING_SPELL_PARRY", c.ATTACKED_NAME .. c.SKILL_NAME .. c.SKILL_LONG)
  EventsTab_AddEvent(category, "OUTGOING_SPELL_BLOCK", c.ATTACKED_NAME .. c.SKILL_NAME .. c.SKILL_LONG)
+ EventsTab_AddEvent(category, "OUTGOING_SPELL_DEFLECT", c.ATTACKED_NAME .. c.SKILL_NAME .. c.SKILL_LONG)
  EventsTab_AddEvent(category, "OUTGOING_SPELL_RESIST", c.ATTACKED_NAME .. c.SPELL_NAME .. c.SKILL_LONG)
  EventsTab_AddEvent(category, "OUTGOING_SPELL_ABSORB", c.ABSORBED_AMOUNT .. c.ATTACKED_NAME .. c.SKILL_NAME .. c.SKILL_LONG)
  EventsTab_AddEvent(category, "OUTGOING_SPELL_IMMUNE", c.ATTACKED_NAME .. c.SKILL_NAME .. c.SKILL_LONG)
@@ -1497,6 +1503,7 @@ local function EventsTab_SetupEvents()
  EventsTab_AddEvent(category, "PET_OUTGOING_DODGE", c.ATTACKED_NAME)
  EventsTab_AddEvent(category, "PET_OUTGOING_PARRY", c.ATTACKED_NAME)
  EventsTab_AddEvent(category, "PET_OUTGOING_BLOCK", c.ATTACKED_NAME)
+ EventsTab_AddEvent(category, "PET_OUTGOING_DEFLECT", c.ATTACKED_NAME)
  EventsTab_AddEvent(category, "PET_OUTGOING_ABSORB", c.ABSORBED_AMOUNT .. c.ATTACKED_NAME)
  EventsTab_AddEvent(category, "PET_OUTGOING_IMMUNE", c.ATTACKED_NAME)
  EventsTab_AddEvent(category, "PET_OUTGOING_EVADE", c.ATTACKED_NAME)
@@ -1510,6 +1517,7 @@ local function EventsTab_SetupEvents()
  EventsTab_AddEvent(category, "PET_OUTGOING_SPELL_DODGE", c.ATTACKED_NAME .. c.SKILL_NAME .. c.SKILL_LONG)
  EventsTab_AddEvent(category, "PET_OUTGOING_SPELL_PARRY", c.ATTACKED_NAME .. c.SKILL_NAME .. c.SKILL_LONG)
  EventsTab_AddEvent(category, "PET_OUTGOING_SPELL_BLOCK", c.ATTACKED_NAME .. c.SKILL_NAME .. c.SKILL_LONG)
+ EventsTab_AddEvent(category, "PET_OUTGOING_SPELL_DEFLECT", c.ATTACKED_NAME .. c.SKILL_NAME .. c.SKILL_LONG)
  EventsTab_AddEvent(category, "PET_OUTGOING_SPELL_RESIST", c.ATTACKED_NAME .. c.SPELL_NAME .. c.SKILL_LONG)
  EventsTab_AddEvent(category, "PET_OUTGOING_SPELL_ABSORB", c.ABSORBED_AMOUNT .. c.ATTACKED_NAME .. c.SKILL_NAME .. c.SKILL_LONG)
  EventsTab_AddEvent(category, "PET_OUTGOING_SPELL_IMMUNE", c.ATTACKED_NAME .. c.SKILL_NAME .. c.SKILL_LONG)
@@ -2391,48 +2399,11 @@ local function SpamTab_Create()
  )
  controls.powerThrottlingSlider = slider
  
- -- All power gains checkbox.
- local checkbox = MSBTControls.CreateCheckbox(tabFrame)
- local objLocale = L.CHECKBOXES["allPowerGains"]
- checkbox:Configure(28, objLocale.label, objLocale.tooltip)
- checkbox:SetPoint("TOPLEFT", tabFrame, "TOPLEFT", 5, -150)
- checkbox:SetClickHandler(
-   function (this, isChecked)
-    MSBTProfiles.SetOption(nil, "showAllPowerGains", isChecked)
-   end
- )
- controls.allPowerCheckbox = checkbox
-
- -- Hyper regen checkbox.
- checkbox = MSBTControls.CreateCheckbox(tabFrame)
- objLocale = L.CHECKBOXES["hyperRegen"]
- checkbox:Configure(28, objLocale.label, objLocale.tooltip)
- checkbox:SetPoint("TOPLEFT", controls.allPowerCheckbox, "BOTTOMLEFT", 0, 0)
- checkbox:SetClickHandler(
-   function (this, isChecked)
-    MSBTProfiles.SetOption(nil, "regenAbilitiesDisabled", not isChecked)
-   end
- )
- controls.hyperRegenCheckbox = checkbox
-
- -- Abbreviate skills checkbox.
- checkbox = MSBTControls.CreateCheckbox(tabFrame)
- objLocale = L.CHECKBOXES["abbreviateSkills"]
- checkbox:Configure(28, objLocale.label, objLocale.tooltip)
- checkbox:SetPoint("TOPLEFT", controls.hyperRegenCheckbox, "BOTTOMLEFT", 0, 0)
- checkbox:SetClickHandler(
-   function (this, isChecked)
-    MSBTProfiles.SetOption(nil, "abbreviateAbilities", isChecked)
-   end
- )
- controls.abbreviateCheckbox = checkbox
- 
  -- Hide skills checkbox.
  checkbox = MSBTControls.CreateCheckbox(tabFrame)
  objLocale = L.CHECKBOXES["hideSkills"]
  checkbox:Configure(28, objLocale.label, objLocale.tooltip)
- checkbox:SetPoint("LEFT", controls.powerThrottlingSlider, "LEFT", 0, 0)
- checkbox:SetPoint("TOP", controls.allPowerCheckbox, "TOP", 0, 0)
+ checkbox:SetPoint("TOPLEFT", tabFrame, "TOPLEFT", 5, -150)
  checkbox:SetClickHandler(
    function (this, isChecked)
     MSBTProfiles.SetOption(nil, "hideSkills", isChecked)
@@ -2463,6 +2434,56 @@ local function SpamTab_Create()
    end
  )
  controls.hideFullOverhealsCheckbox = checkbox
+ 
+ -- Hide full HoT overheals checkbox.
+ checkbox = MSBTControls.CreateCheckbox(tabFrame)
+ objLocale = L.CHECKBOXES["hideFullHoTOverheals"]
+ checkbox:Configure(28, objLocale.label, objLocale.tooltip)
+ checkbox:SetPoint("TOPLEFT", controls.hideFullOverhealsCheckbox, "BOTTOMLEFT")
+ checkbox:SetClickHandler(
+   function (this, isChecked)
+    MSBTProfiles.SetOption(nil, "hideFullHoTOverheals", isChecked)
+   end
+ )
+ controls.hideFullHoTOverhealsCheckbox = checkbox
+
+
+ -- All power gains checkbox.
+ local checkbox = MSBTControls.CreateCheckbox(tabFrame)
+ local objLocale = L.CHECKBOXES["allPowerGains"]
+ checkbox:Configure(28, objLocale.label, objLocale.tooltip)
+ checkbox:SetPoint("LEFT", controls.powerThrottlingSlider, "LEFT", 0, 0)
+ checkbox:SetPoint("TOP", controls.hideSkillsCheckbox, "TOP", 0, 0)
+ checkbox:SetClickHandler(
+   function (this, isChecked)
+    MSBTProfiles.SetOption(nil, "showAllPowerGains", isChecked)
+   end
+ )
+ controls.allPowerCheckbox = checkbox
+
+ -- Hyper regen checkbox.
+ checkbox = MSBTControls.CreateCheckbox(tabFrame)
+ objLocale = L.CHECKBOXES["hyperRegen"]
+ checkbox:Configure(28, objLocale.label, objLocale.tooltip)
+ checkbox:SetPoint("TOPLEFT", controls.allPowerCheckbox, "BOTTOMLEFT", 0, 0)
+ checkbox:SetClickHandler(
+   function (this, isChecked)
+    MSBTProfiles.SetOption(nil, "regenAbilitiesDisabled", not isChecked)
+   end
+ )
+ controls.hyperRegenCheckbox = checkbox
+
+ -- Abbreviate skills checkbox.
+ checkbox = MSBTControls.CreateCheckbox(tabFrame)
+ objLocale = L.CHECKBOXES["abbreviateSkills"]
+ checkbox:Configure(28, objLocale.label, objLocale.tooltip)
+ checkbox:SetPoint("TOPLEFT", controls.hyperRegenCheckbox, "BOTTOMLEFT", 0, 0)
+ checkbox:SetClickHandler(
+   function (this, isChecked)
+    MSBTProfiles.SetOption(nil, "abbreviateAbilities", isChecked)
+   end
+ )
+ controls.abbreviateCheckbox = checkbox
  
  -- Merge exclusions button.
  button = MSBTControls.CreateOptionButton(tabFrame)
@@ -2591,6 +2612,7 @@ local function SpamTab_OnShow()
  controls.hideSkillsCheckbox:SetChecked(currentProfile.hideSkills)
  controls.hideNamesCheckbox:SetChecked(currentProfile.hideNames)
  controls.hideFullOverhealsCheckbox:SetChecked(currentProfile.hideFullOverheals)
+ controls.hideFullHoTOverhealsCheckbox:SetChecked(currentProfile.hideFullHoTOverheals)
 end
 
 

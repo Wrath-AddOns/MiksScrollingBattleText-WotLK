@@ -120,6 +120,7 @@ obj["abbreviateSkills"]			= { label="Cокращать навыки", tooltip="C
 obj["hideSkills"]				= { label="Скрыть навыки", tooltip="Не отображать названия навыков в входящих и исходящих событиях.\n\nYou will give up some customization capability at the event level if you choose to use this option since it causes the %s event code to be ignored."}
 obj["hideNames"]				= { label="Скрыть Имена", tooltip="Не отображать названия юнитов в входящих и исходящих событиях.\n\nYou will give up some customization capability at the event level if you choose to use this option since it causes the %n event code to be ignored."}
 obj["hideFullOverheals"]		= { label="Скрыть избыточное исц.", tooltip="Не показывать исцеление которого эфективное значение лечения равно нулю."}
+--obj["hideFullHoTOverheals"]		= { label="Hide Full HoT Overheals", tooltip="Don't display heals over time that have an effective heal amount of zero."}
 obj["allClasses"]				= { label="Все классы"}
 obj["enableCooldowns"]			= { label="Вкл/Выкл перезарядку", tooltip="Выводит предупреждения когда заканчиваются перезарядки."}
 obj["lootedItems"]				= { label="Добыча предметов", tooltip="Выводит оповещение когда вы подбераете предметы."}
@@ -324,6 +325,7 @@ obj["INCOMING_MISS"]						= { label="Ближний Промах", tooltip="Вк
 obj["INCOMING_DODGE"]						= { label="Ближний Уклон.", tooltip="Вкл/Выкл входящие ближние уклонения."}
 obj["INCOMING_PARRY"]						= { label="Ближний Парир.", tooltip="Вкл/Выкл входящие ближние парирования."}
 obj["INCOMING_BLOCK"]						= { label="Ближний Блок", tooltip="Вкл/Выкл входящие ближние блоки."}
+--obj["INCOMING_DEFLECT"]						= { label="Melee Deflects", tooltip="Enable incoming melee deflects."}
 obj["INCOMING_ABSORB"]						= { label="Ближний Поглот.", tooltip="Вкл/Выкл входящие поглощения ближнего урона."}
 obj["INCOMING_IMMUNE"]						= { label="Ближний Невоспр.", tooltip="Вкл/Выкл входящий ближний урон к которому вы невосприимчевы."}
 obj["INCOMING_SPELL_DAMAGE"]				= { label="Удар Заклинания", tooltip="Вкл/Выкл входящие удары заклинания."}
@@ -336,6 +338,7 @@ obj["INCOMING_SPELL_MISS"]					= { label="Промах Заклинания", to
 obj["INCOMING_SPELL_DODGE"]					= { label="Уклон. Заклинания", tooltip="Вкл/Выкл входящие уклонения от заклинания."}
 obj["INCOMING_SPELL_PARRY"]					= { label="Парир. Заклинания", tooltip="Вкл/Выкл входящие парирования заклинания."}
 obj["INCOMING_SPELL_BLOCK"]					= { label="Блок Заклинания", tooltip="Вкл/Выкл входящие блоки заклинания."}
+--obj["INCOMING_SPELL_DEFLECT"]				= { label="Skill Deflects", tooltip="Enable incoming skill deflects."}
 obj["INCOMING_SPELL_RESIST"]				= { label="Сопрот. Заклинания", tooltip="Вкл/Выкл входящие сопротивления заклинания."}
 obj["INCOMING_SPELL_ABSORB"]				= { label="Поглот. Заклинания", tooltip="Вкл/Выкл входящие поглощения урона от нанесённых вам заклинаний."}
 obj["INCOMING_SPELL_IMMUNE"]				= { label="Невоспр. Заклинания", tooltip="Вкл/Выкл входящий урон от заклинаний к которому вы невосприимчевы."}
@@ -353,6 +356,7 @@ obj["PET_INCOMING_MISS"]						= { label="Ближний Промах", tooltip="
 obj["PET_INCOMING_DODGE"]						= { label="Ближний Уклон.", tooltip="Вкл/Выкл вашего питомца входящие ближние уклонения."}
 obj["PET_INCOMING_PARRY"]						= { label="Ближний Парир.", tooltip="Вкл/Выкл вашего питомца входящие ближние парирования."}
 obj["PET_INCOMING_BLOCK"]						= { label="Ближний Блок", tooltip="Вкл/Выкл вашего питомца входящие ближние блоки."}
+--obj["PET_INCOMING_DEFLECT"]						= { label="Melee Deflects", tooltip="Enable your pet's incoming melee deflects."}
 obj["PET_INCOMING_ABSORB"]						= { label="Ближний Поглот.", tooltip="Вкл/Выкл поглощения вашем питомцем входящего ближнего урона."}
 obj["PET_INCOMING_IMMUNE"]						= { label="Ближний Невоспр.", tooltip="Вкл/Выкл входящий ближний урон к которому имуннен питомец."}
 obj["PET_INCOMING_SPELL_DAMAGE"]				= { label="Удар Заклинания", tooltip="Вкл/Выкл вашего питомца входящие удары заклинания."}
@@ -365,6 +369,7 @@ obj["PET_INCOMING_SPELL_MISS"]					= { label="Промах Заклинания"
 obj["PET_INCOMING_SPELL_DODGE"]					= { label="Уклон. Заклинания", tooltip="Вкл/Выкл вашего питомца входящие уклонения от заклинания."}
 obj["PET_INCOMING_SPELL_PARRY"]					= { label="Парир. Заклинания", tooltip="Вкл/Выкл вашего питомца входящие парирования заклинания."}
 obj["PET_INCOMING_SPELL_BLOCK"]					= { label="Блок Заклинания", tooltip="Вкл/Выкл вашего питомца входящие блоки заклинания."}
+--obj["PET_INCOMING_SPELL_DEFLECT"]				= { label="Skill Deflects", tooltip="Enable your pet's incoming skill deflects."}
 obj["PET_INCOMING_SPELL_RESIST"]				= { label="Сопрот. Заклинания", tooltip="Вкл/Выкл вашего питомца входящие сопротивления заклинания."}
 obj["PET_INCOMING_SPELL_ABSORB"]				= { label="Поглот. Заклинания", tooltip="Вкл/Выкл поглощения урона вашим питомцем от входящих заклинаний."}
 obj["PET_INCOMING_SPELL_IMMUNE"]				= { label="Невоспр. Заклинания", tooltip="Вкл/Выкл входящий урон от заклинаний к которому невоспреимчем ваш питомец."}
@@ -384,6 +389,7 @@ obj["OUTGOING_MISS"]						= { label="Ближний Промах", tooltip="Вк
 obj["OUTGOING_DODGE"]						= { label="Ближний Уклон.", tooltip="Вкл/Выкл исходящие ближние уклонения."}
 obj["OUTGOING_PARRY"]						= { label="Ближний Парир.", tooltip="Вкл/Выкл исходящие ближние парирования."}
 obj["OUTGOING_BLOCK"]						= { label="Ближний Блок", tooltip="Вкл/Выкл исходящие ближние блоки."}
+--obj["OUTGOING_DEFLECT"]						= { label="Melee Deflects", tooltip="Enable outgoing melee deflects."}
 obj["OUTGOING_ABSORB"]						= { label="Ближний Поглот.", tooltip="Вкл/Выкл исходящие поглощения ближнего урона."}
 obj["OUTGOING_IMMUNE"]						= { label="Ближний Невоспр.", tooltip="Вкл/Выкл исходящий ближний урон когда враг невосприимчив к нему."}
 obj["OUTGOING_EVADE"]						= { label="Ближний 'Мимо'", tooltip="Вкл/Выкль исходящие ближние evades."}
@@ -397,6 +403,7 @@ obj["OUTGOING_SPELL_MISS"]					= { label="Промах Заклинания", to
 obj["OUTGOING_SPELL_DODGE"]					= { label="Уклон. Заклинания", tooltip="Вкл/Выкл исходящие уклонения от заклинаний."}
 obj["OUTGOING_SPELL_PARRY"]					= { label="Парир. Заклинания", tooltip="Вкл/Выкл исходящие парирования заклинаний."}
 obj["OUTGOING_SPELL_BLOCK"]					= { label="Блок Заклинания", tooltip="Вкл/Выкл исходящие блокирование заклинаний."}
+--obj["OUTGOING_SPELL_DEFLECT"]				= { label="Skill Deflects", tooltip="Enable outgoing skill deflects."}
 obj["OUTGOING_SPELL_RESIST"]				= { label="Сопрот. Заклинания", tooltip="Вкл/Выкл исходящие сопротивление заклинаниям."}
 obj["OUTGOING_SPELL_ABSORB"]				= { label="Поглот. Заклинания", tooltip="Вкл/Выкл исходящие поглощения урона от исходящих заклинаний."}
 obj["OUTGOING_SPELL_IMMUNE"]				= { label="Невоспр. Заклинания", tooltip="Вкл/Выкл исходящий урон заклинаний когда враг невосприимчив к нему."}
@@ -415,6 +422,7 @@ obj["PET_OUTGOING_MISS"]						= { label="Ближний Промах", tooltip="
 obj["PET_OUTGOING_DODGE"]						= { label="Ближний Уклон.", tooltip="Вкл/Выкл вашего питомца исходящие ближние уклонения."}
 obj["PET_OUTGOING_PARRY"]						= { label="Ближний Парир.", tooltip="Вкл/Выкл вашего питомца исходящие ближние парирования."}
 obj["PET_OUTGOING_BLOCK"]						= { label="Ближний Блок", tooltip="Вкл/Выкл вашего питомца исходящие ближние блоки."}
+--obj["PET_OUTGOING_DEFLECT"]						= { label="Melee Deflects", tooltip="Enable your pet's outgoing melee deflects."}
 obj["PET_OUTGOING_ABSORB"]						= { label="Ближний Поглот.", tooltip="Вкл/Выкл вашего питомца исходящие поглощения ближнего урона."}
 obj["PET_OUTGOING_IMMUNE"]						= { label="Ближний Невоспр.", tooltip="Вкл/Выкл вашего питомца исходящие ближней урон к которому невосприимчив враг."}
 obj["PET_OUTGOING_EVADE"]						= { label="Ближний 'Мимо'", tooltip="Вкл/Выкл вашего питомца исходящие ближние 'Мимо'."}
@@ -428,6 +436,7 @@ obj["PET_OUTGOING_SPELL_MISS"]					= { label="Промах Заклинания"
 obj["PET_OUTGOING_SPELL_DODGE"]					= { label="Уклон. Заклинания", tooltip="Вкл/Выкл вашего питомца исходящие уклонения от заклинаний."}
 obj["PET_OUTGOING_SPELL_PARRY"]					= { label="Парир. Заклинания", tooltip="Вкл/Выкл вашего питомца исходящие парирования заклинаний."}
 obj["PET_OUTGOING_SPELL_BLOCK"]					= { label="Блок Заклинания", tooltip="Вкл/Выкл вашего питомца исходящие блокирование заклинаний."}
+--obj["PET_OUTGOING_SPELL_DEFLECT"]				= { label="Skill Deflects", tooltip="Enable your pet's outgoing skill deflects."}
 obj["PET_OUTGOING_SPELL_RESIST"]				= { label="Сопрот. Заклинания", tooltip="Вкл/Выкл вашего питомца исходящие сопротивление заклинаниям."}
 obj["PET_OUTGOING_SPELL_ABSORB"]				= { label="Поглот. Заклинания", tooltip="Вкл/Выкл исходящие поглощения урона от исходящих заклинаний."}
 obj["PET_OUTGOING_SPELL_IMMUNE"]				= { label="Невоспр. Заклинания", tooltip="Вкл/Выкл исходящий урон от заклинаний к которому невосприимчив враг."}

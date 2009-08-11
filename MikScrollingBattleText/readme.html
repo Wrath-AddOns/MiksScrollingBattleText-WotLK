@@ -39,7 +39,7 @@
   <div id="HeaderBlock">
    Version: 5.4<br />
    Author: Mikord<br />
-   Updated: July 20, 2009<br />
+   Updated: August 10, 2009<br />
    Official Site: <a href="http://mikord.wowinterface.com">http://mikord.wowinterface.com</a><br /><br />
    <a href="#Credits">See Credits</a>
   </div>
@@ -78,9 +78,11 @@
      <div class="TOCSection">
       <ul>
        <li><a href="#FAQFonts">I don't like any of the fonts supplied with MSBT.  How do I use my own fonts?</a></li>
+       <li><a href="#FAQFontSize">How do I increase the font size to something larger than 38?</a></li>
        <li><a href="#FAQSounds">How do I add my own custom sounds?</a></li>
        <li><a href="#FAQNewTrigger">How do I create a new trigger?</a></li>
        <li><a href="#FAQMutilate">Is it possible to prevent Mutilate from being merged?</a></li>
+       <li><a href="#FAQXP">Is is possible to disable the default Blizzard XP Text?</a></li>
        <li><a href="#FAQVE">How do I suppress Vampiric Embrace?</a></li>
        <li><a href="#FAQExclusiveIcons">I want to see skill names even when there is an icon.  Is that possible?</a></li>	 
        <li><a href="#FAQGameDamage">Is there a way to show the damage above the target's heads like the default damage text?</a></li>
@@ -149,11 +151,11 @@
     <ul>
      <li>Incoming:</li>
      <ul>
-      <li>Melee Damage, Misses, Dodges, Parries, Blocks, Absorbs, and Immunes</li>
-      <li>Skill Damage, Damage Over Time (DoTs), Misses, Dodges, Parries, Blocks, Absorbs, Immunes, Reflects, and Interrupts</li>
+      <li>Melee Damage, Misses, Dodges, Parries, Blocks, Deflects, Absorbs, and Immunes</li>
+      <li>Skill Damage, Damage Over Time (DoTs), Misses, Dodges, Parries, Blocks, Deflects, Absorbs, Immunes, Reflects, and Interrupts</li>
       <li>Spell Resists</li>
-      <li>Pet Melee Damage, Misses, Dodges, Parries, Blocks, Absorbs, and Immunes</li>
-      <li>Pet Skill Damage, Damage Over Time (DoTs), Misses, Dodges, Parries, Blocks, Absorbs, and Immunes</li>
+      <li>Pet Melee Damage, Misses, Dodges, Parries, Blocks, Deflects, Absorbs, and Immunes</li>
+      <li>Pet Skill Damage, Damage Over Time (DoTs), Misses, Dodges, Parries, Blocks, Deflects, Absorbs, and Immunes</li>
       <li>Pet Spell Resists</li>
       <li>Heals and Heals Over Time (HoTs)</li>
       <li>Environmental Damage</li>
@@ -162,12 +164,12 @@
      <br />
      <li>Outgoing:</li>
      <ul>
-      <li>Melee Damage, Misses, Dodges, Parries, Blocks, Absorbs, Immunes, Evades</li>
-      <li>Skill Damage, Damage Over Time (DoTs), Misses, Dodges, Parries, Blocks, Absorbs, Immunes, Reflects, Interrupts, and Evades</li>
+      <li>Melee Damage, Misses, Dodges, Parries, Blocks, Deflects, Absorbs, Immunes, Evades</li>
+      <li>Skill Damage, Damage Over Time (DoTs), Misses, Dodges, Parries, Blocks, Deflects, Absorbs, Immunes, Reflects, Interrupts, and Evades</li>
       <li>Spell Resists and Buff Dispels</li>
       <li>Heals and Heals Over Time (HoTs)</li>
-      <li>Pet Melee Damage, Misses, Dodges, Parries, Blocks, Absorbs, Immunes, and Evades</li>
-      <li>Pet Skill Damage, Damage Over Time (DoTs), Misses, Dodges, Parries, Blocks, Absorbs, Immunes, and Evades</li>
+      <li>Pet Melee Damage, Misses, Dodges, Parries, Blocks, Deflects, Absorbs, Immunes, and Evades</li>
+      <li>Pet Skill Damage, Damage Over Time (DoTs), Misses, Dodges, Parries, Blocks, Deflects, Absorbs, Immunes, and Evades</li>
       <li>Pet Spell Resists and Buff Dispels</li>
      </ul>
 
@@ -1030,7 +1032,14 @@
       </li>
      </ul>
     </li>
-    
+
+    <li class="FAQListItem">
+     <a name="FAQFontSize"></a><b>How do I increase the font size to something larger than 38?</b>
+     <br /><br />
+     It is not currently possible due to a limitation within the game. Blizzard has stated that allowing larger font sizes is something they
+     would like to implement at some point, but has not provided a time frame.
+    </li>
+
     <li class="FAQListItem">
      <a name="FAQSounds"></a><b>How do I add my own custom sounds?</b>
      <br /><br />
@@ -1116,6 +1125,13 @@
     </li>
 
     <li class="FAQListItem">
+     <a name="FAQXP"></a><b>Is is possible to disable the default Blizzard XP Text?</b>
+     <br /><br />
+     No. Unfortunately that text is not a part of the UI and Blizzard has not provided the means necessary to disable it. I have requested a CVar to
+     control it several times over the years, but they have yet to add one.
+    </li>
+
+    <li class="FAQListItem">
      <a name="FAQVE"></a><b>How do I suppress Vampiric Embrace?</b>
      <br /><br />
      This can be accomplished a couple of different ways.
@@ -1186,6 +1202,19 @@
    <table cellspacing="3">
     <tr>
      <td class="ParameterName" nowrap="nowrap"><a name="WhatsNew"></a>Latest</td>
+     <td class="ParameterDesc">
+      <ul>
+       <li>Added a new option under spam controls to hide full HoT overheals (enabled by default).</li>
+       <li>Modified the current hide full overheals option to only apply to direct (non periodic) heals.</li>
+       <li>Added new events for incoming and outgoing Deflects.</li>
+       <li>Added Deflect as an available miss type for trigger conditions.</li>
+       <li>Modified options module load logic to avoid issue with Blizzard's load on demand routine.</li>
+       <li>Modified TOC to provide assistance to Minion (automatic updater).</li>
+      </ul>
+     </td>
+    </tr>
+    <tr>
+     <td class="ParameterName" nowrap="nowrap">5.4.63</td>
      <td class="ParameterDesc">
       <ul>
        <li>Modified heal events to use the new combat log format in patch 3.2.  This fixes the issue with all heals showing as crits.</li>

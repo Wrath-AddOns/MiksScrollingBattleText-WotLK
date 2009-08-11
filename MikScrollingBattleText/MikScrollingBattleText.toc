@@ -6,6 +6,7 @@
 ## SavedVariables: MSBTProfiles_SavedVars, MSBT_SavedMedia
 ## SavedVariablesPerCharacter: MSBTProfiles_SavedVarsPerChar
 ## OptionalDeps: LibSharedMedia-3.0
+## X-WoWI-ID: 5153
 Libs\LibStub.lua
 Libs\CallbackHandler-1.0.lua
 Libs\LibSharedMedia-3.0.lua

@@ -122,6 +122,7 @@ obj["abbreviateSkills"]			= { label="技能縮寫", tooltip="縮減技能名稱�
 obj["hideSkills"]				= { label="隱藏技能", tooltip="在承受傷害和輸出傷害中不顯示技能名稱。開啟此選項將使你失去某些事件自定義功能，因為它會忽略「%s」代碼"}
 obj["hideNames"]				= { label="隱藏名稱", tooltip="在承受傷害和輸出傷害中不顯示單位名稱。開啟此選項將使你失去某些事件自定義功能，因為它會忽略「%n」代碼"}
 obj["hideFullOverheals"]		= { label="隱藏全部過量的治療", tooltip="不顯示全部過量的治療."}
+--obj["hideFullHoTOverheals"]		= { label="Hide Full HoT Overheals", tooltip="Don't display heals over time that have an effective heal amount of zero."}
 obj["allClasses"]				= { label="所有職業"}
 obj["enableCooldowns"]			= { label="啟用冷卻", tooltip="當冷卻結束時顯示通知"}
 obj["lootedItems"]				= { label="拾取物品", tooltip="顯示物品拾取."}
@@ -327,6 +328,7 @@ obj["INCOMING_MISS"]						= { label="近戰未命中", tooltip="顯示未被近�
 obj["INCOMING_DODGE"]						= { label="近戰閃躲", tooltip="顯示閃躲近戰攻擊"}
 obj["INCOMING_PARRY"]						= { label="近戰招架", tooltip="顯示招架近戰攻擊"}
 obj["INCOMING_BLOCK"]						= { label="近戰格擋", tooltip="顯示格擋近戰攻擊"}
+--obj["INCOMING_DEFLECT"]						= { label="Melee Deflects", tooltip="Enable incoming melee deflects."}
 obj["INCOMING_ABSORB"]						= { label="近戰吸收", tooltip="顯示吸收近戰傷害"}
 obj["INCOMING_IMMUNE"]						= { label="近戰免疫", tooltip="顯示免疫近戰傷害"}
 obj["INCOMING_SPELL_DAMAGE"]				= { label="技能傷害", tooltip="顯示被技能傷害"}
@@ -339,6 +341,7 @@ obj["INCOMING_SPELL_MISS"]					= { label="技能未命中", tooltip="顯示未�
 obj["INCOMING_SPELL_DODGE"]					= { label="技能閃躲", tooltip="顯示閃躲技能攻擊"}
 obj["INCOMING_SPELL_PARRY"]					= { label="技能招架", tooltip="顯示招架技能攻擊"}
 obj["INCOMING_SPELL_BLOCK"]					= { label="技能格擋", tooltip="顯示格擋技能攻擊"}
+--obj["INCOMING_SPELL_DEFLECT"]				= { label="Skill Deflects", tooltip="Enable incoming skill deflects."}
 obj["INCOMING_SPELL_RESIST"]				= { label="法術抵抗", tooltip="顯示抵抗法術攻擊"}
 obj["INCOMING_SPELL_ABSORB"]				= { label="技能吸收", tooltip="顯示吸收技能傷害"}
 obj["INCOMING_SPELL_IMMUNE"]				= { label="技能免疫", tooltip="顯示免疫技能傷害"}
@@ -356,6 +359,7 @@ obj["PET_INCOMING_MISS"]						= { label="近戰未命中", tooltip="顯示寵物
 obj["PET_INCOMING_DODGE"]						= { label="近戰閃躲", tooltip="顯示寵物閃躲近戰攻擊"}
 obj["PET_INCOMING_PARRY"]						= { label="近戰招架", tooltip="顯示寵物招架近戰攻擊"}
 obj["PET_INCOMING_BLOCK"]						= { label="近戰格擋", tooltip="顯示寵物格擋近戰攻擊"}
+--obj["PET_INCOMING_DEFLECT"]						= { label="Melee Deflects", tooltip="Enable your pet's incoming melee deflects."}
 obj["PET_INCOMING_ABSORB"]						= { label="近戰吸收", tooltip="顯示寵物吸收近戰傷害"}
 obj["PET_INCOMING_IMMUNE"]						= { label="近戰免疫", tooltip="顯示寵物免疫近戰傷害"}
 obj["PET_INCOMING_SPELL_DAMAGE"]				= { label="技能傷害", tooltip="顯示寵物被技能傷害"}
@@ -368,6 +372,7 @@ obj["PET_INCOMING_SPELL_MISS"]					= { label="技能未命中", tooltip="顯示�
 obj["PET_INCOMING_SPELL_DODGE"]					= { label="技能閃躲", tooltip="顯示寵物閃躲技能攻擊"}
 obj["PET_INCOMING_SPELL_PARRY"]					= { label="技能招架", tooltip="顯示寵物招架技能攻擊"}
 obj["PET_INCOMING_SPELL_BLOCK"]					= { label="技能格擋", tooltip="顯示寵物格擋技能攻擊"}
+--obj["PET_INCOMING_SPELL_DEFLECT"]				= { label="Skill Deflects", tooltip="Enable your pet's incoming skill deflects."}
 obj["PET_INCOMING_SPELL_RESIST"]				= { label="法術抵抗", tooltip="顯示寵物抵抗法術攻擊"}
 obj["PET_INCOMING_SPELL_ABSORB"]				= { label="技能吸收", tooltip="顯示寵物吸收技能傷害"}
 obj["PET_INCOMING_SPELL_IMMUNE"]				= { label="技能免疫", tooltip="顯示寵物免疫技能傷害"}
@@ -387,6 +392,7 @@ obj["OUTGOING_MISS"]						= { label="近戰未命中", tooltip="顯示近戰未�
 obj["OUTGOING_DODGE"]						= { label="近戰閃躲", tooltip="顯示敵人閃躲近戰攻擊"}
 obj["OUTGOING_PARRY"]						= { label="近戰招架", tooltip="顯示敵人招架近戰攻擊"}
 obj["OUTGOING_BLOCK"]						= { label="近戰格擋", tooltip="顯示敵人格擋近戰攻擊"}
+--obj["OUTGOING_DEFLECT"]						= { label="Melee Deflects", tooltip="Enable outgoing melee deflects."}
 obj["OUTGOING_ABSORB"]						= { label="近戰吸收", tooltip="顯示敵人吸收近戰傷害"}
 obj["OUTGOING_IMMUNE"]						= { label="近戰免疫", tooltip="顯示敵人免疫近戰傷害"}
 obj["OUTGOING_EVADE"]						= { label="近戰閃避", tooltip="顯示敵人閃避近戰攻擊"}
@@ -400,6 +406,7 @@ obj["OUTGOING_SPELL_MISS"]					= { label="技能未命中", tooltip="顯示技�
 obj["OUTGOING_SPELL_DODGE"]					= { label="技能閃躲", tooltip="顯示敵人閃躲技能攻擊"}
 obj["OUTGOING_SPELL_PARRY"]					= { label="技能招架", tooltip="顯示敵人招架技能攻擊"}
 obj["OUTGOING_SPELL_BLOCK"]					= { label="技能格擋", tooltip="顯示敵人格擋技能攻擊"}
+--obj["OUTGOING_SPELL_DEFLECT"]				= { label="Skill Deflects", tooltip="Enable outgoing skill deflects."}
 obj["OUTGOING_SPELL_RESIST"]				= { label="法術抵抗", tooltip="顯示敵人抵抗法術攻擊"}
 obj["OUTGOING_SPELL_ABSORB"]				= { label="技能吸收", tooltip="顯示敵人吸收法術傷害"}
 obj["OUTGOING_SPELL_IMMUNE"]				= { label="技能免疫", tooltip="顯示敵人免疫技能傷害"}
@@ -418,6 +425,7 @@ obj["PET_OUTGOING_MISS"]						= { label="近戰未命中", tooltip="顯示寵物
 obj["PET_OUTGOING_DODGE"]						= { label="近戰閃躲", tooltip="顯示寵物的近戰攻擊被閃躲"}
 obj["PET_OUTGOING_PARRY"]						= { label="近戰招架", tooltip="顯示寵物的近戰攻擊被招架"}
 obj["PET_OUTGOING_BLOCK"]						= { label="近戰格擋", tooltip="顯示寵物的近戰攻擊被格擋"}
+--obj["PET_OUTGOING_DEFLECT"]						= { label="Melee Deflects", tooltip="Enable your pet's outgoing melee deflects."}
 obj["PET_OUTGOING_ABSORB"]						= { label="近戰吸收", tooltip="顯示寵物的近戰傷害被吸收"}
 obj["PET_OUTGOING_IMMUNE"]						= { label="近戰免疫", tooltip="顯示寵物的近戰傷害被免疫"}
 obj["PET_OUTGOING_EVADE"]						= { label="近戰閃避", tooltip="顯示寵物的近戰攻擊被閃避"}
@@ -431,6 +439,7 @@ obj["PET_OUTGOING_SPELL_MISS"]					= { label="技能未命中", tooltip="顯示�
 obj["PET_OUTGOING_SPELL_DODGE"]					= { label="技能閃躲", tooltip="顯示寵物的技能攻擊被閃躲"}
 obj["PET_OUTGOING_SPELL_PARRY"]					= { label="技能招架", tooltip="顯示寵物的技能攻擊被招架"}
 obj["PET_OUTGOING_SPELL_BLOCK"]					= { label="技能格擋", tooltip="顯示寵物的技能攻擊被格擋"}
+--obj["PET_OUTGOING_SPELL_DEFLECT"]				= { label="Skill Deflects", tooltip="Enable your pet's outgoing skill deflects."}
 obj["PET_OUTGOING_SPELL_RESIST"]				= { label="法術抵抗", tooltip="顯示寵物的法術攻擊被抵抗"}
 obj["PET_OUTGOING_SPELL_ABSORB"]				= { label="技能吸收", tooltip="顯示寵物的技能傷害被吸收"}
 obj["PET_OUTGOING_SPELL_IMMUNE"]				= { label="技能免疫", tooltip="顯示寵物的技能傷害被免疫"}

@@ -3352,6 +3352,7 @@ local function CreateTriggerPopup()
   ["DODGE"] = DODGE,
   ["PARRY"] = PARRY,
   ["BLOCK"] = BLOCK,
+  ["DEFLECT"] = DEFLECT,
   ["RESIST"] = RESIST,
   ["ABSORB"] = ABSORB,
   ["IMMUNE"] = IMMUNE,

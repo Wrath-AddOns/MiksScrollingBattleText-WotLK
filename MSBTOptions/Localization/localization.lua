@@ -144,7 +144,8 @@ obj["hyperRegen"]				= { label="Hyper Regen", tooltip="Display power gains durin
 obj["abbreviateSkills"]			= { label="Abbreviate Skills", tooltip="Abbreviates skill names (English only).\n\nThis can be overriden by each event with the %sl event code."}
 obj["hideSkills"]				= { label="Hide Skills", tooltip="Don't display skill names for incoming and outgoing events.\n\nYou will give up some customization capability at the event level if you choose to use this option since it causes the %s event code to be ignored."}
 obj["hideNames"]				= { label="Hide Names", tooltip="Don't display unit names for incoming and outgoing events.\n\nYou will give up some customization capability at the event level if you choose to use this option since it causes the %n event code to be ignored."}
-obj["hideFullOverheals"]		= { label="Hide Full Overheals", tooltip="Don't display heals that have an effective heal amount of zero."}
+obj["hideFullOverheals"]		= { label="Hide Full Overheals", tooltip="Don't display non periodic heals that have an effective heal amount of zero."}
+obj["hideFullHoTOverheals"]		= { label="Hide Full HoT Overheals", tooltip="Don't display heals over time that have an effective heal amount of zero."}
 obj["allClasses"]				= { label="All Classes"}
 obj["enableCooldowns"]			= { label="Enable Cooldowns", tooltip="Display notifications when cooldowns complete."}
 obj["lootedItems"]				= { label="Looted Items", tooltip="Display notifications when items are looted."}
@@ -350,6 +351,7 @@ obj["INCOMING_MISS"]						= { label="Melee Misses", tooltip="Enable incoming mel
 obj["INCOMING_DODGE"]						= { label="Melee Dodges", tooltip="Enable incoming melee dodges."}
 obj["INCOMING_PARRY"]						= { label="Melee Parries", tooltip="Enable incoming melee parries."}
 obj["INCOMING_BLOCK"]						= { label="Melee Blocks", tooltip="Enable incoming melee blocks."}
+obj["INCOMING_DEFLECT"]						= { label="Melee Deflects", tooltip="Enable incoming melee deflects."}
 obj["INCOMING_ABSORB"]						= { label="Melee Absorbs", tooltip="Enable absorbed incoming melee damage."}
 obj["INCOMING_IMMUNE"]						= { label="Melee Immunes", tooltip="Enable incoming melee damage you are immune to."}
 obj["INCOMING_SPELL_DAMAGE"]				= { label="Skill Hits", tooltip="Enable incoming skill hits."}
@@ -362,6 +364,7 @@ obj["INCOMING_SPELL_MISS"]					= { label="Skill Misses", tooltip="Enable incomin
 obj["INCOMING_SPELL_DODGE"]					= { label="Skill Dodges", tooltip="Enable incoming skill dodges."}
 obj["INCOMING_SPELL_PARRY"]					= { label="Skill Parries", tooltip="Enable incoming skill parries."}
 obj["INCOMING_SPELL_BLOCK"]					= { label="Skill Blocks", tooltip="Enable incoming skill blocks."}
+obj["INCOMING_SPELL_DEFLECT"]				= { label="Skill Deflects", tooltip="Enable incoming skill deflects."}
 obj["INCOMING_SPELL_RESIST"]				= { label="Spell Resists", tooltip="Enable incoming spell resists."}
 obj["INCOMING_SPELL_ABSORB"]				= { label="Skill Absorbs", tooltip="Enable absorbed damage from incoming skills."}
 obj["INCOMING_SPELL_IMMUNE"]				= { label="Skill Immunes", tooltip="Enable incoming skill damage you are immune to."}
@@ -379,6 +382,7 @@ obj["PET_INCOMING_MISS"]						= { label="Melee Misses", tooltip="Enable your pet
 obj["PET_INCOMING_DODGE"]						= { label="Melee Dodges", tooltip="Enable your pet's incoming melee dodges."}
 obj["PET_INCOMING_PARRY"]						= { label="Melee Parries", tooltip="Enable your pet's incoming melee parries."}
 obj["PET_INCOMING_BLOCK"]						= { label="Melee Blocks", tooltip="Enable your pet's incoming melee blocks."}
+obj["PET_INCOMING_DEFLECT"]						= { label="Melee Deflects", tooltip="Enable your pet's incoming melee deflects."}
 obj["PET_INCOMING_ABSORB"]						= { label="Melee Absorbs", tooltip="Enable your pet's absorbed incoming melee damage."}
 obj["PET_INCOMING_IMMUNE"]						= { label="Melee Immunes", tooltip="Enable melee damage your is pet immune to."}
 obj["PET_INCOMING_SPELL_DAMAGE"]				= { label="Skill Hits", tooltip="Enable your pet's incoming skill hits."}
@@ -391,6 +395,7 @@ obj["PET_INCOMING_SPELL_MISS"]					= { label="Skill Misses", tooltip="Enable you
 obj["PET_INCOMING_SPELL_DODGE"]					= { label="Skill Dodges", tooltip="Enable your pet's incoming skill dodges."}
 obj["PET_INCOMING_SPELL_PARRY"]					= { label="Skill Parries", tooltip="Enable your pet's incoming skill parries."}
 obj["PET_INCOMING_SPELL_BLOCK"]					= { label="Skill Blocks", tooltip="Enable your pet's incoming skill blocks."}
+obj["PET_INCOMING_SPELL_DEFLECT"]				= { label="Skill Deflects", tooltip="Enable your pet's incoming skill deflects."}
 obj["PET_INCOMING_SPELL_RESIST"]				= { label="Spell Resists", tooltip="Enable your pet's incoming spell resists."}
 obj["PET_INCOMING_SPELL_ABSORB"]				= { label="Skill Absorbs", tooltip="Enable absorbed damage from your pet's incoming skills."}
 obj["PET_INCOMING_SPELL_IMMUNE"]				= { label="Skill Immunes", tooltip="Enable incoming skill damage your pet is immune to."}
@@ -410,6 +415,7 @@ obj["OUTGOING_MISS"]						= { label="Melee Misses", tooltip="Enable outgoing mel
 obj["OUTGOING_DODGE"]						= { label="Melee Dodges", tooltip="Enable outgoing melee dodges."}
 obj["OUTGOING_PARRY"]						= { label="Melee Parries", tooltip="Enable outgoing melee parries."}
 obj["OUTGOING_BLOCK"]						= { label="Melee Blocks", tooltip="Enable outgoing melee blocks."}
+obj["OUTGOING_DEFLECT"]						= { label="Melee Deflects", tooltip="Enable outgoing melee deflects."}
 obj["OUTGOING_ABSORB"]						= { label="Melee Absorbs", tooltip="Enable absorbed outgoing melee damage."}
 obj["OUTGOING_IMMUNE"]						= { label="Melee Immunes", tooltip="Enable outgoing melee damage the enemy is immune to."}
 obj["OUTGOING_EVADE"]						= { label="Melee Evades", tooltip="Enable outgoing melee evades."}
@@ -423,6 +429,7 @@ obj["OUTGOING_SPELL_MISS"]					= { label="Skill Misses", tooltip="Enable outgoin
 obj["OUTGOING_SPELL_DODGE"]					= { label="Skill Dodges", tooltip="Enable outgoing skill dodges."}
 obj["OUTGOING_SPELL_PARRY"]					= { label="Skill Parries", tooltip="Enable outgoing skill parries."}
 obj["OUTGOING_SPELL_BLOCK"]					= { label="Skill Blocks", tooltip="Enable outgoing skill blocks."}
+obj["OUTGOING_SPELL_DEFLECT"]				= { label="Skill Deflects", tooltip="Enable outgoing skill deflects."}
 obj["OUTGOING_SPELL_RESIST"]				= { label="Spell Resists", tooltip="Enable outgoing spell resists."}
 obj["OUTGOING_SPELL_ABSORB"]				= { label="Skill Absorbs", tooltip="Enable absorbed damage from outgoing skills."}
 obj["OUTGOING_SPELL_IMMUNE"]				= { label="Skill Immunes", tooltip="Enable outgoing skill damage the enemy is immune to."}
@@ -441,6 +448,7 @@ obj["PET_OUTGOING_MISS"]						= { label="Melee Misses", tooltip="Enable your pet
 obj["PET_OUTGOING_DODGE"]						= { label="Melee Dodges", tooltip="Enable your pet's outgoing melee dodges."}
 obj["PET_OUTGOING_PARRY"]						= { label="Melee Parries", tooltip="Enable your pet's outgoing melee parries."}
 obj["PET_OUTGOING_BLOCK"]						= { label="Melee Blocks", tooltip="Enable your pet's outgoing melee blocks."}
+obj["PET_OUTGOING_DEFLECT"]						= { label="Melee Deflects", tooltip="Enable your pet's outgoing melee deflects."}
 obj["PET_OUTGOING_ABSORB"]						= { label="Melee Absorbs", tooltip="Enable your pet's absorbed outgoing melee damage."}
 obj["PET_OUTGOING_IMMUNE"]						= { label="Melee Immunes", tooltip="Enable your pet's outgoing melee damage the enemy is immune to."}
 obj["PET_OUTGOING_EVADE"]						= { label="Melee Evades", tooltip="Enable your pet's outgoing melee evades."}
@@ -454,6 +462,7 @@ obj["PET_OUTGOING_SPELL_MISS"]					= { label="Skill Misses", tooltip="Enable you
 obj["PET_OUTGOING_SPELL_DODGE"]					= { label="Skill Dodges", tooltip="Enable your pet's outgoing skill dodges."}
 obj["PET_OUTGOING_SPELL_PARRY"]					= { label="Skill Parries", tooltip="Enable your pet's outgoing ability parries."}
 obj["PET_OUTGOING_SPELL_BLOCK"]					= { label="Skill Blocks", tooltip="Enable your pet's outgoing skill blocks."}
+obj["PET_OUTGOING_SPELL_DEFLECT"]				= { label="Skill Deflects", tooltip="Enable your pet's outgoing skill deflects."}
 obj["PET_OUTGOING_SPELL_RESIST"]				= { label="Spell Resists", tooltip="Enable your pet's outgoing spell resists."}
 obj["PET_OUTGOING_SPELL_ABSORB"]				= { label="Skill Absorbs", tooltip="Enable your pet's absorbed damage from outgoing skills."}
 obj["PET_OUTGOING_SPELL_IMMUNE"]				= { label="Skill Immunes", tooltip="Enable your pet's outgoing skill damage the enemy is immune to."}
@@ -527,6 +536,7 @@ obj["SPELL_AURA_APPLIED"]		= "Aura Application"
 obj["SPELL_AURA_REMOVED"]		= "Aura Removal"
 obj["SPELL_STOLEN"]				= "Aura Stolen"
 obj["SPELL_DISPEL"]				= "Aura Dispel"
+obj["SPELL_AURA_REFRESH"]		= "Aura Refresh" -- TODO: Add to others.
 obj["SPELL_AURA_BROKEN_SPELL"]	= "Aura Broken"
 obj["ENCHANT_APPLIED"]			= "Enchant Application"
 obj["ENCHANT_REMOVED"]			= "Enchant Removal"

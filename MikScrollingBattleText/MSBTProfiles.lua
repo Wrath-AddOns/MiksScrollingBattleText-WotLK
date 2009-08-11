@@ -19,6 +19,7 @@ local L = MikSBT.translations
 -- Local references to various functions for faster access.
 local string_find = string.find
 local string_gsub = string.gsub
+local string_format = string.format
 local CopyTable = MikSBT.CopyTable
 local EraseTable = MikSBT.EraseTable
 local SplitString = MikSBT.SplitString
@@ -251,6 +252,12 @@ local masterProfile = {
    message		= BLOCK .. "!",
    scrollArea	= "Incoming",
   },
+  INCOMING_DEFLECT	= {
+   colorR		= 0,
+   colorG		= 0,
+   message		= DEFLECT .. "!",
+   scrollArea	= "Incoming",
+  },
   INCOMING_ABSORB = {
    colorB		= 0,
    message		= ABSORB .. "! <%a>",
@@ -322,6 +329,12 @@ local masterProfile = {
    colorR		= 0,
    colorG		= 0,
    message		= "(%s) " .. BLOCK  .. "!",
+   scrollArea	= "Incoming",
+  },
+  INCOMING_SPELL_DEFLECT = {
+   colorR		= 0,
+   colorG		= 0,
+   message		= "(%s) " .. DEFLECT .. "!",
    scrollArea	= "Incoming",
   },
   INCOMING_SPELL_RESIST = {
@@ -406,6 +419,10 @@ local masterProfile = {
    message		= BLOCK .. "!",
    scrollArea	= "Outgoing",
   },
+  OUTGOING_DEFLECT = {
+   message		= DEFLECT.. "!",
+   scrollArea	= "Outgoing",
+  },
   OUTGOING_ABSORB = {
    colorB		= 0,
    message		= "<%a> " .. ABSORB .. "!",
@@ -470,6 +487,10 @@ local masterProfile = {
   },
   OUTGOING_SPELL_BLOCK = {
    message		= BLOCK .. "! (%s)",
+   scrollArea	= "Outgoing",
+  },
+  OUTGOING_SPELL_DEFLECT = {
+   message		= DEFLECT .. "! (%s)",
    scrollArea	= "Outgoing",
   },
   OUTGOING_SPELL_RESIST = {
@@ -570,6 +591,12 @@ local masterProfile = {
    message		= PET .. " " .. BLOCK .. "!",
    scrollArea	= "Incoming",
   },
+  PET_INCOMING_DEFLECT	= {
+   colorR		= 0.57,
+   colorG		= 0.58,
+   message		= PET .. " " .. DEFLECT .. "!",
+   scrollArea	= "Incoming",
+  },
   PET_INCOMING_ABSORB = {
    colorB		= 0.57,
    message		= PET .. " " .. ABSORB .. "!  <%a>",
@@ -641,6 +668,12 @@ local masterProfile = {
    colorR		= 0.57,
    colorG		= 0.58,
    message		= "(%s) " .. PET .. " " .. BLOCK  .. "!",
+   scrollArea	= "Incoming",
+  },
+  PET_INCOMING_SPELL_DEFLECT = {
+   colorR		= 0.57,
+   colorG		= 0.58,
+   message		= "(%s) " .. PET .. " " .. DEFLECT  .. "!",
    scrollArea	= "Incoming",
   },
   PET_INCOMING_SPELL_RESIST = {
@@ -716,6 +749,12 @@ local masterProfile = {
    colorG		= 0.5,
    colorB		= 0,
    message		= PET .. " " .. BLOCK,
+   scrollArea	= "Outgoing",
+  },
+  PET_OUTGOING_DEFLECT = {
+   colorG		= 0.5,
+   colorB		= 0,
+   message		= PET .. " " .. DEFLECT,
    scrollArea	= "Outgoing",
   },
   PET_OUTGOING_ABSORB = {
@@ -798,6 +837,12 @@ local masterProfile = {
    colorR		= 0.33,
    colorG		= 0.33,
    message		= PET .. " " .. BLOCK .. "! (%s)",
+   scrollArea	= "Outgoing",
+  },
+  PET_OUTGOING_SPELL_DEFLECT = {
+   colorR		= 0.33,
+   colorG		= 0.33,
+   message		= PET .. " " .. DEFLECT .. "! (%s)",
    scrollArea	= "Outgoing",
   },
   PET_OUTGOING_SPELL_RESIST = {
@@ -1453,6 +1498,7 @@ local masterProfile = {
  damageThreshold		= 0,
  healThreshold			= 0,
  powerThreshold			= 0,
+ hideFullHoTOverheals	= true,
 
 
  -- Cooldown settings.
@@ -1474,6 +1520,27 @@ local masterProfile = {
 -------------------------------------------------------------------------------
 -- Utility functions.
 -------------------------------------------------------------------------------
+
+-- ****************************************************************************
+-- Dynamically loads the and displays the options.
+-- ****************************************************************************
+local function ShowOptions()
+ -- Load the options module if it's not already loaded.
+ local optionsName = "MSBTOptions"
+ if (not IsAddOnLoaded(optionsName)) then
+  local loaded, failureReason = LoadAddOn(optionsName)
+  
+  -- Display an error message indicating why the module wasn't loaded if it
+  -- didn't load properly.
+  if (not loaded) then
+   local failureMessage = _G["ADDON_" .. failureReason] or failureReason or ""
+   Print(string_format(ADDON_LOAD_FAILED, optionsName, failureMessage))
+  end
+ end
+
+ -- Display the main frame if the options module is loaded.
+ if (IsAddOnLoaded(optionsName)) then MSBTOptions.Main.ShowMainFrame() end
+end
 
 -- ****************************************************************************
 -- Recursively removes empty tables and their differential map entries.
@@ -1609,8 +1676,7 @@ local function SetupBlizzardOptions()
   function (this)
    InterfaceOptionsFrameCancel_OnClick()
    HideUIPanel(GameMenuFrame)
-   if (not IsAddOnLoaded("MSBTOptions")) then UIParentLoadAddOn("MSBTOptions") end
-   if (IsAddOnLoaded("MSBTOptions")) then MSBTOptions.Main.ShowMainFrame() end
+   ShowOptions()
   end
  )
 
@@ -1906,11 +1972,8 @@ local function CommandHandler(params)
 
  -- Look for the recognized parameters.
  if (currentParam == "") then
-  -- Load the on demand options if they are not loaded.
-  if (not IsAddOnLoaded("MSBTOptions")) then UIParentLoadAddOn("MSBTOptions") end
-
-  -- Show the options interface after verifying the on demand options actually loaded.
-  if (IsAddOnLoaded("MSBTOptions")) then MSBTOptions.Main.ShowMainFrame() end
+  -- Load the on demand options.
+  ShowOptions()
 
   -- Don't show the usage info.
   showUsage = false
@@ -1993,9 +2056,6 @@ local function OnEvent(this, event, arg1)
 
   -- Let the media module know the variables are initialized.
   MikSBT.Media.OnVariablesInitialized()
-
-  --TODO: Implement damage font...
-  --DAMAGE_TEXT_FONT = "Interface\\AddOns\\MikScrollingBattleText\\Fonts\\porky.ttf"
 
  -- Variables for all addons loaded.
  elseif (event == "VARIABLES_LOADED") then

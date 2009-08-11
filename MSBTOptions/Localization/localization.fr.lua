@@ -120,6 +120,7 @@ obj["abbreviateSkills"]		= { label="Compétences Abrégées", tooltip="Nom des c
 obj["hideSkills"]			= { label="Cacher les Noms des Compétences", tooltip="Ne pas afficher les noms de compétences pour les évènements entrants et sortants.\n\nVous abandonnerez quelques possibilités de personnalisation de l'évènement si vous utilisez cette option car le code %s sera ignoré."}
 obj["hideNames"]			= { label="Cacher les Noms des Unités", tooltip="Ne pas afficher les noms des unités pour les évènements entrants et sortants.\n\nVous abandonnerez quelques possibilités de personnalisation de l'évènement si vous utilisez cette option car le code %n sera ignoré."}
 obj["hideFullOverheals"]	= { label="Cacher les Soins en Excès Total", tooltip="Ne pas afficher les soins qui ont un soin effectif égal à zéro."}
+--obj["hideFullHoTOverheals"]		= { label="Hide Full HoT Overheals", tooltip="Don't display heals over time that have an effective heal amount of zero."}
 obj["allClasses"]			= { label="Toutes les classes"}
 obj["enableCooldowns"]		= { label="Activer les Cooldowns", tooltip="Affiche une notification quand un cooldown est terminé."}
 obj["lootedItems"]			= { label="Items Ramassés", tooltip="Affiche les notifications quand des items sont ramassés."}
@@ -323,6 +324,7 @@ obj["INCOMING_MISS"]						= { label="Manques de mêlée", tooltip="Afficher les 
 obj["INCOMING_DODGE"]						= { label="Esquives de mêlée", tooltip="Afficher les attaques de mêlée esquivées."}
 obj["INCOMING_PARRY"]						= { label="Parades de mêlée", tooltip="Afficher les attaques de mêlée parées."}
 obj["INCOMING_BLOCK"]						= { label="Blocages de mêlée", tooltip="Afficher les dommages en mêlée bloquées."}
+--obj["INCOMING_DEFLECT"]						= { label="Melee Deflects", tooltip="Enable incoming melee deflects."}
 obj["INCOMING_ABSORB"]						= { label="Absorptions de mêlée", tooltip="Afficher les dommages en mêlée absorbés."}
 obj["INCOMING_IMMUNE"]						= { label="Immunités de mêlée", tooltip="Afficher les attaques de mêlée auxquelles vous êtes immunisé."}
 obj["INCOMING_SPELL_DAMAGE"]				= { label="Compétences", tooltip="Afficher les dommages des compétences."}
@@ -335,6 +337,7 @@ obj["INCOMING_SPELL_MISS"]					= { label="Manques des compétences", tooltip="Af
 obj["INCOMING_SPELL_DODGE"]					= { label="Esquives des compétences", tooltip="Afficher les compétences que vous avez esquivé."}
 obj["INCOMING_SPELL_PARRY"]					= { label="Parades des compétences", tooltip="Afficher les compétences que vous avez paré."}
 obj["INCOMING_SPELL_BLOCK"]					= { label="Bloquages des compétences", tooltip="Afficher les capacités que vous avez bloqué."}
+--obj["INCOMING_SPELL_DEFLECT"]				= { label="Skill Deflects", tooltip="Enable incoming skill deflects."}
 obj["INCOMING_SPELL_RESIST"]				= { label="Résistances aux sorts", tooltip="Afficher les sorts auxquels vous avez résisté."}
 obj["INCOMING_SPELL_ABSORB"]				= { label="Absorptions des compétences", tooltip="Afficher les dommages des compétences que vous avez absorbé."}
 obj["INCOMING_SPELL_IMMUNE"]				= { label="Immunités aux compétences", tooltip="Afficher les compétences auxquelles vous êtes immunisé."}
@@ -352,6 +355,7 @@ obj["PET_INCOMING_MISS"]						= { label="Manques de mêlée", tooltip="Afficher 
 obj["PET_INCOMING_DODGE"]						= { label="Esquives de mêlée", tooltip="Afficher les attaques de mêlée esquivées par votre familier"}
 obj["PET_INCOMING_PARRY"]						= { label="Parades de mêlée", tooltip="Afficher les attaques de mêlée parées par votre familier."}
 obj["PET_INCOMING_BLOCK"]						= { label="Blocages de mêlée", tooltip="Afficher les dommages en mêlée bloquées par votre familier."}
+--obj["PET_INCOMING_DEFLECT"]						= { label="Melee Deflects", tooltip="Enable your pet's incoming melee deflects."}
 obj["PET_INCOMING_ABSORB"]						= { label="Absorptions de mêlée", tooltip="Afficher les dommages en mêlée absorbés par votre familier."}
 obj["PET_INCOMING_IMMUNE"]						= { label="Immunités de mêlée", tooltip="Afficher les attaques de mêlée auxquelles votre familier est immunisé."}
 obj["PET_INCOMING_SPELL_DAMAGE"]				= { label="Compétences", tooltip="Afficher les dommages des compétences sur votre familier."}
@@ -364,6 +368,7 @@ obj["PET_INCOMING_SPELL_MISS"]					= { label="Manques des compétences", tooltip
 obj["PET_INCOMING_SPELL_DODGE"]					= { label="Esquives des compétences", tooltip="Afficher les compétences que votre familier a esquivé."}
 obj["PET_INCOMING_SPELL_PARRY"]					= { label="Parades des compétences", tooltip="Afficher les compétences que votre familier a paré."}
 obj["PET_INCOMING_SPELL_BLOCK"]					= { label="Bloquages des compétences", tooltip="Afficher les capacités que votre familier a bloqué."}
+--obj["PET_INCOMING_SPELL_DEFLECT"]				= { label="Skill Deflects", tooltip="Enable your pet's incoming skill deflects."}
 obj["PET_INCOMING_SPELL_RESIST"]				= { label="Résistances aux sorts", tooltip="Afficher les sorts auxquels votre familier a résisté."}
 obj["PET_INCOMING_SPELL_ABSORB"]				= { label="Absorptions des compétences", tooltip="Afficher les dommages des compétences que votre familier a absorbé."}
 obj["PET_INCOMING_SPELL_IMMUNE"]				= { label="Immunités aux compétences", tooltip="Afficher les compétences auxquelles votre familier est immunisé."}
@@ -383,6 +388,7 @@ obj["OUTGOING_MISS"]						= { label="Manques de mêlée", tooltip="Afficher vos 
 obj["OUTGOING_DODGE"]						= { label="Esquives de mêlée", tooltip="Afficher vos attaques esquivées en mêlée."}
 obj["OUTGOING_PARRY"]						= { label="Parades de mêlée", tooltip="Afficher vos attaques parées en mêlée."}
 obj["OUTGOING_BLOCK"]						= { label="Bloquages de mêlée", tooltip="Afficher vos dommages en mêlée bloquées."}
+--obj["OUTGOING_DEFLECT"]						= { label="Melee Deflects", tooltip="Enable outgoing melee deflects."}
 obj["OUTGOING_ABSORB"]						= { label="Absorptions de mêlée", tooltip="Afficher vos dommages en mêlée absorbés."}
 obj["OUTGOING_IMMUNE"]						= { label="Immunités de mêlée", tooltip="Afficher vos attaques de mêlée auxquelles l'ennemi est immunisé."}
 obj["OUTGOING_EVADE"]						= { label="Evites de mêlée", tooltip="Afficher vos attaques de mêlée evitées."}
@@ -396,6 +402,7 @@ obj["OUTGOING_SPELL_MISS"]					= { label="Manques compétences", tooltip="Affich
 obj["OUTGOING_SPELL_DODGE"]					= { label="Esquives compétences", tooltip="Afficher vos compétences esquivées."}
 obj["OUTGOING_SPELL_PARRY"]					= { label="Parades compétences", tooltip="Afficher vos compétences parées."}
 obj["OUTGOING_SPELL_BLOCK"]					= { label="Bloquages compétences", tooltip="Afficher vos compétences bloquées."}
+--obj["OUTGOING_SPELL_DEFLECT"]				= { label="Skill Deflects", tooltip="Enable outgoing skill deflects."}
 obj["OUTGOING_SPELL_RESIST"]				= { label="Résistances aux sorts", tooltip="Afficher les résistances à vos sorts."}
 obj["OUTGOING_SPELL_ABSORB"]				= { label="Absorptions compétences", tooltip="Afficher les absorptions de dommages de vos compétences."}
 obj["OUTGOING_SPELL_IMMUNE"]				= { label="Immunités compétences", tooltip="Afficher les dommages de vos compétences auxquelles l'ennemi est immunisé."}
@@ -414,6 +421,7 @@ obj["PET_OUTGOING_MISS"]						= { label="Manques de mêlée", tooltip="Afficher 
 obj["PET_OUTGOING_DODGE"]						= { label="Esquives de mêlée", tooltip="Afficher les attaques de mêlée de votre familier esquivées."}
 obj["PET_OUTGOING_PARRY"]						= { label="Parades de mêlée", tooltip="Afficher les attaques de mêlée de votre familier parées."}
 obj["PET_OUTGOING_BLOCK"]						= { label="Bloquages de mêlée", tooltip="Afficher les attaques de mêlée de votre familier bloquées."}
+--obj["PET_OUTGOING_DEFLECT"]						= { label="Melee Deflects", tooltip="Enable your pet's outgoing melee deflects."}
 obj["PET_OUTGOING_ABSORB"]						= { label="Absorptions de mêlée", tooltip="Afficher les dommages en mêlée absorbés de votre familier."}
 obj["PET_OUTGOING_IMMUNE"]						= { label="Immunités de mêlée", tooltip="Afficher les capacités en mêlée de votre familier auxquelles l'ennemi est immunisé."}
 obj["PET_OUTGOING_EVADE"]						= { label="Evites de mêlée", tooltip="Afficher les evites en mêlée de votre familier."}
@@ -427,6 +435,7 @@ obj["PET_OUTGOING_SPELL_MISS"]					= { label="Manques compétences", tooltip="Af
 obj["PET_OUTGOING_SPELL_DODGE"]					= { label="Esquives compétences", tooltip="Afficher les compétences de votre familier qui ont été esquivées."}
 obj["PET_OUTGOING_SPELL_PARRY"]					= { label="Parades compétences", tooltip="Afficher les compétences de votre familier qui ont été parées."}
 obj["PET_OUTGOING_SPELL_BLOCK"]					= { label="Bloquages compétences", tooltip="Afficher les bloquages des compétences de votre familier."}
+--obj["PET_OUTGOING_SPELL_DEFLECT"]				= { label="Skill Deflects", tooltip="Enable your pet's outgoing skill deflects."}
 obj["PET_OUTGOING_SPELL_RESIST"]				= { label="Résistances aux sorts", tooltip="Afficher les sorts de votre familier résisté."}
 obj["PET_OUTGOING_SPELL_ABSORB"]				= { label="Absorptions compétences", tooltip="Afficher les compétences de votre familier absorbés."}
 obj["PET_OUTGOING_SPELL_IMMUNE"]				= { label="Immunités compétences", tooltip="Afficher les compétences de votre familier auxquelles l'ennemi est immunisé."}

@@ -674,19 +674,27 @@ local function HealHandler(parserEvent, currentProfile)
 
  -- Ignore the event if it doesn't pertain to the player or their pet.
  if (not eventTypeString) then return end
-
+ 
+ local isHoT = parserEvent.isHoT
  local amount = parserEvent.amount
  if (amount) then
   -- Ignore the event if the heal amount is under the healing threshold to be shown.
   if (amount < currentProfile.healThreshold) then return end
 
-  -- Ignore the event if the effective heal amount is zero and the hide full overheals options is set.
+  -- Calculate the effective heal amount.
   local overhealAmount = parserEvent.overhealAmount
-  if (overhealAmount and (amount - overhealAmount == 0) and currentProfile.hideFullOverheals) then return end
+  local effectiveHealAmount = overhealAmount and (amount - overhealAmount) or amount
+  
+  -- Ignore the event if the effective heal amount is zero and the appropriate
+  -- hide full overheals option is set.
+  if (effectiveHealAmount == 0) then
+   if (not isHoT and currentProfile.hideFullOverheals) then return end
+   if (isHoT and currentProfile.hideFullHoTOverheals) then return end
+  end
  end
 
  -- Append hot suffix if it's a hot.
- eventTypeString = eventTypeString .. (parserEvent.isHoT and "_HOT" or "_HEAL")
+ eventTypeString = eventTypeString .. (isHoT and "_HOT" or "_HEAL")
 
  return eventTypeString, parserEvent.skillName, affectedUnitName, affectedUnitClass, true
 end
