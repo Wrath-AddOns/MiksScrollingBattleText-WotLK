@@ -121,7 +121,7 @@ obj["abbreviateSkills"]			= { label="짧은 기술 이름", tooltip="기술 이�
 obj["hideSkills"]				= { label="기술 이름 숨김", tooltip="받은, 대상이 받은 이벤트에서 기술 이름을 표시하지 않습니다.\n\n이 옵션을 사용하면 %s 이벤트 코드를 무시하므로 이벤트에 대한 사용자 설정이 무시되어질 것입니다."}
 obj["hideNames"]				= { label="유닛 이름 숨김", tooltip="받은, 대상이 받은 이벤트에서 유닛 이름을 표시하지 않는다.\n\n이 옵션을 사용하면 %n 이벤트 코드를 무시하므로 이벤트에 대한 사용자 설정이 무시되어질 것입니다."}
 obj["hideFullOverheals"]		= { label="최대 초과치유 숨김", tooltip="0의 치유량 효과를 가진 치유는 표시하지 않습니다."}
---obj["hideFullHoTOverheals"]		= { label="Hide Full HoT Overheals", tooltip="Don't display heals over time that have an effective heal amount of zero."}
+obj["hideFullHoTOverheals"]		= { label="최대 순간 초과치유 숨김", tooltip="0의 치유량 효과를 가진 시간이 지난 치유는 표시하지 않습니다."}
 obj["allClasses"]				= { label="모든 클래스"}
 obj["enableCooldowns"]			= { label="재사용 대기시간", tooltip="재사용 대기시간이 끝났을때 알림 메세지를 표시합니다."}
 obj["lootedItems"]				= { label="획득한 아이템", tooltip="아이템을 획득했을때 알림 메세지를 표시합니다."}
@@ -327,7 +327,7 @@ obj["INCOMING_MISS"]						= { label="근접 빗맞힘", tooltip="자신에게 �
 obj["INCOMING_DODGE"]						= { label="근접 회피", tooltip="자신의 근접 회피를 활성화합니다."}
 obj["INCOMING_PARRY"]						= { label="근접 막음", tooltip="자신의 근접 막음을 활성화합니다."}
 obj["INCOMING_BLOCK"]						= { label="근접 방어", tooltip="자신의 근접 방어를 활성화합니다."}
---obj["INCOMING_DEFLECT"]						= { label="Melee Deflects", tooltip="Enable incoming melee deflects."}
+obj["INCOMING_DEFLECT"]						= { label="근접 빗나감", tooltip="자신의 근접 빗나감을 활성화합니다."}
 obj["INCOMING_ABSORB"]						= { label="근접 흡수", tooltip="자신이 흡수한 근접 피해량을 활성화합니다."}
 obj["INCOMING_IMMUNE"]						= { label="근접 면역", tooltip="자신에게 면역인 근접 공격을 활성화합니다."}
 obj["INCOMING_SPELL_DAMAGE"]				= { label="주문 적중", tooltip="자신이 받은 주문 피해량을 활성화합니다."}
@@ -340,7 +340,7 @@ obj["INCOMING_SPELL_MISS"]					= { label="주문 빗맞힘", tooltip="자신에�
 obj["INCOMING_SPELL_DODGE"]					= { label="주문 회피", tooltip="자신의 주문 회피를 활성화합니다."}
 obj["INCOMING_SPELL_PARRY"]					= { label="주문 막음", tooltip="자신의 주문 막음을 활성화합니다."}
 obj["INCOMING_SPELL_BLOCK"]					= { label="주문 방어", tooltip="자신의 주문 방어를 활성화합니다."}
---obj["INCOMING_SPELL_DEFLECT"]				= { label="Skill Deflects", tooltip="Enable incoming skill deflects."}
+obj["INCOMING_SPELL_DEFLECT"]				= { label="주문 빗나감", tooltip="자신의 주문 빗나감을 활성화합니다."}
 obj["INCOMING_SPELL_RESIST"]				= { label="주문 저항", tooltip="자신의 주문 저항을 활성화합니다."}
 obj["INCOMING_SPELL_ABSORB"]				= { label="주문 흡수", tooltip="자신이 흡수한 주문 피해량을 활성화합니다."}
 obj["INCOMING_SPELL_IMMUNE"]				= { label="주문 면역", tooltip="자신에게 면역인 주문 공격을 활성화합니다."}
@@ -358,7 +358,7 @@ obj["PET_INCOMING_MISS"]						= { label="근접 빗맞힘", tooltip="소환수�
 obj["PET_INCOMING_DODGE"]						= { label="근접 회피", tooltip="소환수의 근접 회피를 활성화합니다."}
 obj["PET_INCOMING_PARRY"]						= { label="근접 막음", tooltip="소환수의 근접 막음을 활성화합니다."}
 obj["PET_INCOMING_BLOCK"]						= { label="근접 방어", tooltip="소환수의 근접 방어를 활성화합니다."}
---obj["PET_INCOMING_DEFLECT"]						= { label="Melee Deflects", tooltip="Enable your pet's incoming melee deflects."}
+obj["PET_INCOMING_DEFLECT"]						= { label="근접 빗나감", tooltip="소환수의 근접 빗나감을 활성화합니다."}
 obj["PET_INCOMING_ABSORB"]						= { label="근접 흡수", tooltip="소환수가 흡수한 근접 피해량을 활성화합니다."}
 obj["PET_INCOMING_IMMUNE"]						= { label="근접 면역", tooltip="소환수에게 면역인 근접 공격을 활성화합니다."}
 obj["PET_INCOMING_SPELL_DAMAGE"]				= { label="주문 적중", tooltip="소환수가 받은 주문 피해량을 활성화합니다."}
@@ -371,7 +371,7 @@ obj["PET_INCOMING_SPELL_MISS"]					= { label="주문 공격 실패", tooltip="�
 obj["PET_INCOMING_SPELL_DODGE"]					= { label="주문 회피", tooltip="소환수의 주문 회피를 활성화합니다."}
 obj["PET_INCOMING_SPELL_PARRY"]					= { label="주문 막음", tooltip="소환수의 주문 막음을 활성화합니다."}
 obj["PET_INCOMING_SPELL_BLOCK"]					= { label="주문 방어", tooltip="소환수의 주문 방어를 활성화합니다."}
---obj["PET_INCOMING_SPELL_DEFLECT"]				= { label="Skill Deflects", tooltip="Enable your pet's incoming skill deflects."}
+obj["PET_INCOMING_SPELL_DEFLECT"]				= { label="주문 빗나감", tooltip="소환수의 주문 빗나감을 활성화합니다."}
 obj["PET_INCOMING_SPELL_RESIST"]				= { label="주문 저항", tooltip="소환수의 주문 저항을 활성화합니다."}
 obj["PET_INCOMING_SPELL_ABSORB"]				= { label="주문 흡수", tooltip="소환수가 흡수한 주문 피해량을 활성화합니다."}
 obj["PET_INCOMING_SPELL_IMMUNE"]				= { label="주문 면역", tooltip="소환수에게 면역인 주문 공격를 활성화합니다."}
@@ -391,7 +391,7 @@ obj["OUTGOING_MISS"]						= { label="근접 빗맞힘", tooltip="대상에게 �
 obj["OUTGOING_DODGE"]						= { label="근접 회피", tooltip="근접 공격에 대한 대상의 회피를 활성화합니다."}
 obj["OUTGOING_PARRY"]						= { label="근접 막음", tooltip="근접 공격에 대한 대상의 막음을 활성화합니다."}
 obj["OUTGOING_BLOCK"]						= { label="근접 방어", tooltip="근접 공격에 대한 대상의 방어를 활성화합니다."}
---obj["OUTGOING_DEFLECT"]						= { label="Melee Deflects", tooltip="Enable outgoing melee deflects."}
+obj["OUTGOING_DEFLECT"]						= { label="근접 빗나감", tooltip="근접 공격에 대한 대상의 빗나감을 활성화합니다."}
 obj["OUTGOING_ABSORB"]						= { label="근접 흡수", tooltip="근접 공격에 대하여 대상이 흡수한 피해량을 활성화합니다."}
 obj["OUTGOING_IMMUNE"]						= { label="근접 면역", tooltip="근접 공격에 대한 대상의 면역을 활성화합니다."}
 obj["OUTGOING_EVADE"]						= { label="근접 빗나감", tooltip="대상에게 빗나간 근접 공격을 활성화합니다."}
@@ -405,7 +405,7 @@ obj["OUTGOING_SPELL_MISS"]					= { label="주문 빗맞힘", tooltip="대상에�
 obj["OUTGOING_SPELL_DODGE"]					= { label="주문 회피", tooltip="주문 공격에 대한 대상의 회피를 활성화합니다."}
 obj["OUTGOING_SPELL_PARRY"]					= { label="주문 막음", tooltip="주문 공격에 대한 대상의 막음을 활성화합니다."}
 obj["OUTGOING_SPELL_BLOCK"]					= { label="주문 방어", tooltip="주문 공격에 대한 대상의 방어를 활성화합니다."}
---obj["OUTGOING_SPELL_DEFLECT"]				= { label="Skill Deflects", tooltip="Enable outgoing skill deflects."}
+obj["OUTGOING_SPELL_DEFLECT"]				= { label="주문 빗나감", tooltip="주문 공격에 대한 대상의 빗나감을 활성화합니다."}
 obj["OUTGOING_SPELL_RESIST"]				= { label="주문 저항", tooltip="주문 공격에 대한 대상의 저항을 활성화합니다."}
 obj["OUTGOING_SPELL_ABSORB"]				= { label="주문 흡수", tooltip="주문 공격에 대하여 대상이 흡수한 피해량을 활성화합니다."}
 obj["OUTGOING_SPELL_IMMUNE"]				= { label="주문 면역", tooltip="주문 공격에 대한 대상의 면역을 활성화합니다."}
@@ -421,10 +421,10 @@ obj = L.OUTGOING_PET_EVENTS
 obj["PET_OUTGOING_DAMAGE"]						= { label="근접 평타", tooltip="소환수가 대상에게 준 근접 평타를 활성화합니다."}
 obj["PET_OUTGOING_DAMAGE_CRIT"]					= { label="근접 치명타", tooltip="소환수가 대상에게 준 근접 치명타를 활성화합니다."}
 obj["PET_OUTGOING_MISS"]						= { label="근접 빗맞힘", tooltip="대상에게 적중하지 않은 소환수의 근접 공격을 활성화합니다."}
-obj["PET_OUTGOING_DODGE"]						= { label="근접 회피", tooltip="소환수의 근접 공격에 대한의 대상의 회피를 활성화합니다."}
-obj["PET_OUTGOING_PARRY"]						= { label="근접 막음", tooltip="소환수의 근접 공격에 대한의 대상의 막음을 활성화합니다."}
-obj["PET_OUTGOING_BLOCK"]						= { label="근접 방어", tooltip="소환수의 근접 공격에 대한의 대상의 방어를 활성화합니다."}
---obj["PET_OUTGOING_DEFLECT"]						= { label="Melee Deflects", tooltip="Enable your pet's outgoing melee deflects."}
+obj["PET_OUTGOING_DODGE"]						= { label="근접 회피", tooltip="소환수의 근접 공격에 대한 대상의 회피를 활성화합니다."}
+obj["PET_OUTGOING_PARRY"]						= { label="근접 막음", tooltip="소환수의 근접 공격에 대한 대상의 막음을 활성화합니다."}
+obj["PET_OUTGOING_BLOCK"]						= { label="근접 방어", tooltip="소환수의 근접 공격에 대한 대상의 방어를 활성화합니다."}
+obj["PET_OUTGOING_DEFLECT"]						= { label="근접 빗나감", tooltip="소환수의 근접 공격에 대한 대상의 빗나감을 활성화합니다."}
 obj["PET_OUTGOING_ABSORB"]						= { label="근접 흡수", tooltip="소환수의 근접 공격에 대하여 대상이 흡수한 피해량을 활성화합니다."}
 obj["PET_OUTGOING_IMMUNE"]						= { label="근접 면역", tooltip="소환수의 근접 공격에 대한 대상의 면역을 활성화합니다."}
 obj["PET_OUTGOING_EVADE"]						= { label="근접 빗나감", tooltip="대상에게 빗나간 소환수의 근접 공격을 활성화합니다."}
@@ -438,7 +438,7 @@ obj["PET_OUTGOING_SPELL_MISS"]					= { label="주문 빗맞힘", tooltip="대상
 obj["PET_OUTGOING_SPELL_DODGE"]					= { label="주문 회피", tooltip="소환수의 주문 공격에 대한 대상의 회피를 활성화합니다."}
 obj["PET_OUTGOING_SPELL_PARRY"]					= { label="주문 막음", tooltip="소환수의 주문 공격에 대한 대상의 막음을 활성화합니다."}
 obj["PET_OUTGOING_SPELL_BLOCK"]					= { label="주문 방어", tooltip="소환수의 주문 공격에 대한 대상의 방어를 활성화합니다."}
---obj["PET_OUTGOING_SPELL_DEFLECT"]				= { label="Skill Deflects", tooltip="Enable your pet's outgoing skill deflects."}
+obj["PET_OUTGOING_SPELL_DEFLECT"]				= { label="주문 빗나감", tooltip="소환수의 주문 공격에 대한 대상의 빗나감을 활성화합니다."}
 obj["PET_OUTGOING_SPELL_RESIST"]				= { label="주문 저항", tooltip="소환수의 주문 공격에 대한 대상의 저항을 활성화합니다."}
 obj["PET_OUTGOING_SPELL_ABSORB"]				= { label="주문 흡수", tooltip="소환수의 주문 공격에 대하여 대상이 흡수한 피해량을 활성화합니다."}
 obj["PET_OUTGOING_SPELL_IMMUNE"]				= { label="주문 면역", tooltip="소환수의 주문 공격에 대한 대상의 면역을 활성화합니다."}
