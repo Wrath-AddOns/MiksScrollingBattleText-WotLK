@@ -347,6 +347,7 @@ obj["INCOMING_SPELL_INTERRUPT"]				= { label="Прерв. Заклинания",
 obj["INCOMING_HEAL"]						= { label="Исцеление", tooltip="Вкл/Выкл входящие исцеления."}
 obj["INCOMING_HEAL_CRIT"]					= { label="Крит исцеления", tooltip="Вкл/Выкл входящие критические исцеления."}
 obj["INCOMING_HOT"]							= { label="Исцеление за Время", tooltip="Вкл/Выкл входящие Исцеление за Время."}
+--obj["INCOMING_HOT_CRIT"]					= { label="Crit Heals Over Time", tooltip="Enable incoming crit heals over time."}
 obj["INCOMING_ENVIRONMENTAL"]				= { label="Урон окружающей среды", tooltip="Урон окружающей среды (Падение, Утопление, Лава, т.д. и т.п...)."}
 
 obj = L.INCOMING_PET_EVENTS
@@ -376,6 +377,7 @@ obj["PET_INCOMING_SPELL_IMMUNE"]				= { label="Невоспр. Заклинан�
 obj["PET_INCOMING_HEAL"]						= { label="Исцеление", tooltip="Вкл/Выкл вашего питомца входящие исцеления."}
 obj["PET_INCOMING_HEAL_CRIT"]					= { label="Крит исцеления", tooltip="Вкл/Выкл вашего питомца входящие критические исцеления."}
 obj["PET_INCOMING_HOT"]							= { label="Исцеление за Время", tooltip="Вкл/Выкл вашего питомца входящие исцеления за время."}
+--obj["PET_INCOMING_HOT_CRIT"]					= { label="Crit Heals Over Time", tooltip="Enable your pet's incoming crit heals over time."}
 
 
 ------------------------------
@@ -413,6 +415,7 @@ obj["OUTGOING_SPELL_EVADE"]					= { label="'Мимо' Заклинания", too
 obj["OUTGOING_HEAL"]						= { label="Исцеление", tooltip="Вкл/Выкл исходящие исцеления."}
 obj["OUTGOING_HEAL_CRIT"]					= { label="Крит исцеления", tooltip="Вкл/Выкл исходящие критические исцеления."}
 obj["OUTGOING_HOT"]							= { label="Исцеление за Время", tooltip="Вкл/Выкл исходящие исцеления за время."}
+--obj["OUTGOING_HOT_CRIT"]					= { label="Crit Heals Over Time", tooltip="Enable outgoing crit heals over time."}
 obj["OUTGOING_DISPEL"]						= { label="Рассеивания", tooltip="Вкл/Выкл исходящие рассеивания."}
 
 obj = L.OUTGOING_PET_EVENTS

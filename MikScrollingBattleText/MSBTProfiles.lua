@@ -386,6 +386,12 @@ local masterProfile = {
    message		= "(%s - %n) +%a",
    scrollArea	= "Incoming",
   },
+  INCOMING_HOT_CRIT = {
+   colorR		= 0,
+   colorB		= 0,
+   message		= "(%s - %n) +%a",
+   scrollArea	= "Incoming",
+  },
   INCOMING_ENVIRONMENTAL = {
    colorG		= 0,
    colorB		= 0,
@@ -542,6 +548,12 @@ local masterProfile = {
    isCrit		= true,
   },
   OUTGOING_HOT = {
+   colorR		= 0,
+   colorB		= 0,
+   message		= "+%a (%s - %n)",
+   scrollArea	= "Outgoing",
+  },
+  OUTGOING_HOT_CRIT = {
    colorR		= 0,
    colorB		= 0,
    message		= "+%a (%s - %n)",
@@ -707,6 +719,12 @@ local masterProfile = {
    isCrit		= true,
   },
   PET_INCOMING_HOT = {
+   colorR		= 0.57,
+   colorB		= 0.57,
+   message		= "(%s - %n) " .. PET .. " +%a",
+   scrollArea	= "Incoming",
+  },
+  PET_INCOMING_HOT_CRIT = {
    colorR		= 0.57,
    colorB		= 0.57,
    message		= "(%s - %n) " .. PET .. " +%a",
@@ -1329,7 +1347,7 @@ local masterProfile = {
    fontSize			= 26,
    classes			= "DEATHKNIGHT",
    mainEvents		= "GENERIC_MISSED{recipientAffiliation;;eq;;" .. FLAG_YOU .. ";;missType;;eq;;DODGE}&&GENERIC_MISSED{recipientAffiliation;;eq;;" .. FLAG_YOU .. ";;missType;;eq;;PARRY}",
-   exceptions		= "unavailableSkill;;eq;;" .. SPELL_RUNE_STRIKE,
+   exceptions		= "unavailableSkill;;eq;;" .. SPELL_RUNE_STRIKE .. ";;recentlyFired;;lt;;5",
    iconSkill		= SPELLID_RUNE_STRIKE,
   },
   MSBT_TRIGGER_RIME = {

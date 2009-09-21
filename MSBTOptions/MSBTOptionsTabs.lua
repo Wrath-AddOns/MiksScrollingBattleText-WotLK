@@ -1433,6 +1433,7 @@ local function EventsTab_SetupEvents()
  EventsTab_AddEvent(category, "INCOMING_HEAL", c.HEALING_TAKEN .. c.HEALER_NAME .. c.SPELL_NAME .. c.SKILL_LONG)
  EventsTab_AddEvent(category, "INCOMING_HEAL_CRIT", c.HEALING_TAKEN .. c.HEALER_NAME .. c.SPELL_NAME .. c.SKILL_LONG)
  EventsTab_AddEvent(category, "INCOMING_HOT", c.HEALING_TAKEN .. c.HEALER_NAME .. c.SPELL_NAME .. c.SKILL_LONG)
+ EventsTab_AddEvent(category, "INCOMING_HOT_CRIT", c.HEALING_TAKEN .. c.HEALER_NAME .. c.SPELL_NAME .. c.SKILL_LONG)
  EventsTab_AddEvent(category, "INCOMING_ENVIRONMENTAL", c.DAMAGE_TAKEN .. c.ENVIRONMENTAL_DAMAGE)
 
  category = "INCOMING_PET_EVENTS"
@@ -1462,6 +1463,7 @@ local function EventsTab_SetupEvents()
  EventsTab_AddEvent(category, "PET_INCOMING_HEAL", c.HEALING_TAKEN .. c.HEALER_NAME .. c.SPELL_NAME .. c.SKILL_LONG)
  EventsTab_AddEvent(category, "PET_INCOMING_HEAL_CRIT", c.HEALING_TAKEN .. c.HEALER_NAME .. c.SPELL_NAME .. c.SKILL_LONG)
  EventsTab_AddEvent(category, "PET_INCOMING_HOT", c.HEALING_TAKEN .. c.HEALER_NAME .. c.SPELL_NAME .. c.SKILL_LONG)
+ EventsTab_AddEvent(category, "PET_INCOMING_HOT_CRIT", c.HEALING_TAKEN .. c.HEALER_NAME .. c.SPELL_NAME .. c.SKILL_LONG)
 
  category = "OUTGOING_PLAYER_EVENTS"
  EventsTab_AddEvent(category, "OUTGOING_DAMAGE", c.DAMAGE_DONE .. c.ATTACKED_NAME)
@@ -1494,6 +1496,7 @@ local function EventsTab_SetupEvents()
  EventsTab_AddEvent(category, "OUTGOING_HEAL", c.HEALING_DONE .. c.HEALED_NAME .. c.SPELL_NAME .. c.SKILL_LONG)
  EventsTab_AddEvent(category, "OUTGOING_HEAL_CRIT", c.HEALING_DONE .. c.HEALED_NAME .. c.SPELL_NAME .. c.SKILL_LONG)
  EventsTab_AddEvent(category, "OUTGOING_HOT", c.HEALING_DONE .. c.HEALED_NAME .. c.SPELL_NAME .. c.SKILL_LONG)
+ EventsTab_AddEvent(category, "OUTGOING_HOT_CRIT", c.HEALING_DONE .. c.HEALED_NAME .. c.SPELL_NAME .. c.SKILL_LONG)
  EventsTab_AddEvent(category, "OUTGOING_DISPEL", c.ATTACKED_NAME .. c.BUFF_NAME .. c.SKILL_LONG)
  
  category = "OUTGOING_PET_EVENTS"
@@ -2774,8 +2777,8 @@ local function CooldownsTab_Create()
  objLocale = L.SLIDERS["cooldownThreshold"] 
  slider:Configure(180, objLocale.label, objLocale.tooltip)
  slider:SetPoint("TOPLEFT", controls.colorSwatch, "BOTTOMLEFT", 0, -40)
- slider:SetMinMaxValues(5, 300)
- slider:SetValueStep(5)
+ slider:SetMinMaxValues(3, 300)
+ slider:SetValueStep(1)
  slider:SetValueChangedHandler(
    function(this, value)
      MSBTProfiles.SetOption(nil, "cooldownThreshold", value)

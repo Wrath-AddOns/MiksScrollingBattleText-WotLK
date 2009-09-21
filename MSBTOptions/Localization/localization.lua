@@ -373,6 +373,7 @@ obj["INCOMING_SPELL_INTERRUPT"]				= { label="Spell Interrupts", tooltip="Enable
 obj["INCOMING_HEAL"]						= { label="Heals", tooltip="Enable incoming heals."}
 obj["INCOMING_HEAL_CRIT"]					= { label="Crit Heals", tooltip="Enable incoming crit heals."}
 obj["INCOMING_HOT"]							= { label="Heals Over Time", tooltip="Enable incoming heals over time."}
+obj["INCOMING_HOT_CRIT"]					= { label="Crit Heals Over Time", tooltip="Enable incoming crit heals over time."}
 obj["INCOMING_ENVIRONMENTAL"]				= { label="Environmental Damage", tooltip="Enable environmental (falling, drowning, lava, etc...) damage."}
 
 obj = L.INCOMING_PET_EVENTS
@@ -402,6 +403,7 @@ obj["PET_INCOMING_SPELL_IMMUNE"]				= { label="Skill Immunes", tooltip="Enable i
 obj["PET_INCOMING_HEAL"]						= { label="Heals", tooltip="Enable your pet's incoming heals."}
 obj["PET_INCOMING_HEAL_CRIT"]					= { label="Crit Heals", tooltip="Enable your pet's incoming crit heals."}
 obj["PET_INCOMING_HOT"]							= { label="Heals Over Time", tooltip="Enable your pet's incoming heals over time."}
+obj["PET_INCOMING_HOT_CRIT"]					= { label="Crit Heals Over Time", tooltip="Enable your pet's incoming crit heals over time."}
 
 
 ------------------------------
@@ -439,6 +441,7 @@ obj["OUTGOING_SPELL_EVADE"]					= { label="Skill Evades", tooltip="Enable outgoi
 obj["OUTGOING_HEAL"]						= { label="Heals", tooltip="Enable outgoing heals."}
 obj["OUTGOING_HEAL_CRIT"]					= { label="Crit Heals", tooltip="Enable outgoing crit heals."}
 obj["OUTGOING_HOT"]							= { label="Heals Over Time", tooltip="Enable outgoing heals over time."}
+obj["OUTGOING_HOT_CRIT"]					= { label="Crit Heals Over Time", tooltip="Enable outgoing crit heals over time."}
 obj["OUTGOING_DISPEL"]						= { label="Dispels", tooltip="Enable outgoing dispels."}
 
 obj = L.OUTGOING_PET_EVENTS

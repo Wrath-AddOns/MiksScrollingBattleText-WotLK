@@ -346,6 +346,7 @@ obj["INCOMING_SPELL_INTERRUPT"]				= { label="Sorts interrompus", tooltip="Affic
 obj["INCOMING_HEAL"]						= { label="Soins", tooltip="Afficher les soins reçus."}
 obj["INCOMING_HEAL_CRIT"]					= { label="Soins critiques", tooltip="Afficher les soins critiques reçus."}
 obj["INCOMING_HOT"]							= { label="Soins sur le temps (HoT)", tooltip="Afficher les soins des soins sur le temps (HoT) reçus."}
+--obj["INCOMING_HOT_CRIT"]					= { label="Crit Heals Over Time", tooltip="Enable incoming crit heals over time."}
 obj["INCOMING_ENVIRONMENTAL"]				= { label="Dommages de l'environnement", tooltip="Afficher les effets de l'environnement (chutes, noyades, lave, etc...) sur vous."}
 
 obj = L.INCOMING_PET_EVENTS
@@ -375,6 +376,7 @@ obj["PET_INCOMING_SPELL_IMMUNE"]				= { label="Immunités aux compétences", too
 obj["PET_INCOMING_HEAL"]						= { label="Soins", tooltip="Afficher les soins reçus par votre familier."}
 obj["PET_INCOMING_HEAL_CRIT"]					= { label="Soins critiques", tooltip="Afficher les soins critiques reçus par votre familier."}
 obj["PET_INCOMING_HOT"]							= { label="Soins sur le temps (HoT)", tooltip="Afficher les soins des soins sur le temps (HoT) reçus par votre familier."}
+--obj["PET_INCOMING_HOT_CRIT"]					= { label="Crit Heals Over Time", tooltip="Enable your pet's incoming crit heals over time."}
 
 
 ------------------------------
@@ -412,6 +414,7 @@ obj["OUTGOING_SPELL_EVADE"]					= { label="Evites compétences", tooltip="Affich
 obj["OUTGOING_HEAL"]						= { label="Soins", tooltip="Afficher les soins effectués."}
 obj["OUTGOING_HEAL_CRIT"]					= { label="Soins critiques", tooltip="Afficher les soins critiques effectués."}
 obj["OUTGOING_HOT"]							= { label="Soins sur le temps (HoT)", tooltip="Afficher les soins sur le temps."}
+--obj["OUTGOING_HOT_CRIT"]					= { label="Crit Heals Over Time", tooltip="Enable outgoing crit heals over time."}
 obj["OUTGOING_DISPEL"]						= { label="Dissipations", tooltip="Affiche les dissipations."}
 
 obj = L.OUTGOING_PET_EVENTS

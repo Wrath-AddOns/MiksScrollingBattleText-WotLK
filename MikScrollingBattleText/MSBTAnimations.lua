@@ -272,6 +272,7 @@ local function Display(message, saSettings, isSticky, colorR, colorG, colorB, fo
   fontString:SetShadowColor(0, 0, 0, 0)
   fontString:SetShadowOffset(0, 0)
  end
+ fontString:SetAlpha(0)
  fontString:SetText(message)
 
  -- Set texture properties if there is a texture path that isn't the temp texture and icons are enabled.
@@ -290,6 +291,7 @@ local function Display(message, saSettings, isSticky, colorR, colorG, colorB, fo
   texture:SetTexCoord(0.125, 0.875, 0.125, 0.875)
   if (saSettings.iconAlign == "Right") then texture:SetPoint("LEFT", fontString, "RIGHT", 4, 0) else texture:SetPoint("RIGHT", fontString, "LEFT", -4, 0) end
   texture:SetDrawLayer(isSticky and "OVERLAY" or "ARTWORK")
+  texture:SetAlpha(0)
   displayEvent.texture = texture
  end
 

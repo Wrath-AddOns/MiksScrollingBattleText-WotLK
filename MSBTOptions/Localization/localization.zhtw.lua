@@ -350,6 +350,7 @@ obj["INCOMING_SPELL_INTERRUPT"]				= { label="法術打斷", tooltip="顯示打�
 obj["INCOMING_HEAL"]						= { label="治療", tooltip="顯示被治療"}
 obj["INCOMING_HEAL_CRIT"]					= { label="爆擊治療", tooltip="顯示被治療爆擊"}
 obj["INCOMING_HOT"]							= { label="持續治療", tooltip="顯示被持續治療"}
+--obj["INCOMING_HOT_CRIT"]					= { label="Crit Heals Over Time", tooltip="Enable incoming crit heals over time."}
 obj["INCOMING_ENVIRONMENTAL"]				= { label="環境傷害", tooltip="顯示環境傷害（如跌落，窒息，熔岩等）"}
 
 obj = L.INCOMING_PET_EVENTS
@@ -379,6 +380,7 @@ obj["PET_INCOMING_SPELL_IMMUNE"]				= { label="技能免疫", tooltip="顯示寵
 obj["PET_INCOMING_HEAL"]						= { label="治療", tooltip="顯示寵物被治療"}
 obj["PET_INCOMING_HEAL_CRIT"]					= { label="治療爆擊", tooltip="顯示寵物被治療爆擊"}
 obj["PET_INCOMING_HOT"]							= { label="持續治療", tooltip="顯示寵物被持續治療"}
+--obj["PET_INCOMING_HOT_CRIT"]					= { label="Crit Heals Over Time", tooltip="Enable your pet's incoming crit heals over time."}
 
 
 ------------------------------
@@ -416,6 +418,7 @@ obj["OUTGOING_SPELL_EVADE"]					= { label="技能閃避", tooltip="顯示技能�
 obj["OUTGOING_HEAL"]						= { label="治療", tooltip="顯示治療目標"}
 obj["OUTGOING_HEAL_CRIT"]					= { label="治療爆擊", tooltip="顯示爆擊治療目標"}
 obj["OUTGOING_HOT"]							= { label="持續治療", tooltip="顯示持續治療目標"}
+--obj["OUTGOING_HOT_CRIT"]					= { label="Crit Heals Over Time", tooltip="Enable outgoing crit heals over time."}
 obj["OUTGOING_DISPEL"]						= { label="淨化法術", tooltip="顯示你的淨化法術"}
 
 obj = L.OUTGOING_PET_EVENTS
