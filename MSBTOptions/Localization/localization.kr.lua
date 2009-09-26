@@ -349,7 +349,7 @@ obj["INCOMING_SPELL_INTERRUPT"]				= { label="주문 차단", tooltip="자신이
 obj["INCOMING_HEAL"]						= { label="치유", tooltip="자신이 받은 치유량을 활성화합니다."}
 obj["INCOMING_HEAL_CRIT"]					= { label="치유 극대화", tooltip="자신이 받은 치유 극대화를 활성화합니다."}
 obj["INCOMING_HOT"]							= { label="주기적 치유", tooltip="자신이 받은 주기적 치유를 활성화합니다."}
---obj["INCOMING_HOT_CRIT"]					= { label="Crit Heals Over Time", tooltip="Enable incoming crit heals over time."}
+obj["INCOMING_HOT_CRIT"]					= { label="주기적 치유 극대화", tooltip="자신의 받은 주기적 치유 극대화를 활성화합니다."}
 obj["INCOMING_ENVIRONMENTAL"]				= { label="환경 피해", tooltip="자신이 받은 환경 피해 (낙하, 호흡, 용암 등...)를 활성화 합니다."}
 
 obj = L.INCOMING_PET_EVENTS
@@ -379,7 +379,7 @@ obj["PET_INCOMING_SPELL_IMMUNE"]				= { label="주문 면역", tooltip="소환�
 obj["PET_INCOMING_HEAL"]						= { label="치유", tooltip="소환수가 받은 치유량을 활성화합니다."}
 obj["PET_INCOMING_HEAL_CRIT"]					= { label="치유 극대화", tooltip="소환수가 받은 치유 극대화를 활성화합니다."}
 obj["PET_INCOMING_HOT"]							= { label="주기적 치유", tooltip="소환수가 받은 주기적 치유를 활성화합니다."}
---obj["PET_INCOMING_HOT_CRIT"]					= { label="Crit Heals Over Time", tooltip="Enable your pet's incoming crit heals over time."}
+obj["PET_INCOMING_HOT_CRIT"]					= { label="주기적 치유 극대화", tooltip="소환수가 받은 받은 주기적 치유 극대화를 활성화합니다."}
 
 
 ------------------------------
@@ -416,8 +416,8 @@ obj["OUTGOING_SPELL_INTERRUPT"]				= { label="주문 차단", tooltip="대상이
 obj["OUTGOING_SPELL_EVADE"]					= { label="주문 빗나감", tooltip="대상에게 빗나간 주문 공격을 활성화합니다."}
 obj["OUTGOING_HEAL"]						= { label="치유", tooltip="대상이 받은 치유량을 활성화합니다."}
 obj["OUTGOING_HEAL_CRIT"]					= { label="치유 극대화", tooltip="대상이 받은 치유 극대화를 활성화합니다."}
-obj["OUTGOING_HOT"]							= { label="주기적인 치유", tooltip="대상이 받은 주기적 치유를 활성화합니다."}
---obj["OUTGOING_HOT_CRIT"]					= { label="Crit Heals Over Time", tooltip="Enable outgoing crit heals over time."}
+obj["OUTGOING_HOT"]							= { label="주기적 치유", tooltip="대상이 받은 주기적 치유를 활성화합니다."}
+obj["OUTGOING_HOT_CRIT"]					= { label="주기적 치유 극대화", tooltip="대상이 받은 주기적 치유 극대화를 활성화합니다."}
 obj["OUTGOING_DISPEL"]						= { label="해제", tooltip="대상이 받은 해제를 활성화합니다."}
 
 obj = L.OUTGOING_PET_EVENTS
