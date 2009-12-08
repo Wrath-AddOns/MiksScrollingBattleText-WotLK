@@ -117,10 +117,12 @@ obj["enableTrigger"]			= { tooltip="Вкл/Выкл триггер."}
 obj["allPowerGains"]			= { label="Получ. ВСЕХ Энергий", tooltip="Отображение всех получении энергии включая даже те что не отображаются в списке боя.\n\nПРЕДУПРЕЖДЕНИЕ: Эта опция очень спамит и игнорирует все пороги энергии и механику регуляторов.\n\nНЕ РЕКОМЕНДУЕТСЯ."}
 obj["hyperRegen"]				= { label="Активная регенерация", tooltip="Отображение получения энергии во время быстрой регенерации способностями такими как Озарение и Захват духа.\n\nЗАМЕТКА: Отображаемые получения не будут регулироваться."}
 obj["abbreviateSkills"]			= { label="Cокращать навыки", tooltip="Cокращать названия навыков (Только английские).\n\nThis can be overriden by each event with the %sl event code."}
+--obj["mergeSwings"]				= { label="Merge Swings", tooltip="Merge regular melee swings that hit within a short time span."}
 obj["hideSkills"]				= { label="Скрыть навыки", tooltip="Не отображать названия навыков в входящих и исходящих событиях.\n\nYou will give up some customization capability at the event level if you choose to use this option since it causes the %s event code to be ignored."}
 obj["hideNames"]				= { label="Скрыть имена", tooltip="Не отображать названия юнитов в входящих и исходящих событиях.\n\nYou will give up some customization capability at the event level if you choose to use this option since it causes the %n event code to be ignored."}
 obj["hideFullOverheals"]		= { label="Скрыть избыточное исц.", tooltip="Не показывать исцеление которого эффективное значение лечения равно нулю."}
 obj["hideFullHoTOverheals"]		= { label="Скрыть полное избыточное ИзВ", tooltip="Не показывать исцеление за время которого эффективное значение лечения равно нулю."}
+--obj["hideMergeTrailer"]			= { label="Hide Merge Trailer", tooltip="Don't display the trailer that specifies the number of hits and crits at the end of merged events."}
 obj["allClasses"]				= { label="Все классы"}
 obj["enableCooldowns"]			= { label="Вкл/Выкл перезарядку", tooltip="Выводит предупреждения когда заканчиваются перезарядки."}
 obj["lootedItems"]				= { label="Добыча предметов", tooltip="Выводит оповещение когда вы подбераете предметы."}
@@ -513,6 +515,7 @@ obj["SPELL_AURA_APPLIED"]		= "Использование Ауры"
 obj["SPELL_AURA_REMOVED"]		= "Снятие Аура"
 obj["SPELL_STOLEN"]				= "Хищение Ауры"
 obj["SPELL_DISPEL"]				= "Рассеивание Ауры"
+--obj["SPELL_AURA_REFRESH"]		= "Aura Refresh"
 --obj["SPELL_AURA_BROKEN_SPELL"]	= "Aura Broken"
 obj["ENCHANT_APPLIED"]			= "Использование Очарования"
 obj["ENCHANT_REMOVED"]			= "Снятие очарования"

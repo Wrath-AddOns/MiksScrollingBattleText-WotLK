@@ -117,10 +117,12 @@ obj["enableTrigger"]		= { tooltip="Activer le déclencheur."}
 obj["allPowerGains"]		= { label="Tous les gains d'énergie", tooltip="Affiche tous les gains d'énergie même ceux qui ne sont pas affichés dans le journal ce combat.\n\nATTENTION: Cette option est source de spam et ignorera les réglages de seuil de spam et de son contrôle.\n\nNON RECOMMANDE."}
 obj["hyperRegen"]			= { label="Hyper Regen", tooltip="Affiche les gains d'énergie durant les phases de regen rapide de certaines capacités comme Innervation ou Connexion spirituelle.\n\nNOTE: Les gains affichés ne seront pas contrôlés."}
 obj["abbreviateSkills"]		= { label="Compétences Abrégées", tooltip="Nom des compétences abrégées (client anglais seulement).\n\nCela peut être contourné pour chaque évènement en utilisant le code %sl."}
+--obj["mergeSwings"]				= { label="Merge Swings", tooltip="Merge regular melee swings that hit within a short time span."}
 obj["hideSkills"]			= { label="Cacher les Noms des Compétences", tooltip="Ne pas afficher les noms de compétences pour les évènements entrants et sortants.\n\nVous abandonnerez quelques possibilités de personnalisation de l'évènement si vous utilisez cette option car le code %s sera ignoré."}
 obj["hideNames"]			= { label="Cacher les Noms des Unités", tooltip="Ne pas afficher les noms des unités pour les évènements entrants et sortants.\n\nVous abandonnerez quelques possibilités de personnalisation de l'évènement si vous utilisez cette option car le code %n sera ignoré."}
 obj["hideFullOverheals"]	= { label="Cacher les Soins en Excès Total", tooltip="Ne pas afficher les soins qui ont un soin effectif égal à zéro."}
 --obj["hideFullHoTOverheals"]		= { label="Hide Full HoT Overheals", tooltip="Don't display heals over time that have an effective heal amount of zero."}
+--obj["hideMergeTrailer"]			= { label="Hide Merge Trailer", tooltip="Don't display the trailer that specifies the number of hits and crits at the end of merged events."}
 obj["allClasses"]			= { label="Toutes les classes"}
 obj["enableCooldowns"]		= { label="Activer les Cooldowns", tooltip="Affiche une notification quand un cooldown est terminé."}
 obj["lootedItems"]			= { label="Items Ramassés", tooltip="Affiche les notifications quand des items sont ramassés."}
@@ -512,6 +514,7 @@ obj["SPELL_AURA_APPLIED"]		= "Aura Appliquée"
 obj["SPELL_AURA_REMOVED"]		= "Aura Enlevée"
 obj["SPELL_STOLEN"]				= "Aura Volée"
 obj["SPELL_DISPEL"]				= "Aura Dissipée"
+--obj["SPELL_AURA_REFRESH"]		= "Aura Refresh"
 obj["SPELL_AURA_BROKEN_SPELL"]	= "Aura Cassée"
 obj["ENCHANT_APPLIED"]			= "Enchantement Appliqué"
 obj["ENCHANT_REMOVED"]			= "Enchantement Enlevé"

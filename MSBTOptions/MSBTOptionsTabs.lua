@@ -2406,7 +2406,7 @@ local function SpamTab_Create()
  checkbox = MSBTControls.CreateCheckbox(tabFrame)
  objLocale = L.CHECKBOXES["hideSkills"]
  checkbox:Configure(28, objLocale.label, objLocale.tooltip)
- checkbox:SetPoint("TOPLEFT", tabFrame, "TOPLEFT", 5, -150)
+ checkbox:SetPoint("TOPLEFT", tabFrame, "TOPLEFT", 5, -130)
  checkbox:SetClickHandler(
    function (this, isChecked)
     MSBTProfiles.SetOption(nil, "hideSkills", isChecked)
@@ -2450,6 +2450,17 @@ local function SpamTab_Create()
  )
  controls.hideFullHoTOverhealsCheckbox = checkbox
 
+ -- Hide merge trailer checkbox.
+ checkbox = MSBTControls.CreateCheckbox(tabFrame)
+ objLocale = L.CHECKBOXES["hideMergeTrailer"]
+ checkbox:Configure(28, objLocale.label, objLocale.tooltip)
+ checkbox:SetPoint("TOPLEFT", controls.hideFullHoTOverhealsCheckbox, "BOTTOMLEFT")
+ checkbox:SetClickHandler(
+   function (this, isChecked)
+    MSBTProfiles.SetOption(nil, "hideMergeTrailer", isChecked)
+   end
+ )
+ controls.hideMergeTrailerCheckbox = checkbox
 
  -- All power gains checkbox.
  local checkbox = MSBTControls.CreateCheckbox(tabFrame)
@@ -2487,6 +2498,18 @@ local function SpamTab_Create()
    end
  )
  controls.abbreviateCheckbox = checkbox
+
+ -- Merge swings checkbox.
+ checkbox = MSBTControls.CreateCheckbox(tabFrame)
+ objLocale = L.CHECKBOXES["mergeSwings"]
+ checkbox:Configure(28, objLocale.label, objLocale.tooltip)
+ checkbox:SetPoint("TOPLEFT", controls.abbreviateCheckbox, "BOTTOMLEFT", 0, 0)
+ checkbox:SetClickHandler(
+   function (this, isChecked)
+    MSBTProfiles.SetOption(nil, "mergeSwingsDisabled", not isChecked)
+   end
+ )
+ controls.mergeSwingsCheckbox = checkbox
  
  -- Merge exclusions button.
  button = MSBTControls.CreateOptionButton(tabFrame)
@@ -2612,10 +2635,12 @@ local function SpamTab_OnShow()
  controls.allPowerCheckbox:SetChecked(currentProfile.showAllPowerGains)
  controls.hyperRegenCheckbox:SetChecked(not currentProfile.regenAbilitiesDisabled)
  controls.abbreviateCheckbox:SetChecked(currentProfile.abbreviateAbilities)
+ controls.mergeSwingsCheckbox:SetChecked(not currentProfile.mergeSwingsDisabled)
  controls.hideSkillsCheckbox:SetChecked(currentProfile.hideSkills)
  controls.hideNamesCheckbox:SetChecked(currentProfile.hideNames)
  controls.hideFullOverhealsCheckbox:SetChecked(currentProfile.hideFullOverheals)
  controls.hideFullHoTOverhealsCheckbox:SetChecked(currentProfile.hideFullHoTOverheals)
+ controls.hideMergeTrailerCheckbox:SetChecked(currentProfile.hideMergeTrailer)
 end
 
 

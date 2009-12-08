@@ -86,6 +86,7 @@ local SPELL_MISSILE_BARRAGE		= GetSkillName(44401)
 local SPELL_MOLTEN_CORE			= GetSkillName(47383)
 local SPELL_NIGHTFALL			= GetSkillName(18094)
 local SPELL_OWLKIN_FRENZY		= GetSkillName(48391)
+local SPELL_PREDATORS_SWIFTNESS	= GetSkillName(69369)
 local SPELL_PVP_TRINKET			= GetSkillName(42292)
 local SPELL_RAMPAGE				= GetSkillName(SPELLID_RAMPAGE)
 local SPELL_REVENGE				= GetSkillName(SPELLID_REVENGE)
@@ -107,7 +108,7 @@ local SPELL_VIPER_STING			= GetSkillName(3034)
 -- Throttle, suppression, and other spell names.
 local SPELL_ABOMINABLE_MIGHT		= GetSkillName(53136)
 local SPELL_BLOOD_PRESENCE			= GetSkillName(48266)
-local SPELL_DESECRATION				= GetSkillName(63595)
+local SPELL_DESECRATION				= GetSkillName(55741)
 local SPELL_DRAIN_LIFE				= GetSkillName(689)
 local SPELL_FEROCIOUS_INSPIRATION	= GetSkillName(34455)
 local SPELL_MANA_SPRING				= GetSkillName(5677)
@@ -391,6 +392,7 @@ local masterProfile = {
    colorB		= 0,
    message		= "(%s - %n) +%a",
    scrollArea	= "Incoming",
+   isCrit		= true,
   },
   INCOMING_ENVIRONMENTAL = {
    colorG		= 0,
@@ -558,6 +560,7 @@ local masterProfile = {
    colorB		= 0,
    message		= "+%a (%s - %n)",
    scrollArea	= "Outgoing",
+   isCrit		= true,
   },
   OUTGOING_DISPEL = {
    colorB		= 0.5,
@@ -729,6 +732,7 @@ local masterProfile = {
    colorB		= 0.57,
    message		= "(%s - %n) " .. PET .. " +%a",
    scrollArea	= "Incoming",
+   isCrit		= true,
   },
 
 
@@ -1317,6 +1321,15 @@ local masterProfile = {
    fontSize			= 26,
    classes			= "DRUID",
    mainEvents		= "SPELL_AURA_APPLIED{skillName;;eq;;" .. SPELL_OWLKIN_FRENZY .. ";;recipientAffiliation;;eq;;" .. FLAG_YOU .. "}",
+  },
+  MSBT_TRIGGER_PREDATORS_SWIFTNESS = {
+   colorR			= 0.5,
+   colorB			= 0.5,
+   message			= SPELL_PREDATORS_SWIFTNESS .. "!",
+   alwaysSticky		= true,
+   fontSize			= 26,
+   classes			= "DRUID",
+   mainEvents		= "SPELL_AURA_APPLIED{skillName;;eq;;" .. SPELL_PREDATORS_SWIFTNESS .. ";;recipientAffiliation;;eq;;" .. FLAG_YOU .. "}",
   },
   MSBT_TRIGGER_RAMPAGE = {
    colorG			= 0.25,

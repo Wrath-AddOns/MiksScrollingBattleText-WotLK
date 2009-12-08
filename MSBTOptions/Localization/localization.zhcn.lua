@@ -120,10 +120,12 @@ obj["enableTrigger"]			= { tooltip="启用触发器"}
 obj["allPowerGains"]			= { label="所有能量获取", tooltip="显示所有获取的能量包括那些战斗日志中不显示的。警告：这个选项将会大量刷屏同时无视能量阈值和抑制显示设置\n不推荐"}
 obj["hyperRegen"]				= { label="超级回复", tooltip="显示从快速回复技能（比如唤醒和精神分流）中获取的能量数值；注意：此显示无法抑制显示"}
 obj["abbreviateSkills"]			= { label="技能简称", tooltip="简缩技能名字（仅适用于英文版）。若事件描述中加入“%sl”代码，此选项即失效"}
+--obj["mergeSwings"]				= { label="Merge Swings", tooltip="Merge regular melee swings that hit within a short time span."}
 obj["hideSkills"]				= { label="隐藏技能", tooltip="在承受伤害和输出伤害中不显示技能名字。开启此选项将使你失去某些事件自定义功能，因为它会忽略“%s”代码"}
 obj["hideNames"]				= { label="隐藏名字", tooltip="在承受伤害和输出伤害中不显示单位名字。开启此选项将使你失去某些事件自定义功能，因为它会忽略“%n”代码"}
 obj["hideFullOverheals"]		= { label="隐藏全部过量的治疗", tooltip="不显示全部过量的治疗."}
 obj["hideFullHoTOverheals"]		= { label="隐藏全部溢出的持续治疗", tooltip="不显示全部溢出的储蓄治疗"}
+--obj["hideMergeTrailer"]			= { label="Hide Merge Trailer", tooltip="Don't display the trailer that specifies the number of hits and crits at the end of merged events."}
 obj["allClasses"]				= { label="所有职业"}
 obj["enableCooldowns"]			= { label="启用冷却", tooltip="当冷却结束时显示通告"}
 obj["lootedItems"]				= { label="拾取物品", tooltip="显示物品拾取."}

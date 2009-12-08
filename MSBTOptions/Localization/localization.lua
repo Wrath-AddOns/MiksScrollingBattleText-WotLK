@@ -142,10 +142,12 @@ obj["enableTrigger"]			= { tooltip="Enable the trigger."}
 obj["allPowerGains"]			= { label="ALL Power Gains", tooltip="Display all power gains including those that are not reported to the combat log.\n\nWARNING: This option is very spammy and will ignore the power threshold and throttling mechanics.\n\nNOT RECOMMENDED."}
 obj["hyperRegen"]				= { label="Hyper Regen", tooltip="Display power gains during fast regen abilities such as Innervate and Spirit Tap.\n\nNOTE: The gains shown will not be throttled."}
 obj["abbreviateSkills"]			= { label="Abbreviate Skills", tooltip="Abbreviates skill names (English only).\n\nThis can be overriden by each event with the %sl event code."}
+obj["mergeSwings"]				= { label="Merge Swings", tooltip="Merge regular melee swings that hit within a short time span."}
 obj["hideSkills"]				= { label="Hide Skills", tooltip="Don't display skill names for incoming and outgoing events.\n\nYou will give up some customization capability at the event level if you choose to use this option since it causes the %s event code to be ignored."}
 obj["hideNames"]				= { label="Hide Names", tooltip="Don't display unit names for incoming and outgoing events.\n\nYou will give up some customization capability at the event level if you choose to use this option since it causes the %n event code to be ignored."}
 obj["hideFullOverheals"]		= { label="Hide Full Overheals", tooltip="Don't display non periodic heals that have an effective heal amount of zero."}
 obj["hideFullHoTOverheals"]		= { label="Hide Full HoT Overheals", tooltip="Don't display heals over time that have an effective heal amount of zero."}
+obj["hideMergeTrailer"]			= { label="Hide Merge Trailer", tooltip="Don't display the trailer that specifies the number of hits and crits at the end of merged events."}
 obj["allClasses"]				= { label="All Classes"}
 obj["enableCooldowns"]			= { label="Enable Cooldowns", tooltip="Display notifications when cooldowns complete."}
 obj["lootedItems"]				= { label="Looted Items", tooltip="Display notifications when items are looted."}
@@ -539,7 +541,7 @@ obj["SPELL_AURA_APPLIED"]		= "Aura Application"
 obj["SPELL_AURA_REMOVED"]		= "Aura Removal"
 obj["SPELL_STOLEN"]				= "Aura Stolen"
 obj["SPELL_DISPEL"]				= "Aura Dispel"
-obj["SPELL_AURA_REFRESH"]		= "Aura Refresh" -- TODO: Add to others.
+obj["SPELL_AURA_REFRESH"]		= "Aura Refresh"
 obj["SPELL_AURA_BROKEN_SPELL"]	= "Aura Broken"
 obj["ENCHANT_APPLIED"]			= "Enchant Application"
 obj["ENCHANT_REMOVED"]			= "Enchant Removal"

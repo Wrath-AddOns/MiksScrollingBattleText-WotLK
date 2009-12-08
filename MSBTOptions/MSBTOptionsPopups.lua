@@ -3512,7 +3512,8 @@ local function CreateTriggerPopup()
 
   -- Aura events.
   SPELL_AURA_APPLIED = {availableConditions = commonLogFields .. commonSkillFields .. "auraType amount", defaultConditions="recipientAffiliation;;eq;;" .. FLAG_YOU .. ";;skillName;;eq;;" .. UNKNOWN},
-  SPELL_AURA_BROKEN_SPELL = {availableConditions = commonLogFields .. commonSkillFields .. commonExtraSkillFields .. "auraType", defaultConditions="sourceAffiliation;;eq;;" .. FLAG_YOU .. ";;skillName;;eq;;" .. UNKNOWN},  
+  SPELL_AURA_BROKEN_SPELL = {availableConditions = commonLogFields .. commonSkillFields .. commonExtraSkillFields .. "auraType", defaultConditions="sourceAffiliation;;eq;;" .. FLAG_YOU .. ";;skillName;;eq;;" .. UNKNOWN},
+  SPELL_AURA_REFRESH = {availableConditions = commonLogFields .. commonSkillFields .. "auraType", defaultConditions="sourceAffiliation;;eq;;" .. FLAG_YOU .. ";;skillName;;eq;;" .. UNKNOWN},
 
   -- Enchant events.
   ENCHANT_APPLIED = {availableConditions = commonLogFields .. "skillName itemID itemName", defaultConditions="skillName;;eq;;" .. UNKNOWN},

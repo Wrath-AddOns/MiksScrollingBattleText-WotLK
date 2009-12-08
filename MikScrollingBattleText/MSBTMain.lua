@@ -514,7 +514,7 @@ end
 -- ****************************************************************************
 -- Merges like combat events.
 -- ****************************************************************************
-local function MergeEvents(numEvents)
+local function MergeEvents(numEvents, currentProfile)
  -- Holds an unmerged event and whether or not to merge it.
  local unmergedEvent
  local doMerge = false
@@ -588,21 +588,22 @@ local function MergeEvents(numEvents)
  end -- Loop through unmerged events.
 
  
- -- Append merge trailer information to the merged events.
- for _, mergedEvent in ipairs(mergedEvents) do
-  -- Check if there were any events merged.
-  if (mergedEvent.numMerged > 0) then
-   -- Create the crit trailer text if there were any crits.
-   local critTrailer = ""
-   if (mergedEvent.numCrits > 0) then
-    critTrailer = string_format(", %d %s", mergedEvent.numCrits, mergedEvent.numCrits == 1 and L.MSG_CRIT or L.MSG_CRITS)
-   end
+ -- Append merge trailer information to the merged events if enabled.
+ if not (currentProfile.hideMergeTrailer) then
+  for _, mergedEvent in ipairs(mergedEvents) do
+   -- Check if there were any events merged.
+   if (mergedEvent.numMerged > 0) then
+    -- Create the crit trailer text if there were any crits.
+    local critTrailer = ""
+    if (mergedEvent.numCrits > 0) then
+     critTrailer = string_format(", %d %s", mergedEvent.numCrits, mergedEvent.numCrits == 1 and L.MSG_CRIT or L.MSG_CRITS)
+    end
    
-   -- Set the event's merge trailer field.
-   mergedEvent.mergeTrailer = string_format(" [%d %s%s]", mergedEvent.numMerged + 1, L.MSG_HITS, critTrailer)
-  end -- Events were merged.
+    -- Set the event's merge trailer field.
+    mergedEvent.mergeTrailer = string_format(" [%d %s%s]", mergedEvent.numMerged + 1, L.MSG_HITS, critTrailer)
+   end -- Events were merged.
+  end -- Loop through merged events.
  end
-
  
  -- Remove the processed events from unmerged events queue.
  for i = 1, numEvents do
@@ -1033,7 +1034,7 @@ local function ParserEventsHandler(parserEvent)
   DisplayEvent(eventSettings, outputMessage, effectTexture)
 
  -- Event is eligible for merging, but is excluded so display it now with full processing.
- elseif (currentProfile.mergeExclusions[effectName]) then
+ elseif (currentProfile.mergeExclusions[effectName] or (not effectName and currentProfile.mergeSwingsDisabled)) then
   -- Hide skill names according to the options if a texture is available.
   local hideSkills = effectTexture and not currentProfile.exclusiveSkillsDisabled or currentProfile.hideSkills
   local outputMessage = FormatEvent(eventSettings.message, parserEvent.amount, damageType, parserEvent.overhealAmount, parserEvent.overkillAmount, parserEvent.powerType, affectedUnitName, affectedUnitClass, effectName, partialEffects, nil, ignoreDamageColoring, hideSkills, currentProfile.hideNames)
@@ -1138,13 +1139,13 @@ local function OnUpdateEventFrame(this, elapsed)
 
  -- If it's time for an update.
  if (lastMergeUpdate >= MERGE_DELAY_TIME) then
-  -- Merge like events.
-  MergeEvents(#unmergedEvents)
-
   -- Local references for faster access.
   local currentProfile = MSBTProfiles.currentProfile
   local hideNames = currentProfile.hideNames
   local exclusiveSkillsDisabled = currentProfile.exclusiveSkillsDisabled 
+
+  -- Merge like events.
+  MergeEvents(#unmergedEvents, currentProfile)
 
   -- Display and recycle the merged events.
   local eventSettings, hideSkills, outputMessage

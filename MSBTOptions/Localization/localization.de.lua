@@ -117,10 +117,12 @@ obj["enableTrigger"]			= { tooltip="Auslöser aktivieren."}
 obj["allPowerGains"]			= { label="ALLE Regenerationen", tooltip="Zeigt alle Power Gains einschließlich die, die nicht im Kampflog gemeldet werden.\n\nWARNUNG: Diese Einstellung ist sehr Spammy, ignoriert den Power Schwellwert und drosselt einige Funktionen.\n\nNICHT EMPFOHLEN."}
 obj["hyperRegen"]				= { label="Hyper Regen", tooltip="Display power gains during fast regen abilities such as Innervate and Spirit Tap.\n\nNOTIZ: Die Power Gain-Anzeigen werden nicht gedrosselt."}
 obj["abbreviateSkills"]			= { label="Skills abkürzen", tooltip="Skill Namen abkürzen (Nur Englisch).\n\nDies kann von jedem Ereignis mit dem %sl Ereignis Code überschrieben werden."}
+--obj["mergeSwings"]				= { label="Merge Swings", tooltip="Merge regular melee swings that hit within a short time span."}
 obj["hideSkills"]				= { label="Skills verstecken", tooltip="Keine Skill Namen für eingehende und ausgehende Ereignisse anzeigen.\n\nYou will give up some customization capability at the event level if you choose to use this option since it causes the %s event code to be ignored."}
 obj["hideNames"]				= { label="Namen verstecken", tooltip="Namen für eingehende und ausgehende Ereignisse nicht anzeigen.\n\nYou will give up some customization capability at the event level if you choose to use this option since it causes the %n event code to be ignored."}
 obj["hideFullOverheals"]		= { label="Komplette Überheilungen verstecken", tooltip="Heilungen die eine effektige Heilung von null haben, nicht anzeigen."}
 --obj["hideFullHoTOverheals"]		= { label="Hide Full HoT Overheals", tooltip="Don't display heals over time that have an effective heal amount of zero."}
+--obj["hideMergeTrailer"]			= { label="Hide Merge Trailer", tooltip="Don't display the trailer that specifies the number of hits and crits at the end of merged events."}
 obj["allClasses"]				= { label="Alle Klassen"}
 obj["enableCooldowns"]			= { label="Abklingzeiten aktivieren", tooltip="Zeige Benachrichtigungen wenn Abklingzeiten abgelaufen sind."}
 obj["lootedItems"]				= { label="Gelootete Gegenstände", tooltip="Zeige Benachrichtigungen wenn Gegenstände geplündert wurden."}
@@ -513,6 +515,7 @@ obj["SPELL_AURA_APPLIED"]		= "Aura eingesetzt"
 obj["SPELL_AURA_REMOVED"]		= "Aura entfernt"
 obj["SPELL_STOLEN"]				= "Aura gestolen"
 obj["SPELL_DISPEL"]				= "Aura Dispel"
+--obj["SPELL_AURA_REFRESH"]		= "Aura Refresh"
 obj["SPELL_AURA_BROKEN_SPELL"]	= "Aura gebrochen"
 obj["ENCHANT_APPLIED"]			= "Verzauberung eingesetzt"
 obj["ENCHANT_REMOVED"]			= "Verzauberung entfernt"

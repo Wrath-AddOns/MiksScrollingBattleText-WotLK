@@ -49,6 +49,7 @@ local TEXT_ALIGN_MAP = {"BOTTOMLEFT", "BOTTOM", "BOTTOMRIGHT"}
 local OUTLINE_MAP = {"", "OUTLINE", "THICKOUTLINE"}
 
 -- Defaults for certain parameters.
+local DEFAULT_FONT_SIZE = 18
 local DEFAULT_FONT_PATH = L.FONT_FILES[L.DEFAULT_FONT_NAME]
 local DEFAULT_TEXT_ALIGN = TEXT_ALIGN_MAP[2]
 local DEFAULT_OUTLINE = OUTLINE_MAP[1]
@@ -72,6 +73,10 @@ local TEMP_TEXTURE_PATH = "Interface\\Icons\\Temp"
 -- Dynamically created frame for animation updates.
 local animationFrame
 
+-- Memoizing font path validation.
+local testFontString
+local testedFonts = {}
+
 -- Pools of dynamically created display events and textures that are reused.
 local displayEventCache = {}
 local textureCache = {}
@@ -91,6 +96,22 @@ local externalScrollAreas = {}
 -------------------------------------------------------------------------------
 -- Utility functions.
 -------------------------------------------------------------------------------
+
+-- ****************************************************************************
+-- Tests a font path and memoizes the result into the passed table so the font
+-- path is only tested once.  This is the target of a metatable __index field.
+-- ****************************************************************************
+local function TestFontPath(tbl, fontPath)
+ -- Mark the font path invalid if the font string was not actually set to it.
+ local isValid = true
+ testFontString:SetFont(fontPath, DEFAULT_FONT_SIZE, DEFAULT_OUTLINE)
+ if (string_lower(fontPath) ~= string_lower(testFontString:GetFont() or "")) then isValid = false end
+
+ -- Memoize result.
+ tbl[fontPath] = isValid
+ return isValid
+end
+
 
 -- ****************************************************************************
 -- Returns whether or not the passed scroll area is valid and enabled.
@@ -259,10 +280,9 @@ local function Display(message, saSettings, isSticky, colorR, colorG, colorB, fo
  -- Set font string properties.
  local fontString = displayEvent.fontString
  local fontOutline = OUTLINE_MAP[outlineIndex] or DEFAULT_OUTLINE
- fontPath = fontPath or DEFAULT_FONT_PATH
+ fontPath = testedFonts[fontPath] and fontPath or DEFAULT_FONT_PATH
  fontString:ClearAllPoints()
  fontString:SetFont(fontPath, fontSize, fontOutline)
- if (string_lower(fontPath) ~= string_lower(fontString:GetFont() or "")) then fontString:SetFont(DEFAULT_FONT_PATH, fontSize, fontOutline) end
  fontString:SetTextColor(colorR, colorG, colorB)
  fontString:SetDrawLayer(isSticky and "OVERLAY" or "ARTWORK")
  if (not currentProfile.textShadowingDisabled) then
@@ -519,6 +539,10 @@ animationFrame:SetHeight(0.0001)
 animationFrame:Hide()
 animationFrame:SetScript("OnUpdate", OnUpdateAnimationFrame)
 
+-- Memoize tested font paths so they only have to be tested once.
+testFontString = animationFrame:CreateFontString(nil, "ARTWORK", MasterFont)
+testedFonts.__index = TestFontPath
+setmetatable(testedFonts, testedFonts)
 
 
 
