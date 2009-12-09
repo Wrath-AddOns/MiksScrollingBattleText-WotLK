@@ -280,7 +280,7 @@ local function Display(message, saSettings, isSticky, colorR, colorG, colorB, fo
  -- Set font string properties.
  local fontString = displayEvent.fontString
  local fontOutline = OUTLINE_MAP[outlineIndex] or DEFAULT_OUTLINE
- fontPath = testedFonts[fontPath] and fontPath or DEFAULT_FONT_PATH
+ if (not fontPath) then fontPath = DEFAULT_FONT_PATH else fontPath = testedFonts[fontPath] and fontPath or DEFAULT_FONT_PATH end
  fontString:ClearAllPoints()
  fontString:SetFont(fontPath, fontSize, fontOutline)
  fontString:SetTextColor(colorR, colorG, colorB)
