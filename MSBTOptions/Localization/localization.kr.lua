@@ -118,12 +118,12 @@ obj["enableTrigger"]			= { tooltip="트리거를 활성화합니다."}
 obj["allPowerGains"]			= { label="모든 마력 (마나/분노 등) 획득", tooltip="전투 로그로 나타나지 않는 것을 포함한 모든 마력 (마나, 분노, 기력, 룬 마력) 획득을 표시합니다..\n\n주의: 이 옵션은 마력 표시 기준 및 출력시간 설정을 무시하므로 원치 않는 메시지를 많이 표시할수 있습니다.\n\n[비 추천]"}
 obj["hyperRegen"]				= { label="고속 회복", tooltip="고속 회복 능력(환기나 정신력 누출과 같은) 효과에 의한 마력 (마나, 분노, 기력, 룬 마력) 회득을 표시합니다.\n\n주의: 이 마력 획득의 출력시간은 조정할수 없습니다."}
 obj["abbreviateSkills"]			= { label="짧은 기술 이름", tooltip="기술 이름을 짧게 표시해줍니다(영문).\n\n이 설정은 %sl 이벤트 코드를 사용한 이벤트에서 무시되어집니다."}
---obj["mergeSwings"]				= { label="Merge Swings", tooltip="Merge regular melee swings that hit within a short time span."}
+obj["mergeSwings"]				= { label="타격 병합", tooltip="짧은 시간 내에 가한 일반 근접딜러 타격을 병합합니다."}
 obj["hideSkills"]				= { label="기술 이름 숨김", tooltip="받은, 대상이 받은 이벤트에서 기술 이름을 표시하지 않습니다.\n\n이 옵션을 사용하면 %s 이벤트 코드를 무시하므로 이벤트에 대한 사용자 설정이 무시되어질 것입니다."}
 obj["hideNames"]				= { label="유닛 이름 숨김", tooltip="받은, 대상이 받은 이벤트에서 유닛 이름을 표시하지 않는다.\n\n이 옵션을 사용하면 %n 이벤트 코드를 무시하므로 이벤트에 대한 사용자 설정이 무시되어질 것입니다."}
 obj["hideFullOverheals"]		= { label="최대 초과치유 숨김", tooltip="0의 치유량 효과를 가진 치유는 표시하지 않습니다."}
 obj["hideFullHoTOverheals"]		= { label="최대 순간 초과치유 숨김", tooltip="0의 치유량 효과를 가진 시간이 지난 치유는 표시하지 않습니다."}
---obj["hideMergeTrailer"]			= { label="Hide Merge Trailer", tooltip="Don't display the trailer that specifies the number of hits and crits at the end of merged events."}
+obj["hideMergeTrailer"]			= { label="요약 병합 숨김", tooltip="적중 및 치명타로 병합된 이벤트 마지막에 특정한 숫자 요약을 표시하지 않습니다."}
 obj["allClasses"]				= { label="모든 클래스"}
 obj["enableCooldowns"]			= { label="재사용 대기시간", tooltip="재사용 대기시간이 끝났을때 알림 메세지를 표시합니다."}
 obj["lootedItems"]				= { label="획득한 아이템", tooltip="아이템을 획득했을때 알림 메세지를 표시합니다."}
@@ -517,7 +517,7 @@ obj["SPELL_AURA_APPLIED"]		= "오라 받음"
 obj["SPELL_AURA_REMOVED"]		= "오라 사라짐"
 obj["SPELL_STOLEN"]				= "주문 훔치기"
 obj["SPELL_DISPEL"]				= "주문 해제"
---obj["SPELL_AURA_REFRESH"]		= "Aura Refresh"
+obj["SPELL_AURA_REFRESH"]		= "오라 복원"
 obj["SPELL_AURA_BROKEN_SPELL"]	= "오라 중단됨"
 obj["ENCHANT_APPLIED"]			= "무기 강화 받음"
 obj["ENCHANT_REMOVED"]			= "무기 강화 사라짐"
