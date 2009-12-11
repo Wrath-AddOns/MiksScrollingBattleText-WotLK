@@ -781,8 +781,9 @@ module.triggerSuppressions	= triggerSuppressions
 module.categorizedTriggers	= categorizedTriggers
 
 -- Protected Functions.
-module.HandleCooldowns		= HandleCooldowns
-module.ConvertType			= ConvertType
-module.UpdateTriggers		= UpdateTriggers
-module.Enable				= Enable
-module.Disable				= Disable
+module.HandleCooldowns			= HandleCooldowns
+module.HandleCombatLogTriggers	= HandleCombatLogTriggers
+module.ConvertType				= ConvertType
+module.UpdateTriggers			= UpdateTriggers
+module.Enable					= Enable
+module.Disable					= Disable
