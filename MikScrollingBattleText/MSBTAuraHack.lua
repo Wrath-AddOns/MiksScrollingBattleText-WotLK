@@ -96,7 +96,10 @@ end
 -- Called when the registered events occur.
 -- ****************************************************************************
 local function OnEvent(self, event, arg1)
- if (event == "UNIT_AURA" and arg1 == "player") then ScanAuras() end
+ if (event == "UNIT_AURA" and arg1 == "player") then
+  if (not playerGUID) then playerGUID = UnitGUID("player") end
+  ScanAuras()
+ end
 end
 
 
