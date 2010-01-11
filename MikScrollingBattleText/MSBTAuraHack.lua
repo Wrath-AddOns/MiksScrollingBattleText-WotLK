@@ -56,7 +56,7 @@ local eventFrame
 local playerName, playerGUID
 
 -- Hold information to detect when auras are applied.
-local expirationTimes = {}
+local activeAuras = {}
 
 
 -------------------------------------------------------------------------------
@@ -68,20 +68,25 @@ local expirationTimes = {}
 -- combat log event and fakes a combat log event for triggers to parse.
 -- ****************************************************************************
 local function ScanAuras()
+ -- Remove the entries for inactive auras.
+ for auraName in pairs(activeAuras) do
+  local name = UnitAura("player", auraName)
+  if (not name) then activeAuras[auraName] = nil end
+ end
+
  -- Manually scan for auras that are missing from the combat log.
  for auraName in pairs(MISSING_AURAS) do
-  local name, _, _, amount, _, _, expirationTime, _, _, _, skillID = UnitAura("player", auraName)
+  local name, _, _, amount, _, _, _, _, _, _, skillID = UnitAura("player", auraName)
 
   -- Fake a combat log event when the has been applied.
   if (name) then
-   local now = GetTime()
-   if (not expirationTimes[name] or expirationTimes[name] < now) then
-    expirationTimes[name] = expirationTime
+   if (not activeAuras[name]) then
+    activeAuras[name] = true
 
     -- Fake a combat log event.
     if amount <= 1 then amount = nil end
     local event = amount and "SPELL_AURA_APPLIED_DOSE" or "SPELL_AURA_APPLIED"
-    MSBTTriggers.HandleCombatLogTriggers(now, event, nil, nil, nil, playerGUID, playerName, FLAGS_ME, skillID, name, nil, "BUFF", amount)
+    MSBTTriggers.HandleCombatLogTriggers(now, event, playerGUID, playerName, FLAGS_ME, playerGUID, playerName, FLAGS_ME, skillID, name, nil, "BUFF", amount)
    end
   end -- Aura is active on player
  end -- Loop through search auras
