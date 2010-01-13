@@ -383,7 +383,7 @@ obj["PET_INCOMING_SPELL_IMMUNE"]				= { label="技能免疫", tooltip="显示宠
 obj["PET_INCOMING_HEAL"]						= { label="治疗", tooltip="显示宠物被治疗"}
 obj["PET_INCOMING_HEAL_CRIT"]					= { label="治疗爆击", tooltip="显示宠物被治疗爆击"}
 obj["PET_INCOMING_HOT"]							= { label="持续治疗", tooltip="显示宠物被持续治疗"}
---obj["PET_INCOMING_HOT_CRIT"]					= { label="持续治疗暴击", tooltip="显示宠物持续治疗暴击"}
+obj["PET_INCOMING_HOT_CRIT"]					= { label="持续治疗暴击", tooltip="显示宠物持续治疗暴击"}
 
 
 ------------------------------

@@ -382,7 +382,7 @@ obj["PET_INCOMING_SPELL_IMMUNE"]				= { label="技能免疫", tooltip="顯示寵
 obj["PET_INCOMING_HEAL"]						= { label="治療", tooltip="顯示寵物被治療"}
 obj["PET_INCOMING_HEAL_CRIT"]					= { label="治療爆擊", tooltip="顯示寵物被治療爆擊"}
 obj["PET_INCOMING_HOT"]							= { label="持續治療", tooltip="顯示寵物被持續治療"}
---obj["PET_INCOMING_HOT_CRIT"]					= { label="Crit Heals Over Time", tooltip="Enable your pet's incoming crit heals over time."}
+obj["PET_INCOMING_HOT_CRIT"]					= { label="持續治療暴擊", tooltip="顯示寵物持續治療暴擊"}
 
 
 ------------------------------
