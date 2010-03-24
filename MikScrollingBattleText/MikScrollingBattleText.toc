@@ -21,4 +21,3 @@ MSBTCooldowns.lua
 MSBTLoot.lua
 MSBTMain.lua
 MSBTAnimationStyles.lua
-MSBTAuraHack.lua

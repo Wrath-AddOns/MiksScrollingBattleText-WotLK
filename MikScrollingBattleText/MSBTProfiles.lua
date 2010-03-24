@@ -106,7 +106,8 @@ local SPELL_VICTORY_RUSH		= GetSkillName(SPELLID_VICTORY_RUSH)
 local SPELL_VIPER_STING			= GetSkillName(3034)
 
 -- Throttle, suppression, and other spell names.
-local SPELL_ABOMINABLE_MIGHT		= GetSkillName(53136)
+local SPELL_ABOMINABLE_MIGHT		= GetSkillName(55972)
+local SPELL_ARCANE_EMPOWERMENT		= GetSkillName(31579)
 local SPELL_BLOOD_PRESENCE			= GetSkillName(48266)
 local SPELL_DESECRATION				= GetSkillName(55741)
 local SPELL_DRAIN_LIFE				= GetSkillName(689)
@@ -115,7 +116,7 @@ local SPELL_MANA_SPRING				= GetSkillName(5677)
 local SPELL_SHADOWMEND				= GetSkillName(39373)
 local SPELL_REFLECTIVE_SHIELD		= GetSkillName(33201)
 local SPELL_UNDYING_RESOLVE			= GetSkillName(51915)
-local SPELL_UNLEASHED_RAGE			= GetSkillName(30803)
+local SPELL_UNLEASHED_RAGE			= GetSkillName(30805)
 local SPELL_VAMPIRIC_EMBRACE		= GetSkillName(15286)
 local SPELL_VAMPIRIC_TOUCH			= GetSkillName(34914)
 
@@ -1520,7 +1521,8 @@ local masterProfile = {
  mergeExclusions		= {},
  abilitySubstitutions	= {},
  abilitySuppressions	= {
-  [SPELL_ABOMINABLE_MIGHT]	= true,
+  [SPELL_ABOMINABLE_MIGHT]		= true,
+  [SPELL_ARCANE_EMPOWERMENT]	= true,
   [SPELL_DESECRATION]			= true,
   [SPELL_FEROCIOUS_INSPIRATION]	= true,
   [SPELL_UNDYING_RESOLVE]		= true,
