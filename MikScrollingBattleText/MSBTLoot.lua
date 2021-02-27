@@ -80,7 +80,7 @@ local function HandleItems(parserEvent)
 
  -- Get information about the looted item.
  local itemLink = parserEvent.itemLink
- local itemName, _, itemQuality, _, _, itemType, _, _, _, itemTexture = GetItemInfo(itemLink)
+ local itemName, _, itemQuality, _, _, itemType, _, itemStackCount, _, itemTexture = GetItemInfo(itemLink)
 
  -- Determine whether to show the event and ignore it if necessary.
  local currentProfile = MSBTProfiles.currentProfile
@@ -99,7 +99,18 @@ local function HandleItems(parserEvent)
  -- looted to it if the item wasn't the result of a conjure.
  local numLooted = parserEvent.amount or 1
  local numItems = GetItemCount(itemLink) or 0
+ if (numItems % itemStackCount ~= 0) then
+	numItems = (numItems - numLooted)
+-- TODO: Figure out how to query number owned after a new stack has been created in inventory
+-- else
+--	numItems = GetItemCount(itemLink) - numLooted
+ end
+ 
  local numTotal = numItems + numLooted
+
+--print("Looted: ", numLooted ," ",itemName)
+--print("Have:   ", numItems  ," ",itemName)
+--print("Total:  ", numTotal  ," ",itemName)
 
  -- Format the event and display it.
  local eventSettings = MSBTProfiles.currentProfile.events.NOTIFICATION_LOOT
