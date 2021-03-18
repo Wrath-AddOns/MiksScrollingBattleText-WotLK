@@ -1,4 +1,4 @@
-# MiksScrollingBattleText-wotlk
+# MiksScrollingBattleText-WotLK
 
 Forked from the last official release for Wrath of the Lich King found in the SVN repo on WoW Interface.
 
